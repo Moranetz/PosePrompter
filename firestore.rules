@@ -1,0 +1,172 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns a document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Helper function to validate user document structure
+    function isValidUserData() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['displayName', 'avatar', 'bio', 'customOptions', 
+                                  'hiddenOptions', 'deletedOptions', 'savedPromptSets', 
+                                  'installedPackages', 'createdAt', 'updatedAt']) &&
+             data.displayName is string &&
+             data.avatar is string &&
+             data.bio is string &&
+             data.customOptions is map &&
+             data.hiddenOptions is map &&
+             data.deletedOptions is map &&
+             data.savedPromptSets is list &&
+             data.installedPackages is list &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+    
+    // Helper function to validate package document structure
+    function isValidPackageData() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['packageId', 'name', 'description', 'coverImage', 
+                                  'author', 'options', 'tags', 'category', 'stats', 
+                                  'price', 'license', 'version', 'status', 
+                                  'createdAt', 'updatedAt']) &&
+             data.packageId is string &&
+             data.name is string &&
+             data.name.size() > 0 &&
+             data.name.size() <= 100 &&
+             data.description is string &&
+             data.description.size() <= 1000 &&
+             data.coverImage is string &&
+             data.author is map &&
+             data.author.userId is string &&
+             data.author.displayName is string &&
+             data.options is map &&
+             data.tags is list &&
+             data.category is string &&
+             data.stats is map &&
+             data.stats.downloads is int &&
+             data.stats.rating is number &&
+             data.stats.ratingCount is int &&
+             data.price is int &&
+             data.price >= 0 &&
+             data.license is string &&
+             data.version is string &&
+             data.status in ['draft', 'published', 'flagged'] &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+    
+    // Helper function to validate review document structure
+    function isValidReviewData() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['packageId', 'userId', 'userDisplayName', 'userAvatar', 
+                                  'rating', 'comment', 'createdAt', 'updatedAt']) &&
+             data.packageId is string &&
+             data.userId is string &&
+             data.userDisplayName is string &&
+             data.userAvatar is string &&
+             data.rating is int &&
+             data.rating >= 1 &&
+             data.rating <= 5 &&
+             data.comment is string &&
+             data.comment.size() <= 1000 &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+    
+    // Rate limiting helper (simple implementation)
+    // Note: For production, consider using Cloud Functions with more sophisticated rate limiting
+    function checkRateLimit() {
+      // This is a basic check - in production, you might want to use Cloud Functions
+      // to implement more sophisticated rate limiting with timestamps
+      return true;
+    }
+    
+    // Users Collection
+    // Users can only read/write their own user document
+    match /users/{userId} {
+      // Allow read only if user is authenticated and owns the document
+      allow read: if isOwner(userId);
+      
+      // Allow create only if user is authenticated and creating their own document
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId && 
+                       isValidUserData() &&
+                       checkRateLimit();
+      
+      // Allow update only if user owns the document
+      allow update: if isOwner(userId) && 
+                       isValidUserData() &&
+                       checkRateLimit();
+      
+      // Allow delete only if user owns the document
+      allow delete: if isOwner(userId);
+    }
+    
+    // Packages Collection
+    // Users can read all published packages
+    // Users can only write packages they own
+    match /packages/{packageId} {
+      // Allow read if package is published (anyone can read published packages)
+      allow read: if resource.data.status == 'published' || 
+                     (isAuthenticated() && resource.data.author.userId == request.auth.uid);
+      
+      // Allow create if user is authenticated and is the author
+      allow create: if isAuthenticated() && 
+                       request.resource.data.author.userId == request.auth.uid &&
+                       isValidPackageData() &&
+                       checkRateLimit();
+      
+      // Allow update only if user owns the package
+      // Prevent changing author or packageId
+      allow update: if isAuthenticated() && 
+                       resource.data.author.userId == request.auth.uid &&
+                       request.resource.data.author.userId == resource.data.author.userId &&
+                       request.resource.data.packageId == resource.data.packageId &&
+                       isValidPackageData() &&
+                       checkRateLimit();
+      
+      // Allow delete only if user owns the package
+      allow delete: if isAuthenticated() && 
+                       resource.data.author.userId == request.auth.uid;
+    }
+    
+    // Reviews Collection
+    // Reviews can be read by anyone
+    // Reviews can be written by logged-in users
+    match /reviews/{reviewId} {
+      // Allow read by anyone (authenticated or not)
+      allow read: if true;
+      
+      // Allow create if user is authenticated and is the reviewer
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       isValidReviewData() &&
+                       checkRateLimit();
+      
+      // Allow update only if user owns the review
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       isValidReviewData() &&
+                       checkRateLimit();
+      
+      // Allow delete only if user owns the review
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

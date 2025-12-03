@@ -1,0 +1,58 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if file is an image
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    // Helper function to check file size (5MB max)
+    function isUnderSizeLimit() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+    
+    // Avatars: Users can only upload to their own folder
+    match /avatars/{userId}/{fileName} {
+      // Allow read by anyone (for displaying avatars)
+      allow read: if true;
+      
+      // Allow write only if user is authenticated and uploading to their own folder
+      allow write: if isAuthenticated() && 
+                      request.auth.uid == userId &&
+                      isImage() &&
+                      isUnderSizeLimit();
+      
+      // Allow delete only if user owns the file
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == userId;
+    }
+    
+    // Package covers: Users can only upload to their own folder
+    match /package-covers/{userId}/{fileName} {
+      // Allow read by anyone (for displaying package covers)
+      allow read: if true;
+      
+      // Allow write only if user is authenticated and uploading to their own folder
+      allow write: if isAuthenticated() && 
+                      request.auth.uid == userId &&
+                      isImage() &&
+                      isUnderSizeLimit();
+      
+      // Allow delete only if user owns the file
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == userId;
+    }
+    
+    // Deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

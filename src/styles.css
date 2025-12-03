@@ -1,0 +1,444 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #ffffff;
+  background-color: #0a0a0f;
+  --header-height: 56px;
+  --footer-height: 48px;
+  
+  /* Dark theme colors */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a24;
+  --bg-elevated: #1e1e2a;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --accent-primary: #22c55e;
+  --accent-secondary: #f59e0b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg-primary);
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(180deg, #0a0a0f 0%, #0f1419 50%, #0a0a0f 100%);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Layout Structure */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* NEW: Full-width stacked layout */
+.workspace-stacked {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Controls Area - Top section with categories and options - COMPACT */
+.controls-area {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+
+/* Preview and Actions Area - Bottom section */
+.preview-actions-area {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Preview Area - Takes most of the space - EXPANDED - This is the HERO */
+.preview-area-new {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+/* Actions Sidebar - Right side actions - COMPACT */
+.actions-sidebar {
+  width: 160px;
+  flex-shrink: 0;
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-tertiary);
+  border-left: 1px solid var(--border-subtle);
+  overflow-y: auto;
+}
+
+/* OLD Layout - keeping for reference/fallback */
+/* Workspace Area */
+.workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Preview Area - Always Visible, Sticky */
+.preview-area {
+  width: 55%;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - var(--header-height) - var(--footer-height));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-shrink: 0;
+  overflow: hidden;
+  max-width: 900px;
+}
+
+/* Options Panel - Flex Column Layout */
+.options-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px;
+  min-width: 0;
+  gap: 16px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-subtle);
+}
+
+/* Sidebar Scrollable Area - Only this scrolls */
+.sidebar-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: visible;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Custom scrollbar for dark theme */
+.sidebar-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fixed Controls Area - WordButtonBar and Action Buttons */
+.options-panel-fixed {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Responsive Design - New stacked layout */
+@media (max-width: 900px) {
+  .actions-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+    padding: 12px;
+  }
+  
+  .preview-actions-area {
+    flex-direction: column;
+  }
+}
+
+/* Responsive Design - Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .controls-area {
+    padding: 12px 16px;
+    max-height: 50vh;
+  }
+
+  .workspace {
+    flex-direction: column;
+  }
+
+  .preview-area {
+    width: 100%;
+    height: 45vh;
+    position: relative;
+    max-width: 100%;
+    min-height: 280px;
+  }
+
+  .options-panel {
+    width: 100%;
+    height: 55vh;
+    min-height: 320px;
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+}
+
+/* Responsive Design - Mobile (up to 768px) */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 52px;
+    --footer-height: 44px;
+  }
+  
+  .controls-area {
+    padding: 10px 12px;
+    gap: 12px;
+  }
+
+  .preview-area {
+    width: 100%;
+    height: 38vh;
+    min-height: 240px;
+    padding: 12px;
+  }
+
+  .options-panel {
+    width: 100%;
+    height: 62vh;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .sidebar-scrollable {
+    padding: 0;
+  }
+
+  /* Mobile sidebar adjustments */
+  .sidebar-container {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Responsive Design - Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+  .preview-area {
+    height: 32vh;
+    min-height: 200px;
+    padding: 8px;
+  }
+
+  .options-panel {
+    height: 68vh;
+    padding: 8px;
+    gap: 8px;
+  }
+}
+
+/* Responsive Modals */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 90vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+    animation: slideUp 0.3s ease-out !important;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Responsive Forms */
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    min-height: 44px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+
+  button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  /* Form grid adjustments */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Responsive Package Marketplace Grid */
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .package-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .package-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+  .header-nav {
+    display: none !important;
+  }
+
+  .hamburger-menu {
+    display: block !important;
+  }
+
+  .studio-badge {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger-menu {
+    display: none !important;
+  }
+
+  .studio-badge {
+    display: inline-block !important;
+  }
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-menu.open {
+  display: block;
+}
+
+.mobile-menu-content {
+  background: var(--bg-secondary);
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  a, button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ensure WordButtonBar is properly scrollable on mobile */
+  .word-button-bar {
+    padding: 8px 12px !important;
+  }
+
+  /* Improve spacing on mobile */
+  .options-panel-fixed {
+    gap: 10px !important;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes successPulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
