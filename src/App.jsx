@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { UserProvider, useAuth } from './contexts/UserContext.jsx';
 import LandingPage from './components/LandingPage.jsx';
 import PricingPage from './components/PricingPage.jsx';
+import FacePhotosPage from './components/FacePhotosPage.jsx';
 import ToastProvider from './components/Toast/ToastContainer.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import AuthDebugPanel from './components/AuthDebugPanel.jsx';
@@ -150,6 +151,11 @@ const AppContent = () => {
   // Show pricing page if route is #pricing
   if (currentRoute === '#pricing') {
     return <PricingPage />;
+  }
+
+  // Show face photos page if route is #face-photos
+  if (currentRoute === '#face-photos') {
+    return <FacePhotosPage />;
   }
 
   // Show landing page when user is not logged in (after loading is complete)

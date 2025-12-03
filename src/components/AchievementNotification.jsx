@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Sparkles, X } from 'lucide-react';
 
@@ -11,16 +11,39 @@ import { Trophy, Sparkles, X } from 'lucide-react';
 
 const AchievementNotification = ({ achievement, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     if (achievement) {
       setIsVisible(true);
+      
+      // Play achievement sound
+      try {
+        // Try to play the sound file from public folder
+        const audio = new Audio('/achievement-sound.mp3');
+        audio.volume = 0.5; // Set volume to 50% to avoid being too loud
+        audio.play().catch(error => {
+          // Silently fail if audio can't play (e.g., user hasn't interacted with page yet)
+          console.log('Could not play achievement sound:', error);
+        });
+        audioRef.current = audio;
+      } catch (error) {
+        console.log('Error loading achievement sound:', error);
+      }
+      
       // Auto-dismiss after 5 seconds
       const timer = setTimeout(() => {
         setIsVisible(false);
         setTimeout(() => onClose?.(), 300);
       }, 5000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        // Clean up audio if component unmounts
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
+      };
     }
   }, [achievement, onClose]);
 

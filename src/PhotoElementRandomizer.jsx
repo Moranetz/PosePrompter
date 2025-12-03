@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { Copy, RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus, TrendingUp, Star } from 'lucide-react';
+import { Copy, RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus, TrendingUp, Star, Heart } from 'lucide-react';
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from './firebase-config';
 import { useAuth } from './contexts/UserContext';
@@ -2614,6 +2614,8 @@ const PhotoElementRandomizer = () => {
   const [installedPackagesModalOpen, setInstalledPackagesModalOpen] = useState(false);
   const [createSetModalOpen, setCreateSetModalOpen] = useState(false);
   const [selectedFavorites, setSelectedFavorites] = useState(new Set()); // Set of favorite IDs (category:optionId)
+  const [unfavoritedInSession, setUnfavoritedInSession] = useState(new Set()); // Track items unfavorited in current session
+  const favoritesSnapshotRef = useRef(null); // Snapshot of favorites when sidebar opens
   const [savedSets, setSavedSets] = useState([]);
   const [loadingSavedSets, setLoadingSavedSets] = useState(false);
   const [saveFormData, setSaveFormData] = useState({
@@ -3620,6 +3622,8 @@ const PhotoElementRandomizer = () => {
     setIncludedCategories(newIncludedCategories);
     setFavoritesSidebarOpen(false);
     setSelectedFavorites(new Set());
+    setUnfavoritedInSession(new Set());
+    favoritesSnapshotRef.current = null;
     
     alert(`Set created from ${selectedFavorites.size} favorite prompt(s)!`);
   }, [selectedFavorites, selections, includedCategories, mergedCategories, categoryDisplayNames]);
@@ -4180,6 +4184,9 @@ const PhotoElementRandomizer = () => {
                 <button
                   onClick={() => {
                     setSelectedFavorites(new Set());
+                    setUnfavoritedInSession(new Set());
+                    // Capture snapshot of current favorites
+                    favoritesSnapshotRef.current = getAllFavoritePrompts();
                     setFavoritesSidebarOpen(true);
                   }}
                   style={{
@@ -5443,6 +5450,8 @@ const PhotoElementRandomizer = () => {
             onClick={() => {
               setFavoritesSidebarOpen(false);
               setSelectedFavorites(new Set());
+              setUnfavoritedInSession(new Set());
+              favoritesSnapshotRef.current = null;
             }}
           />
           <div
@@ -5488,6 +5497,8 @@ const PhotoElementRandomizer = () => {
                 onClick={() => {
                   setFavoritesSidebarOpen(false);
                   setSelectedFavorites(new Set());
+                  setUnfavoritedInSession(new Set());
+                  favoritesSnapshotRef.current = null;
                 }}
                 style={{
                   background: 'rgba(255, 255, 255, 0.1)',
@@ -5523,6 +5534,27 @@ const PhotoElementRandomizer = () => {
             >
               {(() => {
                 const favoritesByCategory = getAllFavoritePrompts();
+                
+                // Merge with unfavorited items from snapshot to keep them visible
+                if (favoritesSnapshotRef.current) {
+                  Object.keys(favoritesSnapshotRef.current).forEach(category => {
+                    const snapshotFavorites = favoritesSnapshotRef.current[category] || [];
+                    const currentFavorites = favoritesByCategory[category] || [];
+                    const currentFavoriteIds = new Set(currentFavorites.map(f => `${category}:${f.id}`));
+                    
+                    // Add unfavorited items from snapshot that aren't in current favorites
+                    snapshotFavorites.forEach(({ id, index, option }) => {
+                      const favoriteKey = `${category}:${id}`;
+                      if (unfavoritedInSession.has(favoriteKey) && !currentFavoriteIds.has(favoriteKey)) {
+                        if (!favoritesByCategory[category]) {
+                          favoritesByCategory[category] = [];
+                        }
+                        favoritesByCategory[category].push({ id, index, option });
+                      }
+                    });
+                  });
+                }
+                
                 const categoryKeys = Object.keys(favoritesByCategory);
                 
                 if (categoryKeys.length === 0) {
@@ -5557,6 +5589,7 @@ const PhotoElementRandomizer = () => {
                             {favorites.map(({ id, index, option }) => {
                               const favoriteKey = `${category}:${id}`;
                               const isSelected = selectedFavorites.has(favoriteKey);
+                              const isUnfavorited = unfavoritedInSession.has(favoriteKey);
                               const optionText = typeof option === 'string' ? option : (option.title || option.prompt?.substring(0, 50) || '');
                               const fullPrompt = typeof option === 'string' ? option : (option.prompt || '');
                               
@@ -5573,9 +5606,14 @@ const PhotoElementRandomizer = () => {
                                     borderRadius: '8px',
                                     padding: '12px',
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s ease'
+                                    transition: 'all 0.2s ease',
+                                    position: 'relative'
                                   }}
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    // Don't toggle selection if clicking the heart button
+                                    if (e.target.closest('.favorite-heart-button')) {
+                                      return;
+                                    }
                                     const newSelected = new Set(selectedFavorites);
                                     if (isSelected) {
                                       newSelected.delete(favoriteKey);
@@ -5637,6 +5675,52 @@ const PhotoElementRandomizer = () => {
                                         </div>
                                       )}
                                     </div>
+                                    <button
+                                      className="favorite-heart-button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        // Mark as unfavorited in session
+                                        setUnfavoritedInSession(prev => new Set(prev).add(favoriteKey));
+                                        // Remove from selected if selected
+                                        if (isSelected) {
+                                          setSelectedFavorites(prev => {
+                                            const newSet = new Set(prev);
+                                            newSet.delete(favoriteKey);
+                                            return newSet;
+                                          });
+                                        }
+                                        // Actually unfavorite it
+                                        toggleFavorite(category, id);
+                                        triggerFeedback(FEEDBACK_TYPES.FAVORITE, {
+                                          category: categoryColors[category],
+                                          intensity: 'medium',
+                                        });
+                                      }}
+                                      onMouseDown={(e) => {
+                                        e.preventDefault();
+                                      }}
+                                      style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        padding: '4px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: isUnfavorited ? '#52525b' : '#f43f5e',
+                                        transition: 'color 200ms',
+                                        flexShrink: 0,
+                                        outline: 'none'
+                                      }}
+                                      title="Remove from favorites"
+                                    >
+                                      <Heart 
+                                        size={16} 
+                                        fill={isUnfavorited ? 'transparent' : '#f43f5e'} 
+                                        strokeWidth={2}
+                                      />
+                                    </button>
                                   </div>
                                 </div>
                               );
@@ -5872,7 +5956,7 @@ const PhotoElementRandomizer = () => {
       </div>
 
       {/* Word Buttons Bar - Fixed at bottom of page (outside layout-container) */}
-      {currentCategoryOptions.length > 0 && (
+      {currentCategoryOptions.length > 0 && !statsModalOpen && !saveModalOpen && !addOptionModalOpen && !installedPackagesModalOpen && !createSetModalOpen && (
         <div 
           className="word-button-bar-container"
           style={{

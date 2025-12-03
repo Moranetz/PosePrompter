@@ -32,48 +32,48 @@ const EngagementStats = ({ userId, isOpen, onClose }) => {
     }
   };
 
-  if (!isOpen) return null;
-
   const userStats = stats?.stats || {};
   const achievements = stats?.achievements || { unlocked: [] };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.7)',
-          zIndex: 9998,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-        }}
-      >
+    <AnimatePresence mode="wait">
+      {isOpen && (
         <motion.div
-          initial={{ scale: 0.9, y: 20 }}
-          animate={{ scale: 1, y: 0 }}
-          exit={{ scale: 0.9, y: 20 }}
-          onClick={(e) => e.stopPropagation()}
+          key="engagement-stats-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
           style={{
-            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-            borderRadius: '20px',
-            padding: '32px',
-            maxWidth: '500px',
-            width: '100%',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
-            position: 'relative',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
           }}
         >
+          <motion.div
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+              borderRadius: '20px',
+              padding: '32px',
+              maxWidth: '500px',
+              width: '100%',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              position: 'relative',
+            }}
+          >
           {/* Close button */}
           <button
             onClick={onClose}
@@ -214,8 +214,9 @@ const EngagementStats = ({ userId, isOpen, onClose }) => {
               )}
             </div>
           )}
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </AnimatePresence>
   );
 };

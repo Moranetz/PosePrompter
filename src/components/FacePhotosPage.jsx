@@ -217,7 +217,8 @@ const FacePhotosPage = () => {
               letterSpacing: '-1px'
             }}
           >
-            Your Face Photos
+            Stop getting weird faces.<br />
+            <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Start getting you.</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -230,7 +231,7 @@ const FacePhotosPage = () => {
               lineHeight: '1.6'
             }}
           >
-            Upload photos of your face to create AI versions of yourself. These photos will be used to train and generate personalized AI images.
+            No more uncanny faces. No more regenerating because the AI didn't recognize you. Upload your face photos and get consistent, recognizable results every time. Save credits. Get the vibe right on the first try.
           </motion.p>
 
           {/* Upload Button */}
@@ -362,14 +363,14 @@ const FacePhotosPage = () => {
               color: 'rgba(255, 255, 255, 0.8)',
               marginBottom: '8px'
             }}>
-              No face photos yet
+              Ready to stop regenerating?
             </p>
             <p style={{
               fontSize: '14px',
               color: 'rgba(255, 255, 255, 0.5)',
               marginBottom: '24px'
             }}>
-              Upload your first face photo to get started
+              Upload your face photos and get consistent, recognizable results every time. No more weird faces. No more wasted credits.
             </p>
             <button
               onClick={() => fileInputRef.current?.click()}
