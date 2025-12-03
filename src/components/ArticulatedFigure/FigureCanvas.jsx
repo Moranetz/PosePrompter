@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
  * INTERACTIVE: Click on body parts to select that category
  * NOW INCLUDES: Head movement, facial expressions, and all pose correlations
  */
-const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayNames, onPartClick }) => {
+const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayNames, onPartClick, showAestheticFilter = false }) => {
   const [hoveredPart, setHoveredPart] = useState(null);
   const width = 200;
   const height = 400;
@@ -1336,10 +1336,12 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 const eyeScale = isRight && lookingAway ? 0.8 : 1;
                 const eyeOpacity = isRight && lookingAway ? 0.5 : 0.85;
                 
+                // Base eye element
+                let eyeElement;
                 switch (eyeState) {
                   case 'happy':
                     // Crescent eyes (happy/laughing)
-                    return (
+                    eyeElement = (
                       <motion.path
                         d={`M ${x - 4 * eyeScale} ${eyeY} Q ${x} ${eyeY - 5 * eyeScale} ${x + 4 * eyeScale} ${eyeY}`}
                         fill="none"
@@ -1351,9 +1353,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         transition={transition}
                       />
                     );
+                    break;
                   case 'closed':
                     // Closed eyes (horizontal line)
-                    return (
+                    eyeElement = (
                       <motion.line
                         x1={x - 4 * eyeScale}
                         y1={eyeY}
@@ -1365,9 +1368,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         opacity={eyeOpacity}
                       />
                     );
+                    break;
                   case 'halfClosed':
                     // Half-closed eyes (smaller, slightly drooped)
-                    return (
+                    eyeElement = (
                       <motion.ellipse
                         cx={x}
                         cy={eyeY + 1}
@@ -1377,10 +1381,11 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         opacity={eyeOpacity * 0.8}
                       />
                     );
+                    break;
                   case 'wide':
                     // Wide eyes (larger circles)
-                    return (
-          <motion.circle
+                    eyeElement = (
+                      <motion.circle
                         cx={x}
                         cy={eyeY}
                         r={4 * eyeScale}
@@ -1388,11 +1393,12 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         opacity={eyeOpacity}
                       />
                     );
+                    break;
                   case 'intense':
                     // Intense eyes (smaller, focused)
-                    return (
+                    eyeElement = (
                       <>
-            <motion.circle
+                        <motion.circle
                           cx={x}
                           cy={eyeY}
                           r={3 * eyeScale}
@@ -1407,9 +1413,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         />
                       </>
                     );
+                    break;
                   case 'downcast':
                     // Downcast eyes (looking down)
-                    return (
+                    eyeElement = (
                       <motion.ellipse
                         cx={x}
                         cy={eyeY + 2}
@@ -1419,9 +1426,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         opacity={eyeOpacity * 0.7}
                       />
                     );
+                    break;
                   case 'wistful':
                     // Wistful eyes (slightly larger, upward looking)
-                    return (
+                    eyeElement = (
                       <motion.ellipse
                         cx={x}
                         cy={eyeY - 1}
@@ -1431,8 +1439,9 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         opacity={eyeOpacity * 0.75}
                       />
                     );
+                    break;
                   default: // 'normal'
-                    return (
+                    eyeElement = (
                       <motion.circle
                         cx={x}
                         cy={eyeY}
@@ -1444,6 +1453,109 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                       />
                     );
                 }
+                
+                // Add sparkle effects when aesthetic filter is active
+                if (showAestheticFilter && eyeState !== 'closed') {
+                  return (
+                    <g>
+                      {eyeElement}
+                      {/* Sparkle effect at eye position */}
+                      <motion.g
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ 
+                          scale: [0, 1.2, 1, 1.2, 1],
+                          opacity: [0, 1, 0.8, 1, 0.8]
+                        }}
+                        transition={{ 
+                          delay: 0.5, 
+                          duration: 0.6,
+                          repeat: Infinity,
+                          repeatDelay: 2,
+                          repeatType: 'reverse'
+                        }}
+                      >
+                        {/* Main sparkle circle */}
+                        <circle
+                          cx={x}
+                          cy={eyeY}
+                          r="2"
+                          fill="rgba(255, 255, 255, 0.9)"
+                          opacity="0.9"
+                        >
+                          <animate
+                            attributeName="r"
+                            values="2;3;2"
+                            dur="1.5s"
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                        {/* Cross sparkle lines */}
+                        <line
+                          x1={x}
+                          y1={eyeY - 4}
+                          x2={x}
+                          y2={eyeY + 4}
+                          stroke="rgba(255, 255, 255, 0.9)"
+                          strokeWidth="0.5"
+                          opacity="0.9"
+                        />
+                        <line
+                          x1={x - 4}
+                          y1={eyeY}
+                          x2={x + 4}
+                          y2={eyeY}
+                          stroke="rgba(255, 255, 255, 0.9)"
+                          strokeWidth="0.5"
+                          opacity="0.9"
+                        />
+                        {/* Diagonal sparkle lines */}
+                        <line
+                          x1={x - 3}
+                          y1={eyeY - 3}
+                          x2={x + 3}
+                          y2={eyeY + 3}
+                          stroke="rgba(255, 255, 255, 0.7)"
+                          strokeWidth="0.4"
+                          opacity="0.7"
+                        />
+                        <line
+                          x1={x - 3}
+                          y1={eyeY + 3}
+                          x2={x + 3}
+                          y2={eyeY - 3}
+                          stroke="rgba(255, 255, 255, 0.7)"
+                          strokeWidth="0.4"
+                          opacity="0.7"
+                        />
+                        {/* Glow effect */}
+                        <circle
+                          cx={x}
+                          cy={eyeY}
+                          r="4"
+                          fill="none"
+                          stroke="rgba(255, 255, 255, 0.4)"
+                          strokeWidth="1"
+                          opacity="0.6"
+                        >
+                          <animate
+                            attributeName="r"
+                            values="4;6;4"
+                            dur="2s"
+                            repeatCount="indefinite"
+                          />
+                          <animate
+                            attributeName="opacity"
+                            values="0.6;0.3;0.6"
+                            dur="2s"
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                      </motion.g>
+                    </g>
+                  );
+                }
+                
+                return eyeElement;
               };
               
               // Render mouth based on mouthState

@@ -49,6 +49,22 @@ service firebase.storage {
                        request.auth.uid == userId;
     }
     
+    // Face photos: Users can only upload to their own folder
+    match /face-photos/{userId}/{fileName} {
+      // Allow read by anyone (for displaying face photos)
+      allow read: if true;
+      
+      // Allow write only if user is authenticated and uploading to their own folder
+      allow write: if isAuthenticated() && 
+                      request.auth.uid == userId &&
+                      isImage() &&
+                      isUnderSizeLimit();
+      
+      // Allow delete only if user owns the file
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == userId;
+    }
+    
     // Deny all other access
     match /{allPaths=**} {
       allow read, write: if false;

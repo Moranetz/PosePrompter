@@ -851,3 +851,51 @@ export const uninstallPackage = async (userId, packageId) => {
   }
 };
 
+/**
+ * Resets a user's PosePrompt Studio data while keeping the Firebase account.
+ *
+ * Used by the "Restart account" action to:
+ * - Clear favorites
+ * - Clear custom/hidden/deleted options
+ * - Clear saved prompt sets and installed/starred packages
+ *
+ * Other profile fields (like displayName/bio) are preserved.
+ *
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<void>}
+ */
+export const resetUserAccountData = async (userId) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
+  if (!db) {
+    throw new Error('Firestore database is not initialized. Please check your Firebase configuration.');
+  }
+
+  try {
+    const userRef = doc(db, USERS_COLLECTION, userId);
+
+    // Use setDoc with merge so we don't wipe unrelated profile fields
+    await setDoc(
+      userRef,
+      {
+        favorites: {},
+        customOptions: {},
+        hiddenOptions: {},
+        deletedOptions: {},
+        savedPromptSets: [],
+        installedPackages: [],
+        starredPackages: [],
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    logger.log('[resetUserAccountData] User data reset successfully:', userId);
+  } catch (error) {
+    logger.error('[resetUserAccountData] Error resetting user data:', error);
+    const friendlyMessage = getErrorMessage(error);
+    throw new Error(friendlyMessage);
+  }
+};

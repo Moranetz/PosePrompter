@@ -5,12 +5,12 @@ const Footer = () => {
     <footer
       style={{
         height: 'var(--footer-height)',
-        padding: '0 20px',
+        padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(10, 10, 15, 0.6)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.04)',
+        background: 'var(--bg-secondary)',
+        borderTop: '1px solid var(--border-subtle)',
         zIndex: 100,
         flexShrink: 0
       }}
@@ -18,8 +18,9 @@ const Footer = () => {
       <p
         style={{
           fontSize: '11px',
-          color: 'rgba(255, 255, 255, 0.25)',
-          margin: 0
+          color: '#52525b',
+          margin: 0,
+          letterSpacing: '0.02em'
         }}
       >
         Click. Create. Copy.

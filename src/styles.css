@@ -1,24 +1,63 @@
 :root {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Professional Typography */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #ffffff;
-  background-color: #0a0a0f;
-  --header-height: 56px;
-  --footer-height: 48px;
+  color: #f4f4f5;
+  background-color: #09090b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   
-  /* Dark theme colors */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-tertiary: #1a1a24;
-  --bg-elevated: #1e1e2a;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.1);
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.4);
-  --accent-primary: #22c55e;
-  --accent-secondary: #f59e0b;
+  /* Layout */
+  --header-height: 56px;
+  --footer-height: 44px;
+  
+  /* Professional Dark Theme - Refined & Sophisticated */
+  --bg-primary: #09090b;
+  --bg-secondary: #0f0f12;
+  --bg-tertiary: #141418;
+  --bg-elevated: #18181c;
+  --bg-surface: #1c1c21;
+  
+  /* Borders - More subtle */
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  
+  /* Text - Better hierarchy */
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-faint: #52525b;
+  
+  /* Professional Accent Colors - Refined teal instead of bright green */
+  --accent-primary: #14b8a6;
+  --accent-primary-hover: #0d9488;
+  --accent-secondary: #eab308;
+  
+  /* Professional Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  
+  /* Refined Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+  
+  /* Professional Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Border Radius - More refined */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
 * {
@@ -35,10 +74,12 @@ body {
 .app-shell {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
-  background: linear-gradient(180deg, #0a0a0f 0%, #0f1419 50%, #0a0a0f 100%);
-  overflow: hidden;
+  background: var(--bg-primary);
+  /* Allow vertical scrolling so content is never cut off */
+  overflow-x: hidden;
+  overflow-y: auto;
   margin: 0;
   padding: 0;
 }
@@ -47,8 +88,115 @@ body {
 .layout-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  /* Let the parent handle scrolling instead of hiding overflow here */
+  overflow: visible;
+}
+
+/* Main app area under header – three-column layout like pro AI tools */
+.app-main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-primary);
+}
+
+/* Left navigation rail */
+.app-sidebar {
+  width: 220px;
+  padding: 16px 16px 20px;
+  background: #050509;
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - var(--header-height));
+}
+
+.app-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 8px;
+}
+
+.app-sidebar-logo-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, rgba(244, 244, 245, 0.35), transparent 55%),
+              radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.7), transparent 60%);
+}
+
+.app-sidebar-logo-text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.app-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-sidebar-item {
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.app-sidebar-item:hover {
+  background: rgba(24, 24, 28, 0.9);
+  color: var(--text-primary);
+}
+
+.app-sidebar-item-active {
+  background: rgba(24, 24, 28, 1);
+  color: var(--text-primary);
+}
+
+.app-sidebar-item-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-primary);
+}
+
+.app-sidebar-item-label {
+  white-space: nowrap;
+}
+
+/* Sidebar scrollbar styling */
+.app-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* NEW: Full-width stacked layout */
@@ -58,18 +206,19 @@ body {
   flex: 1;
   overflow: hidden;
   min-height: 0;
+  padding: 16px 20px 100px 20px; /* Extra bottom padding for fixed WordButtonBar */
 }
 
-/* Controls Area - Top section with categories and options - COMPACT */
+/* Controls Area - Top section with categories and options */
 .controls-area {
   flex-shrink: 0;
-  padding: 10px 20px;
+  padding: var(--space-2) var(--space-4);
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 30vh;
+  gap: var(--space-3);
+  max-height: 32vh;
   overflow-y: auto;
 }
 
@@ -83,26 +232,32 @@ body {
 
 /* Preview Area - Takes most of the space - EXPANDED - This is the HERO */
 .preview-area-new {
-  flex: 1;
+  flex: 0 0 auto; /* Do not grow to fill all vertical space */
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 32px;
-  overflow: hidden;
+  padding: 12px;
+  /* Let the hero content breathe and avoid clipping shadows/frames */
+  overflow: visible;
   min-width: 0;
   min-height: 0;
   position: relative;
+  max-width: 840px;
+  max-height: 340px;
+  margin: 8px auto 12px;
+  border-radius: var(--radius-lg);
+  animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
-/* Actions Sidebar - Right side actions - COMPACT */
+/* Actions Sidebar - Right side actions */
 .actions-sidebar {
-  width: 160px;
+  width: 140px;
   flex-shrink: 0;
-  padding: 16px 10px;
+  padding: var(--space-3) var(--space-2);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: var(--bg-tertiary);
+  gap: var(--space-2);
+  background: var(--bg-secondary);
   border-left: 1px solid var(--border-subtle);
   overflow-y: auto;
 }
@@ -183,7 +338,7 @@ body {
 }
 
 /* Responsive Design - New stacked layout */
-@media (max-width: 900px) {
+@media (max-width: 720px) {
   .actions-sidebar {
     width: 100%;
     flex-direction: row;
@@ -199,8 +354,8 @@ body {
   }
 }
 
-/* Responsive Design - Tablet (768px - 1024px) */
-@media (max-width: 1024px) {
+/* Responsive Design - Tablet (640px - 900px) */
+@media (max-width: 900px) {
   .controls-area {
     padding: 12px 16px;
     max-height: 50vh;
@@ -227,8 +382,8 @@ body {
   }
 }
 
-/* Responsive Design - Mobile (up to 768px) */
-@media (max-width: 768px) {
+/* Responsive Design - Mobile (up to 640px) */
+@media (max-width: 640px) {
   :root {
     --header-height: 52px;
     --footer-height: 44px;
@@ -281,7 +436,7 @@ body {
 }
 
 /* Responsive Modals */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .modal-overlay {
     padding: 0 !important;
     align-items: flex-end !important;
@@ -307,7 +462,7 @@ body {
 }
 
 /* Responsive Forms */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   input,
   textarea,
   select {
@@ -333,14 +488,14 @@ body {
   gap: 24px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .package-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .package-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -348,7 +503,7 @@ body {
 }
 
 /* Responsive Header */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .header-nav {
     display: none !important;
   }
@@ -362,7 +517,7 @@ body {
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 641px) {
   .hamburger-menu {
     display: none !important;
   }
@@ -400,7 +555,7 @@ body {
 }
 
 /* Touch-friendly tap targets */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   a, button, [role="button"] {
     min-height: 44px;
     min-width: 44px;
@@ -441,4 +596,221 @@ body {
   0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
   70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
   100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* ===== LARGE SCREEN OPTIMIZATIONS (1200px+) ===== */
+/* Optimizes the Chrome desktop experience for wider monitors */
+@media (min-width: 1200px) {
+  .controls-area {
+    padding: 12px 24px;
+    max-height: 24vh;
+  }
+  
+  .preview-area-new {
+    padding: 28px 36px;
+  }
+  
+  .actions-sidebar {
+    width: 160px;
+    padding: 16px 12px;
+    gap: 8px;
+  }
+}
+
+/* Extra Large screens (1600px+) - maximize impact */
+@media (min-width: 1600px) {
+  .controls-area {
+    padding: 14px 32px;
+    max-height: 22vh;
+  }
+  
+  .preview-area-new {
+    padding: 32px 44px;
+  }
+  
+  .actions-sidebar {
+    width: 180px;
+    padding: 18px 14px;
+    gap: 10px;
+  }
+  
+  .actions-sidebar button {
+    padding: 16px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Ultra-wide screens (1920px+) */
+@media (min-width: 1920px) {
+  .preview-area-new {
+    padding: 40px 56px;
+  }
+  
+  .actions-sidebar {
+    width: 200px;
+  }
+}
+
+/* Word button bar enhancements for larger screens */
+@media (min-width: 1200px) {
+  .word-button-bar {
+    padding: 16px 24px !important;
+    border-radius: 14px !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  .word-button-bar {
+    padding: 18px 32px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* Word Button Bar Container - Fixed at bottom */
+.word-button-bar-container {
+  position: fixed !important;
+  bottom: 44px !important;
+  left: 220px !important;
+  right: 140px !important;
+  z-index: 9999 !important;
+  padding: 16px 24px !important;
+  background: #0f0f12 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3) !important;
+  width: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 1200px) {
+  .word-button-bar-container {
+    left: 0;
+    right: 0;
+    bottom: 44px;
+  }
+}
+
+@media (max-width: 768px) {
+  .word-button-bar-container {
+    bottom: 0;
+    padding: 12px 16px;
+  }
+}
+
+/* ===== CATEGORY CHIPS - Desktop: wrap instead of scroll ===== */
+/* Mobile/Tablet: horizontal scroll */
+.category-chips-container {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.category-chip-wrapper {
+  flex-shrink: 0;
+}
+
+/* Desktop (1024px+): wrap to fit all visible */
+@media (min-width: 1024px) {
+  .category-chips-container {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+    gap: 8px !important;
+  }
+  
+  .category-chip-wrapper {
+    flex-shrink: 1;
+  }
+}
+
+/* Large desktop: slightly more compact chips to ensure they fit */
+@media (min-width: 1200px) {
+  .category-chips-container {
+    gap: 10px !important;
+  }
+  
+  .category-chip-wrapper button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    min-height: 36px !important;
+  }
+}
+
+/* Extra large desktop: restore slightly larger chips */
+@media (min-width: 1400px) {
+  .category-chip-wrapper button {
+    padding: 9px 14px !important;
+    font-size: 13px !important;
+    min-height: 38px !important;
+  }
+}
+
+/* ===== HYPNOTIC VISUAL EFFECTS ===== */
+/* Breathing radial gradient animation */
+@keyframes breathingGradient {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.25;
+  }
+}
+
+.breathing-gradient {
+  animation: breathingGradient 4s ease-in-out infinite;
+}
+
+/* Rotating spiral animation */
+@keyframes rotateSpiral {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.rotating-spiral {
+  animation: rotateSpiral 20s linear infinite;
+}
+
+/* Wave pattern animation */
+@keyframes waveMotion {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.wave-pattern {
+  animation: waveMotion 3s ease-in-out infinite;
+}
+
+/* Pulsing border glow animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0px rgba(20, 184, 166, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3), 0 0 40px rgba(139, 92, 246, 0.2);
+  }
+}
+
+.pulsing-border-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* Floating particles base styles */
+.floating-particles {
+  overflow: hidden;
+}
+
+/* Ensure hypnotic background doesn't interfere with interactions */
+.hypnotic-background {
+  pointer-events: none;
+  user-select: none;
 }

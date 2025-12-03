@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MousePointer, Zap, Shuffle, ArrowRight, X, RefreshCw, Check, Sparkles } from 'lucide-react';
+import { MousePointer, Zap, Shuffle, ArrowRight, X, RefreshCw, Check, Sparkles, Gem } from 'lucide-react';
 import AuthModal from './AuthModal';
 
 // Pain points that resonate with the target audience
@@ -86,30 +86,66 @@ const LandingPage = ({ onAuthSuccess }) => {
           PosePrompt Studio
         </span>
 
-        <button
-          onClick={() => setShowAuthModal(true)}
-          style={{
-            padding: '8px 20px',
-            background: 'transparent',
-            border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '6px',
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: '14px',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.borderColor = 'rgba(255,255,255,0.4)';
-            e.target.style.color = '#ffffff';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.borderColor = 'rgba(255,255,255,0.2)';
-            e.target.style.color = 'rgba(255,255,255,0.8)';
-          }}
-        >
-          Sign In
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            onClick={() => {
+              window.location.hash = '#pricing';
+            }}
+            style={{
+              padding: '10px 20px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#ffffff',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+            }}
+          >
+            <Gem size={16} style={{ color: '#fbbf24' }} />
+            Get gems
+          </button>
+
+          <button
+            onClick={() => setShowAuthModal(true)}
+            style={{
+              padding: '8px 20px',
+              background: 'transparent',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: '6px',
+              color: 'rgba(255,255,255,0.8)',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.borderColor = 'rgba(255,255,255,0.4)';
+              e.target.style.color = '#ffffff';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.borderColor = 'rgba(255,255,255,0.2)';
+              e.target.style.color = 'rgba(255,255,255,0.8)';
+            }}
+          >
+            Sign In
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}

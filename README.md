@@ -142,6 +142,10 @@ See [FIREBASE_SETUP_INSTRUCTIONS.md](./FIREBASE_SETUP_INSTRUCTIONS.md) for detai
 
 ## Running Locally
 
+> **IMPORTANT: Do NOT open `dist/index.html` directly in Chrome!**
+> 
+> Opening the HTML file directly (via `file://` protocol) will fail with errors like "Failed to load dialogue" or module loading errors. ES modules and Firebase require an HTTP server. Always use one of the commands below.
+
 ### Development Mode
 
 ```bash
@@ -158,13 +162,21 @@ npm run build
 
 This creates an optimized production build in the `dist` directory.
 
-### Preview Production Build
+### Preview Production Build (Recommended for Testing)
 
 ```bash
 npm run preview
 ```
 
-This serves the production build locally for testing.
+This serves the production build locally at `http://localhost:4173`.
+
+### Alternative: Use a Static Server
+
+If you need to serve the `dist` folder another way:
+
+```bash
+npx serve dist
+```
 
 ## Deployment
 
@@ -334,6 +346,11 @@ Be aware of Firebase free tier limits:
 ## Troubleshooting
 
 ### Common Issues
+
+**"Failed to load dialogue" or blank page when opening dist/index.html**
+- **Do NOT open `dist/index.html` directly in the browser** (via double-click or file://)
+- ES modules and Firebase do not work with the `file://` protocol due to CORS restrictions
+- **Solution:** Always use `npm run dev`, `npm run preview`, or `npx serve dist` to run a local server
 
 **"Firebase: Error (auth/configuration-not-found)"**
 - Check that `.env.local` exists and has all required variables

@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Use relative paths so the app works when opened directly in browser (file://)
+  base: './',
+  
   plugins: [
     react({
       // Fast Refresh configuration
@@ -23,9 +26,28 @@ export default defineConfig({
   server: {
     host: '0.0.0.0', // Listen on all network interfaces
     port: 5173,
-    // Improve HMR stability
+    strictPort: false, // Try next available port if 5173 is in use
+    open: false, // Don't auto-open browser (user can open manually)
+    // Enhanced HMR configuration for reliable hot updates
     hmr: {
-      overlay: true,
+      protocol: 'ws', // WebSocket protocol for HMR
+      host: 'localhost', // HMR host (use localhost for better compatibility)
+      port: 5173, // HMR port (matches server port)
+      overlay: true, // Show error overlay in browser
+    },
+    // File watching configuration for better reliability on Windows
+    watch: {
+      // Use polling as fallback for better file change detection on Windows
+      usePolling: false, // Try native events first (faster)
+      // Polling interval in milliseconds (only used if usePolling is true)
+      interval: 1000,
+      // Ignore patterns to avoid watching unnecessary files
+      ignored: [
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/dist/**',
+        '**/.firebase/**',
+      ],
     },
   },
   

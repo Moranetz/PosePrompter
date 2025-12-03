@@ -31,30 +31,29 @@ const WordButton = ({
   };
 
   const baseStyle = {
-    minHeight: '48px',
-    padding: '14px 26px',
-    borderRadius: '12px',
-    fontSize: '15px',
-    fontWeight: '500',
+    minHeight: '40px',
+    padding: '10px 18px',
+    borderRadius: '6px',
+    fontSize: '13px',
+    fontWeight: isSelected ? '500' : '400',
+    letterSpacing: '-0.01em',
     border: isSelected 
-      ? '2px solid rgba(255, 255, 255, 0.3)' 
-      : '1px solid rgba(255, 255, 255, 0.1)',
+      ? '1px solid rgba(20, 184, 166, 0.4)' 
+      : '1px solid rgba(255, 255, 255, 0.06)',
     background: isSelected
-      ? 'rgba(255, 255, 255, 0.12)'
-      : 'rgba(255, 255, 255, 0.04)',
-    color: isSelected ? '#ffffff' : 'rgba(255, 255, 255, 0.85)',
+      ? 'rgba(20, 184, 166, 0.15)'
+      : 'rgba(255, 255, 255, 0.02)',
+    color: isSelected ? '#f4f4f5' : '#a1a1aa',
     cursor: isDisabled ? 'not-allowed' : 'pointer',
-    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-    boxShadow: isSelected
-      ? '0 4px 16px rgba(0, 0, 0, 0.3)'
-      : '0 2px 8px rgba(0, 0, 0, 0.2)',
+    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: 'none',
     opacity: isDisabled ? 0.3 : 1,
     filter: isDisabled ? 'grayscale(50%)' : 'none',
     position: 'relative',
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '8px',
     whiteSpace: 'nowrap',
     transform: 'translateY(0) scale(1)'
   };
@@ -70,20 +69,9 @@ const WordButton = ({
       onClick={handleClick}
       disabled={isDisabled}
       style={baseStyle}
-      whileHover={!isDisabled ? { y: -2, scale: 1.02 } : {}}
-      whileTap={!isDisabled ? { scale: 0.98 } : {}}
-      animate={{
-        boxShadow: isSelected
-          ? '0 4px 12px rgba(0, 0, 0, 0.3)'
-          : '0 2px 8px rgba(0,0,0,0.2)',
-      }}
-      transition={{
-        boxShadow: {
-          duration: 2,
-          repeat: isSelected ? Infinity : 0,
-          repeatType: 'reverse',
-        },
-      }}
+      whileHover={!isDisabled ? { y: -1, scale: 1.01 } : {}}
+      whileTap={!isDisabled ? { scale: 0.99 } : {}}
+      transition={{ duration: 0.15 }}
       aria-label={text}
     >
       {/* Ripple Effect */}
@@ -123,15 +111,15 @@ const WordButton = ({
       {packageName && (
         <span
           style={{
-            fontSize: '10px',
-            padding: '2px 6px',
-            background: 'rgba(139, 92, 246, 0.2)',
-            border: '1px solid rgba(139, 92, 246, 0.4)',
-            borderRadius: '4px',
-            color: '#a78bfa',
-            fontWeight: '600',
+            fontSize: '9px',
+            padding: '2px 5px',
+            background: 'rgba(99, 102, 241, 0.15)',
+            border: '1px solid rgba(99, 102, 241, 0.25)',
+            borderRadius: '3px',
+            color: '#818cf8',
+            fontWeight: '500',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px',
+            letterSpacing: '0.04em',
             flexShrink: 0,
           }}
           title={`From package: ${packageName}`}
@@ -145,10 +133,15 @@ const WordButton = ({
         <motion.button
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             onToggleFavorite && onToggleFavorite();
           }}
-          whileHover={{ scale: 1.2 }}
-          whileTap={{ scale: 0.9 }}
+          onMouseDown={(e) => {
+            e.preventDefault(); // Prevent focus
+          }}
+          tabIndex={-1} // Prevent keyboard focus
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
           style={{
             background: 'transparent',
             border: 'none',
@@ -157,15 +150,16 @@ const WordButton = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isFavorite ? '#f43f5e' : 'rgba(255, 255, 255, 0.4)',
-            transition: 'color 0.2s',
+            color: isFavorite ? '#f43f5e' : '#52525b',
+            transition: 'color 200ms',
             flexShrink: 0,
-            marginLeft: 'auto'
+            marginLeft: 'auto',
+            outline: 'none'
           }}
           title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
           <Heart 
-            size={16} 
+            size={14} 
             fill={isFavorite ? '#f43f5e' : 'transparent'} 
             strokeWidth={2}
           />

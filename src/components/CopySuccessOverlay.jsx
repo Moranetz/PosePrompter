@@ -1,14 +1,15 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Clipboard } from 'lucide-react';
+import { Check, Clipboard, Sparkles, TrendingUp } from 'lucide-react';
 
 /**
  * CopySuccessOverlay - Celebratory feedback when prompt is copied
  * 
- * This is the KEY moment of delight:
+ * Enhanced with progress tracking and variable rewards:
  * - They've made their choices (felt in control)
  * - They clicked copy (took action)
  * - Now we celebrate their success (validation)
+ * - Show progress hints to encourage continued exploration
  * 
  * The message reinforces: "You did it. Now go create."
  */
@@ -18,9 +19,13 @@ const successMessages = [
   "Your vision, captured. Now bring it to life.",
   "Prompt locked in. The hard part's done.",
   "Copied. You know exactly what you want.",
+  "Perfect. Time to bring this to life.",
+  "All set. Your creativity awaits.",
+  "Locked and loaded. Let's see what you create.",
+  "Copied. This is going to be amazing.",
 ];
 
-const CopySuccessOverlay = ({ show, categoryCount = 0 }) => {
+const CopySuccessOverlay = ({ show, categoryCount = 0, progressMessage = null, streak = 0 }) => {
   const [message] = React.useState(() => 
     successMessages[Math.floor(Math.random() * successMessages.length)]
   );
@@ -106,8 +111,26 @@ const CopySuccessOverlay = ({ show, categoryCount = 0 }) => {
                 margin: 0
               }}
             >
-              {message}
+              {progressMessage?.message || message}
             </motion.p>
+            {streak > 0 && streak >= 3 && (
+              <motion.div
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  marginTop: '8px',
+                  fontSize: '11px',
+                  color: 'rgba(251, 191, 36, 0.9)',
+                }}
+              >
+                <TrendingUp size={12} />
+                <span>{streak} day streak 🔥</span>
+              </motion.div>
+            )}
           </div>
 
           {/* Particle effects */}

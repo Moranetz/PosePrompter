@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { Copy, RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus } from 'lucide-react';
+import { Copy, RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus, TrendingUp, Star } from 'lucide-react';
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from './firebase-config';
 import { useAuth } from './contexts/UserContext';
@@ -15,6 +15,26 @@ import CopySuccessOverlay from './components/CopySuccessOverlay';
 import PolaroidFrame from './components/PolaroidFrame';
 import NatureFrame from './components/NatureFrame';
 import ClosetFrame from './components/ClosetFrame';
+import AchievementNotification from './components/AchievementNotification';
+import EngagementStats from './components/EngagementStats';
+import { 
+  trackPromptGenerated, 
+  trackPromptCopied, 
+  trackCategoryExplored, 
+  updateStreak,
+  getProgressMessage,
+  getUserEngagementStats
+} from './utils/engagementService';
+import { triggerFeedback, FEEDBACK_TYPES } from './utils/visualFeedbackService';
+import { 
+  trackCategoryUsage, 
+  getUserPreferences, 
+  getFavoriteCategories,
+  getDefaultExpandedGroups,
+  trackSessionDuration
+} from './utils/personalizationService';
+import FeedbackProvider from './components/VisualFeedback/FeedbackProvider';
+import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 
 const PhotoElementRandomizer = () => {
   // Category display names with proper spacing
@@ -2590,8 +2610,10 @@ const PhotoElementRandomizer = () => {
   // Save/Load state
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [savedSetsSidebarOpen, setSavedSetsSidebarOpen] = useState(false);
+  const [favoritesSidebarOpen, setFavoritesSidebarOpen] = useState(false);
   const [installedPackagesModalOpen, setInstalledPackagesModalOpen] = useState(false);
   const [createSetModalOpen, setCreateSetModalOpen] = useState(false);
+  const [selectedFavorites, setSelectedFavorites] = useState(new Set()); // Set of favorite IDs (category:optionId)
   const [savedSets, setSavedSets] = useState([]);
   const [loadingSavedSets, setLoadingSavedSets] = useState(false);
   const [saveFormData, setSaveFormData] = useState({
@@ -2611,6 +2633,13 @@ const PhotoElementRandomizer = () => {
     // Check if user has completed onboarding
     return localStorage.getItem('poseprompt_onboarding_complete') !== 'true';
   });
+
+  // Engagement tracking state
+  const [currentAchievement, setCurrentAchievement] = useState(null);
+  const [progressMessage, setProgressMessage] = useState(null);
+  const [userStreak, setUserStreak] = useState(0);
+  const [engagementStats, setEngagementStats] = useState(null);
+  const [statsModalOpen, setStatsModalOpen] = useState(false);
 
   // CRITICAL: Define mergedCategories BEFORE any useEffect that depends on it
   // This prevents TDZ (Temporal Dead Zone) violations during bundler minification
@@ -2694,6 +2723,11 @@ const PhotoElementRandomizer = () => {
     'Props': '#84cc16',
   }), []);
 
+  // Personalization state
+  const [userPreferences, setUserPreferences] = useState(null);
+  const [favoriteCategories, setFavoriteCategories] = useState([]);
+  const sessionStartTime = useRef(Date.now());
+
   // Load user data from Firestore
   useEffect(() => {
     const loadUserData = async () => {
@@ -2718,6 +2752,25 @@ const PhotoElementRandomizer = () => {
           setUserCustomOptions(data.customOptions || {});
           setUserHiddenOptions(data.hiddenOptions || {});
           setUserFavorites(data.favorites || {});
+          
+          // Load engagement stats
+          if (data.stats) {
+            setUserStreak(data.stats.currentStreak || 0);
+          }
+
+          // Load personalization preferences
+          const prefs = await getUserPreferences(user.uid);
+          if (prefs) {
+            setUserPreferences(prefs);
+            
+            // Load favorite categories
+            const favorites = await getFavoriteCategories(user.uid, 5);
+            setFavoriteCategories(favorites);
+            
+            // Set default expanded groups based on preferences
+            const defaultGroups = await getDefaultExpandedGroups(user.uid, [2]);
+            setExpandedGroup(defaultGroups[0] || 2);
+          }
         } else {
           // Initialize user document if it doesn't exist
           await setDoc(userDocRef, {
@@ -2741,6 +2794,25 @@ const PhotoElementRandomizer = () => {
     };
 
     loadUserData();
+  }, [user]);
+
+  // Track session duration on unmount
+  useEffect(() => {
+    return () => {
+      if (user?.uid && sessionStartTime.current) {
+        const duration = (Date.now() - sessionStartTime.current) / 1000; // seconds
+        trackSessionDuration(user.uid, duration);
+      }
+    };
+  }, [user]);
+
+  // Update streak on mount and daily
+  useEffect(() => {
+    if (user?.uid) {
+      updateStreak(user.uid).then(streak => {
+        setUserStreak(streak || 0);
+      });
+    }
   }, [user]);
 
   // Adjust selections when mergedCategories change to ensure valid indices
@@ -2850,6 +2922,42 @@ const PhotoElementRandomizer = () => {
     });
   }, [mergedCategories]);
 
+  // Keyboard navigation handlers
+  const navigateNextCategory = useCallback(() => {
+    const allCategories = Object.keys(categoryDisplayNames);
+    const currentIndex = allCategories.indexOf(activeCategory);
+    const nextIndex = (currentIndex + 1) % allCategories.length;
+    handleCategorySelect(allCategories[nextIndex]);
+  }, [activeCategory, categoryDisplayNames]);
+
+  const navigatePrevCategory = useCallback(() => {
+    const allCategories = Object.keys(categoryDisplayNames);
+    const currentIndex = allCategories.indexOf(activeCategory);
+    const prevIndex = (currentIndex - 1 + allCategories.length) % allCategories.length;
+    handleCategorySelect(allCategories[prevIndex]);
+  }, [activeCategory, categoryDisplayNames]);
+
+  const navigateNextOption = useCallback(() => {
+    navigate(activeCategory, 'next');
+  }, [activeCategory, navigate]);
+
+  const navigatePrevOption = useCallback(() => {
+    navigate(activeCategory, 'prev');
+  }, [activeCategory, navigate]);
+
+  const handleRandomizeCurrent = useCallback(() => {
+    if (!lockedCategories[activeCategory] && mergedCategories[activeCategory]?.length > 0) {
+      setSelections(prev => ({
+        ...prev,
+        [activeCategory]: Math.floor(Math.random() * mergedCategories[activeCategory].length)
+      }));
+      triggerFeedback(FEEDBACK_TYPES.RANDOMIZE, {
+        intensity: 'medium',
+        message: 'Randomized current category',
+      });
+    }
+  }, [activeCategory, lockedCategories, mergedCategories]);
+
   // Select option directly (for word buttons)
   // The active category ALWAYS displays in UNSORTED order (getCategoryOptions returns mergedCategories)
   // So the index from clicking is ALREADY the original index - no conversion needed!
@@ -2881,19 +2989,54 @@ const PhotoElementRandomizer = () => {
       ...prev,
       [category]: safeIndex
     }));
-  }, [activeCategory, mergedCategories, sortedCategoryOptions, showFavoritesOnly, userFavorites]);
+    
+    // Track category exploration for engagement
+    if (user?.uid && category) {
+      const categoryDisplayName = categoryDisplayNames[category] || category;
+      trackCategoryExplored(user.uid, categoryDisplayName);
+      trackCategoryUsage(user.uid, category);
+    }
+    
+    // Visual feedback for selection
+    triggerFeedback(FEEDBACK_TYPES.SELECTION, {
+      category: categoryColors[category],
+      intensity: 'medium',
+    });
+  }, [activeCategory, mergedCategories, sortedCategoryOptions, showFavoritesOnly, userFavorites, user, categoryDisplayNames, categoryColors]);
 
   // Handle category selection
   const handleCategorySelect = useCallback((category) => {
     setActiveCategory(category);
-  }, []);
+    
+    // Track category usage for personalization
+    if (user?.uid && category) {
+      trackCategoryUsage(user.uid, category);
+    }
+    
+    // Visual feedback for category switch
+    triggerFeedback(FEEDBACK_TYPES.CATEGORY_SWITCH, {
+      category: categoryColors[category],
+      intensity: 'medium',
+    });
+  }, [user, categoryColors]);
 
   const toggleLock = useCallback((category) => {
-    setLockedCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
-  }, []);
+    setLockedCategories(prev => {
+      const isLocked = !prev[category];
+      
+      // Visual feedback
+      triggerFeedback(isLocked ? FEEDBACK_TYPES.LOCK : FEEDBACK_TYPES.UNLOCK, {
+        category: categoryColors[category],
+        intensity: 'medium',
+        message: isLocked ? 'Category locked' : 'Category unlocked',
+      });
+      
+      return {
+        ...prev,
+        [category]: isLocked
+      };
+    });
+  }, [categoryColors]);
 
   const toggleInclude = useCallback((category) => {
     setIncludedCategories(prev => ({
@@ -2912,10 +3055,33 @@ const PhotoElementRandomizer = () => {
       });
       return newSelections;
     });
+    
+    // Visual feedback
+    triggerFeedback(FEEDBACK_TYPES.RANDOMIZE, {
+      intensity: 'strong',
+      message: 'Randomized all categories',
+    });
+    
     // Trigger figure spin animation
     setIsGenerating(true);
     setTimeout(() => setIsGenerating(false), 800);
-  }, [mergedCategories, lockedCategories]);
+    
+    // Track prompt generation for engagement
+    if (user?.uid) {
+      const categoryCount = Object.keys(mergedCategories).filter(cat => 
+        includedCategories[cat] !== false
+      ).length;
+      trackPromptGenerated(user.uid, categoryCount).then(async (newAchievements) => {
+        if (newAchievements && newAchievements.length > 0) {
+          // Show first achievement
+          setCurrentAchievement(newAchievements[0]);
+        }
+        // Update streak
+        const streak = await updateStreak(user.uid);
+        setUserStreak(streak || 0);
+      });
+    }
+  }, [mergedCategories, lockedCategories, user, includedCategories]);
 
   // Improved clipboard function with error handling and fallback
   const copyToClipboard = useCallback(async () => {
@@ -2944,11 +3110,41 @@ const PhotoElementRandomizer = () => {
         }
         document.body.removeChild(textArea);
       }
+      
+      // Visual feedback
+      triggerFeedback(FEEDBACK_TYPES.COPY, {
+        intensity: 'strong',
+        message: 'Prompt copied!',
+      });
+      
+      // Track engagement - prompt copied
+      if (user?.uid) {
+        const categoryCount = Object.keys(mergedCategories).filter(cat => 
+          includedCategories[cat] !== false
+        ).length;
+        
+        trackPromptCopied(user.uid, categoryCount).then(async (newAchievements) => {
+          if (newAchievements && newAchievements.length > 0) {
+            setCurrentAchievement(newAchievements[0]);
+          }
+          
+          // Get progress message
+          const stats = await getUserEngagementStats(user.uid);
+          if (stats?.stats) {
+            const progressMsg = getProgressMessage(stats.stats);
+            if (progressMsg) {
+              setProgressMessage(progressMsg);
+              setTimeout(() => setProgressMessage(null), 4000);
+            }
+            setUserStreak(stats.stats.currentStreak || 0);
+          }
+        });
+      }
     } catch (err) {
       console.error('Clipboard copy failed:', err);
       alert('Failed to copy to clipboard. Please select and copy manually.');
     }
-  }, [generatedPrompt]);
+  }, [generatedPrompt, user, mergedCategories, includedCategories]);
 
   // Save user data to Firestore
   const saveUserData = useCallback(async (updates) => {
@@ -3349,6 +3545,85 @@ const PhotoElementRandomizer = () => {
     }
   }, [user, loadSavedSets]);
 
+  // Get all favorite prompts grouped by category
+  const getAllFavoritePrompts = useCallback(() => {
+    const favoritesByCategory = {};
+    
+    Object.keys(userFavorites).forEach(category => {
+      const favoriteIds = userFavorites[category] || [];
+      if (favoriteIds.length === 0) return;
+      
+      const categoryOptions = mergedCategories[category] || [];
+      const favoriteOptions = [];
+      
+      categoryOptions.forEach((option, index) => {
+        const optionId = (typeof option === 'object' && option?.id) ? option.id : index;
+        if (favoriteIds.includes(optionId)) {
+          favoriteOptions.push({
+            id: optionId,
+            index: index,
+            option: option,
+            category: category
+          });
+        }
+      });
+      
+      if (favoriteOptions.length > 0) {
+        favoritesByCategory[category] = favoriteOptions;
+      }
+    });
+    
+    return favoritesByCategory;
+  }, [userFavorites, mergedCategories]);
+
+  // Create a set from selected favorites
+  const createSetFromFavorites = useCallback(() => {
+    if (selectedFavorites.size === 0) {
+      alert('Please select at least one favorite prompt.');
+      return;
+    }
+    
+    // Build selections object from selected favorites
+    const newSelections = { ...selections };
+    const newIncludedCategories = { ...includedCategories };
+    
+    // Reset all categories first
+    Object.keys(categoryDisplayNames).forEach(cat => {
+      newIncludedCategories[cat] = false;
+    });
+    
+    // Set selections for selected favorites
+    selectedFavorites.forEach(favoriteKey => {
+      const [category, optionIdStr] = favoriteKey.split(':');
+      
+      // Find the index of this option in the category
+      const categoryOptions = mergedCategories[category] || [];
+      let foundIndex = -1;
+      
+      categoryOptions.forEach((option, index) => {
+        const id = (typeof option === 'object' && option?.id) ? option.id : index;
+        // Compare as strings to handle both numeric and string IDs
+        const idStr = String(id);
+        if (idStr === optionIdStr) {
+          foundIndex = index;
+        }
+      });
+      
+      if (foundIndex >= 0) {
+        newSelections[category] = foundIndex;
+        newIncludedCategories[category] = true;
+      }
+    });
+    
+    // Apply the new selections
+    setSelections(newSelections);
+    setIncludedCategories(newIncludedCategories);
+    setFavoritesSidebarOpen(false);
+    setSelectedFavorites(new Set());
+    
+    alert(`Set created from ${selectedFavorites.size} favorite prompt(s)!`);
+  }, [selectedFavorites, selections, includedCategories, mergedCategories, categoryDisplayNames]);
+
   // Load shared set from URL parameter
   useEffect(() => {
     const loadSharedSet = async () => {
@@ -3607,117 +3882,176 @@ const PhotoElementRandomizer = () => {
   const isFaceAndHead = expandedGroup === 4;
 
   return (
-    <div className="layout-container">
-      <Header />
+    <FeedbackProvider>
+      <ShortcutHandler
+        onNextCategory={navigateNextCategory}
+        onPrevCategory={navigatePrevCategory}
+        onNextOption={navigateNextOption}
+        onPrevOption={navigatePrevOption}
+        onCopy={copyToClipboard}
+        onRandomize={handleRandomizeCurrent}
+        onRandomizeAll={randomizeAll}
+        onSave={() => setSaveModalOpen(true)}
+        onToggleLock={() => toggleLock(activeCategory)}
+        onToggleInclude={() => toggleInclude(activeCategory)}
+        onToggleFavorite={() => {
+          // Toggle favorite for current option
+          const currentIndex = selections[activeCategory] || 0;
+          const currentOption = mergedCategories[activeCategory]?.[currentIndex];
+          if (currentOption) {
+            const optionId = currentOption.id || currentIndex;
+            toggleFavorite(activeCategory, optionId);
+            triggerFeedback(FEEDBACK_TYPES.FAVORITE, {
+              category: categoryColors[activeCategory],
+              intensity: 'medium',
+            });
+          }
+        }}
+        onEscape={() => {
+          setManageMenuOpen(null);
+          setAddOptionModalOpen(null);
+          setShowHiddenOptionsModal(null);
+        }}
+        enabled={!loadingUserData}
+      />
+      <div className="layout-container">
+        <Header />
 
-      <div className="workspace-stacked">
-        {/* Controls Area - Categories and Word Buttons */}
-        <div className="controls-area">
-          {/* Category Tabs */}
-          <CategoryTabs
-            categoryGroups={categoryGroups}
-            categoryDisplayNames={categoryDisplayNames}
-            categoryColors={categoryColors}
-            categories={mergedCategories}
-            selections={selections}
-            lockedCategories={lockedCategories}
-            includedCategories={includedCategories}
-            activeCategory={activeCategory}
-            onCategorySelect={handleCategorySelect}
-            onToggleLock={toggleLock}
-            onToggleInclude={toggleInclude}
-            isLoggedIn={!!user}
-            onAddCustomOption={handleAddCustomOption}
-            onExpandedGroupChange={setExpandedGroup}
-          />
-
-          {/* Word Buttons Bar */}
-          {currentCategoryOptions.length > 0 && (
-            <WordButtonBar
-              category={activeCategory}
-              options={currentCategoryOptions}
-              currentIndex={currentCategoryIndex}
-              categoryColor={categoryColors[activeCategory] || '#b39ddb'}
-              isIncluded={includedCategories[activeCategory] !== false}
-              onSelect={(index) => selectOption(activeCategory, index)}
-              categoryDisplayName={categoryDisplayNames[activeCategory]}
-              favorites={userFavorites}
-              onToggleFavorite={toggleFavorite}
-              isLoggedIn={!!user}
-            />
-          )}
-        </div>
-
-        {/* Preview and Actions Area */}
-        <div className="preview-actions-area">
-          {/* Preview Area */}
-          <div className="preview-area-new" style={{ position: 'relative' }}>
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transform: isFaceAndHead ? 'scale(2.5) translateY(10%)' : 'scale(1)',
-                transformOrigin: 'center 30%',
-                transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
-            >
-              <FigureCanvas
-                selections={selections}
-                categoryColors={categoryColors}
-                categories={mergedCategories}
-                categoryDisplayNames={categoryDisplayNames}
-                onPartClick={(category) => setActiveCategory(category)}
-              />
+        {/* Main app area – replicates three-column generator layout:
+            - Left: vertical navigation rail
+            - Center: hero canvas
+            - Right: tight actions column
+            Existing controls and buttons keep their relative positions. */}
+        <div className="app-main">
+          {/* Left navigation rail (non-functional for now, layout only) */}
+          <aside className="app-sidebar">
+            <div className="app-sidebar-logo">
+              <span className="app-sidebar-logo-mark" />
+              <span className="app-sidebar-logo-text">Studio</span>
             </div>
-            {/* Polaroid Frame - overlays the FigureCanvas */}
-            <PolaroidFrame isVisible={shouldShowPolaroid} showFilter={expandedGroup === 2} isFraming={expandedGroup === 1} />
-            {/* Nature Frame - overlays the FigureCanvas for Background & Environment */}
-            <NatureFrame isVisible={shouldShowNature} />
-            {/* Closet Frame - overlays the FigureCanvas for Clothes & Styling */}
-            <ClosetFrame isVisible={shouldShowCloset} />
-          </div>
 
-          {/* Actions Sidebar - Clean & Minimal */}
-          <div className="actions-sidebar">
+            <nav className="app-sidebar-nav">
+              <button className="app-sidebar-item app-sidebar-item-active">
+                <span className="app-sidebar-item-dot" />
+                <span className="app-sidebar-item-label">AI Image Generator</span>
+              </button>
+              <button 
+                className="app-sidebar-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.hash = '#face-photos';
+                  window.dispatchEvent(new HashChangeEvent('hashchange'));
+                }}
+              >
+                <span className="app-sidebar-item-dot" />
+                <span className="app-sidebar-item-label">Upload Face Photo</span>
+              </button>
+              <button className="app-sidebar-item">
+                <span className="app-sidebar-item-dot" />
+                <span className="app-sidebar-item-label">Pose Studio</span>
+              </button>
+            </nav>
+
+            {/* Category Tabs - moved to sidebar */}
+            <CategoryTabs
+              categoryGroups={categoryGroups}
+              categoryDisplayNames={categoryDisplayNames}
+              categoryColors={categoryColors}
+              categories={mergedCategories}
+              selections={selections}
+              lockedCategories={lockedCategories}
+              includedCategories={includedCategories}
+              activeCategory={activeCategory}
+              onCategorySelect={handleCategorySelect}
+              onToggleLock={toggleLock}
+              onToggleInclude={toggleInclude}
+              isLoggedIn={!!user}
+              onAddCustomOption={handleAddCustomOption}
+              onExpandedGroupChange={setExpandedGroup}
+            />
+          </aside>
+
+          {/* Center workspace column */}
+          <div className="workspace-stacked">
+            {/* Preview and Actions Area */}
+            <div className="preview-actions-area">
+              {/* Preview Area */}
+              <div
+                className="preview-area-new"
+                style={{
+                  position: 'relative',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '700px',
+                    /* Maintain a predictable canvas shape so frames never get cut off */
+                    aspectRatio: '16 / 10',
+                    maxHeight: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transform: isFaceAndHead ? 'scale(1.6) translateY(2%)' : 'scale(0.9)',
+                    transformOrigin: 'center 30%',
+                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                >
+                  <FigureCanvas
+                    selections={selections}
+                    categoryColors={categoryColors}
+                    categories={mergedCategories}
+                    categoryDisplayNames={categoryDisplayNames}
+                    onPartClick={(category) => setActiveCategory(category)}
+                    showAestheticFilter={expandedGroup === 2}
+                  />
+                </div>
+                {/* Polaroid Frame - overlays the FigureCanvas */}
+                <PolaroidFrame isVisible={shouldShowPolaroid} showFilter={expandedGroup === 2} isFraming={expandedGroup === 1} />
+                {/* Nature Frame - overlays the FigureCanvas for Background & Environment */}
+                <NatureFrame isVisible={shouldShowNature} />
+                {/* Closet Frame - overlays the FigureCanvas for Clothes & Styling */}
+                <ClosetFrame isVisible={shouldShowCloset} />
+              </div>
+
+              {/* Actions Sidebar - Clean & Minimal */}
+              <div className="actions-sidebar">
             {/* Primary Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {/* Shuffle - The main action */}
               <button
                 onClick={randomizeAll}
                 style={{
                   width: '100%',
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  fontSize: '14px',
-                  fontWeight: '600',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  color: '#f4f4f5',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '6px',
+                  padding: '10px 14px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  letterSpacing: '-0.01em',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease'
+                  gap: '6px',
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
                 }}
                 aria-label="Shuffle unlocked options"
                 title="Shuffle unlocked options"
               >
-                <RotateCcw size={16} />
+                <RotateCcw size={14} />
                 Shuffle
               </button>
               
@@ -3727,37 +4061,36 @@ const PhotoElementRandomizer = () => {
                 style={{
                   width: '100%',
                   background: copied 
-                    ? 'rgba(34, 197, 94, 0.2)'
-                    : '#ffffff',
-                  color: copied ? '#22c55e' : '#0a0a0f',
-                  border: copied ? '1px solid rgba(34, 197, 94, 0.4)' : 'none',
-                  borderRadius: '10px',
-                  padding: '14px 16px',
-                  fontSize: '14px',
-                  fontWeight: '600',
+                    ? 'rgba(20, 184, 166, 0.15)'
+                    : '#f4f4f5',
+                  color: copied ? '#14b8a6' : '#09090b',
+                  border: copied ? '1px solid rgba(20, 184, 166, 0.3)' : 'none',
+                  borderRadius: '6px',
+                  padding: '10px 14px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  letterSpacing: '-0.01em',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease'
+                  gap: '6px',
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
                 onMouseEnter={(e) => {
                   if (!copied) {
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 255, 255, 0.15)';
+                    e.currentTarget.style.background = '#e4e4e7';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!copied) {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.background = '#f4f4f5';
                   }
                 }}
                 aria-label={copied ? "Copied!" : "Copy prompt"}
                 title={copied ? "Copied!" : "Copy prompt"}
               >
-                <Copy size={16} />
+                <Copy size={14} />
                 {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
@@ -3765,13 +4098,13 @@ const PhotoElementRandomizer = () => {
             {/* Divider */}
             <div style={{ 
               height: '1px', 
-              background: 'rgba(255, 255, 255, 0.08)', 
-              margin: '8px 0' 
+              background: 'rgba(255, 255, 255, 0.04)', 
+              margin: '6px 0' 
             }} />
 
             {/* Secondary Actions */}
             {user && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <button
                   onClick={() => {
                     setEditingSet(null);
@@ -3781,31 +4114,32 @@ const PhotoElementRandomizer = () => {
                   style={{
                     width: '100%',
                     background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    fontSize: '13px',
-                    fontWeight: '500',
+                    color: '#a1a1aa',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '6px',
+                    padding: '8px 12px',
+                    fontSize: '12px',
+                    fontWeight: '400',
+                    letterSpacing: '-0.01em',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.color = '#f4f4f5';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.color = '#a1a1aa';
                   }}
                   aria-label="Save current setup"
                   title="Save current setup"
                 >
-                  <Save size={14} />
+                  <Save size={13} />
                   Save Setup
                 </button>
 
@@ -3814,32 +4148,70 @@ const PhotoElementRandomizer = () => {
                   style={{
                     width: '100%',
                     background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    fontSize: '13px',
-                    fontWeight: '500',
+                    color: '#a1a1aa',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '6px',
+                    padding: '8px 12px',
+                    fontSize: '12px',
+                    fontWeight: '400',
+                    letterSpacing: '-0.01em',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.color = '#f4f4f5';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.color = '#a1a1aa';
                   }}
                   aria-label="My saved sets"
                   title="My saved sets"
                 >
-                  <FolderOpen size={14} />
+                  <FolderOpen size={13} />
                   My Sets
+                </button>
+
+                <button
+                  onClick={() => {
+                    setSelectedFavorites(new Set());
+                    setFavoritesSidebarOpen(true);
+                  }}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    color: '#a1a1aa',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '6px',
+                    padding: '8px 12px',
+                    fontSize: '12px',
+                    fontWeight: '400',
+                    letterSpacing: '-0.01em',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.color = '#f4f4f5';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#a1a1aa';
+                  }}
+                  aria-label="My favorite prompts"
+                  title="View all favorite prompts and create sets from them"
+                >
+                  <Star size={13} />
+                  My Favorites
                 </button>
 
                 <button
@@ -3850,31 +4222,32 @@ const PhotoElementRandomizer = () => {
                   style={{
                     width: '100%',
                     background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    fontSize: '13px',
-                    fontWeight: '500',
+                    color: '#a1a1aa',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '6px',
+                    padding: '8px 12px',
+                    fontSize: '12px',
+                    fontWeight: '400',
+                    letterSpacing: '-0.01em',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.color = '#f4f4f5';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.color = '#a1a1aa';
                   }}
                   aria-label="Create Set"
                   title="Create Set - Add custom prompt to category"
                 >
-                  <Plus size={14} />
+                  <Plus size={13} />
                   Create Set
                 </button>
 
@@ -3910,11 +4283,45 @@ const PhotoElementRandomizer = () => {
                   <Package size={14} />
                   Packages
                 </button>
+
+                <button
+                  onClick={() => setStatsModalOpen(true)}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                  aria-label="View your progress"
+                  title="View your progress and achievements"
+                >
+                  <TrendingUp size={14} />
+                  Stats
+                </button>
               </div>
             )}
           </div>
         </div>
       </div>
+        </div>
 
       <Footer />
 
@@ -3944,7 +4351,26 @@ const PhotoElementRandomizer = () => {
       )}
 
       {/* Enhanced Copy Success Overlay */}
-      <CopySuccessOverlay show={copied} />
+      <CopySuccessOverlay 
+        show={copied} 
+        progressMessage={progressMessage}
+        streak={userStreak}
+      />
+      
+      {/* Achievement Notification */}
+      <AchievementNotification 
+        achievement={currentAchievement}
+        onClose={() => setCurrentAchievement(null)}
+      />
+      
+      {/* Engagement Stats Modal */}
+      {user && (
+        <EngagementStats 
+          userId={user.uid}
+          isOpen={statsModalOpen}
+          onClose={() => setStatsModalOpen(false)}
+        />
+      )}
       
       {/* First Time Experience Onboarding */}
       {showFirstTimeExperience && (
@@ -4694,7 +5120,7 @@ const PhotoElementRandomizer = () => {
               right: 0,
               bottom: 0,
               background: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 1499,
+              zIndex: 10000,
               backdropFilter: 'blur(2px)'
             }}
             onClick={() => setSavedSetsSidebarOpen(false)}
@@ -4709,7 +5135,7 @@ const PhotoElementRandomizer = () => {
               maxWidth: '90vw',
               background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
               boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.3)',
-              zIndex: 1500,
+              zIndex: 10001,
               display: 'flex',
               flexDirection: 'column',
               borderLeft: '1px solid rgba(139, 92, 246, 0.3)'
@@ -5000,6 +5426,281 @@ const PhotoElementRandomizer = () => {
         </>
       )}
 
+      {/* Favorites Sidebar */}
+      {favoritesSidebarOpen && (
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 10000,
+              backdropFilter: 'blur(2px)'
+            }}
+            onClick={() => {
+              setFavoritesSidebarOpen(false);
+              setSelectedFavorites(new Set());
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '500px',
+              maxWidth: '90vw',
+              background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
+              boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.3)',
+              zIndex: 10001,
+              display: 'flex',
+              flexDirection: 'column',
+              borderLeft: '1px solid rgba(251, 191, 36, 0.3)'
+            }}
+          >
+            {/* Header */}
+            <div
+              style={{
+                padding: '20px',
+                borderBottom: '1px solid rgba(251, 191, 36, 0.2)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Star size={20} style={{ color: '#fbbf24' }} />
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    color: '#ffffff'
+                  }}
+                >
+                  My Favorite Prompts
+                </h3>
+              </div>
+              <button
+                onClick={() => {
+                  setFavoritesSidebarOpen(false);
+                  setSelectedFavorites(new Set());
+                }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: '#ffffff',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '16px'
+              }}
+            >
+              {(() => {
+                const favoritesByCategory = getAllFavoritePrompts();
+                const categoryKeys = Object.keys(favoritesByCategory);
+                
+                if (categoryKeys.length === 0) {
+                  return (
+                    <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                      <Star size={48} style={{ color: 'rgba(251, 191, 36, 0.3)', margin: '0 auto 16px' }} />
+                      <p style={{ margin: 0, fontSize: '16px' }}>No favorite prompts yet.</p>
+                      <p style={{ margin: '8px 0 0 0', fontSize: '14px' }}>Star prompts you like to add them here!</p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    {categoryKeys.map(category => {
+                      const favorites = favoritesByCategory[category];
+                      return (
+                        <div key={category}>
+                          <h4
+                            style={{
+                              margin: '0 0 12px 0',
+                              fontSize: '14px',
+                              fontWeight: '600',
+                              color: '#fbbf24',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px'
+                            }}
+                          >
+                            {categoryDisplayNames[category] || category}
+                          </h4>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {favorites.map(({ id, index, option }) => {
+                              const favoriteKey = `${category}:${id}`;
+                              const isSelected = selectedFavorites.has(favoriteKey);
+                              const optionText = typeof option === 'string' ? option : (option.title || option.prompt?.substring(0, 50) || '');
+                              const fullPrompt = typeof option === 'string' ? option : (option.prompt || '');
+                              
+                              return (
+                                <div
+                                  key={favoriteKey}
+                                  style={{
+                                    background: isSelected 
+                                      ? 'rgba(251, 191, 36, 0.15)' 
+                                      : 'rgba(255, 255, 255, 0.05)',
+                                    border: isSelected
+                                      ? '1px solid rgba(251, 191, 36, 0.4)'
+                                      : '1px solid rgba(255, 255, 255, 0.1)',
+                                    borderRadius: '8px',
+                                    padding: '12px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                  onClick={() => {
+                                    const newSelected = new Set(selectedFavorites);
+                                    if (isSelected) {
+                                      newSelected.delete(favoriteKey);
+                                    } else {
+                                      newSelected.add(favoriteKey);
+                                    }
+                                    setSelectedFavorites(newSelected);
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (!isSelected) {
+                                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!isSelected) {
+                                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                                    }
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={isSelected}
+                                      onChange={() => {}}
+                                      style={{
+                                        marginTop: '2px',
+                                        cursor: 'pointer',
+                                        accentColor: '#fbbf24'
+                                      }}
+                                    />
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                      <div
+                                        style={{
+                                          fontSize: '13px',
+                                          fontWeight: '500',
+                                          color: '#ffffff',
+                                          marginBottom: '4px',
+                                          wordBreak: 'break-word'
+                                        }}
+                                      >
+                                        {typeof option === 'string' ? option : (option.title || 'Untitled')}
+                                      </div>
+                                      {fullPrompt && (
+                                        <div
+                                          style={{
+                                            fontSize: '11px',
+                                            color: 'rgba(255, 255, 255, 0.5)',
+                                            lineHeight: '1.4',
+                                            wordBreak: 'break-word',
+                                            maxHeight: '60px',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                          }}
+                                          title={fullPrompt}
+                                        >
+                                          {fullPrompt.length > 150 ? fullPrompt.substring(0, 150) + '...' : fullPrompt}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Footer with Create Set Button */}
+            {selectedFavorites.size > 0 && (
+              <div
+                style={{
+                  padding: '16px 20px',
+                  borderTop: '1px solid rgba(251, 191, 36, 0.2)',
+                  background: 'rgba(251, 191, 36, 0.05)'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.7)' }}>
+                    {selectedFavorites.size} prompt{selectedFavorites.size !== 1 ? 's' : ''} selected
+                  </span>
+                </div>
+                <button
+                  onClick={createSetFromFavorites}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#09090b',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 4px 12px rgba(251, 191, 36, 0.3)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(251, 191, 36, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(251, 191, 36, 0.3)';
+                  }}
+                >
+                  <Plus size={16} />
+                  Create Set from Selected
+                </button>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
       {/* Delete Confirmation Dialog */}
       {deleteConfirmOpen && (
         <div
@@ -5168,7 +5869,43 @@ const PhotoElementRandomizer = () => {
           }
         }
       `}</style>
-    </div>
+      </div>
+
+      {/* Word Buttons Bar - Fixed at bottom of page (outside layout-container) */}
+      {currentCategoryOptions.length > 0 && (
+        <div 
+          className="word-button-bar-container"
+          style={{
+            position: 'fixed',
+            bottom: '44px',
+            left: '220px',
+            right: '140px',
+            zIndex: 9999,
+            padding: '16px 24px',
+            background: '#0f0f12',
+            borderTop: '1px solid rgba(255, 255, 255, 0.04)',
+            boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.3)',
+            width: 'auto',
+            display: 'block',
+            visibility: 'visible',
+            opacity: 1
+          }}
+        >
+          <WordButtonBar
+            category={activeCategory}
+            options={currentCategoryOptions}
+            currentIndex={currentCategoryIndex}
+            categoryColor={categoryColors[activeCategory] || '#b39ddb'}
+            isIncluded={includedCategories[activeCategory] !== false}
+            onSelect={(index) => selectOption(activeCategory, index)}
+            categoryDisplayName={categoryDisplayNames[activeCategory]}
+            favorites={userFavorites}
+            onToggleFavorite={toggleFavorite}
+            isLoggedIn={!!user}
+          />
+        </div>
+      )}
+    </FeedbackProvider>
   );
 };
 

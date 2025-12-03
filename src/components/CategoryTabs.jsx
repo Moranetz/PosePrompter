@@ -22,7 +22,7 @@ const CategoryTabs = ({
   const activeButtonRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
-  // Auto-scroll to active category
+  // Auto-scroll to active category (vertical scrolling)
   useEffect(() => {
     if (activeButtonRef.current && scrollContainerRef.current) {
       const container = scrollContainerRef.current;
@@ -30,8 +30,8 @@ const CategoryTabs = ({
       const containerRect = container.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
       
-      const scrollLeft = buttonRect.left - containerRect.left + container.scrollLeft - 20;
-      container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      const scrollTop = buttonRect.top - containerRect.top + container.scrollTop - 20;
+      container.scrollTo({ top: scrollTop, behavior: 'smooth' });
     }
   }, [activeCategory]);
 
@@ -60,21 +60,20 @@ const CategoryTabs = ({
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '10px',
+      gap: '12px',
       width: '100%'
     }}>
-      {/* Group Selector - Compact horizontal tabs */}
-      <div style={{
-        display: 'flex',
-        gap: '6px',
-        overflowX: 'auto',
-        paddingBottom: '4px',
-        scrollbarWidth: 'none',
-        msOverflowStyle: 'none'
-      }}>
+      {/* Group Selector - Vertical tabs */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
+          paddingBottom: '8px'
+        }}
+      >
         {categoryGroups.map((group, index) => {
           const isExpanded = expandedGroup === index;
-          const groupColor = categoryColors[group.categories[0]] || '#8b5cf6';
           const activeCategoryInGroup = group.categories.find(cat => cat === activeCategory);
           
           return (
@@ -85,36 +84,41 @@ const CategoryTabs = ({
                 if (onExpandedGroupChange) {
                   onExpandedGroupChange(index);
                 }
-                // Select the first category in the group to keep state in sync
                 if (group.categories.length > 0) {
                   onCategorySelect(group.categories[0]);
                 }
               }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               style={{
-                padding: '8px 14px',
-                background: isExpanded 
-                  ? 'rgba(255, 255, 255, 0.1)'
+                padding: '10px 14px',
+                width: '100%',
+                background: isExpanded
+                  ? 'rgba(24, 24, 28, 0.9)'
+                  : 'transparent',
+                border: 'none',
+                borderLeft: isExpanded
+                  ? '3px solid #14b8a6'
+                  : '3px solid transparent',
+                borderRadius: '6px',
+                color: isExpanded
+                  ? '#f4f4f5'
                   : activeCategoryInGroup
-                  ? 'rgba(255, 255, 255, 0.06)'
-                  : 'rgba(255, 255, 255, 0.03)',
-                border: isExpanded 
-                  ? '1.5px solid rgba(255, 255, 255, 0.25)'
-                  : activeCategoryInGroup
-                  ? '1px solid rgba(255, 255, 255, 0.15)'
-                  : '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '8px',
-                color: isExpanded ? '#ffffff' : activeCategoryInGroup ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.5)',
-                fontSize: '12px',
+                    ? '#e5e5e5'
+                    : '#a1a1aa',
+                fontSize: '13px',
                 fontWeight: isExpanded ? '600' : '500',
+                letterSpacing: '-0.01em',
                 cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease',
+                textAlign: 'left',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                position: 'relative'
+                position: 'relative',
+                boxShadow: isExpanded
+                  ? '0 2px 8px rgba(0,0,0,0.3)'
+                  : 'none'
               }}
             >
               {group.title.replace(/Part \d+: /, '')}
@@ -123,7 +127,7 @@ const CategoryTabs = ({
         })}
       </div>
 
-      {/* Active Group Categories - Only show categories from the selected group */}
+      {/* Active Group Categories - Vertical scrollable list */}
       <AnimatePresence mode="wait">
         <motion.div
           key={expandedGroup}
@@ -132,11 +136,15 @@ const CategoryTabs = ({
           exit={{ opacity: 0, y: 5 }}
           transition={{ duration: 0.2 }}
           ref={scrollContainerRef}
+          className="category-chips-container"
           style={{
             display: 'flex',
+            flexDirection: 'column',
             gap: '8px',
-            overflowX: 'auto',
-            paddingBottom: '6px',
+            maxHeight: 'calc(100vh - 300px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            paddingRight: '4px',
             scrollbarWidth: 'thin',
             scrollbarColor: 'rgba(255,255,255,0.2) transparent'
           }}
@@ -157,40 +165,41 @@ const CategoryTabs = ({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: categoryGroups[expandedGroup].categories.indexOf(category) * 0.03 }}
+                className="category-chip-wrapper"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '4px',
-                  flexShrink: 0
+                  gap: '6px'
                 }}
               >
-                {/* Main Category Button */}
+                {/* Main Category Button - Professional styling */}
                 <motion.button
                   onClick={() => onCategorySelect(category)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
                   style={{
                     padding: '10px 16px',
-                    background: isActive 
-                      ? 'rgba(255, 255, 255, 0.1)'
+                    background: isActive
+                      ? 'rgba(20, 184, 166, 0.2)'
                       : 'rgba(255, 255, 255, 0.03)',
-                    border: isActive 
-                      ? '1.5px solid rgba(255, 255, 255, 0.3)'
+                    border: isActive
+                      ? '1px solid rgba(20, 184, 166, 0.4)'
                       : '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '10px',
-                    color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.7)',
+                    borderRadius: '999px',
+                    color: isActive ? '#f4f4f5' : '#d4d4d8',
                     fontSize: '13px',
                     fontWeight: isActive ? '600' : '500',
+                    letterSpacing: '-0.01em',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    opacity: isIncluded ? 1 : 0.4,
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    opacity: isIncluded ? 1 : 0.5,
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
+                    gap: '10px',
                     minHeight: '40px',
-                    boxShadow: isActive 
-                      ? '0 2px 8px rgba(0,0,0,0.3)'
-                      : '0 1px 4px rgba(0,0,0,0.2)',
+                    boxShadow: isActive
+                      ? '0 4px 14px rgba(0,0,0,0.45)'
+                      : 'none',
                     position: 'relative'
                   }}
                 >
@@ -198,9 +207,10 @@ const CategoryTabs = ({
                   
                   {hasSelection && (
                     <span style={{
-                      fontSize: '11px',
-                      color: 'rgba(255, 255, 255, 0.4)',
-                      fontWeight: '500',
+                      fontSize: '10px',
+                      color: '#71717a',
+                      fontWeight: '400',
+                      fontFeatureSettings: '"tnum"',
                       marginLeft: 'auto',
                       flexShrink: 0
                     }}>
@@ -214,19 +224,19 @@ const CategoryTabs = ({
                       animate={{ scale: 1 }}
                       style={{
                         position: 'absolute',
-                        top: '-6px',
-                        right: '-6px',
-                        width: '16px',
-                        height: '16px',
+                        top: '-4px',
+                        right: '-4px',
+                        width: '14px',
+                        height: '14px',
                         borderRadius: '50%',
-                        background: '#fbbf24',
+                        background: '#eab308',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 2px 8px rgba(251, 191, 36, 0.4)'
+                        boxShadow: '0 1px 4px rgba(234, 179, 8, 0.3)'
                       }}
                     >
-                      <Lock size={8} color="#0a0a0f" />
+                      <Lock size={7} color="#09090b" />
                     </motion.div>
                   )}
                 </motion.button>
@@ -240,8 +250,9 @@ const CategoryTabs = ({
                       exit={{ opacity: 0, height: 0 }}
                       style={{
                         display: 'flex',
-                        gap: '4px',
-                        justifyContent: 'center'
+                        gap: '6px',
+                        justifyContent: 'center',
+                        marginTop: '2px'
                       }}
                     >
                       <button
@@ -334,15 +345,18 @@ const CategoryTabs = ({
       </AnimatePresence>
 
       <style>{`
-        div::-webkit-scrollbar {
-          height: 4px;
+        .category-chips-container::-webkit-scrollbar {
+          width: 6px;
         }
-        div::-webkit-scrollbar-track {
+        .category-chips-container::-webkit-scrollbar-track {
           background: transparent;
         }
-        div::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.15);
-          border-radius: 2px;
+        .category-chips-container::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 3px;
+        }
+        .category-chips-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
         }
       `}</style>
     </div>
