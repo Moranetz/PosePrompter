@@ -600,12 +600,16 @@ const PackageCard = memo(({ pkg, isInstalled, onClick, onInstall }) => {
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
+        willChange: 'transform', // Hint for GPU acceleration
+        transform: 'translateZ(0)', // Force GPU layer
       }}
       onHoverStart={(e) => {
+        // Instant updates - no delay
         e.currentTarget.style.boxShadow = '0 8px 24px rgba(139, 92, 246, 0.3)';
         e.currentTarget.style.borderColor = '#8b5cf6';
       }}
       onHoverEnd={(e) => {
+        // Instant updates
         e.currentTarget.style.boxShadow = 'none';
         e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
       }}
@@ -746,20 +750,24 @@ const PackageCard = memo(({ pkg, isInstalled, onClick, onInstall }) => {
               fontSize: '14px',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              transition: 'transform 0.1s ease, box-shadow 0.1s ease', // Only animate transform/shadow, colors change instantly
+              willChange: 'background-color, border-color, transform', // Hint for GPU acceleration
+              transform: 'translateZ(0)', // Force GPU layer
             }}
             onMouseEnter={(e) => {
+              // Instant color change - no transition on colors
               e.target.style.background = 'rgba(255, 255, 255, 0.1)';
               e.target.style.borderColor = '#8b5cf6';
             }}
             onMouseLeave={(e) => {
+              // Instant color change
               e.target.style.background = 'rgba(255, 255, 255, 0.05)';
               e.target.style.borderColor = 'rgba(139, 92, 246, 0.3)';
             }}
           >
             Preview
           </button>
-          <button
+          <motion.button
             onClick={onInstall}
             disabled={isInstalled}
             style={{
@@ -774,14 +782,16 @@ const PackageCard = memo(({ pkg, isInstalled, onClick, onInstall }) => {
               fontSize: '14px',
               fontWeight: '600',
               cursor: isInstalled ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s ease',
               opacity: isInstalled ? 0.6 : 1,
+              willChange: 'transform', // Hint for GPU acceleration
+              transform: 'translateZ(0)', // Force GPU layer
             }}
             whileHover={!isInstalled ? { y: -2, boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)' } : {}}
             whileTap={!isInstalled ? { scale: 0.95 } : {}}
+            transition={{ duration: 0.1 }} // Faster animation
           >
             {isInstalled ? 'Installed' : 'Install'}
-          </button>
+          </motion.button>
         </div>
       </div>
     </motion.div>

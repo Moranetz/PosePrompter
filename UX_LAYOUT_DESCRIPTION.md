@@ -1,7 +1,7 @@
-# PosePrompt Studio - Complete UX Layout Description
+# Pose Prompter - Complete UX Layout Description
 
 ## Overview
-PosePrompt Studio is a web application for generating pose prompts with a studio-style layout. The interface uses a split-screen design with a preview area on the left and controls on the right.
+Pose Prompter is a web application for generating pose prompts with a studio-style layout. The interface uses a split-screen design with a preview area on the left and controls on the right.
 
 ---
 
@@ -55,7 +55,7 @@ PosePrompt Studio is a web application for generating pose prompts with a studio
 ### Contents (Left to Right)
 
 #### Left Side:
-1. **App Title** - "PosePrompt Studio"
+1. **App Title** - "Pose Prompter"
    - **Font**: Bold (700), `clamp(16px, 4vw, 20px)`
    - **Color**: `#2c2c2c`
    - **Letter Spacing**: -0.5px
@@ -206,7 +206,7 @@ The options panel is divided into TWO sections:
 ### Structure
 
 #### Header Section (Top, Fixed)
-- **Title**: "PosePrompt Studio"
+- **Title**: "Pose Prompter"
   - **Font**: 16px, weight 600, color `#2c2c2c`
   - **Action**: None (non-clickable)
 - **Subtitle**: "Your creative workspace"
@@ -799,7 +799,12 @@ Each category has a unique color assigned:
 
 ---
 
-This completes the comprehensive UX layout description for PosePrompt Studio. Every button, component, and interaction has been documented with its location, appearance, and behavior.
+This completes the comprehensive UX layout description for Pose Prompter. Every button, component, and interaction has been documented with its location, appearance, and behavior.
+
+
+
+
+
 
 
 

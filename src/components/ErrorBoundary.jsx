@@ -162,8 +162,8 @@ class ErrorBoundary extends React.Component {
               We're sorry, but something unexpected happened. Please try refreshing the page.
             </p>
 
-            {/* Always show error details in development, or if error exists */}
-            {(import.meta.env.DEV || this.state.error) && this.state.error && (
+            {/* Only show error details in development mode */}
+            {import.meta.env.DEV && this.state.error && (
               <details
                 open={true}
                 style={{

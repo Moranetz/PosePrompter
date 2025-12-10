@@ -123,6 +123,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     const hands = getPoseData('Hands');
     const legs = getPoseData('Legs');
     const feet = getPoseData('Feet');
+    const bodySize = getPoseData('BodySize');
     const facialExpression = getPoseData('FacialExpression');
     const eyes = getPoseData('Eyes');
     const mouth = getPoseData('Mouth');
@@ -150,6 +151,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     const legsTitleOriginal = legs.originalTitle;
     const feetTitleOriginal = feet.originalTitle;
     const torsoTitleOriginal = torsoData.originalTitle;
+    const bodySizeTitleOriginal = bodySize.originalTitle;
     
     // ===== STEP 1: Determine major body position first =====
     // Check specific pose titles FIRST for accuracy, then fall back to keyword matching
@@ -233,6 +235,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     }
     
     // ===== STEP 2: Set base values based on body position =====
+    // NOTE: Torso category will override this value later, so this is just a fallback
     let headRotate = 0;
     let torso = isSitting ? 8 : isLeaning ? -10 : isReclining ? 25 : isDelicateStance ? 5 : 0;
     let stance = isLeaning ? 8 : isWalking ? 5 : isRelaxedStance ? 3 : 0;
@@ -901,6 +904,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     headRotate += headTurn * 0.3;
     
     // ===== STEP 6: Torso adjustments - EXACT MATCH for all 13 options =====
+    // Torso category ALWAYS takes priority over BodyPose-based initial value
     // 1. "Upright Composed Posture" - torso = 0 (neutral)
     // 2. "Straight Elongated Upper Body" - torso = 0 (neutral)
     // 3. "Relaxed Natural Spine Curve" - torso = 5 (slight forward)
@@ -915,45 +919,71 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     // 12. "Leaning Forward Engaged" - torso = 8 (forward lean)
     // 13. "Chest Forward Confident" - torso = -5 (back arch)
     
+    // Check if Torso category has a selection - if so, it takes priority
+    let torsoOverrideApplied = false;
+    
     if (torsoTitleOriginal === "Upright Composed Posture" ||
         torsoTitleOriginal === "Straight Elongated Upper Body") {
-      torso = 0; // Reset to neutral
+      torso = 0; // Reset to neutral - completely upright
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Relaxed Natural Spine Curve") {
-      torso = 5;
+      torso = 5; // Slight forward curve
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Curved Back Soft Silhouette") {
-      torso = 8;
+      torso = 8; // More pronounced forward curve
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Subtle Slouch") {
-      torso = 12;
+      torso = 12; // Forward slouch
+      torsoOverrideApplied = true;
       // Slouching affects arm positions slightly
       leftArm += 5;
       rightArm += 5;
     } else if (torsoTitleOriginal === "Leaning Weight Shifted") {
-      torso = -10;
+      torso = -10; // Leaning back/against something
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Hip Shifted") {
       // Hip shift doesn't change torso rotation, but affects stance
+      torso = 0; // Keep neutral torso
       stance += 3;
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Twisted Over Shoulder") {
-      torso = 15;
+      torso = 15; // Twist for over-shoulder look
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Three-Quarter Turn Away") {
-      torso = 10;
+      torso = 10; // Turn away from camera
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Profile Natural Curves") {
-      torso = 5;
+      torso = 5; // Slight turn to profile
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Hunched Forward Contemplative") {
-      torso = 15;
+      torso = 15; // Forward hunch
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Leaning Forward Engaged") {
-      torso = 8;
+      torso = 8; // Forward lean
+      torsoOverrideApplied = true;
     } else if (torsoTitleOriginal === "Chest Forward Confident") {
-      torso = -5;
-    } else {
-      // Fallback keyword matching
-    if (torsoText.includes('twist') || torsoText.includes('turned')) {
-      torso += 8;
-    } else if (torsoText.includes('lean') || torsoText.includes('slouch') || torsoText.includes('hunch')) {
-      torso += 12;
-      leftArm += 5;
-      rightArm += 5;
-    } else if (torsoText.includes('arch') || torsoText.includes('curve')) {
-      torso -= 5;
+      torso = -5; // Back arch (chest forward)
+      torsoOverrideApplied = true;
+    }
+    
+    // Fallback keyword matching - only if no exact match was found
+    if (!torsoOverrideApplied && torsoTitleOriginal) {
+      if (torsoText.includes('upright') || torsoText.includes('straight') || torsoText.includes('composed')) {
+        torso = 0; // Reset to neutral
+      } else if (torsoText.includes('twist') || torsoText.includes('turned')) {
+        torso = 10; // Set absolute value, don't add
+      } else if (torsoText.includes('lean') && torsoText.includes('back')) {
+        torso = -10; // Leaning back
+      } else if (torsoText.includes('lean') && torsoText.includes('forward')) {
+        torso = 8; // Leaning forward
+      } else if (torsoText.includes('slouch') || torsoText.includes('hunch')) {
+        torso = 12; // Set absolute value
+        leftArm += 5;
+        rightArm += 5;
+      } else if (torsoText.includes('arch') || (torsoText.includes('curve') && torsoText.includes('back'))) {
+        torso = -5; // Back arch
+      } else if (torsoText.includes('curve') || torsoText.includes('relaxed')) {
+        torso = 5; // Slight forward curve
       }
     }
     
@@ -1166,6 +1196,46 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
       mouthState = 'slight';
     }
     
+    // ===== STEP 8: Body Size / Body Fat Percentage - affects figure dimensions =====
+    // Calculate scale factor based on body fat percentage
+    // Base scale is 1.0 for average (18-22%)
+    let bodyScale = 1.0; // Default to average
+    let shoulderWidthScale = 1.0;
+    let hipWidthScale = 1.0;
+    let torsoWidthScale = 1.0;
+    
+    if (bodySizeTitleOriginal === "Athletic Lean (8-12% Body Fat)") {
+      bodyScale = 0.85; // Smaller, leaner
+      shoulderWidthScale = 0.9; // Narrower shoulders
+      hipWidthScale = 0.8; // Narrower hips
+      torsoWidthScale = 0.85;
+    } else if (bodySizeTitleOriginal === "Fit Toned (13-17% Body Fat)") {
+      bodyScale = 0.92; // Slightly smaller, toned
+      shoulderWidthScale = 0.95;
+      hipWidthScale = 0.88;
+      torsoWidthScale = 0.92;
+    } else if (bodySizeTitleOriginal === "Average Healthy (18-22% Body Fat)") {
+      bodyScale = 1.0; // Average - baseline
+      shoulderWidthScale = 1.0;
+      hipWidthScale = 1.0;
+      torsoWidthScale = 1.0;
+    } else if (bodySizeTitleOriginal === "Curvy Soft (23-27% Body Fat)") {
+      bodyScale = 1.12; // Larger, curvier
+      shoulderWidthScale = 1.05;
+      hipWidthScale = 1.2; // Wider hips
+      torsoWidthScale = 1.1;
+    } else if (bodySizeTitleOriginal === "Full Figured (28-32% Body Fat)") {
+      bodyScale = 1.25; // Larger, fuller
+      shoulderWidthScale = 1.1;
+      hipWidthScale = 1.35; // Much wider hips
+      torsoWidthScale = 1.2;
+    } else if (bodySizeTitleOriginal === "Plus Size (33%+ Body Fat)") {
+      bodyScale = 1.4; // Largest
+      shoulderWidthScale = 1.15;
+      hipWidthScale = 1.5; // Widest hips
+      torsoWidthScale = 1.3;
+    }
+    
     return { 
       head: headRotate, 
       headTilt,
@@ -1189,7 +1259,12 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
       // Facial expression states
       eyeState,
       mouthState,
-      eyebrowState
+      eyebrowState,
+      // Body size scaling
+      bodyScale,
+      shoulderWidthScale,
+      hipWidthScale,
+      torsoWidthScale
     };
   }, [selections, categories]);
 
@@ -1203,7 +1278,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
   const { 
     isSitting, isLeaning, isReclining, isWalking, isKneeUp, legsCrossed, 
     lookingAway, handsOpen, feetPointed, legsBent,
-    headTilt, headTurn, eyeState, mouthState, eyebrowState 
+    headTilt, headTurn, eyeState, mouthState, eyebrowState,
+    bodyScale, shoulderWidthScale, hipWidthScale, torsoWidthScale
   } = poseVariant;
   
   
@@ -1224,13 +1300,21 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
   
   // Adjust vertical positions based on pose
   let headY = isSitting ? 80 : isReclining ? 120 : 45;
-  const headSize = 28;
+  // Apply body scale to head size
+  const headSize = 28 * bodyScale;
   let neckY = headY + headSize + 8;
   let shoulderY = neckY + 15;
-  let torsoLength = isSitting ? 80 : 100;
+  // Apply body scale to torso length
+  let torsoLength = (isSitting ? 80 : 100) * bodyScale;
   let torsoBottom = shoulderY + torsoLength;
   let hipY = torsoBottom + 5;
-  let legLength = isSitting ? 80 : 140;
+  // Apply body scale to leg length
+  let legLength = (isSitting ? 80 : 140) * bodyScale;
+  
+  // Apply body scale to widths
+  const shoulderWidth = 30 * shoulderWidthScale;
+  const hipWidth = 20 * hipWidthScale;
+  const torsoWidth = 15 * torsoWidthScale;
 
   // Leg angles for different poses
   let leftLegAngle = 0;
@@ -1290,9 +1374,15 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
       style={{
         display: 'block',
         maxWidth: '100%',
-        maxHeight: '100%'
+        maxHeight: '100%',
+        overflow: 'hidden'
       }}
     >
+      <defs>
+        <clipPath id="figureClip">
+          <rect x="0" y="0" width={width} height={height} />
+        </clipPath>
+      </defs>
       {/* Main figure group */}
       <motion.g
         animate={{ 
@@ -1301,6 +1391,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         }}
         transition={transition}
         style={{ transformOrigin: `${centerX}px ${height / 2}px` }}
+        clipPath="url(#figureClip)"
       >
         {/* Head - Click to edit HeadPosition - includes facial expressions */}
         <motion.g
@@ -1780,9 +1871,9 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         >
           {/* Shoulders */}
           <line
-            x1={centerX - 30}
+            x1={centerX - shoulderWidth}
             y1={shoulderY}
-            x2={centerX + 30}
+            x2={centerX + shoulderWidth}
             y2={shoulderY}
             stroke={getPartColor('Torso', strokeColor)}
             strokeWidth={hoveredPart === 'Torso' ? 3 : 2}
@@ -1802,9 +1893,9 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
 
           {/* Hips */}
           <line
-            x1={centerX - 20}
+            x1={centerX - hipWidth}
             y1={hipY}
-            x2={centerX + 20}
+            x2={centerX + hipWidth}
             y2={hipY}
             stroke={getPartColor('Torso', strokeColor)}
             strokeWidth={hoveredPart === 'Torso' ? 3 : 2}
@@ -1815,7 +1906,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         {/* Shoulder joints */}
         <g>
           <circle
-            cx={centerX - 30}
+            cx={centerX - shoulderWidth}
             cy={shoulderY}
             r={jointHitSize}
             fill="transparent"
@@ -1823,11 +1914,11 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             style={{ cursor: onPartClick ? 'pointer' : 'default' }}
             {...getInteractiveProps('Arms')}
           />
-          <circle cx={centerX - 30} cy={shoulderY} r={jointSize} fill={strokeColor} />
+          <circle cx={centerX - shoulderWidth} cy={shoulderY} r={jointSize} fill={strokeColor} />
         </g>
         <g>
           <circle
-            cx={centerX + 30}
+            cx={centerX + shoulderWidth}
             cy={shoulderY}
             r={jointHitSize}
             fill="transparent"
@@ -1835,17 +1926,17 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             style={{ cursor: onPartClick ? 'pointer' : 'default' }}
             {...getInteractiveProps('Arms')}
           />
-          <circle cx={centerX + 30} cy={shoulderY} r={jointSize} fill={strokeColor} />
+          <circle cx={centerX + shoulderWidth} cy={shoulderY} r={jointSize} fill={strokeColor} />
         </g>
 
         {/* Left Arm - Click to edit Arms */}
         <motion.g {...getInteractiveProps('Arms')}>
           <motion.line
-            x1={centerX - 30}
+            x1={centerX - shoulderWidth}
             y1={shoulderY}
             animate={{
-              x2: centerX - 30 - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35,
-              y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35
+              x2: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
+              y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale
             }}
             transition={transition}
             stroke={getPartColor('Arms', strokeColor)}
@@ -1855,8 +1946,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           {/* Left Elbow joint */}
           <g>
             <circle
-              cx={centerX - 30 - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35}
-              cy={shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35}
+              cx={centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale}
+              cy={shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale}
               r={jointHitSize}
               fill="transparent"
               stroke="none"
@@ -1865,8 +1956,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             />
             <motion.circle
               animate={{
-                cx: centerX - 30 - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35,
-                cy: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35
+                cx: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
+                cy: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale
               }}
               r={jointSize}
               fill={hoveredPart === 'Arms' ? getPartColor('Arms', accentColor) : accentColor}
@@ -1877,10 +1968,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           {/* Left Forearm */}
           <motion.line
             animate={{
-              x1: centerX - 30 - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35,
-              y1: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35,
-              x2: centerX - 30 - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35,
-              y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35
+              x1: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
+              y1: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
+              x2: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale,
+              y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale
             }}
             transition={transition}
             stroke={getPartColor('Arms', strokeColor)}
@@ -1891,8 +1982,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           <motion.circle
             {...getInteractiveProps('Hands')}
             animate={{
-              cx: centerX - 30 - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35,
-              cy: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35
+              cx: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale,
+              cy: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale
             }}
             r={hoveredPart === 'Hands' ? 8 : (handsOpen ? 6 : 5)}
             fill={hoveredPart === 'Hands' ? getPartColor('Hands', 'rgba(255,255,255,0.2)') : (handsOpen ? 'none' : strokeColor)}
@@ -1905,11 +1996,11 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         {/* Right Arm - Click to edit Arms */}
         <motion.g {...getInteractiveProps('Arms')}>
           <motion.line
-            x1={centerX + 30}
+            x1={centerX + shoulderWidth}
             y1={shoulderY}
             animate={{
-              x2: centerX + 30 + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35,
-              y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35
+              x2: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
+              y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale
             }}
             transition={transition}
             stroke={getPartColor('Arms', strokeColor)}
@@ -1919,8 +2010,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           {/* Right Elbow joint */}
           <g>
             <circle
-              cx={centerX + 30 + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35}
-              cy={shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35}
+              cx={centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale}
+              cy={shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale}
               r={jointHitSize}
               fill="transparent"
               stroke="none"
@@ -1929,8 +2020,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             />
             <motion.circle
               animate={{
-                cx: centerX + 30 + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35,
-                cy: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35
+                cx: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
+                cy: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale
               }}
               r={jointSize}
               fill={hoveredPart === 'Arms' ? getPartColor('Arms', accentColor) : accentColor}
@@ -1941,10 +2032,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           {/* Right Forearm */}
           <motion.line
             animate={{
-              x1: centerX + 30 + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35,
-              y1: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35,
-              x2: centerX + 30 + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35,
-              y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35
+              x1: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
+              y1: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
+              x2: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale,
+              y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale
             }}
             transition={transition}
             stroke={getPartColor('Arms', strokeColor)}
@@ -1955,8 +2046,8 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           <motion.circle
             {...getInteractiveProps('Hands')}
             animate={{
-              cx: centerX + 30 + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35,
-              cy: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35
+              cx: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale,
+              cy: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale
             }}
             r={hoveredPart === 'Hands' ? 8 : (handsOpen ? 6 : 5)}
             fill={hoveredPart === 'Hands' ? getPartColor('Hands', 'rgba(255,255,255,0.2)') : (handsOpen ? 'none' : strokeColor)}
@@ -1968,10 +2059,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
 
         {/* Hip joints - Click to edit Legs */}
         <g {...getInteractiveProps('Legs')}>
-          <circle cx={centerX - 20} cy={hipY} r={jointHitSize} fill="transparent" stroke="none" />
-          <circle cx={centerX + 20} cy={hipY} r={jointHitSize} fill="transparent" stroke="none" />
-          <circle cx={centerX - 20} cy={hipY} r={jointSize} fill={getPartColor('Legs', strokeColor)} />
-          <circle cx={centerX + 20} cy={hipY} r={jointSize} fill={getPartColor('Legs', strokeColor)} />
+          <circle cx={centerX - hipWidth} cy={hipY} r={jointHitSize} fill="transparent" stroke="none" />
+          <circle cx={centerX + hipWidth} cy={hipY} r={jointHitSize} fill="transparent" stroke="none" />
+          <circle cx={centerX - hipWidth} cy={hipY} r={jointSize} fill={getPartColor('Legs', strokeColor)} />
+          <circle cx={centerX + hipWidth} cy={hipY} r={jointSize} fill={getPartColor('Legs', strokeColor)} />
         </g>
 
         {/* Legs - different rendering for sitting vs standing - Click to edit Legs */}
@@ -2281,9 +2372,9 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             {/* Standing/Leaning: Legs with knees */}
             {/* Left Thigh */}
             <line
-              x1={centerX - 20}
+              x1={centerX - hipWidth}
               y1={hipY}
-              x2={centerX - 22}
+              x2={centerX - hipWidth * 1.1}
               y2={hipY + legLength * 0.5}
               stroke={strokeColor}
               strokeWidth="2"
@@ -2292,7 +2383,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             {/* Left Knee joint */}
             <g>
               <motion.circle
-                cx={centerX - 22}
+                cx={centerX - hipWidth * 1.1}
                 cy={hipY + legLength * 0.5}
                 r={jointHitSize}
                 fill="transparent"
@@ -2305,7 +2396,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 transition={transition}
               />
               <motion.circle
-                cx={centerX - 22}
+                cx={centerX - hipWidth * 1.1}
                 cy={hipY + legLength * 0.5}
                 r={jointSize}
                 fill={accentColor}
@@ -2318,7 +2409,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             </g>
             {/* Left Calf */}
             <motion.line
-              x1={centerX - 22}
+              x1={centerX - hipWidth * 1.1}
               y1={hipY + legLength * 0.5}
               animate={{
                 x2: legsBent ? centerX - 30 : centerX - 25,
@@ -2333,7 +2424,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             <g>
               <motion.circle
                 animate={{
-                  cx: legsBent ? centerX - 30 : centerX - 25,
+                  cx: legsBent ? centerX - hipWidth * 1.5 : centerX - hipWidth * 1.25,
                   cy: hipY + legLength + 5
                 }}
                 r={jointHitSize}
@@ -2345,7 +2436,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               />
               <motion.ellipse
                 animate={{
-                  cx: legsBent ? centerX - 30 : centerX - 25,
+                  cx: legsBent ? centerX - hipWidth * 1.5 : centerX - hipWidth * 1.25,
                   cy: hipY + legLength + 5,
                   rx: feetPointed ? 4 : 8,
                   ry: feetPointed ? 8 : 4
@@ -2359,9 +2450,9 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             
             {/* Right Thigh */}
             <line
-              x1={centerX + 20}
+              x1={centerX + hipWidth}
               y1={hipY}
-              x2={centerX + 22}
+              x2={centerX + hipWidth * 1.1}
               y2={hipY + legLength * 0.5}
               stroke={strokeColor}
               strokeWidth="2"
@@ -2370,7 +2461,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             {/* Right Knee joint */}
             <g>
               <motion.circle
-                cx={centerX + 22}
+                cx={centerX + hipWidth * 1.1}
                 cy={hipY + legLength * 0.5}
                 r={jointHitSize}
                 fill="transparent"
@@ -2383,7 +2474,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 transition={transition}
               />
               <motion.circle
-                cx={centerX + 22}
+                cx={centerX + hipWidth * 1.1}
                 cy={hipY + legLength * 0.5}
                 r={jointSize}
                 fill={accentColor}
@@ -2396,10 +2487,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             </g>
             {/* Right Calf */}
             <motion.line
-              x1={centerX + 22}
+              x1={centerX + hipWidth * 1.1}
               y1={hipY + legLength * 0.5}
               animate={{
-                x2: legsBent ? centerX + 30 : centerX + 25,
+                x2: legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25,
                 y2: hipY + legLength
               }}
               stroke={strokeColor}
@@ -2411,7 +2502,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             <g>
               <motion.circle
                 animate={{
-                  cx: legsBent ? centerX + 30 : centerX + 25,
+                  cx: legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25,
                   cy: hipY + legLength + 5
                 }}
                 r={jointHitSize}
@@ -2423,7 +2514,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               />
               <motion.ellipse
                 animate={{
-                  cx: legsBent ? centerX + 30 : centerX + 25,
+                  cx: legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25,
                   cy: hipY + legLength + 5,
                   rx: feetPointed ? 4 : 8,
                   ry: feetPointed ? 8 : 4

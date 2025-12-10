@@ -94,6 +94,8 @@ const getAuthErrorMessage = (errorCode) => {
   const authErrors = {
     'auth/user-not-found': 'No account found with this email address',
     'auth/wrong-password': 'Incorrect password',
+    'auth/invalid-credential': 'Invalid email or password. Please check your credentials and try again.',
+    'auth/invalid-login-credentials': 'Invalid email or password. Please check your credentials and try again.',
     'auth/email-already-in-use': 'An account with this email already exists',
     'auth/weak-password': 'Password is too weak',
     'auth/invalid-email': 'Invalid email address',
@@ -102,11 +104,21 @@ const getAuthErrorMessage = (errorCode) => {
     'auth/cancelled-popup-request': 'Sign-in was cancelled',
     'auth/network-request-failed': 'Check your connection',
     'auth/requires-recent-login': 'Please sign in again to continue',
-    'auth/operation-not-allowed': 'This operation is not allowed',
+    'auth/operation-not-allowed': 'This operation is not allowed. Check Firebase Console → Authentication → Sign-in method and enable this provider.',
     'auth/user-disabled': 'This account has been disabled',
+    'auth/unauthorized-domain': 'This domain is not authorized. Add it in Firebase Console → Project Settings → Authorized domains',
+    'auth/api-key-not-valid': 'API key is invalid. Check your .env.local file and API key restrictions in Google Cloud Console.',
+    'auth/invalid-api-key': 'API key is invalid or restricted. Check Google Cloud Console → APIs & Services → Credentials.',
+    'auth/configuration-not-found': 'Firebase configuration error. Check your .env.local file.',
+    'auth/domain-config-required': 'Domain configuration required. Check Firebase Console → Project Settings → Authorized domains.',
   };
 
-  return authErrors[errorCode] || 'An authentication error occurred. Please try again.';
+  // In development, include the error code for debugging
+  const baseMessage = authErrors[errorCode] || 'An authentication error occurred. Please try again.';
+  if (import.meta.env.DEV && errorCode) {
+    return `${baseMessage} (Error: ${errorCode})`;
+  }
+  return baseMessage;
 };
 
 /**

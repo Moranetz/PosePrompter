@@ -5,13 +5,17 @@ import { UserProvider, useAuth } from './contexts/UserContext.jsx';
 import LandingPage from './components/LandingPage.jsx';
 import PricingPage from './components/PricingPage.jsx';
 import FacePhotosPage from './components/FacePhotosPage.jsx';
+import PoseStudioPage from './components/PoseStudioPage.jsx';
+import TermsOfService from './components/TermsOfService.jsx';
+import PrivacyPolicy from './components/PrivacyPolicy.jsx';
 import ToastProvider from './components/Toast/ToastContainer.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import AuthDebugPanel from './components/AuthDebugPanel.jsx';
 import { HypnoticLoadingScreen, HypnoticBackground } from './components/HypnoticEffects.jsx';
+import StripeProvider from './components/StripeProvider.jsx';
 
 // Lazy load the main component for better initial load performance
-const PhotoElementRandomizer = lazy(() => import('./PhotoElementRandomizer.jsx'));
+const PhotoElementRandomizer = lazy(() => import('./PhotoElementRandomizer'));
 
 // Inner component that uses the auth context
 const AppContent = () => {
@@ -158,6 +162,21 @@ const AppContent = () => {
     return <FacePhotosPage />;
   }
 
+  // Show pose studio page if route is #pose-studio
+  if (currentRoute === '#pose-studio') {
+    return <PoseStudioPage />;
+  }
+
+  // Show terms of service page if route is #terms
+  if (currentRoute === '#terms') {
+    return <TermsOfService />;
+  }
+
+  // Show privacy policy page if route is #privacy
+  if (currentRoute === '#privacy') {
+    return <PrivacyPolicy />;
+  }
+
   // Show landing page when user is not logged in (after loading is complete)
   if (!user || !user?.uid) {
     return (
@@ -235,14 +254,16 @@ const AppWithDebug = () => {
   );
 };
 
-// Main App component wrapped with UserProvider, ToastProvider, and ErrorBoundary
+// Main App component wrapped with UserProvider, ToastProvider, StripeProvider, and ErrorBoundary
 const App = () => {
   return (
     <ErrorBoundary>
       <UserProvider>
-        <ToastProvider>
-          <AppWithDebug />
-        </ToastProvider>
+        <StripeProvider>
+          <ToastProvider>
+            <AppWithDebug />
+          </ToastProvider>
+        </StripeProvider>
       </UserProvider>
     </ErrorBoundary>
   );

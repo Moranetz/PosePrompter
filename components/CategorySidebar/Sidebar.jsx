@@ -100,7 +100,7 @@ const Sidebar = ({
               marginBottom: '4px'
             }}
           >
-            PosePrompt Studio
+            Pose Prompter
           </h2>
           <p
             style={{

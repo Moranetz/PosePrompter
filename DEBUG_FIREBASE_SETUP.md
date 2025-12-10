@@ -96,7 +96,7 @@ VITE_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
 The `.env.local` file must be in the project root:
 
 ```
-PosePrompt Studio/
+Pose Prompter/
 ├── .env.local          ← HERE (same level as package.json)
 ├── package.json
 ├── vite.config.js

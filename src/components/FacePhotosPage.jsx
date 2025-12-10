@@ -363,7 +363,7 @@ const FacePhotosPage = () => {
               color: 'rgba(255, 255, 255, 0.8)',
               marginBottom: '8px'
             }}>
-              Ready to stop regenerating?
+              See your best self
             </p>
             <p style={{
               fontSize: '14px',

@@ -1,6 +1,6 @@
 # Firebase Security Rules Setup Guide
 
-This guide explains how to set up and deploy Firebase Security Rules for PosePrompt Studio.
+This guide explains how to set up and deploy Firebase Security Rules for Pose Prompter.
 
 ## Overview
 

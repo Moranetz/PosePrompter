@@ -52,9 +52,13 @@ const ScrollReveal = ({
       animate={isVisible ? 'visible' : 'hidden'}
       variants={variants}
       transition={{
-        duration,
+        duration: Math.min(duration, 0.3), // Cap at 300ms for faster rendering
         delay,
         ease: [0.25, 0.46, 0.45, 0.94],
+      }}
+      style={{
+        willChange: isVisible ? 'auto' : 'transform, opacity', // Optimize for initial render
+        transform: 'translateZ(0)', // Force GPU acceleration
       }}
     >
       {children}

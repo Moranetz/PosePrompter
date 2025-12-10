@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MousePointer, Sparkles, Check, ArrowRight, Zap } from 'lucide-react';
+import { MousePointer, Sparkles, Check, ArrowRight, Zap, Copy, X } from 'lucide-react';
 
 /**
  * FirstTimeExperience - Onboarding overlay for new users
@@ -26,6 +26,9 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const skipButtonRef = useRef(null);
+  const firstMoodButtonRef = useRef(null);
 
   // Check if user has already completed onboarding
   useEffect(() => {
@@ -35,12 +38,67 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
     }
   }, [onComplete]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleSkip();
+      }
+      // Tab navigation for mood buttons
+      if (!selectedMood && e.key === 'Enter' && document.activeElement?.closest('[data-mood-button]')) {
+        const activeButton = document.activeElement.closest('[data-mood-button]');
+        if (activeButton) {
+          const moodId = activeButton.getAttribute('data-mood-id');
+          const mood = quickMoods.find(m => m.id === moodId);
+          if (mood) handleMoodSelect(mood);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMood]);
+
+  // Auto-focus first mood button for keyboard users
+  useEffect(() => {
+    if (!selectedMood && firstMoodButtonRef.current) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        firstMoodButtonRef.current?.focus();
+      }, 100);
+    }
+  }, [selectedMood]);
+
   const handleMoodSelect = (mood) => {
     setSelectedMood(mood);
     // Delay to show the selection, then reveal result
     setTimeout(() => {
       setShowResult(true);
     }, 400);
+  };
+
+  const handleCopyPrompt = async () => {
+    const promptText = moodPrompts[selectedMood.id];
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(promptText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = promptText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch (err) {
+      console.error('Copy failed:', err);
+    }
   };
 
   const handleComplete = () => {
@@ -78,7 +136,7 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
             inset: 0,
             background: 'rgba(0, 0, 0, 0.9)',
             backdropFilter: 'blur(8px)',
-            zIndex: 9999,
+            zIndex: 10001,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -93,17 +151,27 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
             style={{
               background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)',
               borderRadius: '20px',
-              padding: '48px',
+              padding: 'clamp(32px, 6vw, 48px)',
               maxWidth: '520px',
               width: '100%',
               border: '1px solid rgba(255,255,255,0.08)',
               position: 'relative',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              maxHeight: '90vh',
+              overflowY: 'auto'
             }}
           >
             {/* Skip button */}
             <button
+              ref={skipButtonRef}
               onClick={handleSkip}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleSkip();
+                }
+              }}
+              aria-label="Skip introduction"
               style={{
                 position: 'absolute',
                 top: '16px',
@@ -115,12 +183,23 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                 cursor: 'pointer',
                 padding: '8px 12px',
                 borderRadius: '6px',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                outline: 'none'
               }}
               onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.7)'}
               onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.4)'}
+              onFocus={(e) => {
+                e.target.style.color = 'rgba(255,255,255,0.7)';
+                e.target.style.outline = '2px solid rgba(255,255,255,0.3)';
+                e.target.style.outlineOffset = '2px';
+              }}
+              onBlur={(e) => {
+                e.target.style.color = 'rgba(255,255,255,0.4)';
+                e.target.style.outline = 'none';
+              }}
             >
-              Skip intro
+              <X size={14} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }} />
+              Skip
             </button>
 
             {/* Step 1: The hook */}
@@ -146,39 +225,51 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
 
                 {/* Headline - speaks to their frustration */}
                 <h2 style={{
-                  fontSize: '26px',
+                  fontSize: 'clamp(22px, 5vw, 28px)',
                   fontWeight: '700',
                   color: '#ffffff',
                   marginBottom: '12px',
                   letterSpacing: '-0.5px',
                   lineHeight: '1.2'
                 }}>
-                  No more typing prompts.
+                  Stop typing. Start creating.
                 </h2>
 
                 <p style={{
-                  fontSize: '16px',
-                  color: 'rgba(255,255,255,0.5)',
+                  fontSize: 'clamp(14px, 3vw, 16px)',
+                  color: 'rgba(255,255,255,0.6)',
                   marginBottom: '32px',
-                  lineHeight: '1.5'
+                  lineHeight: '1.6'
                 }}>
-                  Just click what you want. Try it—pick a mood:
+                  Generate perfect prompts with one click. Try it now—pick a mood:
                 </p>
 
                 {/* Quick selection buttons */}
                 <div style={{
                   display: 'flex',
                   gap: '12px',
-                  marginBottom: '20px'
+                  marginBottom: '24px',
+                  flexWrap: 'wrap'
                 }}>
-                  {quickMoods.map((mood) => (
+                  {quickMoods.map((mood, index) => (
                     <motion.button
                       key={mood.id}
+                      ref={index === 0 ? firstMoodButtonRef : null}
+                      data-mood-button
+                      data-mood-id={mood.id}
                       onClick={() => handleMoodSelect(mood)}
                       whileHover={{ scale: 1.03, y: -2 }}
                       whileTap={{ scale: 0.97 }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleMoodSelect(mood);
+                        }
+                      }}
+                      aria-label={`Select ${mood.label} mood`}
                       style={{
-                        flex: 1,
+                        flex: '1 1 0',
+                        minWidth: '120px',
                         padding: '16px 20px',
                         background: `${mood.color}15`,
                         border: `1px solid ${mood.color}40`,
@@ -187,7 +278,16 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                         fontSize: '15px',
                         fontWeight: '600',
                         cursor: 'pointer',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.border = `2px solid ${mood.color}`;
+                        e.currentTarget.style.boxShadow = `0 0 0 3px ${mood.color}20`;
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border = `1px solid ${mood.color}40`;
+                        e.currentTarget.style.boxShadow = 'none';
                       }}
                     >
                       {mood.label}
@@ -197,8 +297,9 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
 
                 <p style={{
                   fontSize: '13px',
-                  color: 'rgba(255,255,255,0.3)',
-                  textAlign: 'center'
+                  color: 'rgba(255,255,255,0.4)',
+                  textAlign: 'center',
+                  marginBottom: '0'
                 }}>
                   One click. That's it.
                 </p>
@@ -208,9 +309,11 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
             {/* Step 2: The payoff - show them immediate value */}
             {selectedMood && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                aria-live="polite"
+                aria-atomic="true"
               >
                 {/* Success indicator */}
                 <motion.div
@@ -238,7 +341,7 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                 </motion.div>
 
                 <h2 style={{
-                  fontSize: '24px',
+                  fontSize: 'clamp(20px, 4vw, 24px)',
                   fontWeight: '700',
                   color: '#ffffff',
                   marginBottom: '8px',
@@ -248,11 +351,11 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                 </h2>
 
                 <p style={{
-                  fontSize: '15px',
-                  color: 'rgba(255,255,255,0.5)',
+                  fontSize: 'clamp(13px, 2.5vw, 15px)',
+                  color: 'rgba(255,255,255,0.6)',
                   marginBottom: '24px'
                 }}>
-                  One click → ready to paste.
+                  Copy it and paste into your AI image generator.
                 </p>
 
                 {/* The generated prompt preview */}
@@ -266,33 +369,91 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                         background: 'rgba(0,0,0,0.4)',
                         borderRadius: '12px',
                         padding: '20px',
-                        marginBottom: '28px',
-                        border: `1px solid ${selectedMood.color}30`
+                        marginBottom: '24px',
+                        border: `1px solid ${selectedMood.color}30`,
+                        position: 'relative',
+                        overflow: 'hidden'
                       }}
                     >
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
+                        justifyContent: 'space-between',
                         marginBottom: '12px'
                       }}>
-                        <Sparkles size={14} color={selectedMood.color} />
-                        <span style={{
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          color: selectedMood.color,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
                         }}>
-                          {selectedMood.label} mood
-                        </span>
+                          <Sparkles size={14} color={selectedMood.color} />
+                          <span style={{
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            color: selectedMood.color,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}>
+                            {selectedMood.label.toUpperCase()} MOOD
+                          </span>
+                        </div>
+                        <motion.button
+                          onClick={handleCopyPrompt}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleCopyPrompt();
+                            }
+                          }}
+                          aria-label={copied ? "Prompt copied" : "Copy prompt"}
+                          style={{
+                            padding: '6px 12px',
+                            background: copied 
+                              ? `linear-gradient(135deg, ${selectedMood.color} 0%, ${selectedMood.color}dd 100%)`
+                              : 'rgba(255, 255, 255, 0.08)',
+                            border: copied ? 'none' : `1px solid ${selectedMood.color}40`,
+                            borderRadius: '8px',
+                            color: copied ? '#ffffff' : selectedMood.color,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            transition: 'all 0.2s',
+                            outline: 'none'
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.boxShadow = `0 0 0 3px ${selectedMood.color}30`;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          {copied ? (
+                            <>
+                              <Check size={12} />
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={12} />
+                              Copy
+                            </>
+                          )}
+                        </motion.button>
                       </div>
                       <p style={{
                         fontSize: '14px',
-                        color: 'rgba(255,255,255,0.8)',
+                        color: 'rgba(255,255,255,0.9)',
                         lineHeight: '1.7',
                         fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-                        margin: 0
+                        margin: 0,
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        userSelect: 'text'
                       }}>
                         "{moodPrompts[selectedMood.id]}"
                       </p>
@@ -310,29 +471,48 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                     border: '1px solid rgba(139, 92, 246, 0.2)',
                     borderRadius: '10px',
                     padding: '16px',
-                    marginBottom: '28px',
+                    marginBottom: '24px',
                     display: 'flex',
                     alignItems: 'flex-start',
                     gap: '12px'
                   }}
                 >
                   <Zap size={18} color="#a78bfa" style={{ marginTop: '2px', flexShrink: 0 }} />
-                  <p style={{
-                    fontSize: '14px',
-                    color: 'rgba(255,255,255,0.7)',
-                    lineHeight: '1.5',
-                    margin: 0
-                  }}>
-                    30+ categories. Mix lighting, poses, styles, moods. 
-                    <span style={{ color: '#a78bfa', fontWeight: '500' }}> You direct. It describes.</span>
-                  </p>
+                  <div style={{ flex: 1 }}>
+                    <p style={{
+                      fontSize: '14px',
+                      color: 'rgba(255,255,255,0.7)',
+                      lineHeight: '1.6',
+                      margin: 0,
+                      marginBottom: '8px',
+                      wordBreak: 'break-word',
+                      overflowWrap: 'break-word'
+                    }}>
+                      <strong style={{ color: 'rgba(255,255,255,0.9)' }}>30+ categories</strong> to explore. Mix lighting, poses, styles, moods, and more.
+                    </p>
+                    <p style={{
+                      fontSize: '13px',
+                      color: 'rgba(255,255,255,0.5)',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>
+                      <span style={{ color: '#a78bfa', fontWeight: '500' }}>You direct. It describes.</span> No more guessing what to type.
+                    </p>
+                  </div>
                 </motion.div>
 
                 {/* CTA */}
                 <motion.button
                   onClick={handleComplete}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.02, y: -1 }}
                   whileTap={{ scale: 0.98 }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleComplete();
+                    }
+                  }}
+                  aria-label="Start creating prompts"
                   style={{
                     width: '100%',
                     padding: '16px 24px',
@@ -346,7 +526,16 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '10px'
+                    gap: '10px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                    transition: 'all 0.2s',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 255, 255, 0.3)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
                   }}
                 >
                   Start creating

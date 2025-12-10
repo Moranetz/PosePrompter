@@ -27,7 +27,8 @@ service cloud.firestore {
              data.savedPromptSets is list &&
              data.installedPackages is list &&
              data.createdAt is timestamp &&
-             data.updatedAt is timestamp;
+             data.updatedAt is timestamp &&
+             (!('credits' in data) || (data.credits is int && data.credits >= 0));
     }
     
     // Helper function to validate package document structure

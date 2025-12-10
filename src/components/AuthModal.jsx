@@ -8,7 +8,7 @@ import {
   GoogleAuthProvider
 } from 'firebase/auth';
 import { auth, isEmbeddedBrowser } from '../firebase-config';
-import { X, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { X, Mail, Lock, User, Loader2, Eye, EyeOff } from 'lucide-react';
 import { getErrorMessage } from '../utils/errorHandler';
 import { checkStorageAvailability, getStorageErrorMessage, logStorageIssue } from '../utils/storageCheck';
 import { logAuthEvent } from '../utils/authDebugger';
@@ -49,21 +49,27 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
   // Sign In form state
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
 
   // Sign Up form state
   const [signUpDisplayName, setSignUpDisplayName] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [signUpConfirmPassword, setSignUpConfirmPassword] = useState('');
+  const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
 
   // Reset form states
   const resetForms = () => {
     setSignInEmail('');
     setSignInPassword('');
+    setShowSignInPassword(false);
     setSignUpDisplayName('');
     setSignUpEmail('');
     setSignUpPassword('');
+    setShowSignUpPassword(false);
     setSignUpConfirmPassword('');
+    setShowSignUpConfirmPassword(false);
     setError('');
     setSuccessMessage('');
   };
@@ -125,7 +131,11 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
       // Modal will close automatically when App.jsx detects user is logged in
     } catch (err) {
       console.error('[AuthModal] Sign in error:', err);
-      setError(getErrorMessage(err));
+      console.error('[AuthModal] Error code:', err.code);
+      console.error('[AuthModal] Error message:', err.message);
+      const errorMsg = getErrorMessage(err);
+      console.error('[AuthModal] User-friendly error:', errorMsg);
+      setError(errorMsg);
       setLoading(false);
     }
   };
@@ -382,7 +392,10 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
   };
 
   // Handle Forgot Password
-  const handleForgotPassword = async () => {
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (loading) return; // Prevent double-clicks
     
     if (!signInEmail.trim()) {
@@ -760,11 +773,13 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                       left: '12px',
                       top: '50%',
                       transform: 'translateY(-50%)',
-                      color: 'rgba(255, 255, 255, 0.5)'
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      pointerEvents: 'none',
+                      zIndex: 1
                     }}
                   />
                   <input
-                    type="password"
+                    type={showSignInPassword ? 'text' : 'password'}
                     value={signInPassword}
                     onChange={(e) => setSignInPassword(e.target.value)}
                     placeholder="Enter your password"
@@ -772,7 +787,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                     disabled={loading}
                     style={{
                       width: '100%',
-                      padding: '12px 12px 12px 40px',
+                      padding: '12px 40px 12px 40px',
                       background: 'rgba(255, 255, 255, 0.05)',
                       border: '1px solid rgba(139, 92, 246, 0.3)',
                       borderRadius: '10px',
@@ -791,6 +806,37 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                       e.target.style.background = 'rgba(255, 255, 255, 0.05)';
                     }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignInPassword(!showSignInPassword)}
+                    disabled={loading}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      padding: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      transition: 'color 0.2s ease',
+                      zIndex: 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading) {
+                        e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = 'rgba(255, 255, 255, 0.5)';
+                    }}
+                  >
+                    {showSignInPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
 
@@ -809,6 +855,14 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                     textDecoration: 'underline',
                     padding: 0,
                     opacity: loading ? 0.5 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!loading) {
+                      e.target.style.color = '#a78bfa';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = '#8b5cf6';
                   }}
                 >
                   Forgot Password?
@@ -1098,11 +1152,13 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                       left: '12px',
                       top: '50%',
                       transform: 'translateY(-50%)',
-                      color: 'rgba(255, 255, 255, 0.5)'
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      pointerEvents: 'none',
+                      zIndex: 1
                     }}
                   />
                   <input
-                    type="password"
+                    type={showSignUpPassword ? 'text' : 'password'}
                     value={signUpPassword}
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     placeholder="Create a password"
@@ -1110,7 +1166,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                     disabled={loading}
                     style={{
                       width: '100%',
-                      padding: '12px 12px 12px 40px',
+                      padding: '12px 40px 12px 40px',
                       background: 'rgba(255, 255, 255, 0.05)',
                       border: '1px solid rgba(139, 92, 246, 0.3)',
                       borderRadius: '10px',
@@ -1129,6 +1185,37 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                       e.target.style.background = 'rgba(255, 255, 255, 0.05)';
                     }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                    disabled={loading}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      padding: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      transition: 'color 0.2s ease',
+                      zIndex: 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading) {
+                        e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = 'rgba(255, 255, 255, 0.5)';
+                    }}
+                  >
+                    {showSignUpPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
 
@@ -1153,11 +1240,13 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                       left: '12px',
                       top: '50%',
                       transform: 'translateY(-50%)',
-                      color: 'rgba(255, 255, 255, 0.5)'
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      pointerEvents: 'none',
+                      zIndex: 1
                     }}
                   />
                   <input
-                    type="password"
+                    type={showSignUpConfirmPassword ? 'text' : 'password'}
                     value={signUpConfirmPassword}
                     onChange={(e) => setSignUpConfirmPassword(e.target.value)}
                     placeholder="Confirm your password"
@@ -1165,7 +1254,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                     disabled={loading}
                     style={{
                       width: '100%',
-                      padding: '12px 12px 12px 40px',
+                      padding: '12px 40px 12px 40px',
                       background: 'rgba(255, 255, 255, 0.05)',
                       border: '1px solid rgba(139, 92, 246, 0.3)',
                       borderRadius: '10px',
@@ -1184,6 +1273,37 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                       e.target.style.background = 'rgba(255, 255, 255, 0.05)';
                     }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}
+                    disabled={loading}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      padding: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      transition: 'color 0.2s ease',
+                      zIndex: 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading) {
+                        e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = 'rgba(255, 255, 255, 0.5)';
+                    }}
+                  >
+                    {showSignUpConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
 

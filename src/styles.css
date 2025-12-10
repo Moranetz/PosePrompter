@@ -246,7 +246,6 @@ body {
   max-height: 340px;
   margin: 8px auto 12px;
   border-radius: var(--radius-lg);
-  animation: pulseGlow 2.5s ease-in-out infinite;
 }
 
 /* Actions Sidebar - Right side actions */
@@ -691,6 +690,61 @@ body {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
+}
+
+/* Hide word-button-bar when intro is active - Must be completely invisible */
+body.intro-active .word-button-bar-container,
+body.intro-active .word-button-bar,
+body.intro-active [class*="word-button"],
+.word-button-bar-container[data-intro-active="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  transform: translateY(100vh) !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide word-button-bar when BuyCreditsModal is open */
+/* CRITICAL: These rules must be comprehensive to prevent any glitch */
+body.buy-credits-modal-open .word-button-bar-container,
+body.buy-credits-modal-open .word-button-bar,
+body.buy-credits-modal-open .word-button-bar[data-visible="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  transform: translateY(100vh) !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-height: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Hide word-button-bar on other routes (not main workspace) */
+body:has([data-route="pricing"]) .word-button-bar,
+body:has([data-route="face-photos"]) .word-button-bar,
+body:has([data-route="pose-studio"]) .word-button-bar,
+body:has([data-route="terms"]) .word-button-bar,
+body:has([data-route="privacy"]) .word-button-bar,
+.word-button-bar[data-not-main-route="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  transform: translateY(100vh) !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @media (max-width: 1200px) {

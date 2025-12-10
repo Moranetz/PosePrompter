@@ -12,7 +12,7 @@
 ## Step 2: Register Your Web App
 
 1. In your Firebase project dashboard, click the **Web icon** (`</>`) to add a web app
-2. Register your app with a nickname (e.g., "PosePrompt Studio")
+2. Register your app with a nickname (e.g., "Pose Prompter")
 3. (Optional) Check "Also set up Firebase Hosting"
 4. Click **"Register app"**
 

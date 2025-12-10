@@ -21,6 +21,78 @@ const WordButtonBar = ({
   const previousFavoritesRef = useRef(JSON.stringify(favorites));
   const scrollBlockedRef = useRef(false);
   const isRestoringRef = useRef(false);
+  const footerHeightRef = useRef(44); // Default to CSS variable value
+  const barRef = useRef(null);
+  
+  // Initialize shouldHide based on current body class state and route
+  const [shouldHide, setShouldHide] = React.useState(() => {
+    if (typeof document !== 'undefined') {
+      const isModalOpen = document.body.classList.contains('buy-credits-modal-open');
+      const currentRoute = window.location.hash;
+      // Only show on main workspace screen (empty hash or no hash)
+      const isOnMainScreen = !currentRoute || currentRoute === '' || currentRoute === '#';
+      return isModalOpen || !isOnMainScreen;
+    }
+    return false;
+  });
+
+  // CRITICAL: Synchronous check function that can be called at any time
+  // This ensures we always have the latest state without waiting for React updates
+  const shouldHideBar = React.useCallback(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return true; // Hide if we can't check
+    }
+    const isModalOpen = document.body.classList.contains('buy-credits-modal-open');
+    const currentRoute = window.location.hash;
+    const isOnMainScreen = !currentRoute || currentRoute === '' || currentRoute === '#';
+    return isModalOpen || !isOnMainScreen;
+  }, []);
+
+  // Check if BuyCreditsModal is open (via body class) and hide WordButtonBar
+  // Also check if we're on the correct screen (main workspace only)
+  // Use useLayoutEffect to check synchronously before paint to prevent flash
+  useLayoutEffect(() => {
+    const checkModalState = () => {
+      const newShouldHide = shouldHideBar();
+      setShouldHide(newShouldHide);
+    };
+
+    // Initial check immediately (synchronous)
+    checkModalState();
+
+    // Watch for body class changes with more aggressive checking
+    const observer = new MutationObserver(() => {
+      // Check immediately (synchronous) for class changes
+      checkModalState();
+      // Also check after next frame as backup
+      requestAnimationFrame(checkModalState);
+    });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class'],
+      subtree: false
+    });
+
+    // More frequent interval check as a fallback (every frame ~16ms for 60fps)
+    // This ensures we catch any missed updates immediately
+    const intervalId = setInterval(checkModalState, 16);
+
+    // Watch for route changes
+    const handleHashChange = () => {
+      checkModalState();
+    };
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Also watch for popstate (back/forward navigation)
+    window.addEventListener('popstate', handleHashChange);
+
+    return () => {
+      observer.disconnect();
+      clearInterval(intervalId);
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, [shouldHideBar]);
 
   // Wrap onToggleFavorite to preserve scroll position
   const handleToggleFavorite = (category, optionId) => {
@@ -143,6 +215,48 @@ const WordButtonBar = ({
     previousCategoryRef.current = category;
   }, [currentIndex, category, favorites]);
 
+  // Measure footer height to ensure WordButtonBar never overlaps it
+  useEffect(() => {
+    const updateFooterHeight = () => {
+      const footer = document.querySelector('footer');
+      if (footer) {
+        const height = footer.offsetHeight;
+        if (height > 0) {
+          footerHeightRef.current = height;
+          // Update the WordButtonBar position
+          if (barRef.current) {
+            barRef.current.style.bottom = `${height}px`;
+          }
+        }
+      }
+    };
+
+    // Initial measurement - try multiple times in case footer hasn't rendered yet
+    updateFooterHeight();
+    const initialTimeout = setTimeout(updateFooterHeight, 100);
+    const secondTimeout = setTimeout(updateFooterHeight, 500);
+
+    // Watch for footer size changes (e.g., responsive breakpoints)
+    const resizeObserver = new ResizeObserver(() => {
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(updateFooterHeight);
+    });
+    const footer = document.querySelector('footer');
+    if (footer) {
+      resizeObserver.observe(footer);
+    }
+
+    // Also listen to window resize
+    window.addEventListener('resize', updateFooterHeight);
+
+    return () => {
+      clearTimeout(initialTimeout);
+      clearTimeout(secondTimeout);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateFooterHeight);
+    };
+  }, []);
+
   const getButtonText = (option, index) => {
     if (typeof option === 'string') {
       // Truncate long strings
@@ -151,10 +265,38 @@ const WordButtonBar = ({
     return option.title || `Option ${index + 1}`;
   };
 
+  // CRITICAL: Multiple synchronous checks before render to prevent any glitch
+  // Use the synchronous check function as the primary authority - this is the most reliable check
+  // It checks both modal state and route synchronously on every render
+  const finalShouldHide = shouldHideBar();
+  
+  // Additional redundant checks for maximum safety (defense in depth)
+  // These provide extra layers of protection in case of any edge cases
+  const isModalOpenDirect = typeof document !== 'undefined' && document.body.classList.contains('buy-credits-modal-open');
+  const currentRoute = typeof window !== 'undefined' ? window.location.hash : '';
+  const isOnMainScreen = !currentRoute || currentRoute === '' || currentRoute === '#';
+  
+  // If ANY check indicates we should hide, return null immediately
+  // This ensures the component never renders when it shouldn't
+  if (finalShouldHide || shouldHide || isModalOpenDirect || !isOnMainScreen) {
+    return null;
+  }
+
   return (
     <div
+      ref={barRef}
       className="word-button-bar"
+      data-visible="true"
       style={{
+        position: 'fixed',
+        bottom: `${footerHeightRef.current}px`,
+        left: '220px',
+        right: '140px',
+        zIndex: finalShouldHide ? -1 : 9999,
+        display: finalShouldHide ? 'none' : 'block',
+        visibility: finalShouldHide ? 'hidden' : 'visible',
+        opacity: finalShouldHide ? 0 : 1,
+        pointerEvents: finalShouldHide ? 'none' : 'auto',
         background: 'rgba(15, 15, 18, 0.8)',
         backdropFilter: 'blur(16px)',
         border: '1px solid rgba(255, 255, 255, 0.04)',
@@ -201,11 +343,14 @@ const WordButtonBar = ({
             overflowX: 'auto',
             overflowY: 'hidden',
             scrollSnapType: 'x proximity',
-            scrollPadding: '0 24px',
+            scrollPaddingLeft: '24px',
+            scrollPaddingRight: '24px',
             WebkitOverflowScrolling: 'touch',
             scrollbarWidth: 'thin',
             scrollbarColor: `${categoryColor}40 transparent`,
-            paddingBottom: '4px'
+            paddingBottom: '4px',
+            paddingLeft: '24px',
+            paddingRight: '24px'
           }}
         >
           {options.map((option, index) => {

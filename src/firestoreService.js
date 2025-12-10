@@ -100,6 +100,7 @@ export const createUserProfile = async (userId, userData = {}) => {
       displayName: userData.displayName || '',
       avatar: userData.avatar || '',
       bio: userData.bio || '',
+      credits: userData.credits || 0,
       customOptions: {},
       hiddenOptions: {},
       deletedOptions: {},
@@ -852,7 +853,7 @@ export const uninstallPackage = async (userId, packageId) => {
 };
 
 /**
- * Resets a user's PosePrompt Studio data while keeping the Firebase account.
+ * Resets a user's Pose Prompter data while keeping the Firebase account.
  *
  * Used by the "Restart account" action to:
  * - Clear favorites

@@ -33,7 +33,6 @@ import {
   getDefaultExpandedGroups,
   trackSessionDuration
 } from './utils/personalizationService';
-import FeedbackProvider from './components/VisualFeedback/FeedbackProvider';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 
 const PhotoElementRandomizer = () => {
@@ -46,6 +45,7 @@ const PhotoElementRandomizer = () => {
     'Hands': 'Hands',
     'Legs': 'Legs',
     'Feet': 'Feet',
+    'BodySize': 'Body Size',
     'HeadPosition': 'Head Position',
     'FacialExpression': 'Facial Expression',
     'Eyes': 'Eyes',
@@ -102,7 +102,7 @@ const PhotoElementRandomizer = () => {
     {
       title: 'Part 6: Body & Pose',
       description: 'Body positioning and pose - most dynamic',
-      categories: ['BodyPose', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet']
+      categories: ['BodyPose', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet', 'BodySize']
     }
   ];
 
@@ -663,6 +663,39 @@ const PhotoElementRandomizer = () => {
         id: "feet_010",
         title: "Feet Dangling Elevated Surface",
         prompt: "Feet dangling freely from elevated surface",
+      },
+    ],
+
+    'BodySize': [
+      {
+        id: "bodysize_001",
+        title: "Athletic Lean (8-12% Body Fat)",
+        prompt: "Athletic lean physique with 8-12% body fat percentage, defined muscle tone, low body fat, lean and toned appearance",
+      },
+      {
+        id: "bodysize_002",
+        title: "Fit Toned (13-17% Body Fat)",
+        prompt: "Fit and toned physique with 13-17% body fat percentage, healthy muscle definition, balanced body composition",
+      },
+      {
+        id: "bodysize_003",
+        title: "Average Healthy (18-22% Body Fat)",
+        prompt: "Average healthy physique with 18-22% body fat percentage, natural body shape, healthy proportions",
+      },
+      {
+        id: "bodysize_004",
+        title: "Curvy Soft (23-27% Body Fat)",
+        prompt: "Curvy soft physique with 23-27% body fat percentage, softer curves, natural feminine shape",
+      },
+      {
+        id: "bodysize_005",
+        title: "Full Figured (28-32% Body Fat)",
+        prompt: "Full figured physique with 28-32% body fat percentage, fuller curves, voluptuous body shape",
+      },
+      {
+        id: "bodysize_006",
+        title: "Plus Size (33%+ Body Fat)",
+        prompt: "Plus size physique with 33%+ body fat percentage, fuller body, curvier proportions",
       },
     ],
 
@@ -2572,12 +2605,38 @@ const PhotoElementRandomizer = () => {
     ],
   };
 
-  const [selections, setSelections] = useState(() => {
-    const initial = {};
-    Object.keys(categories).forEach(key => {
-      initial[key] = 0;
+  // Helper function to get natural pose defaults for new accounts
+  const getNaturalPoseDefaults = (cats) => {
+    const defaults = {};
+    Object.keys(cats).forEach(key => {
+      defaults[key] = 0; // Default to first option
     });
-    return initial;
+    
+    // Set natural pose selections for a relaxed standing pose
+    if (cats.BodyPose && cats.BodyPose.length > 5) {
+      defaults.BodyPose = 5; // "Relaxed Stance" - natural standing pose
+    }
+    if (cats.HeadPosition && cats.HeadPosition.length > 0) {
+      defaults.HeadPosition = 0; // "Neutral Forward-Facing Position"
+    }
+    if (cats.Legs && cats.Legs.length > 1) {
+      defaults.Legs = 1; // "Legs Slightly Apart Stable"
+    }
+    if (cats.Hands && cats.Hands.length > 0) {
+      defaults.Hands = 0; // "Hands Sides Completely Relaxed"
+    }
+    if (cats.Arms && cats.Arms.length > 0) {
+      defaults.Arms = 0; // "Arms Sides Relaxed"
+    }
+    if (cats.BodySize && cats.BodySize.length > 2) {
+      defaults.BodySize = 2; // "Average Healthy (18-22% Body Fat)" - default to average
+    }
+    
+    return defaults;
+  };
+
+  const [selections, setSelections] = useState(() => {
+    return getNaturalPoseDefaults(categories);
   });
 
   const [lockedCategories, setLockedCategories] = useState({});
@@ -2633,8 +2692,25 @@ const PhotoElementRandomizer = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(null); // set ID or null
   const [showFirstTimeExperience, setShowFirstTimeExperience] = useState(() => {
     // Check if user has completed onboarding
-    return localStorage.getItem('poseprompt_onboarding_complete') !== 'true';
+    const shouldShow = localStorage.getItem('poseprompt_onboarding_complete') !== 'true';
+    // Apply class immediately if intro should show
+    if (shouldShow) {
+      document.body.classList.add('intro-active');
+    }
+    return shouldShow;
   });
+
+  // Hide word-button-bar when intro is showing
+  useEffect(() => {
+    if (showFirstTimeExperience) {
+      document.body.classList.add('intro-active');
+    } else {
+      document.body.classList.remove('intro-active');
+    }
+    return () => {
+      document.body.classList.remove('intro-active');
+    };
+  }, [showFirstTimeExperience]);
 
   // Engagement tracking state
   const [currentAchievement, setCurrentAchievement] = useState(null);
@@ -2642,6 +2718,21 @@ const PhotoElementRandomizer = () => {
   const [userStreak, setUserStreak] = useState(0);
   const [engagementStats, setEngagementStats] = useState(null);
   const [statsModalOpen, setStatsModalOpen] = useState(false);
+  const [buyCreditsModalOpen, setBuyCreditsModalOpen] = useState(false);
+
+  // Listen for body class changes to detect BuyCreditsModal open/close
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setBuyCreditsModalOpen(document.body.classList.contains('buy-credits-modal-open'));
+    });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    // Initial check
+    setBuyCreditsModalOpen(document.body.classList.contains('buy-credits-modal-open'));
+    return () => observer.disconnect();
+  }, []);
 
   // CRITICAL: Define mergedCategories BEFORE any useEffect that depends on it
   // This prevents TDZ (Temporal Dead Zone) violations during bundler minification
@@ -2699,6 +2790,7 @@ const PhotoElementRandomizer = () => {
     'Hands': '#86efac',
     'Legs': '#16a34a',
     'Feet': '#15803d',
+    'BodySize': '#f59e0b',
     'HeadPosition': '#ec4899',
     'FacialExpression': '#f472b6',
     'Eyes': '#fb7185',
@@ -2774,7 +2866,7 @@ const PhotoElementRandomizer = () => {
             setExpandedGroup(defaultGroups[0] || 2);
           }
         } else {
-          // Initialize user document if it doesn't exist
+          // Initialize user document if it doesn't exist (new account)
           await setDoc(userDocRef, {
             customOptions: {},
             hiddenOptions: {},
@@ -2783,6 +2875,10 @@ const PhotoElementRandomizer = () => {
           setUserCustomOptions({});
           setUserHiddenOptions({});
           setUserFavorites({});
+          
+          // Set natural pose for new account
+          const naturalPoseDefaults = getNaturalPoseDefaults(categories);
+          setSelections(naturalPoseDefaults);
         }
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -2906,6 +3002,13 @@ const PhotoElementRandomizer = () => {
       });
     return parts.join(' ');
   }, [selections, includedCategories, mergedCategories]);
+
+  // Save prompt to localStorage for Pose Studio
+  useEffect(() => {
+    if (generatedPrompt) {
+      localStorage.setItem('currentPrompt', generatedPrompt);
+    }
+  }, [generatedPrompt]);
 
   // Optimized event handlers with useCallback
   const navigate = useCallback((category, direction) => {
@@ -3886,7 +3989,7 @@ const PhotoElementRandomizer = () => {
   const isFaceAndHead = expandedGroup === 4;
 
   return (
-    <FeedbackProvider>
+    <>
       <ShortcutHandler
         onNextCategory={navigateNextCategory}
         onPrevCategory={navigatePrevCategory}
@@ -3934,28 +4037,39 @@ const PhotoElementRandomizer = () => {
               <span className="app-sidebar-logo-text">Studio</span>
             </div>
 
-            <nav className="app-sidebar-nav">
-              <button className="app-sidebar-item app-sidebar-item-active">
-                <span className="app-sidebar-item-dot" />
-                <span className="app-sidebar-item-label">AI Image Generator</span>
-              </button>
-              <button 
-                className="app-sidebar-item"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.hash = '#face-photos';
-                  window.dispatchEvent(new HashChangeEvent('hashchange'));
-                }}
-              >
-                <span className="app-sidebar-item-dot" />
-                <span className="app-sidebar-item-label">Upload Face Photo</span>
-              </button>
-              <button className="app-sidebar-item">
-                <span className="app-sidebar-item-dot" />
-                <span className="app-sidebar-item-label">Pose Studio</span>
-              </button>
-            </nav>
+            {/* Navigation menu - hidden in production, visible in development */}
+            {__ENABLE_PACKAGES__ && (
+              <nav className="app-sidebar-nav">
+                <button className="app-sidebar-item app-sidebar-item-active">
+                  <span className="app-sidebar-item-dot" />
+                  <span className="app-sidebar-item-label">AI Image Generator</span>
+                </button>
+                <button 
+                  className="app-sidebar-item"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.hash = '#face-photos';
+                    window.dispatchEvent(new HashChangeEvent('hashchange'));
+                  }}
+                >
+                  <span className="app-sidebar-item-dot" />
+                  <span className="app-sidebar-item-label">Upload Face Photo</span>
+                </button>
+                <button 
+                  className="app-sidebar-item"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.hash = '#pose-studio';
+                    window.dispatchEvent(new HashChangeEvent('hashchange'));
+                  }}
+                >
+                  <span className="app-sidebar-item-dot" />
+                  <span className="app-sidebar-item-label">Pose Studio</span>
+                </button>
+              </nav>
+            )}
 
             {/* Category Tabs - moved to sidebar */}
             <CategoryTabs
@@ -4000,7 +4114,8 @@ const PhotoElementRandomizer = () => {
                     justifyContent: 'center',
                     transform: isFaceAndHead ? 'scale(1.6) translateY(2%)' : 'scale(0.9)',
                     transformOrigin: 'center 30%',
-                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                    overflow: 'hidden'
                   }}
                 >
                   <FigureCanvas
@@ -4258,38 +4373,41 @@ const PhotoElementRandomizer = () => {
                   Create Set
                 </button>
 
-                <button
-                  onClick={() => setInstalledPackagesModalOpen(true)}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                  }}
-                  aria-label="Installed packages"
-                  title="Installed packages"
-                >
-                  <Package size={14} />
-                  Packages
-                </button>
+                {/* Packages button - hidden in production, visible in development */}
+                {__ENABLE_PACKAGES__ && (
+                  <button
+                    onClick={() => setInstalledPackagesModalOpen(true)}
+                    style={{
+                      width: '100%',
+                      background: 'transparent',
+                      color: 'rgba(255, 255, 255, 0.7)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      padding: '10px 12px',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    }}
+                    aria-label="Installed packages"
+                    title="Installed packages"
+                  >
+                    <Package size={14} />
+                    Packages
+                  </button>
+                )}
 
                 <button
                   onClick={() => setStatsModalOpen(true)}
@@ -4332,8 +4450,8 @@ const PhotoElementRandomizer = () => {
 
       <Footer />
 
-      {/* Installed Packages Modal */}
-      {installedPackagesModalOpen && (
+      {/* Installed Packages Modal - hidden in production, visible in development */}
+      {__ENABLE_PACKAGES__ && installedPackagesModalOpen && (
         <InstalledPackagesModal
           isOpen={installedPackagesModalOpen}
           onClose={() => setInstalledPackagesModalOpen(false)}
@@ -5956,40 +6074,21 @@ const PhotoElementRandomizer = () => {
       </div>
 
       {/* Word Buttons Bar - Fixed at bottom of page (outside layout-container) */}
-      {currentCategoryOptions.length > 0 && !statsModalOpen && !saveModalOpen && !addOptionModalOpen && !installedPackagesModalOpen && !createSetModalOpen && (
-        <div 
-          className="word-button-bar-container"
-          style={{
-            position: 'fixed',
-            bottom: '44px',
-            left: '220px',
-            right: '140px',
-            zIndex: 9999,
-            padding: '16px 24px',
-            background: '#0f0f12',
-            borderTop: '1px solid rgba(255, 255, 255, 0.04)',
-            boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.3)',
-            width: 'auto',
-            display: 'block',
-            visibility: 'visible',
-            opacity: 1
-          }}
-        >
-          <WordButtonBar
-            category={activeCategory}
-            options={currentCategoryOptions}
-            currentIndex={currentCategoryIndex}
-            categoryColor={categoryColors[activeCategory] || '#b39ddb'}
-            isIncluded={includedCategories[activeCategory] !== false}
-            onSelect={(index) => selectOption(activeCategory, index)}
-            categoryDisplayName={categoryDisplayNames[activeCategory]}
-            favorites={userFavorites}
-            onToggleFavorite={toggleFavorite}
-            isLoggedIn={!!user}
-          />
-        </div>
+      {currentCategoryOptions.length > 0 && !statsModalOpen && !saveModalOpen && !addOptionModalOpen && !installedPackagesModalOpen && !createSetModalOpen && !showFirstTimeExperience && !buyCreditsModalOpen && (
+        <WordButtonBar
+          category={activeCategory}
+          options={currentCategoryOptions}
+          currentIndex={currentCategoryIndex}
+          categoryColor={categoryColors[activeCategory] || '#b39ddb'}
+          isIncluded={includedCategories[activeCategory] !== false}
+          onSelect={(index) => selectOption(activeCategory, index)}
+          categoryDisplayName={categoryDisplayNames[activeCategory]}
+          favorites={userFavorites}
+          onToggleFavorite={toggleFavorite}
+          isLoggedIn={!!user}
+        />
       )}
-    </FeedbackProvider>
+    </>
   );
 };
 

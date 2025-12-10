@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X, Gem } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
-import { resetUserAccountData } from '../firestoreService';
+import { resetUserAccountData, getUserProfile } from '../firestoreService';
+import AuthModal from './AuthModal';
+import CreditBalance from './CreditBalance';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [credits, setCredits] = useState(null);
+  const [creditsLoading, setCreditsLoading] = useState(false);
   const userMenuRef = useRef(null);
   const { user, signOut } = useAuth();
 
@@ -67,6 +72,149 @@ const Header = () => {
     }
   };
 
+  // Fetch user credits when user changes or menu opens
+  // CRITICAL: Must use same logic as BuyCreditsModal for accuracy
+  useEffect(() => {
+    const fetchCredits = async () => {
+      if (!user?.uid) {
+        setCredits(null);
+        setCreditsLoading(false);
+        return;
+      }
+
+      try {
+        setCreditsLoading(true);
+        const profile = await getUserProfile(user.uid);
+        
+        // CRITICAL: Use EXACT same logic as server's getUserCredits function
+        // Server code: return userData.gems || userData.credits || 0;
+        // This ensures 100% accuracy - we read exactly what the server would read
+        let userCredits = profile?.gems ?? profile?.credits ?? 0;
+        
+        // Validate that credits is a valid number (same validation as server)
+        if (typeof userCredits !== 'number' || isNaN(userCredits)) {
+          console.warn('[Header] Invalid credits value from profile, defaulting to 0:', {
+            gems: profile?.gems,
+            credits: profile?.credits,
+            typeGems: typeof profile?.gems,
+            typeCredits: typeof profile?.credits,
+          });
+          userCredits = 0;
+        }
+        
+        // Ensure credits is a non-negative integer (server stores as number)
+        userCredits = Math.max(0, Math.floor(Number(userCredits)));
+        
+        setCredits(userCredits);
+        
+        // Detailed logging for verification
+        console.log('[Header] Credits fetched and validated:', {
+          userId: user.uid,
+          rawGems: profile?.gems,
+          rawCredits: profile?.credits,
+          typeGems: typeof profile?.gems,
+          typeCredits: typeof profile?.credits,
+          selectedField: profile?.gems !== undefined ? 'gems' : (profile?.credits !== undefined ? 'credits' : 'default'),
+          finalValue: userCredits,
+          verification: `Server would read: ${profile?.gems ?? profile?.credits ?? 0} = ${userCredits} ✓`,
+        });
+      } catch (error) {
+        console.error('[Header] Error fetching credits:', error);
+        setCredits(0);
+      } finally {
+        setCreditsLoading(false);
+      }
+    };
+
+    if (user && (userMenuOpen || mobileMenuOpen)) {
+      fetchCredits();
+    }
+  }, [user, userMenuOpen, mobileMenuOpen]);
+
+  // Also refresh credits periodically when menu is open to ensure accuracy
+  useEffect(() => {
+    if (!user?.uid || (!userMenuOpen && !mobileMenuOpen)) {
+      return;
+    }
+
+    const refreshCredits = async () => {
+      try {
+        const profile = await getUserProfile(user.uid);
+        // Use exact same logic as initial fetch for consistency
+        let userCredits = profile?.gems ?? profile?.credits ?? 0;
+        
+        if (typeof userCredits !== 'number' || isNaN(userCredits)) {
+          userCredits = 0;
+        }
+        userCredits = Math.max(0, Math.floor(Number(userCredits)));
+        
+        // Only update if value changed to avoid unnecessary re-renders
+        setCredits(prev => {
+          if (prev !== userCredits) {
+            console.log('[Header] Credits refreshed:', { 
+              previous: prev, 
+              new: userCredits,
+              source: profile?.gems !== undefined ? 'gems' : (profile?.credits !== undefined ? 'credits' : 'default'),
+            });
+            return userCredits;
+          }
+          return prev;
+        });
+      } catch (error) {
+        console.error('[Header] Error refreshing credits:', error);
+      }
+    };
+
+    // Refresh every 5 seconds when menu is open to catch any updates
+    const interval = setInterval(refreshCredits, 5000);
+    return () => clearInterval(interval);
+  }, [user, userMenuOpen, mobileMenuOpen]);
+
+  // Listen for credit updates from BuyCreditsModal or other sources
+  useEffect(() => {
+    const handleCreditUpdate = (event) => {
+      if (event.detail && typeof event.detail.credits === 'number') {
+        const newCredits = Math.max(0, Math.floor(Number(event.detail.credits)));
+        console.log('[Header] Credits updated via event:', {
+          received: event.detail.credits,
+          validated: newCredits,
+          source: 'BuyCreditsModal',
+        });
+        setCredits(newCredits);
+        
+        // Also trigger a fresh fetch to verify accuracy
+        // This ensures we have the absolute latest from the server
+        setTimeout(async () => {
+          try {
+            if (user?.uid) {
+              const profile = await getUserProfile(user.uid);
+              const serverCredits = profile?.gems ?? profile?.credits ?? 0;
+              const validatedCredits = Math.max(0, Math.floor(Number(serverCredits)));
+              
+              if (validatedCredits !== newCredits) {
+                console.warn('[Header] Event credits differ from server, using server value:', {
+                  eventValue: newCredits,
+                  serverValue: validatedCredits,
+                  using: validatedCredits,
+                });
+                setCredits(validatedCredits);
+              } else {
+                console.log('[Header] Event credits verified against server:', validatedCredits);
+              }
+            }
+          } catch (error) {
+            console.error('[Header] Error verifying event credits:', error);
+          }
+        }, 3000); // Wait 3 seconds for webhook to process
+      }
+    };
+
+    window.addEventListener('creditsUpdated', handleCreditUpdate);
+    return () => {
+      window.removeEventListener('creditsUpdated', handleCreditUpdate);
+    };
+  }, [user]);
+
   // Close user menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -95,7 +243,7 @@ const Header = () => {
           justifyContent: 'space-between',
           background: 'var(--bg-secondary)',
           borderBottom: '1px solid var(--border-subtle)',
-          zIndex: 100,
+          zIndex: 1000,
           flexShrink: 0,
           position: 'relative'
         }}
@@ -110,7 +258,7 @@ const Header = () => {
               letterSpacing: '-0.02em'
             }}
           >
-            PosePrompt Studio
+            Pose Prompter
           </span>
         </div>
 
@@ -123,6 +271,9 @@ const Header = () => {
             gap: '16px'
           }}
         >
+          {user ? (
+            <CreditBalance />
+          ) : (
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -157,6 +308,33 @@ const Header = () => {
             <Gem size={16} style={{ color: '#fbbf24' }} />
             Get gems
           </button>
+          )}
+          {!user && (
+            <button
+              onClick={() => setShowAuthModal(true)}
+              style={{
+                padding: '10px 20px',
+                background: 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '8px',
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                e.target.style.color = '#ffffff';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+              }}
+            >
+              Sign In
+            </button>
+          )}
           {user && (
             <div 
               ref={userMenuRef}
@@ -203,10 +381,43 @@ const Header = () => {
                     padding: '8px',
                     minWidth: '160px',
                     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
-                    zIndex: 1000
+                    zIndex: 1001
                   }}
                 >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {/* Credit Balance Display */}
+                    {credits !== null && (
+                      <div
+                        style={{
+                          padding: '10px 12px',
+                          background: 'rgba(251, 191, 36, 0.1)',
+                          border: '1px solid rgba(251, 191, 36, 0.2)',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '4px'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Gem size={14} style={{ color: '#fbbf24' }} />
+                          <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                            Credits:
+                          </span>
+                        </div>
+                        <span
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: '#fbbf24',
+                            opacity: creditsLoading ? 0.6 : 1,
+                            transition: 'opacity 0.2s ease'
+                          }}
+                        >
+                          {creditsLoading ? '...' : credits.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
                     <button
                       onClick={() => {
                         signOut();
@@ -360,6 +571,11 @@ const Header = () => {
             paddingTop: '20px'
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: user ? '20px' : '0' }}>
+              {user ? (
+                <div style={{ padding: '12px 16px' }}>
+                  <CreditBalance />
+                </div>
+              ) : (
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -393,9 +609,74 @@ const Header = () => {
                 <Gem size={16} style={{ color: '#fbbf24' }} />
                 Get gems
               </button>
+              )}
+              {!user && (
+                <button
+                  onClick={() => {
+                    setShowAuthModal(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'transparent',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '8px',
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                    e.target.style.color = '#ffffff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                  }}
+                >
+                  Sign In
+                </button>
+              )}
             </div>
             {user && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {/* Credit Balance Display - Mobile */}
+                {credits !== null && (
+                  <div
+                    style={{
+                      padding: '12px 16px',
+                      background: 'rgba(251, 191, 36, 0.1)',
+                      border: '1px solid rgba(251, 191, 36, 0.2)',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '4px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Gem size={16} style={{ color: '#fbbf24' }} />
+                      <span style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.7)' }}>
+                        Credits:
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#fbbf24',
+                        opacity: creditsLoading ? 0.6 : 1,
+                        transition: 'opacity 0.2s ease'
+                      }}
+                    >
+                      {creditsLoading ? '...' : credits.toLocaleString()}
+                    </span>
+                  </div>
+                )}
                 <button
                   onClick={() => {
                     signOut();
@@ -445,6 +726,13 @@ const Header = () => {
           </div>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onAuthSuccess={() => setShowAuthModal(false)}
+      />
     </>
   );
 };

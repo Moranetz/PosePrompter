@@ -1,4 +1,4 @@
-# PosePrompt Studio
+# Pose Prompter
 
 A creative tool for generating detailed photo prompts with an interactive articulated figure preview. Build, customize, and share prompt collections with a beautiful, intuitive interface.
 
@@ -42,7 +42,7 @@ A creative tool for generating detailed photo prompts with an interactive articu
 
 ```bash
 git clone <repository-url>
-cd "PosePrompt Studio"
+cd "Pose Prompter"
 ```
 
 ### 2. Install Dependencies
@@ -65,7 +65,7 @@ npm install
 #### Step 2: Register Your Web App
 
 1. In your Firebase project dashboard, click the **Web icon** (`</>`) to add a web app
-2. Register your app with a nickname (e.g., "PosePrompt Studio")
+2. Register your app with a nickname (e.g., "Pose Prompter")
 3. (Optional) Check "Also set up Firebase Hosting"
 4. Click **"Register app"**
 
@@ -298,7 +298,7 @@ If you prefer to set up rules manually in the Firebase Console:
 ## Project Structure
 
 ```
-PosePrompt Studio/
+Pose Prompter/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── ArticulatedFigure/

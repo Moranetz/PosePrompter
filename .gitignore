@@ -7,10 +7,18 @@ node_modules/
 .env.production
 .env.production.local
 .env.development.local
+.env.*.local
 
 # Build outputs
 dist/
 build/
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # IDE
 .vscode/
@@ -22,10 +30,33 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+server-test-output.txt
+test-out.txt
 
+# Server environment variables
+server/.env
+server/.env.local
+server/.env.production
+
+# Firebase service account JSON files
+*-firebase*.json
+*service-account*.json
+pose-prompter*.json
+*credentials*.json
+
+# Test output files
+*.test.txt
+*-test-output.txt
+test-out.txt
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

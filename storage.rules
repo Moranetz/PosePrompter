@@ -65,6 +65,23 @@ service firebase.storage {
                        request.auth.uid == userId;
     }
     
+    // Generated images: Users can only access their own generated images
+    match /users/{userId}/generations/{fileName} {
+      // Allow read by anyone (for displaying generated images)
+      allow read: if true;
+      
+      // Allow write only if user is authenticated and uploading to their own folder
+      // Note: Backend API handles uploads, but this allows direct client uploads if needed
+      allow write: if isAuthenticated() && 
+                      request.auth.uid == userId &&
+                      isImage() &&
+                      isUnderSizeLimit();
+      
+      // Allow delete only if user owns the file
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == userId;
+    }
+    
     // Deny all other access
     match /{allPaths=**} {
       allow read, write: if false;

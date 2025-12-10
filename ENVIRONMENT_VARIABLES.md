@@ -1,6 +1,6 @@
 # Environment Variables Guide
 
-This document explains all environment variables required for PosePrompt Studio.
+This document explains all environment variables required for Pose Prompter.
 
 ## Required Variables
 
@@ -19,6 +19,34 @@ These variables are required for Firebase to work. Get them from your Firebase p
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID | `123456789012` | Yes |
 | `VITE_FIREBASE_APP_ID` | Firebase app ID | `1:123456789012:web:abcdef1234567890` | Yes |
 | `VITE_FIREBASE_MEASUREMENT_ID` | Firebase Analytics measurement ID | `G-XXXXXXXXXX` | No (optional) |
+
+### AI Image Generation API Keys
+
+These variables are required for AI image generation features. Get them from the respective provider dashboards.
+
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `VITE_REPLICATE_API_TOKEN` | Replicate API token (for Flux, SDXL) | `r8_xxxxxxxxxxxxx` | No (required for Flux/SDXL) |
+| `VITE_OPENAI_API_KEY` | OpenAI API key (for DALL-E 3) | `sk-xxxxxxxxxxxxx` | No (required for DALL-E 3) |
+
+**Note:** These are client-side variables. For backend API server, use the same keys without the `VITE_` prefix in the server's `.env` file.
+
+### Backend Server Environment Variables
+
+The backend API server (`server/` directory) requires additional environment variables:
+
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `STRIPE_SECRET_KEY` | Stripe secret key | `sk_test_xxxxxxxxxxxxx` | Yes (for payments) |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret | `whsec_xxxxxxxxxxxxx` | Yes (for webhooks) |
+| `REPLICATE_API_TOKEN` | Replicate API token | `r8_xxxxxxxxxxxxx` | Yes (for image generation) |
+| `OPENAI_API_KEY` | OpenAI API key | `sk-xxxxxxxxxxxxx` | Yes (for DALL-E 3) |
+| `FIREBASE_SERVICE_ACCOUNT` | Firebase Admin service account JSON (stringified) | `{"type":"service_account",...}` | Yes (or use individual vars below) |
+| `FIREBASE_PROJECT_ID` | Firebase project ID | `your-project-id` | Yes (if not using FIREBASE_SERVICE_ACCOUNT) |
+| `FIREBASE_CLIENT_EMAIL` | Firebase service account email | `firebase-adminsdk@...` | Yes (if not using FIREBASE_SERVICE_ACCOUNT) |
+| `FIREBASE_PRIVATE_KEY` | Firebase service account private key | `-----BEGIN PRIVATE KEY-----\n...` | Yes (if not using FIREBASE_SERVICE_ACCOUNT) |
+| `CLIENT_URL` | Frontend URL for CORS | `http://localhost:5173` | Yes |
+| `PORT` | Server port | `3001` | No (defaults to 3001) |
 
 ## Environment Files
 
@@ -164,6 +192,37 @@ VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 VITE_FIREBASE_MEASUREMENT_ID=
+
+# AI Image Generation (optional - only if using image generation)
+VITE_REPLICATE_API_TOKEN=
+VITE_OPENAI_API_KEY=
+```
+
+### Backend Server (`.env` in `server/` directory)
+
+Create a `.env` file in the `server/` directory:
+
+```env
+# Stripe Configuration
+STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
+
+# AI Image Generation APIs
+REPLICATE_API_TOKEN=r8_xxxxxxxxxxxxx
+OPENAI_API_KEY=sk-xxxxxxxxxxxxx
+
+# Firebase Admin (choose one method)
+# Method 1: Service account JSON (stringified)
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"..."}
+
+# Method 2: Individual variables
+# FIREBASE_PROJECT_ID=your-project-id
+# FIREBASE_CLIENT_EMAIL=firebase-adminsdk@your-project.iam.gserviceaccount.com
+# FIREBASE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+
+# Server Configuration
+CLIENT_URL=http://localhost:5173
+PORT=3001
 ```
 
 ## Additional Resources

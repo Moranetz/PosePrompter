@@ -1,4 +1,4 @@
-# Design System: PosePrompt Studio - Dress-Up Game Interface
+# Design System: Pose Prompter - Dress-Up Game Interface
 
 ## Design Philosophy
 

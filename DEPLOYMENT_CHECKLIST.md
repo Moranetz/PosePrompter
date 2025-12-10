@@ -1,6 +1,6 @@
 # Deployment Checklist
 
-Use this checklist before deploying PosePrompt Studio to production.
+Use this checklist before deploying Pose Prompter to production.
 
 ## Pre-Deployment
 

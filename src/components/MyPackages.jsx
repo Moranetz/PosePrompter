@@ -350,12 +350,16 @@ const PackageCard = memo(({ pkg, onView, onEdit, onDelete, onPublish }) => {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
+        willChange: 'transform', // Hint for GPU acceleration
+        transform: 'translateZ(0)', // Force GPU layer
       }}
       onHoverStart={(e) => {
+        // Instant updates
         e.currentTarget.style.boxShadow = '0 8px 24px rgba(139, 92, 246, 0.3)';
         e.currentTarget.style.borderColor = '#8b5cf6';
       }}
       onHoverEnd={(e) => {
+        // Instant updates
         e.currentTarget.style.boxShadow = 'none';
         e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
       }}
@@ -470,17 +474,21 @@ const PackageCard = memo(({ pkg, onView, onEdit, onDelete, onPublish }) => {
               fontSize: '14px',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              transition: 'transform 0.1s ease, box-shadow 0.1s ease', // Only animate transform/shadow, colors change instantly
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '6px',
+              willChange: 'background-color, border-color, transform', // Hint for GPU acceleration
+              transform: 'translateZ(0)', // Force GPU layer
             }}
             onMouseEnter={(e) => {
+              // Instant color change
               e.target.style.background = 'rgba(255, 255, 255, 0.1)';
               e.target.style.borderColor = '#8b5cf6';
             }}
             onMouseLeave={(e) => {
+              // Instant color change
               e.target.style.background = 'rgba(255, 255, 255, 0.05)';
               e.target.style.borderColor = 'rgba(139, 92, 246, 0.3)';
             }}
@@ -489,7 +497,7 @@ const PackageCard = memo(({ pkg, onView, onEdit, onDelete, onPublish }) => {
             View
           </button>
           {status === 'draft' && (
-            <button
+            <motion.button
               onClick={onPublish}
               style={{
                 padding: '10px',
@@ -500,15 +508,17 @@ const PackageCard = memo(({ pkg, onView, onEdit, onDelete, onPublish }) => {
                 fontSize: '14px',
                 fontWeight: '500',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                willChange: 'transform, background-color', // Hint for GPU acceleration
+                transform: 'translateZ(0)', // Force GPU layer
               }}
               whileHover={{ backgroundColor: 'rgba(34, 197, 94, 0.3)' }}
               whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.1 }} // Faster animation
             >
               Publish
-            </button>
+            </motion.button>
           )}
-          <button
+          <motion.button
             onClick={onEdit}
             style={{
               padding: '10px',
@@ -518,10 +528,12 @@ const PackageCard = memo(({ pkg, onView, onEdit, onDelete, onPublish }) => {
               color: '#ffffff',
               fontSize: '14px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              willChange: 'transform, background-color, border-color', // Hint for GPU acceleration
+              transform: 'translateZ(0)', // Force GPU layer
             }}
             whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', borderColor: '#8b5cf6' }}
             whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.1 }} // Faster animation
           >
             <Edit2 size={16} />
           </motion.button>
@@ -535,12 +547,15 @@ const PackageCard = memo(({ pkg, onView, onEdit, onDelete, onPublish }) => {
               color: '#fca5a5',
               fontSize: '14px',
               cursor: 'pointer',
+              willChange: 'transform, background-color', // Hint for GPU acceleration
+              transform: 'translateZ(0)', // Force GPU layer
             }}
             whileHover={{ backgroundColor: 'rgba(239, 68, 68, 0.3)' }}
             whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.1 }} // Faster animation
           >
             <Trash2 size={16} />
-          </button>
+          </motion.button>
         </div>
       </div>
     </motion.div>

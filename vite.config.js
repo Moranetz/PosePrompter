@@ -51,10 +51,17 @@ export default defineConfig({
     },
   },
   
+  // Define replacements for build-time constants
+  define: {
+    __ENABLE_PACKAGES__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+  },
+  
   // Build optimizations
   build: {
-    // Generate source maps for production debugging
-    sourcemap: true,
+    // Disable source maps in production for better security (code structure hidden)
+    // Source maps are only useful for debugging production issues
+    // Set to false to make reverse engineering harder
+    sourcemap: process.env.NODE_ENV === 'production' ? false : true,
     // Rollup options for better chunk handling
     rollupOptions: {
       output: {

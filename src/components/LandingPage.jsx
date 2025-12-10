@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MousePointer, Zap, Shuffle, ArrowRight, X, RefreshCw, Check, Sparkles, Gem } from 'lucide-react';
+import { MousePointer, Zap, Shuffle, ArrowRight, X, RefreshCw, Check, Sparkles } from 'lucide-react';
 import AuthModal from './AuthModal';
 
 // Pain points that resonate with the target audience
@@ -83,44 +83,10 @@ const LandingPage = ({ onAuthSuccess }) => {
           color: 'rgba(255,255,255,0.7)',
           letterSpacing: '-0.3px'
         }}>
-          PosePrompt Studio
+          Pose Prompter
         </span>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={() => {
-              window.location.hash = '#pricing';
-            }}
-            style={{
-              padding: '10px 20px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#ffffff',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-              e.target.style.transform = 'translateY(-1px)';
-              e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
-            }}
-          >
-            <Gem size={16} style={{ color: '#fbbf24' }} />
-            Get gems
-          </button>
-
           <button
             onClick={() => setShowAuthModal(true)}
             style={{
@@ -742,7 +708,7 @@ const LandingPage = ({ onAuthSuccess }) => {
           fontSize: '12px',
           color: 'rgba(255,255,255,0.3)'
         }}>
-          PosePrompt Studio
+          Pose Prompter
         </p>
       </footer>
 
