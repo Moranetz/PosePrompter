@@ -17,6 +17,7 @@ import NatureFrame from './components/NatureFrame';
 import ClosetFrame from './components/ClosetFrame';
 import AchievementNotification from './components/AchievementNotification';
 import EngagementStats from './components/EngagementStats';
+import ClothingCategoriesModal from './components/ClothingCategoriesModal';
 import { 
   trackPromptGenerated, 
   trackPromptCopied, 
@@ -31,9 +32,12 @@ import {
   getUserPreferences, 
   getFavoriteCategories,
   getDefaultExpandedGroups,
-  trackSessionDuration
+  trackSessionDuration,
+  getEnabledClothingCategories
 } from './utils/personalizationService';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
+
+const ONBOARDING_STORAGE_KEY = 'poseprompt_onboarding_complete';
 
 const PhotoElementRandomizer = () => {
   // Category display names with proper spacing
@@ -73,38 +77,61 @@ const PhotoElementRandomizer = () => {
   };
 
   // Category groups organized from most static to least static
-  const categoryGroups = [
-    {
-      title: 'Part 1: Background & Environment',
-      description: 'Most static elements - set once for photo bursts',
-      categories: ['Background', 'Props']
-    },
-    {
-      title: 'Part 2: Framing & Composition',
-      description: 'Camera framing and composition settings',
-      categories: ['Framing', 'Perspective', 'CameraAngle', 'CameraType']
-    },
-    {
-      title: 'Part 3: Aesthetic & Style',
-      description: 'Overall aesthetic, lighting, and mood',
-      categories: ['Aesthetic', 'Lighting', 'ColorPalette', 'Texture', 'Mood', 'PhotoStyle']
-    },
-    {
-      title: 'Part 4: Clothes & Styling',
-      description: 'Outfits and styling accessories',
-      categories: ['Outfit', 'OutfitTop', 'OutfitBottom', 'Shoes', 'Jewelry', 'HairAccessories', 'Bags', 'BrandDesigner']
-    },
-    {
-      title: 'Part 5: Face & Head',
-      description: 'Facial features, expressions, and hair',
-      categories: ['HeadPosition', 'FacialExpression', 'Eyes', 'Mouth', 'Hair']
-    },
-    {
-      title: 'Part 6: Body & Pose',
-      description: 'Body positioning and pose - most dynamic',
-      categories: ['BodyPose', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet', 'BodySize']
+  // Filter "Clothes & Styling" based on user preferences
+  const categoryGroups = useMemo(() => {
+    const baseGroups = [
+      {
+        title: 'Part 1: Background & Environment',
+        description: 'Most static elements - set once for photo bursts',
+        categories: ['Background', 'Props']
+      },
+      {
+        title: 'Part 2: Framing & Composition',
+        description: 'Camera framing and composition settings',
+        categories: ['Framing', 'Perspective', 'CameraAngle', 'CameraType']
+      },
+      {
+        title: 'Part 3: Aesthetic & Style',
+        description: 'Overall aesthetic, lighting, and mood',
+        categories: ['Aesthetic', 'Lighting', 'ColorPalette', 'Texture', 'Mood', 'PhotoStyle']
+      },
+      {
+        title: 'Part 4: Clothes & Styling',
+        description: 'Outfits and styling accessories',
+        categories: ['Outfit'] // Always include 'Outfit', add enabled categories below
+      },
+      {
+        title: 'Part 5: Face & Head',
+        description: 'Facial features, expressions, and hair',
+        categories: ['HeadPosition', 'FacialExpression', 'Eyes', 'Mouth', 'Hair']
+      },
+      {
+        title: 'Part 6: Body & Pose',
+        description: 'Body positioning and pose - most dynamic',
+        categories: ['BodyPose', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet', 'BodySize']
+      }
+    ];
+
+    // Filter "Clothes & Styling" categories based on user preferences
+    const clothesGroupIndex = 3;
+    const hasSetPreferences = userPreferences?.preferences?.enabledClothingCategories !== undefined;
+    
+    if (hasCheckedClothingPreferences && hasSetPreferences && user) {
+      // User has explicitly set preferences - respect their choice
+      if (enabledClothingCategories.length === 0) {
+        // User selected nothing - keep only 'Outfit'
+        baseGroups[clothesGroupIndex].categories = ['Outfit'];
+      } else {
+        // User selected some categories - include 'Outfit' + selected ones
+        baseGroups[clothesGroupIndex].categories = ['Outfit', ...enabledClothingCategories];
+      }
+    } else {
+      // No preferences set yet or not logged in - show all (backward compatibility)
+      baseGroups[clothesGroupIndex].categories = ['Outfit', 'OutfitTop', 'OutfitBottom', 'Shoes', 'Jewelry', 'HairAccessories', 'Bags', 'BrandDesigner'];
     }
-  ];
+
+    return baseGroups;
+  }, [enabledClothingCategories, hasCheckedClothingPreferences, user, userPreferences]);
 
   const categories = {
     // ============================================================================
@@ -2691,9 +2718,13 @@ const PhotoElementRandomizer = () => {
   const [editingSet, setEditingSet] = useState(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(null); // set ID or null
   const [showFirstTimeExperience, setShowFirstTimeExperience] = useState(() => {
-    // Check if user has completed onboarding
-    const shouldShow = localStorage.getItem('poseprompt_onboarding_complete') !== 'true';
-    // Apply class immediately if intro should show
+    // If the user is already authenticated, skip onboarding entirely
+    if (user?.uid) {
+      localStorage.setItem(ONBOARDING_STORAGE_KEY, 'true');
+      return false;
+    }
+    // Otherwise, fall back to stored preference
+    const shouldShow = localStorage.getItem(ONBOARDING_STORAGE_KEY) !== 'true';
     if (shouldShow) {
       document.body.classList.add('intro-active');
     }
@@ -2711,6 +2742,16 @@ const PhotoElementRandomizer = () => {
       document.body.classList.remove('intro-active');
     };
   }, [showFirstTimeExperience]);
+
+  // Mark onboarding as complete once a user signs in
+  useEffect(() => {
+    if (user?.uid) {
+      localStorage.setItem(ONBOARDING_STORAGE_KEY, 'true');
+      if (showFirstTimeExperience) {
+        setShowFirstTimeExperience(false);
+      }
+    }
+  }, [user, showFirstTimeExperience]);
 
   // Engagement tracking state
   const [currentAchievement, setCurrentAchievement] = useState(null);
@@ -2820,6 +2861,9 @@ const PhotoElementRandomizer = () => {
   // Personalization state
   const [userPreferences, setUserPreferences] = useState(null);
   const [favoriteCategories, setFavoriteCategories] = useState([]);
+  const [enabledClothingCategories, setEnabledClothingCategories] = useState([]);
+  const [clothingCategoriesModalOpen, setClothingCategoriesModalOpen] = useState(false);
+  const [hasCheckedClothingPreferences, setHasCheckedClothingPreferences] = useState(false);
   const sessionStartTime = useRef(Date.now());
 
   // Load user data from Firestore
@@ -2861,9 +2905,17 @@ const PhotoElementRandomizer = () => {
             const favorites = await getFavoriteCategories(user.uid, 5);
             setFavoriteCategories(favorites);
             
+            // Load enabled clothing categories
+            const enabledClothing = await getEnabledClothingCategories(user.uid);
+            setEnabledClothingCategories(enabledClothing || []);
+            setHasCheckedClothingPreferences(true);
+            
             // Set default expanded groups based on preferences
             const defaultGroups = await getDefaultExpandedGroups(user.uid, [2]);
             setExpandedGroup(defaultGroups[0] || 2);
+          } else {
+            // No preferences yet, mark as checked so we can show modal on first expand
+            setHasCheckedClothingPreferences(true);
           }
         } else {
           // Initialize user document if it doesn't exist (new account)
@@ -4086,7 +4138,20 @@ const PhotoElementRandomizer = () => {
               onToggleInclude={toggleInclude}
               isLoggedIn={!!user}
               onAddCustomOption={handleAddCustomOption}
-              onExpandedGroupChange={setExpandedGroup}
+              onExpandedGroupChange={(groupIndex) => {
+                setExpandedGroup(groupIndex);
+                // Show modal when user first expands "Clothes & Styling" (index 3) if no preferences set
+                if (groupIndex === 3 && hasCheckedClothingPreferences && user) {
+                  // Check if user has ever set preferences
+                  const hasSetPreferences = userPreferences?.preferences?.enabledClothingCategories !== undefined;
+                  if (!hasSetPreferences) {
+                    // First time expanding - show modal to let user choose
+                    setClothingCategoriesModalOpen(true);
+                  }
+                }
+              }}
+              onOpenClothingSettings={() => setClothingCategoriesModalOpen(true)}
+              expandedGroup={expandedGroup}
             />
           </aside>
 
@@ -4452,6 +4517,22 @@ const PhotoElementRandomizer = () => {
 
       {/* Installed Packages Modal - hidden in production, visible in development */}
       {__ENABLE_PACKAGES__ && installedPackagesModalOpen && (
+        <ClothingCategoriesModal
+          isOpen={clothingCategoriesModalOpen}
+          onClose={() => setClothingCategoriesModalOpen(false)}
+          onSave={(selectedCategories) => {
+            setEnabledClothingCategories(selectedCategories);
+            // Reload preferences to ensure consistency
+            if (user?.uid) {
+              getUserPreferences(user.uid).then(prefs => {
+                if (prefs) {
+                  setUserPreferences(prefs);
+                }
+              });
+            }
+          }}
+        />
+
         <InstalledPackagesModal
           isOpen={installedPackagesModalOpen}
           onClose={() => setInstalledPackagesModalOpen(false)}

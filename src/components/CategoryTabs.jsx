@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CategoryTabs = ({
@@ -16,7 +16,9 @@ const CategoryTabs = ({
   onToggleInclude,
   isLoggedIn,
   onAddCustomOption,
-  onExpandedGroupChange
+  onExpandedGroupChange,
+  onOpenClothingSettings,
+  expandedGroup
 }) => {
   const [expandedGroup, setExpandedGroup] = useState(2); // Start with "Aesthetic & Style" (most used)
   const activeButtonRef = useRef(null);
@@ -75,54 +77,97 @@ const CategoryTabs = ({
         {categoryGroups.map((group, index) => {
           const isExpanded = expandedGroup === index;
           const activeCategoryInGroup = group.categories.find(cat => cat === activeCategory);
+          const isClothingGroup = index === 3; // "Clothes & Styling" is index 3
           
           return (
-            <motion.button
+            <div
               key={index}
-              onClick={() => {
-                setExpandedGroup(index);
-                if (onExpandedGroupChange) {
-                  onExpandedGroupChange(index);
-                }
-                if (group.categories.length > 0) {
-                  onCategorySelect(group.categories[0]);
-                }
-              }}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
               style={{
-                padding: '10px 14px',
-                width: '100%',
-                background: isExpanded
-                  ? 'rgba(24, 24, 28, 0.9)'
-                  : 'transparent',
-                border: 'none',
-                borderLeft: isExpanded
-                  ? '3px solid #14b8a6'
-                  : '3px solid transparent',
-                borderRadius: '6px',
-                color: isExpanded
-                  ? '#f4f4f5'
-                  : activeCategoryInGroup
-                    ? '#e5e5e5'
-                    : '#a1a1aa',
-                fontSize: '13px',
-                fontWeight: isExpanded ? '600' : '500',
-                letterSpacing: '-0.01em',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                position: 'relative',
-                boxShadow: isExpanded
-                  ? '0 2px 8px rgba(0,0,0,0.3)'
-                  : 'none'
+                gap: '4px'
               }}
             >
-              {group.title.replace(/Part \d+: /, '')}
-            </motion.button>
+              <motion.button
+                onClick={() => {
+                  setExpandedGroup(index);
+                  if (onExpandedGroupChange) {
+                    onExpandedGroupChange(index);
+                  }
+                  if (group.categories.length > 0) {
+                    onCategorySelect(group.categories[0]);
+                  }
+                }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                style={{
+                  padding: '10px 14px',
+                  flex: 1,
+                  background: isExpanded
+                    ? 'rgba(24, 24, 28, 0.9)'
+                    : 'transparent',
+                  border: 'none',
+                  borderLeft: isExpanded
+                    ? '3px solid #14b8a6'
+                    : '3px solid transparent',
+                  borderRadius: '6px',
+                  color: isExpanded
+                    ? '#f4f4f5'
+                    : activeCategoryInGroup
+                      ? '#e5e5e5'
+                      : '#a1a1aa',
+                  fontSize: '13px',
+                  fontWeight: isExpanded ? '600' : '500',
+                  letterSpacing: '-0.01em',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: isExpanded
+                    ? '0 2px 8px rgba(0,0,0,0.3)'
+                    : 'none'
+                }}
+              >
+                {group.title.replace(/Part \d+: /, '')}
+              </motion.button>
+              {isClothingGroup && isLoggedIn && onOpenClothingSettings && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenClothingSettings();
+                  }}
+                  style={{
+                    padding: '8px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    color: isExpanded ? '#a1a1aa' : '#71717a',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.color = '#f4f4f5';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.color = isExpanded ? '#a1a1aa' : '#71717a';
+                  }}
+                  title="Configure clothing categories"
+                >
+                  <Settings size={14} />
+                </button>
+              )}
+            </div>
           );
         })}
       </div>

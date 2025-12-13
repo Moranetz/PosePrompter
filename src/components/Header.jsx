@@ -472,6 +472,7 @@ const Header = () => {
                         e.currentTarget.style.background = 'transparent';
                         e.currentTarget.style.color = 'rgba(248, 113, 113, 0.9)';
                       }}
+                      title="Restart clears favorites and local data but keeps your credits."
                     >
                       {isRestarting ? 'Restarting…' : 'Restart account'}
                     </button>
@@ -718,6 +719,7 @@ const Header = () => {
                     opacity: isRestarting ? 0.6 : 0.9,
                     transition: 'all 0.2s ease'
                   }}
+                  title="Restart clears favorites and local data but keeps your credits."
                 >
                   {isRestarting ? 'Restarting…' : 'Restart account'}
                 </button>

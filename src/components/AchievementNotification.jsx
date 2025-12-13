@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Sparkles, X } from 'lucide-react';
+import Confetti from './Animations/Confetti';
 
 /**
  * AchievementNotification - Shows when user unlocks achievements
@@ -11,29 +13,40 @@ import { Trophy, Sparkles, X } from 'lucide-react';
 
 const AchievementNotification = ({ achievement, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
     if (achievement) {
       setIsVisible(true);
       
-      // Play achievement sound
-      try {
-        // Try to play the sound file from public folder
-        const audio = new Audio('/achievement-sound.mp3');
-        audio.volume = 0.5; // Set volume to 50% to avoid being too loud
-        audio.play().catch(error => {
-          // Silently fail if audio can't play (e.g., user hasn't interacted with page yet)
-          console.log('Could not play achievement sound:', error);
-        });
-        audioRef.current = audio;
-      } catch (error) {
-        console.log('Error loading achievement sound:', error);
+      // Check if user is active enough to perceive the celebration
+      // Only show confetti and play sound if page is visible and document has focus
+      const isUserActive = typeof document !== 'undefined' && 
+                           document.visibilityState === 'visible' && 
+                           document.hasFocus();
+      
+      if (isUserActive) {
+        setShowConfetti(true);
+        
+        // Play achievement sound
+        try {
+          const audio = new Audio('/achievement-sound.mp3');
+          audio.volume = 0.5; // Set volume to 50% to avoid being too loud
+          audio.play().catch(error => {
+            // Silently fail if audio can't play (e.g., user hasn't interacted with page yet)
+            console.log('Could not play achievement sound:', error);
+          });
+          audioRef.current = audio;
+        } catch (error) {
+          console.log('Error loading achievement sound:', error);
+        }
       }
       
       // Auto-dismiss after 5 seconds
       const timer = setTimeout(() => {
         setIsVisible(false);
+        setShowConfetti(false);
         setTimeout(() => onClose?.(), 300);
       }, 5000);
       return () => {
@@ -50,34 +63,41 @@ const AchievementNotification = ({ achievement, onClose }) => {
   if (!achievement || !isVisible) return null;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -20, scale: 0.95 }}
-        transition={{ 
-          type: 'spring', 
-          stiffness: 300, 
-          damping: 25 
-        }}
-        style={{
-          position: 'fixed',
-          top: '32px',
-          right: '32px',
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-          border: '2px solid rgba(251, 191, 36, 0.4)',
-          borderRadius: '16px',
-          padding: '20px 24px',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(251, 191, 36, 0.1)',
-          zIndex: 10000,
-          maxWidth: '360px',
-          minWidth: '300px',
-        }}
-      >
+    <>
+      {/* Confetti rendered via portal to ensure it covers entire viewport */}
+      {showConfetti && typeof document !== 'undefined' && document.body && createPortal(
+        <Confetti zIndex={10003} />,
+        document.body
+      )}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+          transition={{ 
+            type: 'spring', 
+            stiffness: 300, 
+            damping: 25 
+          }}
+          style={{
+            position: 'fixed',
+            top: '32px',
+            right: '32px',
+            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+            border: '2px solid rgba(251, 191, 36, 0.4)',
+            borderRadius: '16px',
+            padding: '20px 24px',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(251, 191, 36, 0.1)',
+            zIndex: 10000,
+            maxWidth: '360px',
+            minWidth: '300px',
+          }}
+        >
         {/* Close button */}
         <motion.button
           onClick={() => {
             setIsVisible(false);
+            setShowConfetti(false);
             setTimeout(() => onClose?.(), 300);
           }}
           whileHover={{ scale: 1.1 }}
@@ -211,6 +231,7 @@ const AchievementNotification = ({ achievement, onClose }) => {
         ))}
       </motion.div>
     </AnimatePresence>
+    </>
   );
 };
 

@@ -265,3 +265,45 @@ export const trackSessionDuration = async (userId, duration) => {
   }
 };
 
+/**
+ * Get enabled clothing categories for user
+ * Returns array of category keys that should be shown in "Clothes & Styling" section
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of enabled clothing category keys
+ */
+export const getEnabledClothingCategories = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+
+    return prefs.preferences.enabledClothingCategories || [];
+  } catch (error) {
+    logger.error('[personalization] Error getting enabled clothing categories:', error);
+    return [];
+  }
+};
+
+/**
+ * Update enabled clothing categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} categories - Array of category keys to enable
+ * @returns {Promise<void>}
+ */
+export const updateEnabledClothingCategories = async (userId, categories) => {
+  if (!userId || !db) return;
+
+  try {
+    await updateUserPreferences(userId, {
+      enabledClothingCategories: categories || [],
+    });
+    logger.log('[personalization] Enabled clothing categories updated');
+  } catch (error) {
+    logger.error('[personalization] Error updating enabled clothing categories:', error);
+    throw error;
+  }
+};
+
