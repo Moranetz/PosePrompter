@@ -17,6 +17,7 @@ import admin from 'firebase-admin';
 import rateLimit from 'express-rate-limit';
 import Replicate from 'replicate';
 import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Load environment variables
 dotenv.config();
@@ -80,6 +81,7 @@ try {
 // Initialize AI clients
 let replicateClient = null;
 let openaiClient = null;
+let geminiClient = null;
 
 const getReplicateClient = () => {
   if (!replicateClient && process.env.REPLICATE_API_TOKEN) {
@@ -97,6 +99,13 @@ const getOpenAIClient = () => {
     });
   }
   return openaiClient;
+};
+
+const getGeminiClient = () => {
+  if (!geminiClient && process.env.GOOGLE_GEMINI_API_KEY) {
+    geminiClient = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
+  }
+  return geminiClient;
 };
 
 // Middleware
@@ -165,6 +174,7 @@ const CREDIT_COSTS = {
   flux: 10,
   sdxl: 8,
   dalle3: 12,
+  nanobanana: 15, // Nano Banana Pro (Gemini) - premium quality
 };
 
 // Credit packages configuration
@@ -265,6 +275,111 @@ const addUserCredits = async (userId, amount) => {
   return newBalance;
 };
 
+/**
+ * Reports an error to the user's account in Firestore for debugging
+ * @param {string} userId - User ID
+ * @param {Error|Object} error - The error object
+ * @param {Object} context - Additional context
+ */
+const reportErrorToAccount = async (userId, error, context = {}) => {
+  if (!userId || !db) return;
+
+  try {
+    // Extract Request ID
+    let requestId = null;
+    const errorMessage = error.message || error.error?.message || JSON.stringify(error);
+    
+    requestId = error.request_id || 
+                error.headers?.['x-request-id'] || 
+                error.requestId ||
+                (errorMessage.match(/Request ID:\s*([a-f0-9-]{36})/i)?.[1]) ||
+                (errorMessage.match(/\b([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\b/i)?.[1]);
+
+    // Determine error type
+    let errorType = 'unknown';
+    if (error.status === 429 || errorMessage.includes('rate limit')) {
+      errorType = 'rate_limit';
+    } else if (error.status === 400 || errorMessage.includes('content policy')) {
+      errorType = 'content_policy';
+    } else if (error.status === 402 || errorMessage.includes('credits')) {
+      errorType = 'credits';
+    } else if (error.status === 500 || error.status === 502 || error.status === 503) {
+      errorType = 'server_error';
+    } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+      errorType = 'network';
+    } else {
+      errorType = 'api_error';
+    }
+
+    const errorReport = {
+      userId,
+      errorType,
+      errorMessage,
+      errorCode: error.code || null,
+      requestId: requestId || null,
+      statusCode: error.status || null,
+      stack: error.stack || null,
+      context: {
+        endpoint: context.endpoint || null,
+        action: context.action || null,
+        metadata: context.metadata || null,
+      },
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      resolved: false,
+    };
+
+    await db.collection('errorReports').add(errorReport);
+    console.log(`[ErrorReport] Error reported to account ${userId}:`, {
+      requestId,
+      errorType,
+      endpoint: context.endpoint,
+    });
+  } catch (reportError) {
+    // Don't throw - error reporting should never break the app
+    console.error('[ErrorReport] Failed to report error to account:', reportError);
+  }
+};
+
+/**
+ * Sanitizes error messages to remove Request IDs and other sensitive information
+ * @param {Error|string} error - The error object or message
+ * @returns {string} Sanitized error message safe for user display
+ */
+const sanitizeErrorMessage = (error) => {
+  let errorMessage = '';
+  
+  if (typeof error === 'string') {
+    errorMessage = error;
+  } else if (error && typeof error === 'object') {
+    // Extract message from error object
+    errorMessage = error.message || error.error?.message || JSON.stringify(error);
+  }
+  
+  // Remove Request ID patterns from error message
+  // Pattern: "Request ID: <uuid>" or "request_id: <uuid>" or just the UUID pattern
+  const requestIdPatterns = [
+    /Request ID:\s*[a-f0-9-]{36}/gi,
+    /request_id:\s*[a-f0-9-]{36}/gi,
+    /requestId:\s*[a-f0-9-]{36}/gi,
+    /\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b/gi,
+  ];
+  
+  let sanitized = errorMessage;
+  requestIdPatterns.forEach(pattern => {
+    sanitized = sanitized.replace(pattern, '').trim();
+  });
+  
+  // Clean up any double spaces or trailing punctuation
+  sanitized = sanitized.replace(/\s+/g, ' ').replace(/[.,;:]\s*$/, '').trim();
+  
+  // If message is empty after sanitization, provide a generic message
+  if (!sanitized) {
+    sanitized = 'An error occurred. Please try again.';
+  }
+  
+  return sanitized;
+};
+
 // Helper function to upload image to Firebase Storage
 const uploadImageToStorage = async (userId, imageUrl, imageId) => {
   if (!db) throw new Error('Firebase Admin not initialized');
@@ -355,7 +470,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
     console.error('[create-payment-intent] Error:', error);
     res.status(500).json({
       error: 'Failed to create payment intent',
-      message: error.message,
+      message: sanitizeErrorMessage(error),
     });
   }
 });
@@ -570,6 +685,82 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
           imageUrl = dalleResponse.data[0]?.url;
           break;
 
+        case 'nanobanana':
+          const gemini = getGeminiClient();
+          if (!gemini) {
+            throw new Error('Google Gemini API not configured');
+          }
+          
+          // Use Gemini 2.0 Flash for image generation (Nano Banana Pro)
+          // Note: Gemini API image generation may use different endpoints
+          // This uses the generative model API
+          const model = gemini.getGenerativeModel({ 
+            model: 'gemini-2.0-flash-exp'
+          });
+          
+          try {
+            // Request image generation
+            const result = await model.generateContent({
+              contents: [{
+                role: 'user',
+                parts: [{ text: prompt }]
+              }],
+              generationConfig: {
+                temperature: 0.7,
+                topK: 40,
+                topP: 0.95,
+                maxOutputTokens: 8192,
+              }
+            });
+            
+            const response = await result.response;
+            
+            // Check for image in response (base64 encoded)
+            const candidates = response.candidates || [];
+            for (const candidate of candidates) {
+              const parts = candidate.content?.parts || [];
+              for (const part of parts) {
+                if (part.inlineData) {
+                  // Found base64 image
+                  imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                  break;
+                }
+              }
+              if (imageUrl) break;
+            }
+            
+            // If no image found, try alternative: use Gemini's image generation API endpoint
+            if (!imageUrl) {
+              const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+              const genResponse = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    contents: [{
+                      parts: [{ text: `Generate an image: ${prompt}` }]
+                    }]
+                  })
+                }
+              );
+              
+              const genData = await genResponse.json();
+              const imageData = genData.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+              if (imageData?.inlineData) {
+                imageUrl = `data:${imageData.inlineData.mimeType};base64,${imageData.inlineData.data}`;
+              }
+            }
+            
+            if (!imageUrl) {
+              throw new Error('No image returned from Nano Banana Pro. The model may not support direct image generation yet.');
+            }
+          } catch (geminiError) {
+            console.error('[nanobanana] Gemini API error:', geminiError);
+            throw new Error(`Nano Banana Pro generation failed: ${geminiError.message || 'Unknown error'}`);
+          }
+          break;
+
         default:
           throw new Error(`Unsupported provider: ${provider}`);
       }
@@ -621,37 +812,58 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
         }
       }
 
+      // Report error to user's account for debugging
+      await reportErrorToAccount(userId, generationError, {
+        endpoint: '/api/generate-image',
+        action: 'image_generation',
+        metadata: { provider, prompt: prompt.substring(0, 100) },
+      });
+
       // Handle specific error types
-      if (generationError.message?.includes('rate limit')) {
+      const errorMessage = generationError.message || '';
+      if (errorMessage.includes('rate limit') || generationError.status === 429) {
         return res.status(429).json({
           error: 'Rate limit exceeded',
           message: 'Please try again in a moment.',
         });
-      } else if (generationError.message?.includes('content policy') || generationError.message?.includes('safety')) {
+      } else if (errorMessage.includes('content policy') || errorMessage.includes('safety') || generationError.status === 400) {
         return res.status(400).json({
           error: 'Content policy violation',
           message: 'Your prompt violates the content policy. Please modify your prompt.',
         });
       }
 
-      throw generationError;
+      // Sanitize error message before throwing
+      const sanitizedError = new Error(sanitizeErrorMessage(generationError));
+      sanitizedError.originalError = generationError; // Keep original for logging
+      throw sanitizedError;
     }
   } catch (error) {
     console.error('[generate-image] Error:', error);
     
+    // Report error to user's account for debugging
+    await reportErrorToAccount(userId, error, {
+      endpoint: '/api/generate-image',
+      action: 'image_generation',
+    });
+    
     // Determine appropriate status code
     let statusCode = 500;
-    if (error.message?.includes('Insufficient credits')) {
+    const errorMessage = error.message || '';
+    if (errorMessage.includes('Insufficient credits')) {
       statusCode = 402;
-    } else if (error.message?.includes('Invalid') || error.message?.includes('Missing')) {
+    } else if (errorMessage.includes('Invalid') || errorMessage.includes('Missing')) {
       statusCode = 400;
-    } else if (error.message?.includes('Unauthorized')) {
+    } else if (errorMessage.includes('Unauthorized')) {
       statusCode = 401;
     }
 
+    // Sanitize error message before sending to user
+    const sanitizedMessage = sanitizeErrorMessage(error);
+
     res.status(statusCode).json({
       error: 'Image generation failed',
-      message: error.message || 'An unknown error occurred',
+      message: sanitizedMessage,
     });
   }
 });
@@ -680,7 +892,7 @@ app.get('/api/credits/balance', authenticateUser, async (req, res) => {
     console.error('[credits/balance] Error:', error);
     res.status(500).json({
       error: 'Failed to get credit balance',
-      message: error.message,
+      message: sanitizeErrorMessage(error),
     });
   }
 });
@@ -719,7 +931,7 @@ app.get('/api/generation-history', authenticateUser, async (req, res) => {
     console.error('[generation-history] Error:', error);
     res.status(500).json({
       error: 'Failed to get generation history',
-      message: error.message,
+      message: sanitizeErrorMessage(error),
     });
   }
 });
@@ -773,7 +985,7 @@ app.post('/api/refund-credits', authenticateUser, async (req, res) => {
     console.error('[refund-credits] Error:', error);
     res.status(500).json({
       error: 'Failed to refund credits',
-      message: error.message,
+      message: sanitizeErrorMessage(error),
     });
   }
 });
@@ -846,7 +1058,7 @@ app.post('/api/confirm-payment', async (req, res) => {
     console.error('[confirm-payment] Error:', error);
     res.status(500).json({
       error: 'Failed to confirm payment',
-      message: error.message,
+      message: sanitizeErrorMessage(error),
     });
   }
 });
@@ -870,11 +1082,12 @@ app.get('/api/health', (req, res) => {
     firebase: !!db,
     replicate: !!getReplicateClient(),
     openai: !!getOpenAIClient(),
+    gemini: !!getGeminiClient(),
   });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server with error handling
+const server = app.listen(PORT, () => {
   console.log(`🚀 PosePrompt Studio API server running on port ${PORT}`);
   console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
   console.log(`💳 Create payment intent: POST http://localhost:${PORT}/api/create-payment-intent`);
@@ -882,4 +1095,26 @@ app.listen(PORT, () => {
   console.log(`🎨 Generate image: POST http://localhost:${PORT}/api/generate-image`);
   console.log(`💰 Get credits: GET http://localhost:${PORT}/api/credits/balance`);
   console.log(`📜 Generation history: GET http://localhost:${PORT}/api/generation-history`);
+});
+
+// Handle server errors gracefully
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use. Please stop the other process or use a different port.`);
+    console.error(`   To find and kill the process: netstat -ano | findstr :${PORT}`);
+  } else {
+    console.error('❌ Server error:', error);
+  }
+  process.exit(1);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  // Don't exit - let the process manager handle restarts
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  // Don't exit - let the process manager handle restarts
 });

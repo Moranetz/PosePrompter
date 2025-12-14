@@ -34,18 +34,60 @@ import { storage, db } from '../firebase-config';
 import { logger } from './logger.js';
 import { getGemBalance } from './paymentService.js';
 
+/**
+ * Sanitizes error messages to remove Request IDs and other sensitive information
+ * @param {Error|string|Object} error - The error object, message, or code
+ * @returns {string} Sanitized error message safe for user display
+ */
+const sanitizeErrorMessage = (error) => {
+  let errorMessage = '';
+  
+  if (typeof error === 'string') {
+    errorMessage = error;
+  } else if (error && typeof error === 'object') {
+    // Extract message from error object
+    errorMessage = error.message || error.error?.message || JSON.stringify(error);
+  }
+  
+  // Remove Request ID patterns from error message
+  // Pattern: "Request ID: <uuid>" or "request_id: <uuid>" or just the UUID pattern
+  const requestIdPatterns = [
+    /Request ID:\s*[a-f0-9-]{36}/gi,
+    /request_id:\s*[a-f0-9-]{36}/gi,
+    /requestId:\s*[a-f0-9-]{36}/gi,
+    /\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b/gi,
+  ];
+  
+  let sanitized = errorMessage;
+  requestIdPatterns.forEach(pattern => {
+    sanitized = sanitized.replace(pattern, '').trim();
+  });
+  
+  // Clean up any double spaces or trailing punctuation
+  sanitized = sanitized.replace(/\s+/g, ' ').replace(/[.,;:]\s*$/, '').trim();
+  
+  // If message is empty after sanitization, provide a generic message
+  if (!sanitized) {
+    sanitized = 'An error occurred. Please try again.';
+  }
+  
+  return sanitized;
+};
+
 // Provider names
 export const PROVIDERS = {
   FLUX: 'flux',
   SDXL: 'sdxl',
-  DALLE3: 'dalle3'
+  DALLE3: 'dalle3',
+  NANOBANANA: 'nanobanana' // Nano Banana Pro (Gemini)
 };
 
 // Credit costs per provider (in gems)
 const CREDIT_COSTS = {
   [PROVIDERS.FLUX]: 10,
   [PROVIDERS.SDXL]: 8,
-  [PROVIDERS.DALLE3]: 12
+  [PROVIDERS.DALLE3]: 12,
+  [PROVIDERS.NANOBANANA]: 15 // Nano Banana Pro - premium quality
 };
 
 // Collection names
@@ -403,7 +445,7 @@ const generateWithSDXL = async (prompt, options = {}) => {
  * @param {string} [options.quality='hd'] - Image quality (standard, hd)
  * @returns {Promise<string>} Image URL
  */
-const generateWithDALLE3 = async (prompt, options = {}) => {
+const generateWithDALLE3 = async (prompt, options = {}, userId = null) => {
   const openai = getOpenAIClient();
 
   const {
@@ -433,6 +475,21 @@ const generateWithDALLE3 = async (prompt, options = {}) => {
   } catch (error) {
     logger.error('[imageGenerationService] DALL-E 3 generation error:', error);
     
+    // Report error to user's account for debugging
+    if (userId) {
+      try {
+        const { reportError } = await import('./errorReportingService.js');
+        await reportError(userId, error, {
+          component: 'imageGenerationService',
+          action: 'generateWithDALLE3',
+          metadata: { provider: 'dalle3' },
+        });
+      } catch (reportErr) {
+        // Don't break on reporting errors
+        logger.warn('[imageGenerationService] Failed to report error:', reportErr);
+      }
+    }
+    
     // Handle specific error types
     if (error.status === 429) {
       throw new Error('Rate limit exceeded. Please try again in a moment.');
@@ -442,7 +499,64 @@ const generateWithDALLE3 = async (prompt, options = {}) => {
       throw new Error('Insufficient API credits. Please contact support.');
     }
     
-    throw new Error(`DALL-E 3 generation failed: ${error.message || 'Unknown error'}`);
+    // Sanitize error message to remove Request IDs
+    const sanitizedMessage = sanitizeErrorMessage(error);
+    throw new Error(`DALL-E 3 generation failed: ${sanitizedMessage}`);
+  }
+};
+
+/**
+ * Generate image with Nano Banana Pro (Gemini) via backend API
+ * 
+ * @param {string} prompt - Full prompt text
+ * @param {Object} options - Generation options
+ * @param {string} userId - User ID
+ * @returns {Promise<string>} Image URL
+ */
+const generateWithNanoBanana = async (prompt, options = {}, userId = null) => {
+  try {
+    logger.log('[imageGenerationService] Generating with Nano Banana Pro...');
+    
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    
+    // Get auth token
+    const { getAuth } = await import('firebase/auth');
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+    const token = await user.getIdToken();
+    
+    const response = await fetch(`${API_BASE_URL}/api/generate-image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        provider: 'nanobanana',
+        prompt: prompt,
+        options: options,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data.imageUrl) {
+      throw new Error('No image URL returned from Nano Banana Pro');
+    }
+
+    logger.log('[imageGenerationService] Nano Banana Pro generation successful');
+    return data.imageUrl;
+  } catch (error) {
+    logger.error('[imageGenerationService] Nano Banana Pro generation error:', error);
+    throw new Error(`Nano Banana Pro generation failed: ${error.message || 'Unknown error'}`);
   }
 };
 
@@ -604,7 +718,11 @@ export const generateImage = async (provider, prompt, options = {}, userId = nul
         imageUrl = await generateWithSDXL(prompt, options);
         break;
       case PROVIDERS.DALLE3:
-        imageUrl = await generateWithDALLE3(prompt, options);
+        imageUrl = await generateWithDALLE3(prompt, options, userId);
+        break;
+      case PROVIDERS.NANOBANANA:
+        // Nano Banana Pro uses backend API
+        imageUrl = await generateWithNanoBanana(prompt, options, userId);
         break;
       default:
         throw new Error(`Unsupported provider: ${provider}`);
@@ -634,6 +752,21 @@ export const generateImage = async (provider, prompt, options = {}, userId = nul
     // Refund credits if generation failed but credits were deducted
     if (creditsDeducted) {
       await refundCredits(userId, provider, CREDIT_COSTS[provider]);
+    }
+
+    // Report error to user's account for debugging
+    if (userId) {
+      try {
+        const { reportError } = await import('./errorReportingService.js');
+        await reportError(userId, error, {
+          component: 'imageGenerationService',
+          action: 'generateImage',
+          metadata: { provider, prompt: prompt.substring(0, 100) },
+        });
+      } catch (reportErr) {
+        // Don't break on reporting errors
+        logger.warn('[imageGenerationService] Failed to report error:', reportErr);
+      }
     }
 
     logger.error('[imageGenerationService] Generation error:', error);
@@ -685,6 +818,9 @@ export const isProviderAvailable = (provider) => {
       return !!import.meta.env.VITE_REPLICATE_API_TOKEN;
     case PROVIDERS.DALLE3:
       return !!import.meta.env.VITE_OPENAI_API_KEY;
+    case PROVIDERS.NANOBANANA:
+      // Nano Banana Pro uses backend API, so check if backend is available
+      return !!import.meta.env.VITE_API_BASE_URL;
     default:
       return false;
   }
