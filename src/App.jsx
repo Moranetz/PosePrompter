@@ -5,9 +5,10 @@ import { UserProvider, useAuth } from './contexts/UserContext.jsx';
 import LandingPage from './components/LandingPage.jsx';
 import PricingPage from './components/PricingPage.jsx';
 import FacePhotosPage from './components/FacePhotosPage.jsx';
-import PoseStudioPage from './components/PoseStudioPage.jsx';
+import AIImageGenerator from './components/AIImageGenerator.jsx';
 import TermsOfService from './components/TermsOfService.jsx';
 import PrivacyPolicy from './components/PrivacyPolicy.jsx';
+import ErrorReports from './components/ErrorReports.jsx';
 import ToastProvider from './components/Toast/ToastContainer.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import AuthDebugPanel from './components/AuthDebugPanel.jsx';
@@ -21,16 +22,49 @@ const PhotoElementRandomizer = lazy(() => import('./PhotoElementRandomizer'));
 const AppContent = () => {
   const { user, loading, isLoggedIn, authError, printDebugReport } = useAuth();
   const [loadingTooLong, setLoadingTooLong] = React.useState(false);
-  const [currentRoute, setCurrentRoute] = React.useState(window.location.hash);
+  const [currentRoute, setCurrentRoute] = React.useState(() => window.location.hash);
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-  // Handle hash-based routing
+  // Handle hash-based routing with polling as fallback
   React.useEffect(() => {
+    let lastHash = window.location.hash;
+    
     const handleHashChange = () => {
-      setCurrentRoute(window.location.hash);
+      const newHash = window.location.hash;
+      console.log('[App.jsx] Hash changed to:', newHash);
+      lastHash = newHash;
+      setCurrentRoute(newHash);
+      forceUpdate(); // Force re-render
     };
+    
+    // Set initial route
+    const initialHash = window.location.hash;
+    console.log('[App.jsx] Initial hash:', initialHash);
+    setCurrentRoute(initialHash);
+    
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    
+    // Poll for hash changes as fallback (in case hashchange doesn't fire)
+    const pollInterval = setInterval(() => {
+      const currentHash = window.location.hash;
+      if (currentHash !== lastHash) {
+        console.log('[App.jsx] Hash detected via polling:', currentHash);
+        lastHash = currentHash;
+        setCurrentRoute(currentHash);
+        forceUpdate();
+      }
+    }, 100);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+      clearInterval(pollInterval);
+    };
   }, []);
+
+  // Always read hash directly in render as fallback
+  const actualRoute = window.location.hash || currentRoute;
 
   // Debug logging for auth state
   React.useEffect(() => {
@@ -153,28 +187,35 @@ const AppContent = () => {
   }
 
   // Show pricing page if route is #pricing
-  if (currentRoute === '#pricing') {
+  if (actualRoute === '#pricing') {
     return <PricingPage />;
   }
 
   // Show face photos page if route is #face-photos
-  if (currentRoute === '#face-photos') {
+  if (actualRoute === '#face-photos') {
     return <FacePhotosPage />;
   }
 
-  // Show pose studio page if route is #pose-studio
-  if (currentRoute === '#pose-studio') {
-    return <PoseStudioPage />;
+
+  // Show AI image generator page if route is #ai-image-generator
+  if (actualRoute === '#ai-image-generator') {
+    console.log('[App.jsx] Rendering AIImageGenerator component, actualRoute:', actualRoute);
+    return <AIImageGenerator />;
   }
 
   // Show terms of service page if route is #terms
-  if (currentRoute === '#terms') {
+  if (actualRoute === '#terms') {
     return <TermsOfService />;
   }
 
   // Show privacy policy page if route is #privacy
-  if (currentRoute === '#privacy') {
+  if (actualRoute === '#privacy') {
     return <PrivacyPolicy />;
+  }
+
+  // Show error reports page if route is #error-reports
+  if (actualRoute === '#error-reports') {
+    return <ErrorReports />;
   }
 
   // Show landing page when user is not logged in (after loading is complete)

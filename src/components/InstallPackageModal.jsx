@@ -20,6 +20,22 @@ const InstallPackageModal = ({ package: pkg, isOpen, onClose, onSuccess }) => {
   const [confirmationStep, setConfirmationStep] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [installProgress, setInstallProgress] = useState(0);
+  
+  // Selected options to install (structure: { category: [optionIndex] })
+  const [selectedOptions, setSelectedOptions] = useState({});
+  
+  // Initialize selected options to all options by default
+  useEffect(() => {
+    if (pkg && pkg.options) {
+      const initial = {};
+      Object.keys(pkg.options).forEach(category => {
+        const options = pkg.options[category] || [];
+        // Handle both string arrays and object arrays
+        initial[category] = options.map((_, idx) => idx);
+      });
+      setSelectedOptions(initial);
+    }
+  }, [pkg]);
 
   // Load user data
   useEffect(() => {
@@ -120,14 +136,22 @@ const InstallPackageModal = ({ package: pkg, isOpen, onClose, onSuccess }) => {
         });
       }, 200);
 
-      // Install package with merge mode
+      // Filter options based on selectedOptions
+      const filteredOptions = {};
+      Object.keys(pkg.options || {}).forEach(category => {
+        const allOptions = pkg.options[category] || [];
+        const selectedIndices = selectedOptions[category] || [];
+        filteredOptions[category] = allOptions.filter((_, idx) => selectedIndices.includes(idx));
+      });
+      
+      // Install package with merge mode (only selected options)
       const result = await installPackageWithMerge(
         user.uid,
         {
           packageId: pkg.packageId || pkg.id,
           name: pkg.name,
           version: pkg.version || '1.0.0',
-          options: pkg.options || {},
+          options: filteredOptions,
         },
         installMode
       );
@@ -475,6 +499,167 @@ const InstallPackageModal = ({ package: pkg, isOpen, onClose, onSuccess }) => {
                   </label>
                 </div>
               </div>
+
+              {/* Option Selection */}
+              {pkg && pkg.options && Object.keys(pkg.options).length > 0 && (
+                <div style={{ marginBottom: '24px' }}>
+                  <h3
+                    style={{
+                      fontSize: '18px',
+                      fontWeight: '600',
+                      color: '#ffffff',
+                      marginBottom: '16px',
+                    }}
+                  >
+                    Select Options to Install
+                  </h3>
+                  <div
+                    style={{
+                      maxHeight: '300px',
+                      overflowY: 'auto',
+                      padding: '12px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '16px',
+                    }}
+                  >
+                    {Object.keys(pkg.options).map(category => {
+                      const options = pkg.options[category] || [];
+                      const selectedIndices = selectedOptions[category] || [];
+                      const allSelected = selectedIndices.length === options.length;
+                      
+                      const toggleOption = (idx) => {
+                        setSelectedOptions(prev => {
+                          const current = prev[category] || [];
+                          if (current.includes(idx)) {
+                            return {
+                              ...prev,
+                              [category]: current.filter(i => i !== idx)
+                            };
+                          } else {
+                            return {
+                              ...prev,
+                              [category]: [...current, idx]
+                            };
+                          }
+                        });
+                      };
+                      
+                      const toggleAll = () => {
+                        if (allSelected) {
+                          setSelectedOptions(prev => ({
+                            ...prev,
+                            [category]: []
+                          }));
+                        } else {
+                          setSelectedOptions(prev => ({
+                            ...prev,
+                            [category]: options.map((_, idx) => idx)
+                          }));
+                        }
+                      };
+                      
+                      return (
+                        <div
+                          key={category}
+                          style={{
+                            padding: '12px',
+                            background: 'rgba(139, 92, 246, 0.05)',
+                            border: '1px solid rgba(139, 92, 246, 0.2)',
+                            borderRadius: '8px',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <div>
+                              <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: '500' }}>
+                                {categoryDisplayNames[category] || category}
+                              </div>
+                              <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+                                {selectedIndices.length} of {options.length} selected
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={toggleAll}
+                              style={{
+                                padding: '4px 8px',
+                                background: allSelected ? 'rgba(139, 92, 246, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                borderRadius: '4px',
+                                color: '#ffffff',
+                                fontSize: '11px',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {allSelected ? 'Deselect All' : 'Select All'}
+                            </button>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '150px', overflowY: 'auto' }}>
+                            {options.map((opt, idx) => {
+                              const isSelected = selectedIndices.includes(idx);
+                              const optTitle = typeof opt === 'string' ? opt.substring(0, 50) : (opt.title || opt.prompt?.substring(0, 50) || opt.text?.substring(0, 50) || 'Option');
+                              const optPrompt = typeof opt === 'string' ? opt : (opt.prompt || opt.text || '');
+                              
+                              return (
+                                <label
+                                  key={idx}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: '8px',
+                                    padding: '8px',
+                                    background: isSelected ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                                    border: isSelected ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid transparent',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (!isSelected) {
+                                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!isSelected) {
+                                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                                    }
+                                  }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => toggleOption(idx)}
+                                    style={{
+                                      width: '16px',
+                                      height: '16px',
+                                      marginTop: '2px',
+                                      cursor: 'pointer',
+                                      accentColor: '#8b5cf6',
+                                    }}
+                                  />
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ color: '#ffffff', fontSize: '13px', fontWeight: '500' }}>
+                                      {optTitle}
+                                    </div>
+                                    {optPrompt && optPrompt.length > 50 && (
+                                      <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', marginTop: '2px' }}>
+                                        {optPrompt.substring(0, 100)}...
+                                      </div>
+                                    )}
+                                  </div>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Changes Preview */}
               <div

@@ -58,15 +58,17 @@ export const trackPromptGenerated = async (userId, categoryCount = 0) => {
       updatedAt: serverTimestamp(),
     });
 
-    // Check for achievements
-    await checkAchievements(userId, {
+    // Check for achievements and return newly unlocked ones
+    const newAchievements = await checkAchievements(userId, {
       ...stats,
       promptsGenerated: (stats.promptsGenerated || 0) + 1,
     });
 
     logger.log('[engagementService] Prompt generation tracked');
+    return newAchievements || [];
   } catch (error) {
     logger.error('[engagementService] Error tracking prompt generation:', error);
+    return [];
   }
 };
 
@@ -91,15 +93,17 @@ export const trackPromptCopied = async (userId, categoryCount = 0) => {
       updatedAt: serverTimestamp(),
     });
 
-    // Check for achievements
-    await checkAchievements(userId, {
+    // Check for achievements and return newly unlocked ones
+    const newAchievements = await checkAchievements(userId, {
       ...stats,
       promptsCopied: (stats.promptsCopied || 0) + 1,
     });
 
     logger.log('[engagementService] Prompt copy tracked');
+    return newAchievements || [];
   } catch (error) {
     logger.error('[engagementService] Error tracking prompt copy:', error);
+    return [];
   }
 };
 
@@ -188,24 +192,26 @@ export const updateStreak = async (userId) => {
     });
 
     // Check for streak achievements
-    await checkAchievements(userId, {
+    const newAchievements = await checkAchievements(userId, {
       ...stats,
       currentStreak: newStreak,
       longestStreak: newLongestStreak,
     });
 
     logger.log('[engagementService] Streak updated:', newStreak);
-    return newStreak;
+    
+    // Return both streak and newly unlocked achievements
+    return { streak: newStreak, achievements: newAchievements || [] };
   } catch (error) {
     logger.error('[engagementService] Error updating streak:', error);
-    return 0;
+    return { streak: 0, achievements: [] };
   }
 };
 
 /**
  * Achievement definitions
  */
-const ACHIEVEMENTS = {
+export const ACHIEVEMENTS = {
   FIRST_PROMPT: {
     id: 'first_prompt',
     name: 'First Steps',
@@ -257,6 +263,24 @@ const ACHIEVEMENTS = {
       return Object.keys(categories).length >= 10;
     },
   },
+  FIRST_PACKAGE: {
+    id: 'first_package',
+    name: 'Creator',
+    description: 'Published your first package',
+    condition: (stats) => (stats.packagesPublished || 0) >= 1,
+  },
+  PACKAGE_POPULAR: {
+    id: 'package_popular',
+    name: 'Popular Creator',
+    description: 'One of your packages was installed by someone',
+    condition: (stats) => (stats.packageInstalls || 0) >= 1,
+  },
+  PACKAGE_STAR: {
+    id: 'package_star',
+    name: 'Rising Star',
+    description: 'Your packages have been installed 10 times',
+    condition: (stats) => (stats.packageInstalls || 0) >= 10,
+  },
 };
 
 /**
@@ -300,6 +324,76 @@ const checkAchievements = async (userId, stats) => {
     return [];
   } catch (error) {
     logger.error('[engagementService] Error checking achievements:', error);
+    return [];
+  }
+};
+
+/**
+ * Track a package publication event
+ */
+export const trackPackagePublished = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const userRef = doc(db, USERS_COLLECTION, userId);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) return [];
+
+    const currentData = userSnap.data();
+    const stats = currentData.stats || {};
+    const currentCount = stats.packagesPublished || 0;
+    
+    await updateDoc(userRef, {
+      'stats.packagesPublished': increment(1),
+      updatedAt: serverTimestamp(),
+    });
+
+    // Check for achievements
+    const newAchievements = await checkAchievements(userId, {
+      ...stats,
+      packagesPublished: currentCount + 1,
+    });
+
+    logger.log('[engagementService] Package publication tracked');
+    return newAchievements || [];
+  } catch (error) {
+    logger.error('[engagementService] Error tracking package publication:', error);
+    return [];
+  }
+};
+
+/**
+ * Track when someone installs a creator's package
+ */
+export const trackPackageInstalled = async (creatorId) => {
+  if (!creatorId || !db) return [];
+
+  try {
+    const userRef = doc(db, USERS_COLLECTION, creatorId);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) return [];
+
+    const currentData = userSnap.data();
+    const stats = currentData.stats || {};
+    const currentCount = stats.packageInstalls || 0;
+    
+    await updateDoc(userRef, {
+      'stats.packageInstalls': increment(1),
+      updatedAt: serverTimestamp(),
+    });
+
+    // Check for achievements
+    const newAchievements = await checkAchievements(userId, {
+      ...stats,
+      packageInstalls: currentCount + 1,
+    });
+
+    logger.log('[engagementService] Package installation tracked for creator:', creatorId);
+    return newAchievements || [];
+  } catch (error) {
+    logger.error('[engagementService] Error tracking package installation:', error);
     return [];
   }
 };

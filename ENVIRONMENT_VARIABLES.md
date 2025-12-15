@@ -22,14 +22,9 @@ These variables are required for Firebase to work. Get them from your Firebase p
 
 ### AI Image Generation API Keys
 
-These variables are required for AI image generation features. Get them from the respective provider dashboards.
+**IMPORTANT:** These API keys are **NOT** used in client-side code. All image generation goes through the backend API server for security. These keys should **ONLY** be configured in the server's `.env` file (see Backend Server Environment Variables below).
 
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `VITE_REPLICATE_API_TOKEN` | Replicate API token (for Flux, SDXL) | `r8_xxxxxxxxxxxxx` | No (required for Flux/SDXL) |
-| `VITE_OPENAI_API_KEY` | OpenAI API key (for DALL-E 3) | `sk-xxxxxxxxxxxxx` | No (required for DALL-E 3) |
-
-**Note:** These are client-side variables. For backend API server, use the same keys without the `VITE_` prefix in the server's `.env` file.
+**DO NOT** add these as `VITE_` prefixed variables - they are server-side secrets and must never be exposed to the client.
 
 ### Backend Server Environment Variables
 
@@ -193,9 +188,9 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 VITE_FIREBASE_MEASUREMENT_ID=
 
-# AI Image Generation (optional - only if using image generation)
-VITE_REPLICATE_API_TOKEN=
-VITE_OPENAI_API_KEY=
+# AI Image Generation API Keys
+# NOTE: These should NOT be here! All image generation uses the backend API.
+# Configure these in server/.env instead (see Backend Server section below).
 ```
 
 ### Backend Server (`.env` in `server/` directory)

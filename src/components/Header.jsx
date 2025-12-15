@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, X, Gem } from 'lucide-react';
+import { Menu, X, Gem, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
 import { resetUserAccountData, getUserProfile } from '../firestoreService';
 import AuthModal from './AuthModal';
 import CreditBalance from './CreditBalance';
 
-const Header = () => {
+const Header = ({ onOpenVisibilitySettings }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
@@ -368,6 +368,44 @@ const Header = () => {
                 {user.email}
               </span>
               
+              {/* Visibility Settings Button */}
+              {onOpenVisibilitySettings && (
+                <button
+                  data-trash-icon
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenVisibilitySettings();
+                  }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '6px',
+                    width: '28px',
+                    height: '28px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    transition: 'all 0.2s ease',
+                    padding: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.color = '#ffffff';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                    e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                  title="Visibility Settings"
+                >
+                  <Settings size={14} />
+                </button>
+              )}
+              
               {/* User Menu Dropdown */}
               {userMenuOpen && (
                 <div
@@ -418,6 +456,34 @@ const Header = () => {
                         </span>
                       </div>
                     )}
+                    <button
+                      onClick={() => {
+                        window.location.hash = '#error-reports';
+                        setUserMenuOpen(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'rgba(255, 255, 255, 0.06)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '6px',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        textAlign: 'left'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                        e.currentTarget.style.color = '#ffffff';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+                      }}
+                    >
+                      Error Reports
+                    </button>
                     <button
                       onClick={() => {
                         signOut();
@@ -678,6 +744,26 @@ const Header = () => {
                     </span>
                   </div>
                 )}
+                <button
+                  onClick={() => {
+                    window.location.hash = '#error-reports';
+                    setMobileMenuOpen(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '8px',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Error Reports
+                </button>
                 <button
                   onClick={() => {
                     signOut();

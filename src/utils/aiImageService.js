@@ -2,12 +2,11 @@
  * AI Image Generation Service
  * 
  * This service handles AI image generation using face photos and prompts.
- * Currently set up as a placeholder that can be integrated with various AI APIs:
- * - Replicate (for face-swap or image generation)
- * - Stability AI
- * - OpenAI DALL-E
- * - Custom backend endpoint
+ * Uses the backend API endpoint for face photo generation.
  */
+
+import { getAuth } from 'firebase/auth';
+import { logger } from './logger.js';
 
 /**
  * Generate an AI image using a face photo and prompt
@@ -19,78 +18,78 @@
  */
 export const generateAIImage = async ({ facePhotoUrl, prompt }) => {
   try {
-    // TODO: Replace with actual AI image generation API integration
-    // Example integrations:
-    
-    // Option 1: Replicate API
-    // const response = await fetch('https://api.replicate.com/v1/predictions', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Token ${process.env.REPLICATE_API_TOKEN}`,
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     version: 'model-version-id',
-    //     input: {
-    //       image: facePhotoUrl,
-    //       prompt: prompt,
-    //     },
-    //   }),
-    // });
-    
-    // Option 2: Stability AI
-    // const response = await fetch('https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Bearer ${process.env.STABILITY_API_KEY}`,
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     image: facePhotoUrl,
-    //     prompt: prompt,
-    //   }),
-    // });
-    
-    // Option 3: Custom backend endpoint
-    // const response = await fetch('/api/generate-image', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     facePhotoUrl,
-    //     prompt,
-    //   }),
-    // });
-    
-    // For now, return a placeholder response
-    // In a real implementation, you would:
-    // 1. Call the AI API with the face photo and prompt
-    // 2. Wait for the generation to complete (may require polling)
-    // 3. Return the generated image URL
-    
-    console.log('AI Image Generation Request:', {
-      facePhotoUrl,
+    if (!facePhotoUrl || !prompt) {
+      return {
+        success: false,
+        error: 'Face photo URL and prompt are required'
+      };
+    }
+
+    logger.log('[aiImageService] Generating image with face photo:', {
+      facePhotoUrl: facePhotoUrl.substring(0, 100) + '...',
       prompt: prompt.substring(0, 100) + '...'
     });
+
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Get auth token
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      return {
+        success: false,
+        error: 'User not authenticated'
+      };
+    }
+    const token = await user.getIdToken();
     
-    // Placeholder: Return error indicating API needs to be configured
+    // Call backend API with face photo
+    const response = await fetch(`${API_BASE_URL}/api/generate-image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        provider: 'flux', // Use Flux for face photo generation
+        prompt: prompt,
+        facePhotoUrl: facePhotoUrl,
+        options: {
+          width: 1024,
+          height: 1024,
+          num_outputs: 1,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+      
+      logger.error('[aiImageService] Generation failed:', errorMessage);
+      return {
+        success: false,
+        error: errorMessage
+      };
+    }
+
+    const data = await response.json();
+    
+    if (!data.imageUrl) {
+      return {
+        success: false,
+        error: 'No image URL returned from server'
+      };
+    }
+
+    logger.log('[aiImageService] Generation successful');
     return {
-      success: false,
-      error: 'AI image generation API is not yet configured. Please integrate with Replicate, Stability AI, or another image generation service.'
+      success: true,
+      imageUrl: data.imageUrl
     };
     
-    // When API is integrated, return:
-    // return {
-    //   success: true,
-    //   imageUrl: result.imageUrl
-    // };
-    
   } catch (error) {
-    console.error('Error generating AI image:', error);
+    logger.error('[aiImageService] Error generating AI image:', error);
     return {
       success: false,
       error: error.message || 'Failed to generate image. Please try again.'
@@ -103,8 +102,8 @@ export const generateAIImage = async ({ facePhotoUrl, prompt }) => {
  * @returns {boolean}
  */
 export const isAIGenerationAvailable = () => {
-  // Check if API keys are configured
-  // return !!process.env.REPLICATE_API_TOKEN || !!process.env.STABILITY_API_KEY;
-  return false; // Set to true when API is configured
+  // Face photo generation is available if backend API is accessible
+  // The backend will check if Replicate API is configured
+  return true;
 };
 

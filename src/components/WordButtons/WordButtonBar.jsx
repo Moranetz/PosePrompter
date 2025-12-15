@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import WordButton from './WordButton';
 
 const WordButtonBar = ({ 
@@ -11,13 +12,15 @@ const WordButtonBar = ({
   categoryDisplayName,
   favorites,
   onToggleFavorite,
-  isLoggedIn
+  isLoggedIn,
+  onTrash
 }) => {
   const scrollContainerRef = useRef(null);
   const selectedButtonRef = useRef(null);
   const savedScrollPositionRef = useRef(null);
   const previousIndexRef = useRef(currentIndex);
   const previousCategoryRef = useRef(category);
+  const [trashingIndex, setTrashingIndex] = useState(null);
   const previousFavoritesRef = useRef(JSON.stringify(favorites));
   const scrollBlockedRef = useRef(false);
   const isRestoringRef = useRef(false);
@@ -282,6 +285,11 @@ const WordButtonBar = ({
     return null;
   }
 
+  // Hide if there are no options/categories available
+  if (!options || options.length === 0) {
+    return null;
+  }
+
   return (
     <div
       ref={barRef}
@@ -353,37 +361,89 @@ const WordButtonBar = ({
             paddingRight: '24px'
           }}
         >
-          {options.map((option, index) => {
-            const isSelected = index === currentIndex;
-            const buttonText = getButtonText(option, index);
-            // Use a stable key based on option id if available, otherwise index
-            const stableKey = option.id !== undefined ? `${category}-${option.id}` : `${category}-${index}`;
-            
-            return (
-              <div
-                key={stableKey}
-                ref={isSelected ? selectedButtonRef : null}
-                style={{
-                  scrollSnapAlign: 'start',
-                  flexShrink: 0
-                }}
-              >
-                <WordButton
-                  text={buttonText}
-                  categoryColor={categoryColor}
-                  isSelected={isSelected}
-                  isDisabled={!isIncluded}
-                  onClick={() => onSelect(index)}
-                  index={index}
-                  packageName={option.packageName}
-                  packageId={option.packageId}
-                  isFavorite={favorites?.[category]?.includes(option.id || index)}
-                  onToggleFavorite={() => handleToggleFavorite(category, option.id || index)}
-                  showFavoriteButton={isLoggedIn}
-                />
-              </div>
-            );
-          })}
+          <AnimatePresence mode="popLayout" initial={false}>
+            {options.map((option, index) => {
+              const isSelected = index === currentIndex;
+              const buttonText = getButtonText(option, index);
+              // Use a stable key based on option id if available, otherwise index
+              const stableKey = option.id !== undefined ? `${category}-${option.id}` : `${category}-${index}`;
+              const isTrashing = trashingIndex === index;
+              
+              return (
+                <motion.div
+                  key={stableKey}
+                  ref={isSelected ? selectedButtonRef : null}
+                  initial={false}
+                  animate={{ opacity: 1 }}
+                  exit={{ 
+                    opacity: 0,
+                    width: 0,
+                    minWidth: 0,
+                    maxWidth: 0,
+                    marginRight: 0,
+                    paddingLeft: 0,
+                    paddingRight: 0,
+                    overflow: 'hidden',
+                    transition: { 
+                      width: { duration: 0 },
+                      opacity: { duration: 0.1 }
+                    }
+                  }}
+                  layout
+                  transition={{
+                    layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+                  }}
+                  style={{
+                    scrollSnapAlign: 'start',
+                    flexShrink: 0,
+                    overflow: 'hidden',
+                    ...(isTrashing ? {
+                      position: 'absolute',
+                      width: 0,
+                      height: 0,
+                      opacity: 0,
+                      pointerEvents: 'none',
+                      marginRight: 0,
+                      paddingLeft: 0,
+                      paddingRight: 0
+                    } : {})
+                  }}
+                >
+                  <WordButton
+                    text={buttonText}
+                    categoryColor={categoryColor}
+                    isSelected={isSelected}
+                    isDisabled={!isIncluded}
+                    onClick={() => onSelect(index)}
+                    index={index}
+                    packageName={option.packageName}
+                    packageId={option.packageId}
+                    isFavorite={favorites?.[category]?.includes(option.id || index)}
+                    onToggleFavorite={() => handleToggleFavorite(category, option.id || index)}
+                    showFavoriteButton={isLoggedIn}
+                    onTrash={(buttonElement) => {
+                      console.log('[WordButtonBar] Trash clicked for option:', option, 'at index:', index);
+                      // Set trashing state immediately so button hides and layout can shift
+                      setTrashingIndex(index);
+                      if (onTrash) {
+                        onTrash(option, index, buttonElement).then(() => {
+                          // Clear trashing state after animation completes
+                          setTimeout(() => setTrashingIndex(null), 1200);
+                        }).catch(() => {
+                          setTrashingIndex(null);
+                        });
+                      } else {
+                        console.error('[WordButtonBar] onTrash prop is not provided');
+                        setTrashingIndex(null);
+                      }
+                    }}
+                    showTrashButton={isLoggedIn}
+                    isTrashing={isTrashing}
+                  />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </div>
 

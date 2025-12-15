@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Check, Heart } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Check, Heart, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const WordButton = ({ 
@@ -13,9 +13,14 @@ const WordButton = ({
   packageId,
   isFavorite,
   onToggleFavorite,
-  showFavoriteButton
+  showFavoriteButton,
+  onTrash,
+  showTrashButton,
+  isTrashing
 }) => {
   const [ripple, setRipple] = useState(null);
+  const trashButtonRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const handleClick = (e) => {
     if (isDisabled) return;
@@ -66,12 +71,31 @@ const WordButton = ({
 
   return (
     <motion.button
+      ref={buttonRef}
       onClick={handleClick}
-      disabled={isDisabled}
+      disabled={isDisabled || isTrashing}
       style={baseStyle}
-      whileHover={!isDisabled ? { y: -1, scale: 1.01 } : {}}
-      whileTap={!isDisabled ? { scale: 0.99 } : {}}
-      transition={{ duration: 0.15 }}
+      animate={isTrashing ? {
+        scale: 0,
+        opacity: 0,
+        x: 0,
+        y: 0,
+      } : {}}
+      whileHover={!isDisabled && !isTrashing ? { y: -1, scale: 1.01 } : {}}
+      whileTap={!isDisabled && !isTrashing ? { 
+        scale: 0.95,
+        y: 1,
+        transition: { 
+          type: "tween",
+          duration: 0.1,
+          ease: [0.4, 0, 0.2, 1]
+        }
+      } : {}}
+      transition={isTrashing ? { duration: 0.3 } : { 
+        type: "tween",
+        duration: 0.2,
+        ease: [0.4, 0, 0.2, 1]
+      }}
       aria-label={text}
     >
       {/* Ripple Effect */}
@@ -128,43 +152,99 @@ const WordButton = ({
         </span>
       )}
 
-      {/* Favorite Button */}
-      {showFavoriteButton && (
-        <motion.button
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onToggleFavorite && onToggleFavorite();
-          }}
-          onMouseDown={(e) => {
-            e.preventDefault(); // Prevent focus
-          }}
-          tabIndex={-1} // Prevent keyboard focus
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '4px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: isFavorite ? '#f43f5e' : '#52525b',
-            transition: 'color 200ms',
-            flexShrink: 0,
-            marginLeft: 'auto',
-            outline: 'none'
-          }}
-          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <Heart 
-            size={14} 
-            fill={isFavorite ? '#f43f5e' : 'transparent'} 
-            strokeWidth={2}
-          />
-        </motion.button>
-      )}
+      {/* Action Buttons Container */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto' }}>
+        {/* Trash Button */}
+        {showTrashButton && onTrash && (
+          <motion.button
+            ref={trashButtonRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              console.log('[WordButton] Trash button clicked, calling onTrash');
+              if (onTrash && buttonRef.current) {
+                // Pass the entire button element, not just the trash icon
+                onTrash(buttonRef.current);
+              } else {
+                console.error('[WordButton] onTrash is not a function or button ref missing:', typeof onTrash);
+              }
+            }}
+            onMouseDown={(e) => {
+              e.preventDefault(); // Prevent focus
+            }}
+            tabIndex={-1} // Prevent keyboard focus
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ 
+              scale: 0.6,
+              rotate: [0, -15, 15, -15, 0],
+              transition: {
+                type: "tween",
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1]
+              }
+            }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#71717a',
+              transition: 'color 200ms',
+              flexShrink: 0,
+              outline: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#ef4444';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#71717a';
+            }}
+            title="Trash this option"
+          >
+            <Trash2 size={14} />
+          </motion.button>
+        )}
+
+        {/* Favorite Button */}
+        {showFavoriteButton && (
+          <motion.button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onToggleFavorite && onToggleFavorite();
+            }}
+            onMouseDown={(e) => {
+              e.preventDefault(); // Prevent focus
+            }}
+            tabIndex={-1} // Prevent keyboard focus
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isFavorite ? '#f43f5e' : '#52525b',
+              transition: 'color 200ms',
+              flexShrink: 0,
+              outline: 'none'
+            }}
+            title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <Heart 
+              size={14} 
+              fill={isFavorite ? '#f43f5e' : 'transparent'} 
+              strokeWidth={2}
+            />
+          </motion.button>
+        )}
+      </div>
 
     </motion.button>
   );

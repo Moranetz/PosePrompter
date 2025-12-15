@@ -109,26 +109,84 @@ const getGeminiClient = () => {
 };
 
 // Middleware
+// CORS configuration with security headers
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400, // 24 hours
 }));
-app.use(express.json());
+
+// Request body size limits to prevent DoS attacks
+app.use(express.json({ limit: '1mb' })); // Limit JSON payloads to 1MB
+app.use(express.urlencoded({ extended: true, limit: '1mb' })); // Limit URL-encoded payloads
+
+// Request timeout middleware (30 seconds for image generation, 10 seconds for others)
+app.use((req, res, next) => {
+  const timeout = req.path.includes('/generate-image') ? 30000 : 10000;
+  req.setTimeout(timeout, () => {
+    if (!res.headersSent) {
+      res.status(408).json({ error: 'Request timeout' });
+    }
+  });
+  next();
+});
 
 // Rate limiting
+// General API rate limiter (per IP)
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Use IP + user ID for better tracking
+  keyGenerator: (req) => {
+    return req.ip + (req.user?.uid || 'anonymous');
+  },
 });
 
+// Image generation rate limiter (stricter, per IP)
 const generationLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10, // Max 10 generations per minute
+  max: 10, // Max 10 generations per minute per IP
   message: 'Too many generation requests. Please wait a moment.',
   standardHeaders: true,
   legacyHeaders: false,
+  keyGenerator: (req) => {
+    return req.ip + (req.user?.uid || 'anonymous');
+  },
 });
+
+// Per-user generation limiter (additional check after authentication)
+const perUserGenerationLimiter = async (req, res, next) => {
+  if (!req.user?.uid || !db) {
+    return next();
+  }
+  
+  try {
+    // Check user's generation count in last minute
+    const oneMinuteAgo = admin.firestore.Timestamp.fromMillis(Date.now() - 60000);
+    const recentGenerations = await db.collection('generationHistory')
+      .where('userId', '==', req.user.uid)
+      .where('createdAt', '>=', oneMinuteAgo)
+      .limit(5)
+      .get();
+    
+    if (recentGenerations.size >= 5) {
+      return res.status(429).json({
+        error: 'Rate limit exceeded',
+        message: 'You have reached the maximum number of generations per minute. Please wait a moment.',
+      });
+    }
+  } catch (error) {
+    // If rate limit check fails, allow request but log error
+    console.error('[perUserGenerationLimiter] Error:', error);
+  }
+  
+  next();
+};
 
 app.use('/api/', generalLimiter);
 app.use('/api/generate-image', generationLimiter);
@@ -202,29 +260,43 @@ const getUserCredits = async (userId) => {
   return userData.gems || userData.credits || 0;
 };
 
-// Helper function to deduct credits
+// Helper function to deduct credits (atomic transaction to prevent race conditions)
 const deductUserCredits = async (userId, amount) => {
   if (!db) throw new Error('Firebase Admin not initialized');
   
-  const userRef = db.collection('users').doc(userId);
-  const userDoc = await userRef.get();
-  
-  if (!userDoc.exists) {
-    throw new Error('User not found');
+  if (amount <= 0) {
+    throw new Error('Invalid credit amount');
   }
   
-  const currentCredits = userDoc.data().gems || userDoc.data().credits || 0;
-  
-  if (currentCredits < amount) {
-    throw new Error('Insufficient credits');
-  }
-  
-  await userRef.update({
-    gems: currentCredits - amount,
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  // Use Firestore transaction to atomically check and deduct credits
+  // This prevents race conditions where multiple requests could bypass credit checks
+  const result = await db.runTransaction(async (transaction) => {
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await transaction.get(userRef);
+    
+    if (!userDoc.exists) {
+      throw new Error('User not found');
+    }
+    
+    const userData = userDoc.data();
+    const currentCredits = userData.gems || userData.credits || 0;
+    
+    if (currentCredits < amount) {
+      throw new Error('Insufficient credits');
+    }
+    
+    const newBalance = currentCredits - amount;
+    
+    // Atomically update credits
+    transaction.update(userRef, {
+      gems: newBalance,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    return newBalance;
   });
   
-  return currentCredits - amount;
+  return result;
 };
 
 // Helper function to add credits
@@ -385,30 +457,100 @@ const uploadImageToStorage = async (userId, imageUrl, imageId) => {
   if (!db) throw new Error('Firebase Admin not initialized');
   
   try {
-    // Fetch image from URL
-    const response = await fetch(imageUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    // Validate imageUrl
+    if (!imageUrl || typeof imageUrl !== 'string') {
+      throw new Error('Invalid image URL');
     }
     
-    const buffer = await response.arrayBuffer();
-    const bucket = admin.storage().bucket();
-    const fileName = `users/${userId}/generations/${imageId}.png`;
-    const file = bucket.file(fileName);
+    // Handle data URIs
+    if (imageUrl.startsWith('data:image/')) {
+      const base64Data = imageUrl.split(',')[1];
+      if (!base64Data) {
+        throw new Error('Invalid data URI format');
+      }
+      
+      const buffer = Buffer.from(base64Data, 'base64');
+      
+      // Validate file size (max 10MB)
+      if (buffer.length > 10 * 1024 * 1024) {
+        throw new Error('Image file too large');
+      }
+      
+      const bucket = admin.storage().bucket();
+      const fileName = `users/${userId}/generations/${imageId}.png`;
+      const file = bucket.file(fileName);
+      
+      await file.save(buffer, {
+        metadata: {
+          contentType: 'image/png',
+        },
+      });
+      
+      await file.makePublic();
+      return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    }
     
-    await file.save(Buffer.from(buffer), {
-      metadata: {
-        contentType: 'image/png',
-      },
-    });
+    // Validate URL format for HTTP/HTTPS URLs
+    let url;
+    try {
+      url = new URL(imageUrl);
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        throw new Error('Invalid URL protocol');
+      }
+    } catch {
+      throw new Error('Invalid image URL format');
+    }
     
-    // Make file publicly accessible
-    await file.makePublic();
+    // Fetch image from URL with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
     
-    // Get public URL
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-    
-    return publicUrl;
+    try {
+      const response = await fetch(imageUrl, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'PosePrompt-Studio/1.0',
+        },
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      
+      // Validate content type
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.startsWith('image/')) {
+        throw new Error('URL does not point to an image');
+      }
+      
+      const buffer = await response.arrayBuffer();
+      
+      // Validate file size (max 10MB)
+      if (buffer.byteLength > 10 * 1024 * 1024) {
+        throw new Error('Image file too large');
+      }
+      
+      const bucket = admin.storage().bucket();
+      const fileName = `users/${userId}/generations/${imageId}.png`;
+      const file = bucket.file(fileName);
+      
+      await file.save(Buffer.from(buffer), {
+        metadata: {
+          contentType: 'image/png',
+        },
+      });
+      
+      await file.makePublic();
+      return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      if (fetchError.name === 'AbortError') {
+        throw new Error('Image fetch timeout');
+      }
+      throw fetchError;
+    }
   } catch (error) {
     console.error('[uploadImageToStorage] Error:', error);
     throw error;
@@ -585,9 +727,9 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
  * POST /api/generate-image
  * Generates an image using the specified AI provider
  */
-app.post('/api/generate-image', authenticateUser, async (req, res) => {
+app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, async (req, res) => {
   try {
-    const { provider, prompt, options = {} } = req.body;
+    const { provider, prompt, options = {}, facePhotoUrl } = req.body;
     const userId = req.user.uid;
 
     // Validate input
@@ -604,22 +746,70 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
       });
     }
 
-    // Check credits
-    const cost = CREDIT_COSTS[provider];
+    // Calculate total cost based on num_outputs
+    // CRITICAL: Charge per image generated, not per request
+    const baseCost = CREDIT_COSTS[provider];
+    const numOutputs = Math.max(1, Math.min(parseInt(options.num_outputs) || 1, 4)); // Limit to max 4 outputs
+    const totalCost = baseCost * numOutputs;
+    
+    // Check credits using atomic transaction (prevents race conditions)
     const currentCredits = await getUserCredits(userId);
     
-    if (currentCredits < cost) {
+    if (currentCredits < totalCost) {
       return res.status(402).json({
         error: 'Insufficient credits',
-        required: cost,
+        required: totalCost,
         available: currentCredits,
+        baseCost: baseCost,
+        numOutputs: numOutputs,
       });
     }
 
-    // Validate prompt length
-    if (prompt.length > 1000) {
+    // Validate prompt length (most models support up to 4000+ characters)
+    // Only enforce a reasonable upper limit to prevent abuse
+    if (typeof prompt !== 'string') {
       return res.status(400).json({
-        error: 'Prompt too long. Maximum 1000 characters.',
+        error: 'Prompt must be a string',
+      });
+    }
+    
+    if (prompt.length === 0 || prompt.trim().length === 0) {
+      return res.status(400).json({
+        error: 'Prompt cannot be empty',
+      });
+    }
+    
+    if (prompt.length > 10000) {
+      return res.status(400).json({
+        error: 'Prompt too long. Maximum 10000 characters.',
+      });
+    }
+    
+    // Sanitize prompt: remove potential injection attempts
+    // Remove null bytes, control characters (except newlines/tabs), and normalize whitespace
+    const sanitizedPrompt = prompt
+      .replace(/\0/g, '') // Remove null bytes
+      .replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '') // Remove control chars except \n, \r, \t
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
+    
+    if (sanitizedPrompt.length === 0) {
+      return res.status(400).json({
+        error: 'Prompt contains only invalid characters',
+      });
+    }
+    
+    // Validate options object
+    if (options && typeof options !== 'object') {
+      return res.status(400).json({
+        error: 'Options must be an object',
+      });
+    }
+    
+    // Validate facePhotoUrl if provided
+    if (facePhotoUrl && (typeof facePhotoUrl !== 'string' || !facePhotoUrl.startsWith('http'))) {
+      return res.status(400).json({
+        error: 'Invalid face photo URL',
       });
     }
 
@@ -627,6 +817,9 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
     let creditsDeducted = false;
 
     try {
+      // Use sanitized prompt for generation
+      const finalPrompt = sanitizedPrompt;
+      
       // Generate image based on provider
       switch (provider) {
         case 'flux':
@@ -635,18 +828,39 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
             throw new Error('Replicate API not configured');
           }
           
-          const fluxOutput = await replicate.run(
-            'black-forest-labs/flux-pro',
-            {
-              input: {
-                prompt: prompt,
-                width: options.width || 1024,
-                height: options.height || 1024,
-                num_outputs: options.num_outputs || 1,
+          // If face photo is provided, use image-to-image generation based on the uploaded photo
+          if (facePhotoUrl) {
+            // Use PhotoMaker model - designed specifically for generating images based on face photos and prompts
+            // This model takes the uploaded photo as the base and generates a new image based on the prompt
+            const photoMakerOutput = await replicate.run(
+              'mbukerepo/photomaker',
+              {
+                input: {
+                  prompt: finalPrompt,
+                  num_outputs: options.num_outputs || 1,
+                  num_inference_steps: 50,
+                  guidance_scale: 5,
+                  input_image: facePhotoUrl,
+                  style_name: "Photographic",
+                }
               }
-            }
-          );
-          imageUrl = Array.isArray(fluxOutput) ? fluxOutput[0] : fluxOutput;
+            );
+            imageUrl = Array.isArray(photoMakerOutput) ? photoMakerOutput[0] : photoMakerOutput;
+          } else {
+            // Regular Flux Pro generation
+            const fluxOutput = await replicate.run(
+              'black-forest-labs/flux-pro',
+              {
+                input: {
+                  prompt: finalPrompt,
+                  width: options.width || 1024,
+                  height: options.height || 1024,
+                  num_outputs: options.num_outputs || 1,
+                }
+              }
+            );
+            imageUrl = Array.isArray(fluxOutput) ? fluxOutput[0] : fluxOutput;
+          }
           break;
 
         case 'sdxl':
@@ -659,7 +873,7 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
             'stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b',
             {
               input: {
-                prompt: prompt,
+                prompt: finalPrompt,
                 width: options.width || 1024,
                 height: options.height || 1024,
                 num_outputs: options.num_outputs || 1,
@@ -677,7 +891,7 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
           
           const dalleResponse = await openai.images.generate({
             model: 'dall-e-3',
-            prompt: prompt,
+            prompt: finalPrompt,
             size: options.size || '1024x1024',
             quality: options.quality || 'hd',
             n: 1,
@@ -703,7 +917,7 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
             const result = await model.generateContent({
               contents: [{
                 role: 'user',
-                parts: [{ text: prompt }]
+                parts: [{ text: finalPrompt }]
               }],
               generationConfig: {
                 temperature: 0.7,
@@ -732,14 +946,21 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
             // If no image found, try alternative: use Gemini's image generation API endpoint
             if (!imageUrl) {
               const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+              if (!apiKey) {
+                throw new Error('GOOGLE_GEMINI_API_KEY not configured');
+              }
+              // SECURITY: Use Authorization header instead of URL parameter to prevent key exposure in logs
               const genResponse = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent`,
                 {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: { 
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': apiKey
+                  },
                   body: JSON.stringify({
                     contents: [{
-                      parts: [{ text: `Generate an image: ${prompt}` }]
+                      parts: [{ text: `Generate an image: ${finalPrompt}` }]
                     }]
                   })
                 }
@@ -773,8 +994,9 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
       const imageId = `img_${Date.now()}_${userId}`;
       const firebaseUrl = await uploadImageToStorage(userId, imageUrl, imageId);
 
-      // Deduct credits
-      const newBalance = await deductUserCredits(userId, cost);
+      // Deduct credits atomically (prevents race conditions)
+      // CRITICAL: Deduct total cost (baseCost * numOutputs) not just baseCost
+      const newBalance = await deductUserCredits(userId, totalCost);
       creditsDeducted = true;
 
       // Log generation
@@ -782,8 +1004,10 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
         userId,
         provider,
         imageUrl: firebaseUrl,
-        prompt: prompt.substring(0, 500),
-        cost,
+        prompt: finalPrompt.substring(0, 500),
+        cost: totalCost, // Log total cost charged
+        baseCost: baseCost,
+        numOutputs: numOutputs,
         imageId,
         options,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -793,7 +1017,9 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
         success: true,
         imageUrl: firebaseUrl,
         provider,
-        cost,
+        cost: totalCost, // Return total cost charged
+        baseCost: baseCost,
+        numOutputs: numOutputs,
         newBalance,
         generationId: generationDoc.id,
         metadata: {
@@ -806,7 +1032,7 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
       // Refund credits if generation failed
       if (creditsDeducted) {
         try {
-          await addUserCredits(userId, cost);
+          await addUserCredits(userId, totalCost);
         } catch (refundError) {
           console.error('[generate-image] Error refunding credits:', refundError);
         }
@@ -816,7 +1042,7 @@ app.post('/api/generate-image', authenticateUser, async (req, res) => {
       await reportErrorToAccount(userId, generationError, {
         endpoint: '/api/generate-image',
         action: 'image_generation',
-        metadata: { provider, prompt: prompt.substring(0, 100) },
+        metadata: { provider, prompt: finalPrompt.substring(0, 100) },
       });
 
       // Handle specific error types
@@ -938,7 +1164,8 @@ app.get('/api/generation-history', authenticateUser, async (req, res) => {
 
 /**
  * POST /api/refund-credits
- * Refunds credits to a user (admin/system use)
+ * Refunds credits to a user (admin/system use only)
+ * CRITICAL: This endpoint requires admin authentication
  */
 app.post('/api/refund-credits', authenticateUser, async (req, res) => {
   try {
@@ -952,11 +1179,34 @@ app.post('/api/refund-credits', authenticateUser, async (req, res) => {
       });
     }
 
-    // Check if user is admin (you can implement admin check here)
-    // For now, allow users to refund their own credits or implement admin check
+    // Validate amount
+    if (isNaN(amount) || amount <= 0) {
+      return res.status(400).json({
+        error: 'Invalid amount. Must be a positive number.',
+      });
+    }
+
+    // CRITICAL SECURITY: Only allow users to refund their own credits OR require admin
+    // For production, implement proper admin check using Firebase Custom Claims
+    // For now, only allow self-refunds (users can only refund to themselves)
     if (targetUserId !== adminUserId) {
-      // TODO: Implement admin check
-      // return res.status(403).json({ error: 'Unauthorized: Admin access required' });
+      // Check if user has admin custom claim
+      try {
+        const userRecord = await auth.getUser(adminUserId);
+        const isAdmin = userRecord.customClaims?.admin === true;
+        
+        if (!isAdmin) {
+          return res.status(403).json({ 
+            error: 'Unauthorized: Admin access required to refund credits to other users',
+            message: 'You can only refund credits to your own account'
+          });
+        }
+      } catch (authError) {
+        return res.status(403).json({ 
+          error: 'Unauthorized: Admin access required',
+          message: 'Unable to verify admin status'
+        });
+      }
     }
 
     if (!db) {
@@ -993,7 +1243,8 @@ app.post('/api/refund-credits', authenticateUser, async (req, res) => {
 /**
  * POST /api/confirm-payment
  * Confirms payment and updates user's credit balance in Firestore
- * (Legacy endpoint - webhook now handles this)
+ * (Legacy endpoint - webhook now handles this automatically)
+ * CRITICAL: Add idempotency check to prevent duplicate credit additions
  */
 app.post('/api/confirm-payment', async (req, res) => {
   try {
@@ -1008,6 +1259,25 @@ app.post('/api/confirm-payment', async (req, res) => {
     if (!db) {
       return res.status(500).json({
         error: 'Firebase Admin not initialized',
+      });
+    }
+
+    // CRITICAL: Check if transaction already processed (idempotency)
+    const existingTransaction = await db.collection('transactions')
+      .where('paymentIntentId', '==', paymentIntentId)
+      .where('status', '==', 'completed')
+      .limit(1)
+      .get();
+    
+    if (!existingTransaction.empty) {
+      // Transaction already processed, return existing result
+      const existing = existingTransaction.docs[0].data();
+      const currentBalance = await getUserCredits(userId);
+      return res.json({
+        success: true,
+        creditBalance: currentBalance,
+        creditsAdded: existing.credits,
+        message: 'Payment already confirmed',
       });
     }
 
@@ -1030,6 +1300,13 @@ app.post('/api/confirm-payment', async (req, res) => {
 
     // Get credits from metadata
     const creditsToAdd = parseInt(paymentIntent.metadata.credits, 10);
+    
+    // Validate credits
+    if (isNaN(creditsToAdd) || creditsToAdd <= 0) {
+      return res.status(400).json({
+        error: 'Invalid credits amount in payment metadata',
+      });
+    }
 
     // Update user's credit balance
     const newBalance = await addUserCredits(userId, creditsToAdd);

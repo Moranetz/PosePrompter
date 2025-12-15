@@ -18,6 +18,9 @@ import ClosetFrame from './components/ClosetFrame';
 import AchievementNotification from './components/AchievementNotification';
 import EngagementStats from './components/EngagementStats';
 import ClothingCategoriesModal from './components/ClothingCategoriesModal';
+import VisibilitySettingsModal from './components/VisibilitySettingsModal';
+import TrashAnimation from './components/TrashAnimation';
+import CategorySelectionModal from './components/CategorySelectionModal';
 import { 
   trackPromptGenerated, 
   trackPromptCopied, 
@@ -33,7 +36,18 @@ import {
   getFavoriteCategories,
   getDefaultExpandedGroups,
   trackSessionDuration,
-  getEnabledClothingCategories
+  getEnabledClothingCategories,
+  getHiddenCategoryGroups,
+  getEnabledFaceHeadCategories,
+  getEnabledAestheticStyleCategories,
+  getEnabledFramingCompositionCategories,
+  getEnabledBackgroundEnvironmentCategories,
+  getEnabledBodyPoseCategories,
+  updateEnabledBackgroundEnvironmentCategories,
+  updateEnabledFramingCompositionCategories,
+  updateEnabledAestheticStyleCategories,
+  updateEnabledFaceHeadCategories,
+  updateEnabledBodyPoseCategories
 } from './utils/personalizationService';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 
@@ -76,6 +90,42 @@ const PhotoElementRandomizer = () => {
     'Props': 'Props',
   };
 
+  // State declarations (needed before categoryGroups useMemo)
+  const { user } = useAuth();
+  const [currentRoute, setCurrentRoute] = useState(window.location.hash || '');
+  const [enabledClothingCategories, setEnabledClothingCategories] = useState([]);
+  const [clothingCategoriesModalOpen, setClothingCategoriesModalOpen] = useState(false);
+  const [hasCheckedClothingPreferences, setHasCheckedClothingPreferences] = useState(false);
+  const [userPreferences, setUserPreferences] = useState(null);
+  const [hiddenCategoryGroups, setHiddenCategoryGroups] = useState([]);
+  const [visibilitySettingsModalOpen, setVisibilitySettingsModalOpen] = useState(false);
+  const hasShownClothingModalRef = useRef(false); // Track if modal has been shown this session
+  
+  // State for Face & Head package
+  const [enabledFaceHeadCategories, setEnabledFaceHeadCategories] = useState([]);
+  const [faceHeadModalOpen, setFaceHeadModalOpen] = useState(false);
+  const [hasCheckedFaceHeadPreferences, setHasCheckedFaceHeadPreferences] = useState(false);
+  
+  // State for Aesthetic & Style package
+  const [enabledAestheticStyleCategories, setEnabledAestheticStyleCategories] = useState([]);
+  const [aestheticStyleModalOpen, setAestheticStyleModalOpen] = useState(false);
+  const [hasCheckedAestheticStylePreferences, setHasCheckedAestheticStylePreferences] = useState(false);
+  
+  // State for Framing & Composition package
+  const [enabledFramingCompositionCategories, setEnabledFramingCompositionCategories] = useState([]);
+  const [framingCompositionModalOpen, setFramingCompositionModalOpen] = useState(false);
+  const [hasCheckedFramingCompositionPreferences, setHasCheckedFramingCompositionPreferences] = useState(false);
+  
+  // State for Background & Environment package
+  const [enabledBackgroundEnvironmentCategories, setEnabledBackgroundEnvironmentCategories] = useState([]);
+  const [backgroundEnvironmentModalOpen, setBackgroundEnvironmentModalOpen] = useState(false);
+  const [hasCheckedBackgroundEnvironmentPreferences, setHasCheckedBackgroundEnvironmentPreferences] = useState(false);
+  
+  // State for Body & Pose package
+  const [enabledBodyPoseCategories, setEnabledBodyPoseCategories] = useState([]);
+  const [bodyPoseModalOpen, setBodyPoseModalOpen] = useState(false);
+  const [hasCheckedBodyPosePreferences, setHasCheckedBodyPosePreferences] = useState(false);
+
   // Category groups organized from most static to least static
   // Filter "Clothes & Styling" based on user preferences
   const categoryGroups = useMemo(() => {
@@ -114,24 +164,104 @@ const PhotoElementRandomizer = () => {
 
     // Filter "Clothes & Styling" categories based on user preferences
     const clothesGroupIndex = 3;
-    const hasSetPreferences = userPreferences?.preferences?.enabledClothingCategories !== undefined;
+    // Check if field exists in preferences (not just if it's not undefined)
+    const hasSetClothingPreferences = userPreferences?.preferences && 'enabledClothingCategories' in userPreferences.preferences;
     
-    if (hasCheckedClothingPreferences && hasSetPreferences && user) {
-      // User has explicitly set preferences - respect their choice
-      if (enabledClothingCategories.length === 0) {
-        // User selected nothing - keep only 'Outfit'
-        baseGroups[clothesGroupIndex].categories = ['Outfit'];
-      } else {
-        // User selected some categories - include 'Outfit' + selected ones
-        baseGroups[clothesGroupIndex].categories = ['Outfit', ...enabledClothingCategories];
-      }
+    if (hasCheckedClothingPreferences && hasSetClothingPreferences && user) {
+      // User has explicitly set preferences - use exactly what they selected (even if empty array)
+      // This allows users to uncheck all categories including 'Outfit'
+      baseGroups[clothesGroupIndex].categories = enabledClothingCategories || [];
     } else {
       // No preferences set yet or not logged in - show all (backward compatibility)
       baseGroups[clothesGroupIndex].categories = ['Outfit', 'OutfitTop', 'OutfitBottom', 'Shoes', 'Jewelry', 'HairAccessories', 'Bags', 'BrandDesigner'];
     }
 
-    return baseGroups;
-  }, [enabledClothingCategories, hasCheckedClothingPreferences, user, userPreferences]);
+    // Filter "Background & Environment" categories based on user preferences
+    const backgroundGroupIndex = 0;
+    // Check if field exists in preferences (not just if it's not undefined)
+    const hasSetBackgroundPreferences = userPreferences?.preferences && 'enabledBackgroundEnvironmentCategories' in userPreferences.preferences;
+    
+    if (hasCheckedBackgroundEnvironmentPreferences && hasSetBackgroundPreferences && user) {
+      // User has explicitly set preferences - use exactly what they selected (even if empty array)
+      baseGroups[backgroundGroupIndex].categories = enabledBackgroundEnvironmentCategories || [];
+    } else {
+      // No preferences set yet - show only default
+      baseGroups[backgroundGroupIndex].categories = ['Background'];
+    }
+
+    // Filter "Framing & Composition" categories based on user preferences
+    const framingGroupIndex = 1;
+    // Check if field exists in preferences (not just if it's not undefined)
+    const hasSetFramingPreferences = userPreferences?.preferences && 'enabledFramingCompositionCategories' in userPreferences.preferences;
+    
+    if (hasCheckedFramingCompositionPreferences && hasSetFramingPreferences && user) {
+      // User has explicitly set preferences - use exactly what they selected (even if empty array)
+      baseGroups[framingGroupIndex].categories = enabledFramingCompositionCategories || [];
+    } else {
+      // No preferences set yet - show only default
+      baseGroups[framingGroupIndex].categories = ['Framing'];
+    }
+
+    // Filter "Aesthetic & Style" categories based on user preferences
+    const aestheticGroupIndex = 2;
+    // Check if field exists in preferences (not just if it's not undefined)
+    const hasSetAestheticPreferences = userPreferences?.preferences && 'enabledAestheticStyleCategories' in userPreferences.preferences;
+    
+    if (hasCheckedAestheticStylePreferences && hasSetAestheticPreferences && user) {
+      // User has explicitly set preferences - use exactly what they selected (even if empty array)
+      baseGroups[aestheticGroupIndex].categories = enabledAestheticStyleCategories || [];
+    } else {
+      // No preferences set yet - show only default
+      baseGroups[aestheticGroupIndex].categories = ['Aesthetic'];
+    }
+
+    // Filter "Face & Head" categories based on user preferences
+    const faceHeadGroupIndex = 4;
+    // Check if field exists in preferences (not just if it's not undefined)
+    const hasSetFaceHeadPreferences = userPreferences?.preferences && 'enabledFaceHeadCategories' in userPreferences.preferences;
+    
+    if (hasCheckedFaceHeadPreferences && hasSetFaceHeadPreferences && user) {
+      // User has explicitly set preferences - use exactly what they selected (even if empty array)
+      baseGroups[faceHeadGroupIndex].categories = enabledFaceHeadCategories || [];
+    } else {
+      // No preferences set yet - show only default
+      baseGroups[faceHeadGroupIndex].categories = ['FacialExpression'];
+    }
+
+    // Filter "Body & Pose" categories based on user preferences
+    const bodyPoseGroupIndex = 5;
+    // Check if field exists in preferences (not just if it's not undefined)
+    const hasSetBodyPosePreferences = userPreferences?.preferences && 'enabledBodyPoseCategories' in userPreferences.preferences;
+    
+    if (hasCheckedBodyPosePreferences && hasSetBodyPosePreferences && user) {
+      // User has explicitly set preferences - use exactly what they selected (even if empty array)
+      baseGroups[bodyPoseGroupIndex].categories = enabledBodyPoseCategories || [];
+    } else {
+      // No preferences set yet - show ALL categories (all checked by default)
+      baseGroups[bodyPoseGroupIndex].categories = ['BodyPose', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet', 'BodySize'];
+    }
+
+    // Filter out hidden category groups
+    const visibleGroups = baseGroups.filter(group => !hiddenCategoryGroups.includes(group.title));
+    
+    return visibleGroups;
+  }, [
+    enabledClothingCategories, 
+    hasCheckedClothingPreferences, 
+    enabledBackgroundEnvironmentCategories,
+    hasCheckedBackgroundEnvironmentPreferences,
+    enabledFramingCompositionCategories,
+    hasCheckedFramingCompositionPreferences,
+    enabledAestheticStyleCategories,
+    hasCheckedAestheticStylePreferences,
+    enabledFaceHeadCategories,
+    hasCheckedFaceHeadPreferences,
+    enabledBodyPoseCategories,
+    hasCheckedBodyPosePreferences,
+    user, 
+    userPreferences, 
+    hiddenCategoryGroups
+  ]);
 
   const categories = {
     // ============================================================================
@@ -2680,10 +2810,12 @@ const PhotoElementRandomizer = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   
   // User data state
-  const { user } = useAuth();
   const [userCustomOptions, setUserCustomOptions] = useState({});
   const [userHiddenOptions, setUserHiddenOptions] = useState({});
+  const [userDeletedOptions, setUserDeletedOptions] = useState({});
   const [userFavorites, setUserFavorites] = useState({});
+  const [userSelectedOptions, setUserSelectedOptions] = useState({}); // Selected options per category from CategorySelectionModal
+  const [trashAnimation, setTrashAnimation] = useState(null);
   const [loadingUserData, setLoadingUserData] = useState(true);
   const [sortedCategoryOptions, setSortedCategoryOptions] = useState({}); // Store sorted options per category
   const previousActiveCategoryRef = useRef(null);
@@ -2691,6 +2823,7 @@ const PhotoElementRandomizer = () => {
   const [manageMenuOpen, setManageMenuOpen] = useState(null); // category key or null
   const [addOptionModalOpen, setAddOptionModalOpen] = useState(null); // category key or null
   const [newOptionText, setNewOptionText] = useState('');
+  const [newOptionTitle, setNewOptionTitle] = useState('');
   const [showHiddenOptionsModal, setShowHiddenOptionsModal] = useState(null); // category key or null
   
   // Save/Load state
@@ -2730,6 +2863,18 @@ const PhotoElementRandomizer = () => {
     }
     return shouldShow;
   });
+
+  // Track current route for navigation highlighting
+  useEffect(() => {
+    const updateRoute = () => {
+      setCurrentRoute(window.location.hash || '');
+    };
+    updateRoute(); // Set initial route
+    window.addEventListener('hashchange', updateRoute);
+    return () => {
+      window.removeEventListener('hashchange', updateRoute);
+    };
+  }, []);
 
   // Hide word-button-bar when intro is showing
   useEffect(() => {
@@ -2778,7 +2923,7 @@ const PhotoElementRandomizer = () => {
   // CRITICAL: Define mergedCategories BEFORE any useEffect that depends on it
   // This prevents TDZ (Temporal Dead Zone) violations during bundler minification
   
-  // Merge default categories with user customOptions and filter hiddenOptions
+  // Merge default categories with user customOptions and filter hiddenOptions and deletedOptions
   // Also create a mapping from original indices to filtered indices
   const { mergedCategories, indexMapping } = useMemo(() => {
     try {
@@ -2789,6 +2934,7 @@ const PhotoElementRandomizer = () => {
         const defaultOptions = categories[categoryKey] || [];
         const customOptions = (userCustomOptions && userCustomOptions[categoryKey]) ? userCustomOptions[categoryKey] : [];
         const hiddenOptions = (userHiddenOptions && userHiddenOptions[categoryKey]) ? userHiddenOptions[categoryKey] : [];
+        const deletedOptions = (userDeletedOptions && userDeletedOptions[categoryKey]) ? userDeletedOptions[categoryKey] : [];
         
         // Combine default and custom options
         const allOptions = [...defaultOptions, ...customOptions];
@@ -2797,13 +2943,21 @@ const PhotoElementRandomizer = () => {
         const categoryMapping = {};
         let filteredIndex = 0;
         
-        // Filter out hidden options (by index for default, by id for custom)
+        // Filter out hidden and deleted options (by index for default, by id for custom)
         const visibleOptions = allOptions.filter((option, originalIndex) => {
-          const isHidden = originalIndex < defaultOptions.length
+          const isDefaultOption = originalIndex < defaultOptions.length;
+          
+          // Check if hidden
+          const isHidden = isDefaultOption
             ? hiddenOptions.includes(originalIndex)  // Default option - check by index
             : hiddenOptions.includes(option.id);     // Custom option - check by id
           
-          if (!isHidden) {
+          // Check if deleted
+          const isDeleted = isDefaultOption
+            ? deletedOptions.includes(originalIndex)  // Default option - check by index
+            : deletedOptions.includes(option.id);     // Custom option - check by id
+          
+          if (!isHidden && !isDeleted) {
             // Map original index to filtered index
             categoryMapping[originalIndex] = filteredIndex;
             filteredIndex++;
@@ -2821,7 +2975,7 @@ const PhotoElementRandomizer = () => {
       // Return categories as-is if merge fails
       return { mergedCategories: categories, indexMapping: {} };
     }
-  }, [categories, userCustomOptions, userHiddenOptions]);
+  }, [categories, userCustomOptions, userHiddenOptions, userDeletedOptions]);
 
   const categoryColors = useMemo(() => ({
     'Aesthetic': '#a855f7',
@@ -2859,20 +3013,24 @@ const PhotoElementRandomizer = () => {
   }), []);
 
   // Personalization state
-  const [userPreferences, setUserPreferences] = useState(null);
   const [favoriteCategories, setFavoriteCategories] = useState([]);
-  const [enabledClothingCategories, setEnabledClothingCategories] = useState([]);
-  const [clothingCategoriesModalOpen, setClothingCategoriesModalOpen] = useState(false);
-  const [hasCheckedClothingPreferences, setHasCheckedClothingPreferences] = useState(false);
   const sessionStartTime = useRef(Date.now());
 
   // Load user data from Firestore
   useEffect(() => {
     const loadUserData = async () => {
       if (!user || !user.uid) {
+        // Reset user-specific state when logged out
+        setEnabledClothingCategories([]);
+        setUserPreferences(null);
+        setHasCheckedClothingPreferences(false);
+        hasShownClothingModalRef.current = false; // Reset modal tracking
         setLoadingUserData(false);
         return;
       }
+      
+      // Reset modal tracking when a new user logs in
+      hasShownClothingModalRef.current = false;
 
       // Check if db is available
       if (!db) {
@@ -2889,7 +3047,9 @@ const PhotoElementRandomizer = () => {
           const data = userDoc.data();
           setUserCustomOptions(data.customOptions || {});
           setUserHiddenOptions(data.hiddenOptions || {});
+          setUserDeletedOptions(data.deletedOptions || {});
           setUserFavorites(data.favorites || {});
+          setUserSelectedOptions(data.selectedOptions || {});
           
           // Load engagement stats
           if (data.stats) {
@@ -2910,12 +3070,45 @@ const PhotoElementRandomizer = () => {
             setEnabledClothingCategories(enabledClothing || []);
             setHasCheckedClothingPreferences(true);
             
+            // Load enabled Face & Head categories
+            const enabledFaceHead = await getEnabledFaceHeadCategories(user.uid);
+            setEnabledFaceHeadCategories(enabledFaceHead || []);
+            setHasCheckedFaceHeadPreferences(true);
+            
+            // Load enabled Aesthetic & Style categories
+            const enabledAestheticStyle = await getEnabledAestheticStyleCategories(user.uid);
+            setEnabledAestheticStyleCategories(enabledAestheticStyle || []);
+            setHasCheckedAestheticStylePreferences(true);
+            
+            // Load enabled Framing & Composition categories
+            const enabledFramingComposition = await getEnabledFramingCompositionCategories(user.uid);
+            setEnabledFramingCompositionCategories(enabledFramingComposition || []);
+            setHasCheckedFramingCompositionPreferences(true);
+            
+            // Load enabled Background & Environment categories
+            const enabledBackgroundEnvironment = await getEnabledBackgroundEnvironmentCategories(user.uid);
+            setEnabledBackgroundEnvironmentCategories(enabledBackgroundEnvironment || []);
+            setHasCheckedBackgroundEnvironmentPreferences(true);
+            
+            // Load enabled Body & Pose categories
+            const enabledBodyPose = await getEnabledBodyPoseCategories(user.uid);
+            setEnabledBodyPoseCategories(enabledBodyPose || []);
+            setHasCheckedBodyPosePreferences(true);
+            
+            // Load hidden category groups
+            const hiddenGroups = await getHiddenCategoryGroups(user.uid);
+            setHiddenCategoryGroups(hiddenGroups || []);
+            
             // Set default expanded groups based on preferences
             const defaultGroups = await getDefaultExpandedGroups(user.uid, [2]);
             setExpandedGroup(defaultGroups[0] || 2);
           } else {
             // No preferences yet, mark as checked so we can show modal on first expand
             setHasCheckedClothingPreferences(true);
+            setHasCheckedFaceHeadPreferences(true);
+            setHasCheckedAestheticStylePreferences(true);
+            setHasCheckedFramingCompositionPreferences(true);
+            setHasCheckedBackgroundEnvironmentPreferences(true);
           }
         } else {
           // Initialize user document if it doesn't exist (new account)
@@ -2959,8 +3152,14 @@ const PhotoElementRandomizer = () => {
   // Update streak on mount and daily
   useEffect(() => {
     if (user?.uid) {
-      updateStreak(user.uid).then(streak => {
+      updateStreak(user.uid).then(result => {
+        const streak = typeof result === 'object' ? result.streak : result;
+        const achievements = typeof result === 'object' ? result.achievements : [];
         setUserStreak(streak || 0);
+        // Show achievement notification if any were unlocked
+        if (achievements && achievements.length > 0) {
+          setCurrentAchievement(achievements[0]);
+        }
       });
     }
   }, [user]);
@@ -3163,18 +3362,21 @@ const PhotoElementRandomizer = () => {
 
   // Handle category selection
   const handleCategorySelect = useCallback((category) => {
-    setActiveCategory(category);
+    // Allow null to clear selection when switching to empty groups
+    setActiveCategory(category || null);
     
-    // Track category usage for personalization
+    // Track category usage for personalization (only if category exists)
     if (user?.uid && category) {
       trackCategoryUsage(user.uid, category);
     }
     
-    // Visual feedback for category switch
-    triggerFeedback(FEEDBACK_TYPES.CATEGORY_SWITCH, {
-      category: categoryColors[category],
-      intensity: 'medium',
-    });
+    // Visual feedback for category switch (only if category exists)
+    if (category) {
+      triggerFeedback(FEEDBACK_TYPES.CATEGORY_SWITCH, {
+        category: categoryColors[category],
+        intensity: 'medium',
+      });
+    }
   }, [user, categoryColors]);
 
   const toggleLock = useCallback((category) => {
@@ -3234,8 +3436,14 @@ const PhotoElementRandomizer = () => {
           setCurrentAchievement(newAchievements[0]);
         }
         // Update streak
-        const streak = await updateStreak(user.uid);
+        const streakResult = await updateStreak(user.uid);
+        const streak = typeof streakResult === 'object' ? streakResult.streak : streakResult;
+        const streakAchievements = typeof streakResult === 'object' ? streakResult.achievements : [];
         setUserStreak(streak || 0);
+        // Show achievement notification if any were unlocked from streak
+        if (streakAchievements && streakAchievements.length > 0 && (!newAchievements || newAchievements.length === 0)) {
+          setCurrentAchievement(streakAchievements[0]);
+        }
       });
     }
   }, [mergedCategories, lockedCategories, user, includedCategories]);
@@ -3387,8 +3595,15 @@ const PhotoElementRandomizer = () => {
       return prev;
     });
     
-    await saveUserData({ hiddenOptions: updatedHidden });
-    setManageMenuOpen(null);
+    try {
+      await saveUserData({ hiddenOptions: updatedHidden });
+      setManageMenuOpen(null);
+    } catch (error) {
+      console.error('Error saving hidden options:', error);
+      // Revert state on error to prevent data loss
+      setUserHiddenOptions(userHiddenOptions);
+      alert('Failed to save changes. Please try again.');
+    }
   }, [user, userHiddenOptions, userCustomOptions, categories, mergedCategories, saveUserData]);
 
   // Show hidden options modal
@@ -3407,8 +3622,366 @@ const PhotoElementRandomizer = () => {
     const updatedHidden = { ...userHiddenOptions, [category]: newHidden };
     setUserHiddenOptions(updatedHidden);
     
-    await saveUserData({ hiddenOptions: updatedHidden });
+    try {
+      await saveUserData({ hiddenOptions: updatedHidden });
+    } catch (error) {
+      console.error('Error saving unhidden options:', error);
+      // Revert state on error to prevent data loss
+      setUserHiddenOptions(userHiddenOptions);
+      alert('Failed to save changes. Please try again.');
+    }
   }, [user, userHiddenOptions, saveUserData]);
+
+  // Trash an option (move to deletedOptions)
+  const trashOption = useCallback(async (category, option, filteredIndex, buttonElement) => {
+    console.log('[trashOption] Called with:', { category, option, filteredIndex, user: !!user, hasButtonElement: !!buttonElement });
+    
+    if (!user) {
+      alert('Please log in to trash options.');
+      return;
+    }
+    
+    if (!option) {
+      console.error('[trashOption] Option is null or undefined');
+      return;
+    }
+
+    // Get button position for animation BEFORE removing it
+    let startX = 0, startY = 0;
+    let buttonText = '';
+    if (buttonElement) {
+      const rect = buttonElement.getBoundingClientRect();
+      startX = rect.left + rect.width / 2;
+      startY = rect.top + rect.height / 2;
+      // Extract button text
+      const textElement = buttonElement.querySelector('span');
+      buttonText = textElement ? textElement.textContent : '';
+    }
+
+    // Find trash target position - prioritize Packages button/pill
+    let endX = window.innerWidth - 100; // Default to top right
+    let endY = 60; // Default to header area
+    
+    // First, try to find the Packages button/modal trigger (this is the packages pill)
+    const packagesButton = document.querySelector('[data-packages-button]');
+    if (packagesButton) {
+      const packagesRect = packagesButton.getBoundingClientRect();
+      endX = packagesRect.left + packagesRect.width / 2;
+      endY = packagesRect.top + packagesRect.height / 2;
+      console.log('[trashOption] Found Packages button/pill at:', endX, endY);
+    } else {
+      // Fallback: Try to find "Trashed Options" tab in packages modal (if modal is open)
+      const trashTab = document.querySelector('[data-trash-tab="trashed-options"]');
+      if (trashTab) {
+        const trashRect = trashTab.getBoundingClientRect();
+        endX = trashRect.left + trashRect.width / 2;
+        endY = trashRect.top + trashRect.height / 2;
+        console.log('[trashOption] Found Trashed Options tab at:', endX, endY);
+      } else {
+        // Last fallback: Try to find any button with "Packages" text
+        const allButtons = Array.from(document.querySelectorAll('button'));
+        const packagesTextButton = allButtons.find(btn => {
+          const text = btn.textContent?.toLowerCase() || '';
+          return text.includes('package') && btn.offsetParent !== null; // visible
+        });
+        if (packagesTextButton) {
+          const packagesRect = packagesTextButton.getBoundingClientRect();
+          endX = packagesRect.left + packagesRect.width / 2;
+          endY = packagesRect.top + packagesRect.height / 2;
+          console.log('[trashOption] Found Packages button by text at:', endX, endY);
+        } else {
+          console.log('[trashOption] No packages button found, using default position');
+        }
+      }
+    }
+    
+    // Determine the identifier to use
+    // For custom options (objects with id), use the id
+    // For default options (strings), find the original index
+    let identifier;
+    const defaultOptions = categories[category] || [];
+    
+    if (typeof option === 'object' && option.id) {
+      // Custom option - use id
+      identifier = option.id;
+      console.log('[trashOption] Custom option, using id:', identifier);
+    } else {
+      // Default option - need to find original index
+      // The option could be a string or an object without id
+      let optionText;
+      if (typeof option === 'string') {
+        optionText = option;
+      } else if (option && typeof option === 'object') {
+        optionText = option.text || option.prompt || option.title || String(option);
+      } else {
+        optionText = String(option);
+      }
+      
+      console.log('[trashOption] Looking for default option:', optionText, 'in category:', category);
+      console.log('[trashOption] Default options count:', defaultOptions.length);
+      
+      const originalIndex = defaultOptions.findIndex(opt => {
+        if (typeof opt === 'string') {
+          return opt === optionText;
+        } else if (opt && typeof opt === 'object') {
+          return opt === optionText || opt.text === optionText || opt.prompt === optionText || opt.title === optionText;
+        }
+        return false;
+      });
+      
+      if (originalIndex === -1) {
+        console.error('[trashOption] Could not find original index for option:', optionText);
+        console.error('[trashOption] Available default options:', defaultOptions.slice(0, 5));
+        return;
+      }
+      
+      identifier = originalIndex;
+      console.log('[trashOption] Found original index:', identifier);
+    }
+    
+    // Deselect option from selectedOptions (remove from selectedOptions)
+    const currentSelected = userSelectedOptions[category];
+    let updatedSelected = { ...userSelectedOptions };
+    
+    // If categorySelected is undefined, initialize with all options except this one
+    if (currentSelected === undefined) {
+      // Get all options for this category to initialize selectedOptions
+      const allOptions = mergedCategories[category] || [];
+      const allIdentifiers = allOptions.map((opt, idx) => {
+        if (typeof opt === 'object' && opt.id) {
+          return opt.id;
+        }
+        return idx;
+      });
+      // Remove the deselected one
+      updatedSelected[category] = allIdentifiers.filter(id => id !== identifier);
+    } else if (Array.isArray(currentSelected) && currentSelected.includes(identifier)) {
+      // Remove the deselected option
+      updatedSelected[category] = currentSelected.filter(id => id !== identifier);
+    } else {
+      // Option already deselected, nothing to do
+      console.log('[trashOption] Option already deselected');
+      return;
+    }
+    
+    // Check if the trashed option is the currently selected one and calculate next option
+    const currentStoredIndex = selections[category] || 0;
+    const originalOptions = mergedCategories[category] || [];
+    const currentlySelectedOption = originalOptions[currentStoredIndex];
+    
+    // Get current filtered options before trashing (to find the trashed option's position)
+    const sortedOptions = sortedCategoryOptions[category] || mergedCategories[category] || [];
+    const favorites = userFavorites[category] || [];
+    const currentSelectedOptions = userSelectedOptions[category];
+    
+    // Calculate current filtered options (before removing the trashed one)
+    let currentFilteredOptions = sortedOptions;
+    if (currentSelectedOptions !== undefined && Array.isArray(currentSelectedOptions) && currentSelectedOptions.length > 0) {
+      currentFilteredOptions = sortedOptions.filter((opt) => {
+        const originalIndex = mergedCategories[category]?.findIndex(o => {
+          if (typeof o === 'object' && typeof opt === 'object') {
+            return (o.id && opt.id && o.id === opt.id) || 
+                   (o.title && opt.title && o.title === opt.title) ||
+                   (o.prompt && opt.prompt && o.prompt === opt.prompt) ||
+                   (o.text && opt.text && o.text === opt.text);
+          }
+          return o === opt;
+        });
+        if (originalIndex === -1) {
+          if (typeof opt === 'object' && opt.id) {
+            return currentSelectedOptions.includes(opt.id);
+          }
+          return false;
+        }
+        const originalOption = mergedCategories[category][originalIndex];
+        const optionId = (typeof originalOption === 'object' && originalOption?.id) 
+          ? originalOption.id 
+          : originalIndex;
+        return currentSelectedOptions.includes(optionId);
+      });
+    }
+    
+    // Find the trashed option's index in the current filtered list
+    const trashedIndexInFiltered = currentFilteredOptions.findIndex(opt => {
+      if (typeof opt === 'object' && typeof option === 'object') {
+        return (opt.id && option.id && opt.id === option.id) ||
+               (opt.title && option.title && opt.title === option.title) ||
+               (opt.prompt && option.prompt && opt.prompt === option.prompt) ||
+               (opt.text && option.text && opt.text === option.text);
+      }
+      return opt === option;
+    });
+    
+    // Check if the trashed option matches the currently selected option
+    let isCurrentlySelected = false;
+    if (typeof option === 'object' && option.id && typeof currentlySelectedOption === 'object' && currentlySelectedOption?.id) {
+      isCurrentlySelected = option.id === currentlySelectedOption.id;
+    } else if (typeof option === 'string' && typeof currentlySelectedOption === 'string') {
+      isCurrentlySelected = option === currentlySelectedOption;
+    } else if (typeof option === 'object' && typeof currentlySelectedOption === 'object') {
+      isCurrentlySelected = (option.title && currentlySelectedOption.title && option.title === currentlySelectedOption.title) ||
+                           (option.prompt && currentlySelectedOption.prompt && option.prompt === currentlySelectedOption.prompt) ||
+                           (option.text && currentlySelectedOption.text && option.text === currentlySelectedOption.text);
+    }
+    
+    // Calculate the next option before updating state
+    let nextOriginalIndex = null;
+    if (isCurrentlySelected || (trashedIndexInFiltered !== -1 && category === activeCategory)) {
+      // Calculate filtered options after removing the trashed one
+      const filteredAfterTrash = currentFilteredOptions.filter(opt => {
+        if (typeof opt === 'object' && typeof option === 'object') {
+          return !((opt.id && option.id && opt.id === option.id) ||
+                   (opt.title && option.title && opt.title === option.title) ||
+                   (opt.prompt && option.prompt && opt.prompt === option.prompt) ||
+                   (opt.text && option.text && opt.text === option.text));
+        }
+        return opt !== option;
+      });
+      
+      if (filteredAfterTrash.length > 0) {
+        // Use the same index position, or the last available if it was the last one
+        const nextIndex = Math.min(trashedIndexInFiltered, filteredAfterTrash.length - 1);
+        const nextOption = filteredAfterTrash[nextIndex];
+        
+        if (nextOption) {
+          // Find the original index of this option
+          const foundIndex = originalOptions.findIndex(opt => {
+            if (typeof opt === 'object' && typeof nextOption === 'object') {
+              return (opt.id && nextOption.id && opt.id === nextOption.id) ||
+                     (opt.title && nextOption.title && opt.title === nextOption.title) ||
+                     (opt.prompt && nextOption.prompt && opt.prompt === nextOption.prompt) ||
+                     (opt.text && nextOption.text && opt.text === nextOption.text);
+            }
+            return opt === nextOption;
+          });
+          
+          if (foundIndex !== -1) {
+            nextOriginalIndex = foundIndex;
+          }
+        }
+      }
+    }
+    
+    // Check if all options are trashed (empty array) - if so, uncheck the category
+    const categorySelectedOptions = updatedSelected[category];
+    if (Array.isArray(categorySelectedOptions) && categorySelectedOptions.length === 0) {
+      // All options trashed - uncheck the category checkbox
+      // Map category to its category group
+      const categoryToGroupMap = {
+        'Background': { group: 'backgroundEnvironment', setter: setEnabledBackgroundEnvironmentCategories, updater: updateEnabledBackgroundEnvironmentCategories },
+        'Props': { group: 'backgroundEnvironment', setter: setEnabledBackgroundEnvironmentCategories, updater: updateEnabledBackgroundEnvironmentCategories },
+        'Framing': { group: 'framingComposition', setter: setEnabledFramingCompositionCategories, updater: updateEnabledFramingCompositionCategories },
+        'Perspective': { group: 'framingComposition', setter: setEnabledFramingCompositionCategories, updater: updateEnabledFramingCompositionCategories },
+        'CameraAngle': { group: 'framingComposition', setter: setEnabledFramingCompositionCategories, updater: updateEnabledFramingCompositionCategories },
+        'CameraType': { group: 'framingComposition', setter: setEnabledFramingCompositionCategories, updater: updateEnabledFramingCompositionCategories },
+        'Aesthetic': { group: 'aestheticStyle', setter: setEnabledAestheticStyleCategories, updater: updateEnabledAestheticStyleCategories },
+        'Lighting': { group: 'aestheticStyle', setter: setEnabledAestheticStyleCategories, updater: updateEnabledAestheticStyleCategories },
+        'ColorPalette': { group: 'aestheticStyle', setter: setEnabledAestheticStyleCategories, updater: updateEnabledAestheticStyleCategories },
+        'Texture': { group: 'aestheticStyle', setter: setEnabledAestheticStyleCategories, updater: updateEnabledAestheticStyleCategories },
+        'Mood': { group: 'aestheticStyle', setter: setEnabledAestheticStyleCategories, updater: updateEnabledAestheticStyleCategories },
+        'PhotoStyle': { group: 'aestheticStyle', setter: setEnabledAestheticStyleCategories, updater: updateEnabledAestheticStyleCategories },
+        'HeadPosition': { group: 'faceHead', setter: setEnabledFaceHeadCategories, updater: updateEnabledFaceHeadCategories },
+        'Eyes': { group: 'faceHead', setter: setEnabledFaceHeadCategories, updater: updateEnabledFaceHeadCategories },
+        'Mouth': { group: 'faceHead', setter: setEnabledFaceHeadCategories, updater: updateEnabledFaceHeadCategories },
+        'Hair': { group: 'faceHead', setter: setEnabledFaceHeadCategories, updater: updateEnabledFaceHeadCategories },
+        'BodyPose': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+        'Torso': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+        'Arms': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+        'Hands': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+        'Legs': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+        'Feet': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+        'BodySize': { group: 'bodyPose', setter: setEnabledBodyPoseCategories, updater: updateEnabledBodyPoseCategories },
+      };
+      
+      const categoryGroup = categoryToGroupMap[category];
+      if (categoryGroup) {
+        // Get current enabled categories for this group
+        const getCurrentEnabled = async () => {
+          try {
+            if (categoryGroup.group === 'backgroundEnvironment') {
+              return await getEnabledBackgroundEnvironmentCategories(user.uid);
+            } else if (categoryGroup.group === 'framingComposition') {
+              return await getEnabledFramingCompositionCategories(user.uid);
+            } else if (categoryGroup.group === 'aestheticStyle') {
+              return await getEnabledAestheticStyleCategories(user.uid);
+            } else if (categoryGroup.group === 'faceHead') {
+              return await getEnabledFaceHeadCategories(user.uid);
+            } else if (categoryGroup.group === 'bodyPose') {
+              return await getEnabledBodyPoseCategories(user.uid);
+            }
+            return [];
+          } catch (error) {
+            console.error('[trashOption] Error getting enabled categories:', error);
+            return [];
+          }
+        };
+        
+        getCurrentEnabled().then(currentEnabled => {
+          // Remove the category from enabled list
+          const updatedEnabled = currentEnabled.filter(cat => cat !== category);
+          
+          // Update state
+          categoryGroup.setter(updatedEnabled);
+          
+          // Save to Firestore
+          if (user?.uid) {
+            categoryGroup.updater(user.uid, updatedEnabled).catch(error => {
+              console.error('[trashOption] Error updating enabled categories:', error);
+            });
+          }
+        });
+      }
+    }
+    
+    // Update state immediately - remove the option from the list so layout can shift
+    // The trashed option will be rendered as an overlay that flies away
+    setUserSelectedOptions(updatedSelected);
+    
+    // If we calculated a next option, update the selection
+    if (nextOriginalIndex !== null) {
+      setSelections(prev => ({
+        ...prev,
+        [category]: nextOriginalIndex
+      }));
+    } else if (isCurrentlySelected) {
+      // No options left, set to 0
+      setSelections(prev => ({
+        ...prev,
+        [category]: 0
+      }));
+    }
+    
+    // Start animation - the button will be removed from list but rendered as overlay that flies away
+    setTrashAnimation({
+      startX,
+      startY,
+      endX,
+      endY,
+      buttonElement: buttonElement,
+      buttonText: buttonText,
+    });
+
+    // Wait for animation to complete (1.2 seconds for the fly animation)
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    // Clear animation
+    setTrashAnimation(null);
+
+    // Save to Firestore in the background
+    try {
+      await saveUserData({ 
+        selectedOptions: updatedSelected
+      });
+      console.log('[trashOption] Successfully saved selectedOptions to Firestore');
+      // Don't reload data - we already have the correct state
+    } catch (error) {
+      console.error('[trashOption] Error saving to Firestore:', error);
+      // On error, revert the state change
+      setUserSelectedOptions(userSelectedOptions);
+      alert('Failed to deselect option. Please try again.');
+      return;
+    }
+  }, [user, userSelectedOptions, mergedCategories, categories, saveUserData, selections, activeCategory, sortedCategoryOptions, userFavorites, setEnabledBackgroundEnvironmentCategories, setEnabledFramingCompositionCategories, setEnabledAestheticStyleCategories, setEnabledFaceHeadCategories, setEnabledBodyPoseCategories]);
 
   // Add custom option
   const handleAddCustomOption = useCallback((category) => {
@@ -3422,7 +3995,7 @@ const PhotoElementRandomizer = () => {
     const customId = `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const newOption = {
       id: customId,
-      title: newOptionText.trim().substring(0, 50) || 'Custom Option',
+      title: newOptionTitle.trim() || newOptionText.trim().substring(0, 50) || 'Custom Option',
       prompt: newOptionText.trim()
     };
     
@@ -3434,10 +4007,21 @@ const PhotoElementRandomizer = () => {
     
     setUserCustomOptions(updatedCustom);
     setNewOptionText('');
+    setNewOptionTitle('');
     setAddOptionModalOpen(null);
     
-    await saveUserData({ customOptions: updatedCustom });
-  }, [user, newOptionText, userCustomOptions, saveUserData]);
+    try {
+      await saveUserData({ customOptions: updatedCustom });
+    } catch (error) {
+      console.error('Error saving custom option:', error);
+      // Revert state on error to prevent data loss
+      setUserCustomOptions(userCustomOptions);
+      setNewOptionText(newOptionText);
+      setNewOptionTitle(newOptionTitle);
+      setAddOptionModalOpen(category);
+      alert('Failed to save custom option. Please try again.');
+    }
+  }, [user, newOptionText, newOptionTitle, userCustomOptions, saveUserData]);
 
   // Save Create Set (custom prompt to category)
   const saveCreateSet = useCallback(async () => {
@@ -3468,6 +4052,7 @@ const PhotoElementRandomizer = () => {
       [setCategory]: [...currentCustom, newOption]
     };
     
+    const previousCustom = userCustomOptions;
     setUserCustomOptions(updatedCustom);
     setCreateSetFormData({ name: '', promptText: '', category: '' });
     setCreateSetModalOpen(false);
@@ -3477,6 +4062,10 @@ const PhotoElementRandomizer = () => {
       alert(`"${setName}" has been added to ${categoryDisplayNames[setCategory] || setCategory}!`);
     } catch (error) {
       console.error('Error saving create set:', error);
+      // Revert state on error to prevent data loss
+      setUserCustomOptions(previousCustom);
+      setCreateSetFormData({ name: setName, promptText: setPromptText, category: setCategory });
+      setCreateSetModalOpen(true);
       alert('Failed to save. Please try again.');
     }
   }, [user, createSetFormData, userCustomOptions, saveUserData, categoryDisplayNames]);
@@ -3501,6 +4090,7 @@ const PhotoElementRandomizer = () => {
       delete updatedCustom[category];
     }
     
+    const previousCustom = userCustomOptions;
     setUserCustomOptions(updatedCustom);
     
     // Adjust selection if needed
@@ -3513,7 +4103,14 @@ const PhotoElementRandomizer = () => {
       return prev;
     });
     
-    await saveUserData({ customOptions: updatedCustom });
+    try {
+      await saveUserData({ customOptions: updatedCustom });
+    } catch (error) {
+      console.error('Error deleting custom option:', error);
+      // Revert state on error to prevent data loss
+      setUserCustomOptions(previousCustom);
+      alert('Failed to delete option. Please try again.');
+    }
   }, [user, userCustomOptions, mergedCategories, saveUserData]);
 
   // Toggle favorite option
@@ -3539,7 +4136,14 @@ const PhotoElementRandomizer = () => {
     };
     
     setUserFavorites(updatedFavorites);
-    await saveUserData({ favorites: updatedFavorites });
+    try {
+      await saveUserData({ favorites: updatedFavorites });
+    } catch (error) {
+      console.error('Error saving favorites:', error);
+      // Revert state on error to prevent data loss
+      setUserFavorites(userFavorites);
+      alert('Failed to save favorite. Please try again.');
+    }
   }, [user, userFavorites, saveUserData]);
 
   // Reset category to defaults
@@ -3555,6 +4159,8 @@ const PhotoElementRandomizer = () => {
     const updatedHidden = { ...userHiddenOptions };
     delete updatedHidden[category];
     
+    const previousCustom = userCustomOptions;
+    const previousHidden = userHiddenOptions;
     setUserCustomOptions(updatedCustom);
     setUserHiddenOptions(updatedHidden);
     setManageMenuOpen(null);
@@ -3562,12 +4168,19 @@ const PhotoElementRandomizer = () => {
     // Reset selection to 0
     setSelections(prev => ({ ...prev, [category]: 0 }));
     
-    await saveUserData({
-      customOptions: updatedCustom,
-      hiddenOptions: updatedHidden
-    });
-    
-    alert(`${categoryDisplayNames[category]} has been reset to defaults.`);
+    try {
+      await saveUserData({
+        customOptions: updatedCustom,
+        hiddenOptions: updatedHidden
+      });
+      alert(`${categoryDisplayNames[category]} has been reset to defaults.`);
+    } catch (error) {
+      console.error('Error resetting category:', error);
+      // Revert state on error to prevent data loss
+      setUserCustomOptions(previousCustom);
+      setUserHiddenOptions(previousHidden);
+      alert('Failed to reset category. Please try again.');
+    }
   }, [user, userCustomOptions, userHiddenOptions, saveUserData, categoryDisplayNames]);
 
   // Load saved sets
@@ -3927,10 +4540,50 @@ const PhotoElementRandomizer = () => {
   const getCategoryOptions = (category) => {
     const sortedOptions = sortedCategoryOptions[category] || mergedCategories[category] || [];
     const favorites = userFavorites[category] || [];
+    const selectedOptions = userSelectedOptions[category];
     
-    // If showing favorites only, filter the sorted options
+    // First filter by selectedOptions if they exist (from CategorySelectionModal)
+    let filteredOptions = sortedOptions;
+    if (selectedOptions !== undefined && Array.isArray(selectedOptions)) {
+      if (selectedOptions.length === 0) {
+        // Empty array means all options are deselected - return empty array
+        filteredOptions = [];
+      } else {
+        // Filter to only show selected options
+        filteredOptions = sortedOptions.filter((option) => {
+          // Find this option in the original mergedCategories to get its identifier
+          const originalIndex = mergedCategories[category]?.findIndex(opt => {
+            if (typeof opt === 'object' && typeof option === 'object') {
+              return (opt.id && option.id && opt.id === option.id) || 
+                     (opt.title && option.title && opt.title === option.title) ||
+                     (opt.prompt && option.prompt && opt.prompt === option.prompt) ||
+                     (opt.text && option.text && opt.text === option.text);
+            }
+            return opt === option;
+          });
+          
+          if (originalIndex === -1) {
+            // Option not found in original - might be custom, check by id
+            if (typeof option === 'object' && option.id) {
+              return selectedOptions.includes(option.id);
+            }
+            return false;
+          }
+          
+          // Get the identifier for this option (id for custom, index for default)
+          const originalOption = mergedCategories[category][originalIndex];
+          const optionId = (typeof originalOption === 'object' && originalOption?.id) 
+            ? originalOption.id 
+            : originalIndex;
+          
+          return selectedOptions.includes(optionId);
+        });
+      }
+    }
+    
+    // If showing favorites only, filter the options
     if (showFavoritesOnly && favorites.length > 0) {
-      return sortedOptions.filter((option, index) => {
+      return filteredOptions.filter((option, index) => {
         const optionId = (typeof option === 'object' && option?.id) ? option.id : index;
         // For sorted options, we need to find the original index to get the correct ID
         const originalIndex = mergedCategories[category]?.findIndex(opt => {
@@ -3950,8 +4603,14 @@ const PhotoElementRandomizer = () => {
       });
     }
     
-    return sortedOptions;
+    return filteredOptions;
   };
+
+  // Helper function to get filtered count for a category (for sidebar display)
+  const getCategoryFilteredCount = useCallback((category) => {
+    const filtered = getCategoryOptions(category);
+    return filtered.length;
+  }, [mergedCategories, userSelectedOptions, sortedCategoryOptions, userFavorites, showFavoritesOnly]);
 
   const currentCategoryOptions = getCategoryOptions(activeCategory);
   
@@ -4074,7 +4733,7 @@ const PhotoElementRandomizer = () => {
         enabled={!loadingUserData}
       />
       <div className="layout-container">
-        <Header />
+        <Header onOpenVisibilitySettings={() => setVisibilitySettingsModalOpen(true)} />
 
         {/* Main app area – replicates three-column generator layout:
             - Left: vertical navigation rail
@@ -4089,36 +4748,28 @@ const PhotoElementRandomizer = () => {
               <span className="app-sidebar-logo-text">Studio</span>
             </div>
 
-            {/* Navigation menu - hidden in production, visible in development */}
+            {/* Navigation menu */}
             {__ENABLE_PACKAGES__ && (
               <nav className="app-sidebar-nav">
-                <button className="app-sidebar-item app-sidebar-item-active">
+                <button 
+                  type="button"
+                  className={`app-sidebar-item ${currentRoute === '#ai-image-generator' ? 'app-sidebar-item-active' : ''}`}
+                  onClick={() => {
+                    window.location.hash = '#ai-image-generator';
+                  }}
+                >
                   <span className="app-sidebar-item-dot" />
                   <span className="app-sidebar-item-label">AI Image Generator</span>
                 </button>
                 <button 
-                  className="app-sidebar-item"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                  type="button"
+                  className={`app-sidebar-item ${currentRoute === '#face-photos' ? 'app-sidebar-item-active' : ''}`}
+                  onClick={() => {
                     window.location.hash = '#face-photos';
-                    window.dispatchEvent(new HashChangeEvent('hashchange'));
                   }}
                 >
                   <span className="app-sidebar-item-dot" />
                   <span className="app-sidebar-item-label">Upload Face Photo</span>
-                </button>
-                <button 
-                  className="app-sidebar-item"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.location.hash = '#pose-studio';
-                    window.dispatchEvent(new HashChangeEvent('hashchange'));
-                  }}
-                >
-                  <span className="app-sidebar-item-dot" />
-                  <span className="app-sidebar-item-label">Pose Studio</span>
                 </button>
               </nav>
             )}
@@ -4140,18 +4791,17 @@ const PhotoElementRandomizer = () => {
               onAddCustomOption={handleAddCustomOption}
               onExpandedGroupChange={(groupIndex) => {
                 setExpandedGroup(groupIndex);
-                // Show modal when user first expands "Clothes & Styling" (index 3) if no preferences set
-                if (groupIndex === 3 && hasCheckedClothingPreferences && user) {
-                  // Check if user has ever set preferences
+                // Auto-show modal when Clothes & Styling group (index 3) is expanded for first time
+                if (groupIndex === 3 && user && hasCheckedClothingPreferences && !hasShownClothingModalRef.current) {
                   const hasSetPreferences = userPreferences?.preferences?.enabledClothingCategories !== undefined;
                   if (!hasSetPreferences) {
-                    // First time expanding - show modal to let user choose
                     setClothingCategoriesModalOpen(true);
+                    hasShownClothingModalRef.current = true;
                   }
                 }
               }}
-              onOpenClothingSettings={() => setClothingCategoriesModalOpen(true)}
               expandedGroup={expandedGroup}
+              getCategoryFilteredCount={getCategoryFilteredCount}
             />
           </aside>
 
@@ -4204,7 +4854,7 @@ const PhotoElementRandomizer = () => {
               <div className="actions-sidebar">
             {/* Primary Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {/* Shuffle - The main action */}
+              {/* I'm Feeling Lucky - The main action */}
               <button
                 onClick={randomizeAll}
                 style={{
@@ -4232,11 +4882,11 @@ const PhotoElementRandomizer = () => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
                 }}
-                aria-label="Shuffle unlocked options"
-                title="Shuffle unlocked options"
+                aria-label="I'm Feeling Lucky"
+                title="I'm Feeling Lucky"
               >
                 <RotateCcw size={14} />
-                Shuffle
+                I'm Feeling Lucky
               </button>
               
               {/* Copy - The goal action */}
@@ -4438,9 +5088,10 @@ const PhotoElementRandomizer = () => {
                   Create Set
                 </button>
 
-                {/* Packages button - hidden in production, visible in development */}
+                {/* Packages button */}
                 {__ENABLE_PACKAGES__ && (
                   <button
+                    data-packages-button
                     onClick={() => setInstalledPackagesModalOpen(true)}
                     style={{
                       width: '100%',
@@ -4510,32 +5161,224 @@ const PhotoElementRandomizer = () => {
             )}
           </div>
         </div>
-      </div>
+          </div>
         </div>
+      </div>
 
       <Footer />
 
-      {/* Installed Packages Modal - hidden in production, visible in development */}
-      {__ENABLE_PACKAGES__ && installedPackagesModalOpen && (
-        <ClothingCategoriesModal
-          isOpen={clothingCategoriesModalOpen}
-          onClose={() => setClothingCategoriesModalOpen(false)}
-          onSave={(selectedCategories) => {
-            setEnabledClothingCategories(selectedCategories);
-            // Reload preferences to ensure consistency
-            if (user?.uid) {
-              getUserPreferences(user.uid).then(prefs => {
-                if (prefs) {
-                  setUserPreferences(prefs);
-                }
-              });
-            }
-          }}
-        />
+      {/* Clothing Categories Selection Modal */}
+      <ClothingCategoriesModal
+        isOpen={clothingCategoriesModalOpen}
+        onClose={() => setClothingCategoriesModalOpen(false)}
+        onSave={(selectedCategories) => {
+          setEnabledClothingCategories(selectedCategories);
+          // Reload preferences to ensure consistency
+          if (user?.uid) {
+            getUserPreferences(user.uid).then(prefs => {
+              if (prefs) {
+                setUserPreferences(prefs);
+              }
+            });
+          }
+        }}
+      />
 
+      {/* Visibility Settings Modal */}
+      <VisibilitySettingsModal
+        isOpen={visibilitySettingsModalOpen}
+        onClose={() => setVisibilitySettingsModalOpen(false)}
+        categoryGroups={[
+          {
+            title: 'Part 1: Background & Environment',
+            description: 'Most static elements - set once for photo bursts',
+            categories: ['Background', 'Props']
+          },
+          {
+            title: 'Part 2: Framing & Composition',
+            description: 'Camera framing and composition settings',
+            categories: ['Framing', 'Perspective', 'CameraAngle', 'CameraType']
+          },
+          {
+            title: 'Part 3: Aesthetic & Style',
+            description: 'Overall aesthetic, lighting, and mood',
+            categories: ['Aesthetic', 'Lighting', 'ColorPalette', 'Texture', 'Mood', 'PhotoStyle']
+          },
+          {
+            title: 'Part 4: Clothes & Styling',
+            description: 'Outfits and styling accessories',
+            categories: ['Outfit']
+          },
+          {
+            title: 'Part 5: Face & Head',
+            description: 'Facial features, expressions, and hair',
+            categories: ['HeadPosition', 'FacialExpression', 'Eyes', 'Mouth', 'Hair']
+          },
+          {
+            title: 'Part 6: Body & Pose',
+            description: 'Body positioning and pose - most dynamic',
+            categories: ['BodyPose', 'Torso', 'Arms', 'Hands', 'Legs', 'Feet', 'BodySize']
+          }
+        ]}
+        onUpdate={(hiddenGroups) => {
+          setHiddenCategoryGroups(hiddenGroups);
+          // Reload preferences to ensure consistency
+          if (user?.uid) {
+            getHiddenCategoryGroups(user.uid).then(groups => {
+              setHiddenCategoryGroups(groups || []);
+            });
+          }
+        }}
+      />
+
+      {/* Face & Head Category Selection Modal */}
+      <CategorySelectionModal
+        isOpen={faceHeadModalOpen}
+        onClose={() => setFaceHeadModalOpen(false)}
+        onSave={(selectedCategories) => {
+          setEnabledFaceHeadCategories(selectedCategories);
+          if (user?.uid) {
+            getUserPreferences(user.uid).then(prefs => {
+              if (prefs) {
+                setUserPreferences(prefs);
+              }
+            });
+          }
+        }}
+        categoryGroup="faceHead"
+        optionalCategories={[
+          { key: 'HeadPosition', displayName: 'Head Position', count: categories.HeadPosition?.length || 0 },
+          { key: 'Eyes', displayName: 'Eyes', count: categories.Eyes?.length || 0 },
+          { key: 'Mouth', displayName: 'Mouth', count: categories.Mouth?.length || 0 },
+          { key: 'Hair', displayName: 'Hair', count: categories.Hair?.length || 0 },
+        ]}
+        defaultCategory="FacialExpression"
+        defaultCategoryCount={categories.FacialExpression?.length || 0}
+        title="Select Face & Head Categories"
+        description="Choose which face & head categories to include in your setup."
+      />
+
+      {/* Aesthetic & Style Category Selection Modal */}
+      <CategorySelectionModal
+        isOpen={aestheticStyleModalOpen}
+        onClose={() => setAestheticStyleModalOpen(false)}
+        onSave={(selectedCategories) => {
+          setEnabledAestheticStyleCategories(selectedCategories);
+          if (user?.uid) {
+            getUserPreferences(user.uid).then(prefs => {
+              if (prefs) {
+                setUserPreferences(prefs);
+              }
+            });
+          }
+        }}
+        categoryGroup="aestheticStyle"
+        optionalCategories={[
+          { key: 'Lighting', displayName: 'Lighting', count: categories.Lighting?.length || 0 },
+          { key: 'ColorPalette', displayName: 'Color Palette', count: categories.ColorPalette?.length || 0 },
+          { key: 'Texture', displayName: 'Texture', count: categories.Texture?.length || 0 },
+          { key: 'Mood', displayName: 'Mood', count: categories.Mood?.length || 0 },
+          { key: 'PhotoStyle', displayName: 'Photo Style', count: categories.PhotoStyle?.length || 0 },
+        ]}
+        defaultCategory="Aesthetic"
+        defaultCategoryCount={categories.Aesthetic?.length || 0}
+        title="Select Aesthetic & Style Categories"
+        description="Choose which aesthetic & style categories to include in your setup."
+      />
+
+      {/* Framing & Composition Category Selection Modal */}
+      <CategorySelectionModal
+        isOpen={framingCompositionModalOpen}
+        onClose={() => setFramingCompositionModalOpen(false)}
+        onSave={(selectedCategories) => {
+          setEnabledFramingCompositionCategories(selectedCategories);
+          if (user?.uid) {
+            getUserPreferences(user.uid).then(prefs => {
+              if (prefs) {
+                setUserPreferences(prefs);
+              }
+            });
+          }
+        }}
+        categoryGroup="framingComposition"
+        optionalCategories={[
+          { key: 'Perspective', displayName: 'Perspective', count: categories.Perspective?.length || 0 },
+          { key: 'CameraAngle', displayName: 'Camera Angle', count: categories.CameraAngle?.length || 0 },
+          { key: 'CameraType', displayName: 'Camera Type', count: categories.CameraType?.length || 0 },
+        ]}
+        defaultCategory="Framing"
+        defaultCategoryCount={categories.Framing?.length || 0}
+        title="Select Framing & Composition Categories"
+        description="Choose which framing & composition categories to include in your setup."
+      />
+
+      {/* Background & Environment Category Selection Modal */}
+      <CategorySelectionModal
+        isOpen={backgroundEnvironmentModalOpen}
+        onClose={() => setBackgroundEnvironmentModalOpen(false)}
+        onSave={(selectedCategories) => {
+          setEnabledBackgroundEnvironmentCategories(selectedCategories);
+          if (user?.uid) {
+            getUserPreferences(user.uid).then(prefs => {
+              if (prefs) {
+                setUserPreferences(prefs);
+              }
+            });
+          }
+        }}
+        categoryGroup="backgroundEnvironment"
+        optionalCategories={[
+          { key: 'Props', displayName: 'Props', count: categories.Props?.length || 0 },
+        ]}
+        defaultCategory="Background"
+        defaultCategoryCount={categories.Background?.length || 0}
+        title="Select Background & Environment Categories"
+        description="Choose which background & environment categories to include in your setup."
+      />
+
+      {/* Body & Pose Category Selection Modal */}
+      <CategorySelectionModal
+        isOpen={bodyPoseModalOpen}
+        onClose={() => setBodyPoseModalOpen(false)}
+        onSave={async (selectedCategories) => {
+          setEnabledBodyPoseCategories(selectedCategories);
+          // Immediately update state to reflect changes
+          setHasCheckedBodyPosePreferences(true);
+          if (user?.uid) {
+            // Reload preferences to ensure consistency
+            const prefs = await getUserPreferences(user.uid);
+            if (prefs) {
+              setUserPreferences(prefs);
+            }
+            // Reload Body & Pose categories to ensure we have the latest
+            const enabled = await getEnabledBodyPoseCategories(user.uid);
+            setEnabledBodyPoseCategories(enabled || []);
+          }
+        }}
+        categoryGroup="bodyPose"
+        optionalCategories={[
+          { key: 'Torso', displayName: 'Torso', count: categories.Torso?.length || 0 },
+          { key: 'Arms', displayName: 'Arms', count: categories.Arms?.length || 0 },
+          { key: 'Hands', displayName: 'Hands', count: categories.Hands?.length || 0 },
+          { key: 'Legs', displayName: 'Legs', count: categories.Legs?.length || 0 },
+          { key: 'Feet', displayName: 'Feet', count: categories.Feet?.length || 0 },
+          { key: 'BodySize', displayName: 'Body Size', count: categories.BodySize?.length || 0 },
+        ]}
+        defaultCategory="BodyPose"
+        defaultCategoryCount={categories.BodyPose?.length || 0}
+        title="Select Body & Pose Categories"
+        description="Choose which body & pose categories to include in your setup. All categories are enabled by default."
+      />
+
+      {/* Installed Packages Modal */}
+      {__ENABLE_PACKAGES__ && installedPackagesModalOpen && (
         <InstalledPackagesModal
           isOpen={installedPackagesModalOpen}
           onClose={() => setInstalledPackagesModalOpen(false)}
+          categories={categories}
+          userCustomOptions={userCustomOptions}
+          userDeletedOptions={userDeletedOptions}
+          onTrashOption={trashOption}
           onUninstall={(packageId) => {
             // Reload user data to refresh options
             const loadUserData = async () => {
@@ -4552,6 +5395,60 @@ const PhotoElementRandomizer = () => {
               }
             };
             loadUserData();
+          }}
+          onClothingCategoriesUpdate={async () => {
+            // Reload preferences to ensure consistency
+            if (user?.uid) {
+              const prefs = await getUserPreferences(user.uid);
+              if (prefs) {
+                setUserPreferences(prefs);
+              }
+              // Refresh ALL category preferences to ensure sidebar matches selections
+              const enabledClothing = await getEnabledClothingCategories(user.uid);
+              setEnabledClothingCategories(enabledClothing || []);
+              
+              const enabledBodyPose = await getEnabledBodyPoseCategories(user.uid);
+              setEnabledBodyPoseCategories(enabledBodyPose || []);
+              setHasCheckedBodyPosePreferences(true);
+              
+              const enabledFaceHead = await getEnabledFaceHeadCategories(user.uid);
+              setEnabledFaceHeadCategories(enabledFaceHead || []);
+              setHasCheckedFaceHeadPreferences(true);
+              
+              const enabledAestheticStyle = await getEnabledAestheticStyleCategories(user.uid);
+              setEnabledAestheticStyleCategories(enabledAestheticStyle || []);
+              setHasCheckedAestheticStylePreferences(true);
+              
+              const enabledFramingComposition = await getEnabledFramingCompositionCategories(user.uid);
+              setEnabledFramingCompositionCategories(enabledFramingComposition || []);
+              setHasCheckedFramingCompositionPreferences(true);
+              
+              const enabledBackgroundEnvironment = await getEnabledBackgroundEnvironmentCategories(user.uid);
+              setEnabledBackgroundEnvironmentCategories(enabledBackgroundEnvironment || []);
+              setHasCheckedBackgroundEnvironmentPreferences(true);
+              
+              // Reload selectedOptions and refresh deleted options (but preserve local state if it's more recent)
+              const userDocRef = doc(db, 'users', user.uid);
+              const userDoc = await getDoc(userDocRef);
+              if (userDoc.exists()) {
+                const data = userDoc.data();
+                const firestoreDeleted = data.deletedOptions || {};
+                // Use functional update to preserve local state if it has more items
+                setUserDeletedOptions(prev => {
+                  // Count total deleted items in each
+                  const prevCount = Object.values(prev).reduce((sum, arr) => sum + (arr?.length || 0), 0);
+                  const firestoreCount = Object.values(firestoreDeleted).reduce((sum, arr) => sum + (arr?.length || 0), 0);
+                  // If local has more or equal, keep it (might have unsaved changes)
+                  if (prevCount >= firestoreCount) {
+                    return prev;
+                  }
+                  return firestoreDeleted;
+                });
+                
+                // Reload selectedOptions to match modal selections
+                setUserSelectedOptions(data.selectedOptions || {});
+              }
+            }
           }}
         />
       )}
@@ -4595,7 +5492,8 @@ const PhotoElementRandomizer = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -4604,80 +5502,174 @@ const PhotoElementRandomizer = () => {
           onClick={() => {
             setAddOptionModalOpen(null);
             setNewOptionText('');
+            setNewOptionTitle('');
           }}
         >
           <div
             style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '24px',
+              background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
+              borderRadius: '20px',
+              padding: '32px',
               maxWidth: '600px',
               width: '90%',
               maxHeight: '80vh',
               overflow: 'auto',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.2)',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              position: 'relative'
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <h3
               style={{
-                margin: '0 0 16px 0',
-                fontSize: '18px',
+                margin: '0 0 24px 0',
+                fontSize: '24px',
                 fontWeight: '600',
-                color: '#2c2c2c'
+                color: '#ffffff'
               }}
             >
               Add Custom Option - {categoryDisplayNames[addOptionModalOpen]}
             </h3>
-            <textarea
-              value={newOptionText}
-              onChange={(e) => setNewOptionText(e.target.value)}
-              placeholder="Enter your custom prompt text here..."
-              style={{
-                width: '100%',
-                minHeight: '200px',
-                padding: '12px',
-                border: '1px solid rgba(0,0,0,0.2)',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontFamily: 'inherit',
-                resize: 'vertical',
-                marginBottom: '16px'
-              }}
-            />
+            <div style={{ marginBottom: '20px' }}>
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#ffffff'
+                }}
+              >
+                Title <span style={{ color: '#ef4444' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={newOptionTitle}
+                onChange={(e) => setNewOptionTitle(e.target.value)}
+                placeholder="Enter a title for this option"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  borderRadius: '10px',
+                  fontSize: '15px',
+                  fontFamily: 'inherit',
+                  color: '#ffffff',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#8b5cf6';
+                  e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                  e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                }}
+              />
+            </div>
+            <div style={{ marginBottom: '24px' }}>
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#ffffff'
+                }}
+              >
+                Prompt Text <span style={{ color: '#ef4444' }}>*</span>
+              </label>
+              <textarea
+                value={newOptionText}
+                onChange={(e) => setNewOptionText(e.target.value)}
+                placeholder="Enter your custom prompt text here..."
+                style={{
+                  width: '100%',
+                  minHeight: '200px',
+                  padding: '12px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  borderRadius: '10px',
+                  fontSize: '15px',
+                  fontFamily: 'inherit',
+                  resize: 'vertical',
+                  color: '#ffffff',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#8b5cf6';
+                  e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                  e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                }}
+              />
+            </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button
                 onClick={() => {
                   setAddOptionModalOpen(null);
                   setNewOptionText('');
+                  setNewOptionTitle('');
                 }}
                 style={{
-                  padding: '10px 20px',
-                  background: 'transparent',
-                  border: '1px solid rgba(0,0,0,0.2)',
-                  borderRadius: '8px',
+                  padding: '12px 24px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  borderRadius: '10px',
                   cursor: 'pointer',
                   fontSize: '14px',
                   fontWeight: '500',
-                  color: '#2c2c2c'
+                  color: '#ffffff',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.borderColor = '#8b5cf6';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                  e.target.style.borderColor = 'rgba(139, 92, 246, 0.3)';
                 }}
               >
                 Cancel
               </button>
               <button
                 onClick={() => saveCustomOption(addOptionModalOpen)}
-                disabled={!newOptionText.trim()}
+                disabled={!newOptionText.trim() || !newOptionTitle.trim()}
                 style={{
-                  padding: '10px 20px',
-                  background: newOptionText.trim()
-                    ? 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)'
-                    : '#ccc',
+                  padding: '12px 24px',
+                  background: (newOptionText.trim() && newOptionTitle.trim())
+                    ? 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
+                    : 'rgba(139, 92, 246, 0.3)',
                   border: 'none',
-                  borderRadius: '8px',
-                  cursor: newOptionText.trim() ? 'pointer' : 'not-allowed',
+                  borderRadius: '10px',
+                  cursor: (newOptionText.trim() && newOptionTitle.trim()) ? 'pointer' : 'not-allowed',
                   fontSize: '14px',
-                  fontWeight: '500',
-                  color: 'white'
+                  fontWeight: '600',
+                  color: '#ffffff',
+                  transition: 'all 0.2s ease',
+                  boxShadow: (newOptionText.trim() && newOptionTitle.trim()) 
+                    ? '0 4px 12px rgba(139, 92, 246, 0.4)' 
+                    : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (newOptionText.trim() && newOptionTitle.trim()) {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(139, 92, 246, 0.5)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (newOptionText.trim() && newOptionTitle.trim()) {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
+                  }
                 }}
               >
                 Save
@@ -6152,7 +7144,6 @@ const PhotoElementRandomizer = () => {
           }
         }
       `}</style>
-      </div>
 
       {/* Word Buttons Bar - Fixed at bottom of page (outside layout-container) */}
       {currentCategoryOptions.length > 0 && !statsModalOpen && !saveModalOpen && !addOptionModalOpen && !installedPackagesModalOpen && !createSetModalOpen && !showFirstTimeExperience && !buyCreditsModalOpen && (
@@ -6167,6 +7158,18 @@ const PhotoElementRandomizer = () => {
           favorites={userFavorites}
           onToggleFavorite={toggleFavorite}
           isLoggedIn={!!user}
+          onTrash={(option, optionIndex, buttonElement) => trashOption(activeCategory, option, optionIndex, buttonElement)}
+        />
+      )}
+
+      {/* Trash Animation */}
+      {trashAnimation && (
+        <TrashAnimation
+          startX={trashAnimation.startX}
+          startY={trashAnimation.startY}
+          endX={trashAnimation.endX}
+          endY={trashAnimation.endY}
+          onComplete={() => setTrashAnimation(null)}
         />
       )}
     </>

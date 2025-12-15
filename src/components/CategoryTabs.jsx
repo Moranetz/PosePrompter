@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Settings } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CategoryTabs = ({
@@ -17,10 +17,12 @@ const CategoryTabs = ({
   isLoggedIn,
   onAddCustomOption,
   onExpandedGroupChange,
-  onOpenClothingSettings,
-  expandedGroup
+  expandedGroup: expandedGroupProp,
+  getCategoryFilteredCount
 }) => {
-  const [expandedGroup, setExpandedGroup] = useState(2); // Start with "Aesthetic & Style" (most used)
+  // Use prop if provided, otherwise use internal state
+  const [internalExpandedGroup, setInternalExpandedGroup] = useState(2); // Start with "Aesthetic & Style" (most used)
+  const expandedGroup = expandedGroupProp !== undefined ? expandedGroupProp : internalExpandedGroup;
   const activeButtonRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
@@ -40,21 +42,27 @@ const CategoryTabs = ({
   // Find which group the active category belongs to and notify parent
   useEffect(() => {
     let newGroupIndex = expandedGroup;
+    let foundGroup = false;
+    
     categoryGroups.forEach((group, index) => {
-      if (group.categories.includes(activeCategory)) {
+      if (group.categories && group.categories.length > 0 && group.categories.includes(activeCategory)) {
         newGroupIndex = index;
+        foundGroup = true;
       }
     });
     
-    if (newGroupIndex !== expandedGroup) {
-      setExpandedGroup(newGroupIndex);
+    // Only auto-switch groups if the active category exists in a different group
+    // Don't auto-switch if the category doesn't exist in any group (e.g., all categories unchecked)
+    if (foundGroup && newGroupIndex !== expandedGroup) {
+      if (expandedGroupProp === undefined) {
+        setInternalExpandedGroup(newGroupIndex);
+      }
+      // Always notify parent of current expanded group
+      if (onExpandedGroupChange) {
+        onExpandedGroupChange(newGroupIndex);
+      }
     }
-    
-    // Always notify parent of current expanded group
-    if (onExpandedGroupChange) {
-      onExpandedGroupChange(newGroupIndex);
-    }
-  }, [activeCategory, categoryGroups, onExpandedGroupChange]);
+  }, [activeCategory, categoryGroups, onExpandedGroupChange, expandedGroup, expandedGroupProp]);
 
   const activeGroup = categoryGroups[expandedGroup];
 
@@ -77,97 +85,61 @@ const CategoryTabs = ({
         {categoryGroups.map((group, index) => {
           const isExpanded = expandedGroup === index;
           const activeCategoryInGroup = group.categories.find(cat => cat === activeCategory);
-          const isClothingGroup = index === 3; // "Clothes & Styling" is index 3
           
           return (
-            <div
+            <motion.button
               key={index}
+              onClick={() => {
+                if (expandedGroupProp === undefined) {
+                  setInternalExpandedGroup(index);
+                }
+                if (onExpandedGroupChange) {
+                  onExpandedGroupChange(index);
+                }
+                // Only auto-select first category if there are categories available
+                // If empty, clear activeCategory so user can navigate freely
+                if (group.categories && group.categories.length > 0) {
+                  onCategorySelect(group.categories[0]);
+                } else {
+                  // Clear active category when switching to empty group
+                  // This allows free navigation between tabs
+                  onCategorySelect(null);
+                }
+              }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               style={{
-                position: 'relative',
+                padding: '10px 14px',
+                width: '100%',
+                background: isExpanded
+                  ? 'rgba(24, 24, 28, 0.9)'
+                  : 'transparent',
+                border: 'none',
+                borderLeft: isExpanded
+                  ? '3px solid #14b8a6'
+                  : '3px solid transparent',
+                borderRadius: '6px',
+                color: isExpanded
+                  ? '#f4f4f5'
+                  : activeCategoryInGroup
+                    ? '#e5e5e5'
+                    : '#a1a1aa',
+                fontSize: '13px',
+                fontWeight: isExpanded ? '600' : '500',
+                letterSpacing: '-0.01em',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px'
+                gap: '6px',
+                boxShadow: isExpanded
+                  ? '0 2px 8px rgba(0,0,0,0.3)'
+                  : 'none'
               }}
             >
-              <motion.button
-                onClick={() => {
-                  setExpandedGroup(index);
-                  if (onExpandedGroupChange) {
-                    onExpandedGroupChange(index);
-                  }
-                  if (group.categories.length > 0) {
-                    onCategorySelect(group.categories[0]);
-                  }
-                }}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-                style={{
-                  padding: '10px 14px',
-                  flex: 1,
-                  background: isExpanded
-                    ? 'rgba(24, 24, 28, 0.9)'
-                    : 'transparent',
-                  border: 'none',
-                  borderLeft: isExpanded
-                    ? '3px solid #14b8a6'
-                    : '3px solid transparent',
-                  borderRadius: '6px',
-                  color: isExpanded
-                    ? '#f4f4f5'
-                    : activeCategoryInGroup
-                      ? '#e5e5e5'
-                      : '#a1a1aa',
-                  fontSize: '13px',
-                  fontWeight: isExpanded ? '600' : '500',
-                  letterSpacing: '-0.01em',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: isExpanded
-                    ? '0 2px 8px rgba(0,0,0,0.3)'
-                    : 'none'
-                }}
-              >
-                {group.title.replace(/Part \d+: /, '')}
-              </motion.button>
-              {isClothingGroup && isLoggedIn && onOpenClothingSettings && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenClothingSettings();
-                  }}
-                  style={{
-                    padding: '8px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    color: isExpanded ? '#a1a1aa' : '#71717a',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    flexShrink: 0
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    e.currentTarget.style.color = '#f4f4f5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.color = isExpanded ? '#a1a1aa' : '#71717a';
-                  }}
-                  title="Configure clothing categories"
-                >
-                  <Settings size={14} />
-                </button>
-              )}
-            </div>
+              {group.title.replace(/Part \d+: /, '')}
+            </motion.button>
           );
         })}
       </div>
@@ -194,7 +166,8 @@ const CategoryTabs = ({
             scrollbarColor: 'rgba(255,255,255,0.2) transparent'
           }}
         >
-          {activeGroup?.categories.map((category) => {
+          {activeGroup?.categories && activeGroup.categories.length > 0 ? (
+            activeGroup.categories.map((category) => {
             const isActive = activeCategory === category;
             const isLocked = lockedCategories[category] || false;
             const isIncluded = includedCategories[category] !== false;
@@ -259,7 +232,7 @@ const CategoryTabs = ({
                       marginLeft: 'auto',
                       flexShrink: 0
                     }}>
-                      {currentIndex + 1}/{options.length}
+                      {currentIndex + 1}/{getCategoryFilteredCount ? getCategoryFilteredCount(category) : options.length}
                     </span>
                   )}
 
@@ -385,7 +358,20 @@ const CategoryTabs = ({
                 </AnimatePresence>
               </motion.div>
             );
-          })}
+          })
+          ) : (
+            <div style={{
+              padding: '24px',
+              textAlign: 'center',
+              color: 'rgba(255, 255, 255, 0.5)',
+              fontSize: '13px'
+            }}>
+              <p style={{ margin: '0 0 8px 0' }}>No categories enabled</p>
+              <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255, 255, 255, 0.4)' }}>
+                Configure this group in Packages to enable categories
+              </p>
+            </div>
+          )}
         </motion.div>
       </AnimatePresence>
 

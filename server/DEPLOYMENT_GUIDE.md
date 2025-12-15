@@ -50,6 +50,7 @@ Your backend needs to be deployed so Stripe webhooks can reach it at `https://ap
 
 6. **Get Render URL:**
    - Render gives you: `https://your-app.onrender.com`
+   - Your deployed URL: `https://pose-prompter.onrender.com`
 
 7. **Set up Custom Domain:**
    - In Render dashboard → Custom Domains
@@ -116,6 +117,10 @@ After deploying, you need to point `api.poseprompter.com` to your backend server
 
 1. **Check health endpoint:**
    ```bash
+   # Using Render URL (current)
+   curl https://pose-prompter.onrender.com/api/health
+   
+   # Or using custom domain (after DNS setup)
    curl https://api.poseprompter.com/api/health
    ```
 
@@ -131,8 +136,14 @@ After deploying, you need to point `api.poseprompter.com` to your backend server
 
 ## Update Frontend
 
-After deployment, update `.env.local`:
+After deployment, update `.env.local` in the project root:
 
+**For Render deployment (current):**
+```env
+VITE_API_BASE_URL=https://pose-prompter.onrender.com
+```
+
+**For custom domain (after DNS setup):**
 ```env
 VITE_API_BASE_URL=https://api.poseprompter.com
 ```

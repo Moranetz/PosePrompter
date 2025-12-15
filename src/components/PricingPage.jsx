@@ -4,6 +4,7 @@ import { Star, ExternalLink, ArrowLeft, Gem, Check, Loader2, X } from 'lucide-re
 import Header from './Header';
 import { useAuth } from '../contexts/UserContext';
 import { purchaseGems } from '../utils/paymentService';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const PricingPage = ({ onClose }) => {
   const { user } = useAuth();
@@ -70,7 +71,7 @@ const PricingPage = ({ onClose }) => {
       }
     } catch (err) {
       console.error('[PricingPage] Error purchasing gems:', err);
-      setError(err.message || 'Failed to process purchase. Please try again.');
+      setError(getErrorMessage(err) || 'Failed to process purchase. Please try again.');
       setTimeout(() => setError(null), 5000);
     } finally {
       setLoadingPackage(null);

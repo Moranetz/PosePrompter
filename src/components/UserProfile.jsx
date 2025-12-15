@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   User, Edit2, Save, X, Upload, Calendar, Package, Download, 
   FolderOpen, Settings, Moon, Sun, Sidebar, LayoutHorizontal, 
-  Save as SaveIcon, Bell, Trash2, Loader2, AlertCircle, Eye
+  Save as SaveIcon, Bell, Trash2, Loader2, AlertCircle, Eye, Gem
 } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
 import { 
@@ -293,7 +293,8 @@ const UserProfile = () => {
   const stats = {
     packagesCreated: myPackages.length,
     downloadsReceived: myPackages.reduce((sum, pkg) => sum + (pkg.stats?.downloads || 0), 0),
-    setsSaved: savedSets.length
+    setsSaved: savedSets.length,
+    gemsEarned: profile?.gems || 0
   };
 
   // Format join date
@@ -725,7 +726,70 @@ const ProfileCard = ({
             <StatItem icon={<Package size={20} />} label="Packages Created" value={stats.packagesCreated} />
             <StatItem icon={<Download size={20} />} label="Downloads Received" value={stats.downloadsReceived} />
             <StatItem icon={<FolderOpen size={20} />} label="Sets Saved" value={stats.setsSaved} />
+            {stats.gemsEarned > 0 && (
+              <StatItem 
+                icon={<Gem size={20} style={{ color: '#fbbf24' }} />} 
+                label="Gems Earned" 
+                value={stats.gemsEarned} 
+              />
+            )}
           </div>
+          
+          {/* Creator Earnings Section */}
+          {stats.packagesCreated > 0 && (
+            <div style={{
+              marginTop: '24px',
+              padding: '20px',
+              background: 'rgba(139, 92, 246, 0.1)',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              borderRadius: '12px'
+            }}>
+              <h3 style={{
+                margin: '0 0 12px 0',
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <Gem size={20} style={{ color: '#fbbf24' }} />
+                Creator Earnings
+              </h3>
+              <p style={{
+                margin: '0 0 16px 0',
+                fontSize: '14px',
+                color: 'rgba(255, 255, 255, 0.7)'
+              }}>
+                You earn 5% of gems when users who have installed your packages purchase gems.
+              </p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px',
+                background: 'rgba(0, 0, 0, 0.2)',
+                borderRadius: '8px'
+              }}>
+                <Gem size={24} style={{ color: '#fbbf24' }} />
+                <div>
+                  <div style={{
+                    fontSize: '24px',
+                    fontWeight: '600',
+                    color: '#ffffff'
+                  }}>
+                    {stats.gemsEarned}
+                  </div>
+                  <div style={{
+                    fontSize: '12px',
+                    color: 'rgba(255, 255, 255, 0.5)'
+                  }}>
+                    Total gems earned
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

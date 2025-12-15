@@ -17,6 +17,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { X, Gem, Loader2, Check, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
 import { getUserProfile } from '../firestoreService';
+import { getErrorMessage } from '../utils/errorHandler';
 import Confetti from './Animations/Confetti';
 
 // Load Stripe for nested Elements
@@ -212,7 +213,7 @@ const PaymentForm = ({ selectedPackage, clientSecret, paymentIntentId, onSuccess
       }
     } catch (err) {
       console.error('[BuyCreditsModal] Payment error:', err);
-      const errorMsg = err.message || 'Payment failed. Please try again.';
+      const errorMsg = getErrorMessage(err) || 'Payment failed. Please try again.';
       setError(errorMsg);
       if (onError) onError(errorMsg);
     } finally {

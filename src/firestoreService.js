@@ -689,6 +689,8 @@ export const installPackageWithMerge = async (userId, packageData, mergeMode = '
 
     const currentData = userSnap.data();
     const currentCustomOptions = currentData.customOptions || {};
+    const currentHiddenOptions = currentData.hiddenOptions || {};
+    const currentDeletedOptions = currentData.deletedOptions || {};
     const installedPackages = currentData.installedPackages || [];
     const installedPackageVersions = currentData.installedPackageVersions || {};
 
@@ -760,9 +762,85 @@ export const installPackageWithMerge = async (userId, packageData, mergeMode = '
       });
     }
 
+    // Restore hidden options that match package options
+    // When a package is installed, unhide any options that were previously hidden
+    // but are now being added by the package
+    let updatedHiddenOptions = { ...currentHiddenOptions };
+    Object.keys(packageOptions).forEach(category => {
+      const packageOpts = packageOptions[category] || [];
+      const hiddenInCategory = updatedHiddenOptions[category] || [];
+      
+      if (hiddenInCategory.length > 0 && packageOpts.length > 0) {
+        // Check each package option to see if it matches a hidden option
+        // Match by option text/content
+        const restored = [];
+        packageOpts.forEach(pkgOpt => {
+          const optText = pkgOpt.text || pkgOpt;
+          // Find matching hidden option by text
+          const matchingHidden = hiddenInCategory.find(hidden => {
+            // If hidden is an index, we can't match by text easily
+            // If hidden is an ID, we'd need to check the original option
+            // For now, we'll restore based on text matching
+            return typeof hidden === 'string' && hidden.includes(optText);
+          });
+          
+          if (matchingHidden) {
+            restored.push(matchingHidden);
+          }
+        });
+        
+        // Remove restored options from hidden list
+        if (restored.length > 0) {
+          updatedHiddenOptions[category] = hiddenInCategory.filter(h => !restored.includes(h));
+          // If all options restored, remove the category key
+          if (updatedHiddenOptions[category].length === 0) {
+            delete updatedHiddenOptions[category];
+          }
+        }
+      }
+    });
+
+    // Restore deleted options that match package options
+    // When a package is installed, restore any options that were previously trashed
+    let updatedDeletedOptions = { ...currentDeletedOptions };
+    Object.keys(packageOptions).forEach(category => {
+      const packageOpts = packageOptions[category] || [];
+      const deletedInCategory = updatedDeletedOptions[category] || [];
+      
+      if (deletedInCategory.length > 0 && packageOpts.length > 0) {
+        // Check each package option to see if it matches a deleted option
+        // Match by option ID (for custom options) or index (for default options)
+        const restored = [];
+        packageOpts.forEach(pkgOpt => {
+          const pkgOptId = pkgOpt.id;
+          // Check if this package option ID matches any deleted option
+          const matchingDeleted = deletedInCategory.find(deleted => {
+            // If deleted is an index (number), compare with package option index
+            // If deleted is an ID (string), compare directly
+            return deleted === pkgOptId || deleted === pkgOpt.id;
+          });
+          
+          if (matchingDeleted) {
+            restored.push(matchingDeleted);
+          }
+        });
+        
+        // Remove restored options from deleted list
+        if (restored.length > 0) {
+          updatedDeletedOptions[category] = deletedInCategory.filter(d => !restored.includes(d));
+          // If all options restored, remove the category key
+          if (updatedDeletedOptions[category].length === 0) {
+            delete updatedDeletedOptions[category];
+          }
+        }
+      }
+    });
+
     // Update user document
     await updateDoc(userRef, {
       customOptions: updatedCustomOptions,
+      hiddenOptions: updatedHiddenOptions,
+      deletedOptions: updatedDeletedOptions,
       installedPackages: [...installedPackages, packageData.packageId],
       installedPackageVersions: {
         ...installedPackageVersions,
@@ -771,6 +849,22 @@ export const installPackageWithMerge = async (userId, packageData, mergeMode = '
       updatedAt: serverTimestamp(),
     });
 
+    // Track achievement for the package creator
+    if (packageData.packageId) {
+      try {
+        const { getPackage } = await import('./packageService');
+        const pkg = await getPackage(packageData.packageId);
+        if (pkg && pkg.author && pkg.author.userId) {
+          const { trackPackageInstalled } = await import('./utils/engagementService');
+          trackPackageInstalled(pkg.author.userId).catch(err => {
+            logger.warn('[installPackageWithMerge] Error tracking achievement:', err);
+          });
+        }
+      } catch (err) {
+        logger.warn('[installPackageWithMerge] Error getting package for achievement tracking:', err);
+      }
+    }
+    
     logger.log('[installPackageWithMerge] Package installed with merge successfully:', packageData.packageId, mergeMode);
     return { updated: true, installed: true };
   } catch (error) {

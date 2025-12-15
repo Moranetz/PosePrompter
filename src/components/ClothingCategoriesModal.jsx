@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { X, Check, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
-import { updateEnabledClothingCategories, getEnabledClothingCategories } from '../utils/personalizationService';
+import { updateEnabledClothingCategories, getEnabledClothingCategories, getUserPreferences } from '../utils/personalizationService';
 
-// Optional clothing categories (excluding 'Outfit' which is always included)
+// Default category (can be toggled)
+const DEFAULT_CLOTHING_CATEGORY = { key: 'Outfit', displayName: 'Outfit', count: 118 };
+
+// Optional clothing categories
 const OPTIONAL_CLOTHING_CATEGORIES = [
   { key: 'OutfitTop', displayName: 'Outfit Top', count: 34 },
   { key: 'OutfitBottom', displayName: 'Outfit Bottom', count: 20 },
@@ -14,6 +17,9 @@ const OPTIONAL_CLOTHING_CATEGORIES = [
   { key: 'BrandDesigner', displayName: 'Brand/Designer', count: 12 },
 ];
 
+// All categories (default + optional)
+const ALL_CLOTHING_CATEGORIES = [DEFAULT_CLOTHING_CATEGORY, ...OPTIONAL_CLOTHING_CATEGORIES];
+
 const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
   const { user } = useAuth();
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -21,26 +27,37 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
   const [saving, setSaving] = useState(false);
 
   // Load current preferences when modal opens
-  useEffect(() => {
-    if (isOpen && user) {
-      loadCurrentPreferences();
-    }
-  }, [isOpen, user]);
-
-  const loadCurrentPreferences = async () => {
+  const loadCurrentPreferences = useCallback(async () => {
     if (!user) return;
     
     setLoading(true);
     try {
-      const enabled = await getEnabledClothingCategories(user.uid);
-      setSelectedCategories(enabled || []);
+      // Check if preferences field exists (distinguish between "never set" and "set to empty")
+      const prefs = await getUserPreferences(user.uid);
+      const hasSetPreferences = prefs?.preferences && 'enabledClothingCategories' in prefs.preferences;
+      
+      if (hasSetPreferences) {
+        // Field exists - use what's saved, even if it's an empty array
+        const enabled = await getEnabledClothingCategories(user.uid);
+        setSelectedCategories(enabled || []);
+      } else {
+        // Field doesn't exist - initialize with default
+        setSelectedCategories(['Outfit']);
+      }
     } catch (error) {
       console.error('Error loading clothing categories preferences:', error);
-      setSelectedCategories([]);
+      // Initialize with default if error
+      setSelectedCategories(['Outfit']);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (isOpen && user) {
+      loadCurrentPreferences();
+    }
+  }, [isOpen, user, loadCurrentPreferences]);
 
   const toggleCategory = (categoryKey) => {
     setSelectedCategories(prev => {
@@ -53,7 +70,7 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
   };
 
   const selectAll = () => {
-    setSelectedCategories(OPTIONAL_CLOTHING_CATEGORIES.map(cat => cat.key));
+    setSelectedCategories(ALL_CLOTHING_CATEGORIES.map(cat => cat.key));
   };
 
   const deselectAll = () => {
@@ -68,9 +85,10 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
 
     setSaving(true);
     try {
-      await updateEnabledClothingCategories(user.uid, selectedCategories);
+      // Explicitly save the array (even if empty) - this allows users to uncheck all categories
+      await updateEnabledClothingCategories(user.uid, selectedCategories || []);
       if (onSave) {
-        onSave(selectedCategories);
+        onSave(selectedCategories || []);
       }
       onClose();
     } catch (error) {
@@ -83,7 +101,7 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
 
   if (!isOpen) return null;
 
-  const allSelected = selectedCategories.length === OPTIONAL_CLOTHING_CATEGORIES.length;
+  const allSelected = selectedCategories.length === ALL_CLOTHING_CATEGORIES.length;
   const noneSelected = selectedCategories.length === 0;
 
   return (
@@ -234,7 +252,7 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
                   marginBottom: '24px',
                 }}
               >
-                {OPTIONAL_CLOTHING_CATEGORIES.map((category) => {
+                {ALL_CLOTHING_CATEGORIES.map((category) => {
                   const isSelected = selectedCategories.includes(category.key);
                   return (
                     <label
@@ -302,21 +320,6 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
                     </label>
                   );
                 })}
-              </div>
-
-              {/* Info Note */}
-              <div
-                style={{
-                  padding: '12px 16px',
-                  background: 'rgba(139, 92, 246, 0.1)',
-                  border: '1px solid rgba(139, 92, 246, 0.3)',
-                  borderRadius: '8px',
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  fontSize: '12px',
-                  marginBottom: '24px',
-                }}
-              >
-                <strong>Note:</strong> The "Outfit" category is always included and cannot be disabled.
               </div>
 
               {/* Action Buttons */}
@@ -395,5 +398,3 @@ const ClothingCategoriesModal = ({ isOpen, onClose, onSave }) => {
 };
 
 export default ClothingCategoriesModal;
-
-

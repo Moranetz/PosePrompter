@@ -326,6 +326,15 @@ export const publishPackage = async (packageId) => {
       publishedAt,
       updatedAt: serverTimestamp(),
     });
+    
+    // Track achievement for the creator
+    if (packageData.author && packageData.author.userId) {
+      const { trackPackagePublished } = await import('./utils/engagementService');
+      trackPackagePublished(packageData.author.userId).catch(err => {
+        logger.warn('[publishPackage] Error tracking achievement:', err);
+      });
+    }
+    
     logger.log('[publishPackage] Package published successfully:', packageId);
   } catch (error) {
     logger.error('[publishPackage] Error publishing package:', error);

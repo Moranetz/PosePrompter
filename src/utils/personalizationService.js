@@ -5,7 +5,7 @@
  * for a more personalized, efficient experience.
  */
 
-import { updateDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { updateDoc, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase-config';
 import { logger } from './logger.js';
 
@@ -102,11 +102,12 @@ export const updateUserPreferences = async (userId, preferences) => {
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
-      // Create user document if it doesn't exist
-      await updateDoc(userRef, {
+      // Create user document if it doesn't exist - CRITICAL FIX: use setDoc instead of updateDoc
+      await setDoc(userRef, {
         preferences: preferences,
         updatedAt: serverTimestamp(),
-      });
+      }, { merge: true });
+      logger.log('[personalization] User document created with preferences');
       return;
     }
 
@@ -124,6 +125,8 @@ export const updateUserPreferences = async (userId, preferences) => {
     logger.log('[personalization] Preferences updated');
   } catch (error) {
     logger.error('[personalization] Error updating preferences:', error);
+    // Re-throw error so callers can handle it
+    throw error;
   }
 };
 
@@ -279,7 +282,11 @@ export const getEnabledClothingCategories = async (userId) => {
     const prefs = await getUserPreferences(userId);
     if (!prefs || !prefs.preferences) return [];
 
-    return prefs.preferences.enabledClothingCategories || [];
+    // If the field exists but is undefined, return empty array
+    // If the field doesn't exist, return empty array  
+    // If the field exists and is an array (even if empty), return it
+    const categories = prefs.preferences.enabledClothingCategories;
+    return Array.isArray(categories) ? categories : [];
   } catch (error) {
     logger.error('[personalization] Error getting enabled clothing categories:', error);
     return [];
@@ -297,12 +304,294 @@ export const updateEnabledClothingCategories = async (userId, categories) => {
   if (!userId || !db) return;
 
   try {
+    // Explicitly save the array, even if empty (Firestore supports empty arrays)
+    const categoriesToSave = Array.isArray(categories) ? categories : [];
     await updateUserPreferences(userId, {
-      enabledClothingCategories: categories || [],
+      enabledClothingCategories: categoriesToSave,
     });
-    logger.log('[personalization] Enabled clothing categories updated');
+    logger.log('[personalization] Enabled clothing categories updated:', categoriesToSave);
   } catch (error) {
     logger.error('[personalization] Error updating enabled clothing categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get hidden category groups for user
+ * Returns array of group titles that should be hidden
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of hidden category group titles
+ */
+export const getHiddenCategoryGroups = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+    return prefs.preferences.hiddenCategoryGroups || [];
+  } catch (error) {
+    logger.error('[personalization] Error getting hidden category groups:', error);
+    return [];
+  }
+};
+
+/**
+ * Update hidden category groups for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} groupTitles - Array of category group titles to hide
+ * @returns {Promise<void>}
+ */
+export const updateHiddenCategoryGroups = async (userId, groupTitles) => {
+  if (!userId || !db) return;
+
+  try {
+    await updateUserPreferences(userId, {
+      hiddenCategoryGroups: groupTitles || [],
+    });
+    logger.log('[personalization] Hidden category groups updated');
+  } catch (error) {
+    logger.error('[personalization] Error updating hidden category groups:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get enabled Face & Head categories for user
+ * Returns array of category keys that should be shown in "Face & Head" section
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of enabled Face & Head category keys
+ */
+export const getEnabledFaceHeadCategories = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+
+    // If the field exists but is undefined, return empty array
+    // If the field doesn't exist, return empty array
+    // If the field exists and is an array (even if empty), return it
+    const categories = prefs.preferences.enabledFaceHeadCategories;
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    logger.error('[personalization] Error getting enabled Face & Head categories:', error);
+    return [];
+  }
+};
+
+/**
+ * Update enabled Face & Head categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} categories - Array of category keys to enable
+ * @returns {Promise<void>}
+ */
+export const updateEnabledFaceHeadCategories = async (userId, categories) => {
+  if (!userId || !db) return;
+
+  try {
+    // Explicitly save the array, even if empty (Firestore supports empty arrays)
+    const categoriesToSave = Array.isArray(categories) ? categories : [];
+    await updateUserPreferences(userId, {
+      enabledFaceHeadCategories: categoriesToSave,
+    });
+    logger.log('[personalization] Enabled Face & Head categories updated:', categoriesToSave);
+  } catch (error) {
+    logger.error('[personalization] Error updating enabled Face & Head categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get enabled Aesthetic & Style categories for user
+ * Returns array of category keys that should be shown in "Aesthetic & Style" section
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of enabled Aesthetic & Style category keys
+ */
+export const getEnabledAestheticStyleCategories = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+
+    // If the field exists but is undefined, return empty array
+    // If the field doesn't exist, return empty array
+    // If the field exists and is an array (even if empty), return it
+    const categories = prefs.preferences.enabledAestheticStyleCategories;
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    logger.error('[personalization] Error getting enabled Aesthetic & Style categories:', error);
+    return [];
+  }
+};
+
+/**
+ * Update enabled Aesthetic & Style categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} categories - Array of category keys to enable
+ * @returns {Promise<void>}
+ */
+export const updateEnabledAestheticStyleCategories = async (userId, categories) => {
+  if (!userId || !db) return;
+
+  try {
+    // Explicitly save the array, even if empty (Firestore supports empty arrays)
+    const categoriesToSave = Array.isArray(categories) ? categories : [];
+    await updateUserPreferences(userId, {
+      enabledAestheticStyleCategories: categoriesToSave,
+    });
+    logger.log('[personalization] Enabled Aesthetic & Style categories updated:', categoriesToSave);
+  } catch (error) {
+    logger.error('[personalization] Error updating enabled Aesthetic & Style categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get enabled Framing & Composition categories for user
+ * Returns array of category keys that should be shown in "Framing & Composition" section
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of enabled Framing & Composition category keys
+ */
+export const getEnabledFramingCompositionCategories = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+
+    // If the field exists but is undefined, return empty array
+    // If the field doesn't exist, return empty array
+    // If the field exists and is an array (even if empty), return it
+    const categories = prefs.preferences.enabledFramingCompositionCategories;
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    logger.error('[personalization] Error getting enabled Framing & Composition categories:', error);
+    return [];
+  }
+};
+
+/**
+ * Update enabled Framing & Composition categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} categories - Array of category keys to enable
+ * @returns {Promise<void>}
+ */
+export const updateEnabledFramingCompositionCategories = async (userId, categories) => {
+  if (!userId || !db) return;
+
+  try {
+    // Explicitly save the array, even if empty (Firestore supports empty arrays)
+    const categoriesToSave = Array.isArray(categories) ? categories : [];
+    await updateUserPreferences(userId, {
+      enabledFramingCompositionCategories: categoriesToSave,
+    });
+    logger.log('[personalization] Enabled Framing & Composition categories updated:', categoriesToSave);
+  } catch (error) {
+    logger.error('[personalization] Error updating enabled Framing & Composition categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get enabled Background & Environment categories for user
+ * Returns array of category keys that should be shown in "Background & Environment" section
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of enabled Background & Environment category keys
+ */
+export const getEnabledBackgroundEnvironmentCategories = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+
+    // If the field exists but is undefined, return empty array
+    // If the field doesn't exist, return empty array
+    // If the field exists and is an array (even if empty), return it
+    const categories = prefs.preferences.enabledBackgroundEnvironmentCategories;
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    logger.error('[personalization] Error getting enabled Background & Environment categories:', error);
+    return [];
+  }
+};
+
+/**
+ * Update enabled Background & Environment categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} categories - Array of category keys to enable
+ * @returns {Promise<void>}
+ */
+export const updateEnabledBackgroundEnvironmentCategories = async (userId, categories) => {
+  if (!userId || !db) return;
+
+  try {
+    // Explicitly save the array, even if empty (Firestore supports empty arrays)
+    const categoriesToSave = Array.isArray(categories) ? categories : [];
+    await updateUserPreferences(userId, {
+      enabledBackgroundEnvironmentCategories: categoriesToSave,
+    });
+    logger.log('[personalization] Enabled Background & Environment categories updated:', categoriesToSave);
+  } catch (error) {
+    logger.error('[personalization] Error updating enabled Background & Environment categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get enabled Body & Pose categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<string[]>} Array of enabled Body & Pose category keys
+ */
+export const getEnabledBodyPoseCategories = async (userId) => {
+  if (!userId || !db) return [];
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) return [];
+
+    // If the field exists but is undefined, return empty array
+    // If the field doesn't exist, return empty array
+    // If the field exists and is an array (even if empty), return it
+    const categories = prefs.preferences.enabledBodyPoseCategories;
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    logger.error('[personalization] Error getting enabled Body & Pose categories:', error);
+    return [];
+  }
+};
+
+/**
+ * Update enabled Body & Pose categories for user
+ * 
+ * @param {string} userId - The user's unique ID
+ * @param {string[]} categories - Array of category keys to enable
+ * @returns {Promise<void>}
+ */
+export const updateEnabledBodyPoseCategories = async (userId, categories) => {
+  if (!userId || !db) return;
+
+  try {
+    // Explicitly save the array, even if empty (Firestore supports empty arrays)
+    const categoriesToSave = Array.isArray(categories) ? categories : [];
+    await updateUserPreferences(userId, {
+      enabledBodyPoseCategories: categoriesToSave,
+    });
+    logger.log('[personalization] Enabled Body & Pose categories updated:', categoriesToSave);
+  } catch (error) {
+    logger.error('[personalization] Error updating enabled Body & Pose categories:', error);
     throw error;
   }
 };

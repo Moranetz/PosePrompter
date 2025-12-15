@@ -15,6 +15,21 @@ service cloud.firestore {
     // Helper function to validate user document structure
     function isValidUserData() {
       let data = request.resource.data;
+      // CRITICAL SECURITY: Prevent users from modifying gems/credits directly
+      // Only allow gems/credits to be set on create, never modified on update
+      let canModifyCredits = false;
+      if (!('gems' in request.resource.data) && !('credits' in request.resource.data)) {
+        // If gems/credits are not being set, allow (for other field updates)
+        canModifyCredits = true;
+      } else if (!resource.exists) {
+        // Allow setting gems/credits only on document creation
+        canModifyCredits = true;
+      } else {
+        // On update, gems/credits must remain unchanged (only server can modify)
+        canModifyCredits = (request.resource.data.gems == resource.data.gems) &&
+                          (request.resource.data.credits == resource.data.credits);
+      }
+      
       return data.keys().hasAll(['displayName', 'avatar', 'bio', 'customOptions', 
                                   'hiddenOptions', 'deletedOptions', 'savedPromptSets', 
                                   'installedPackages', 'createdAt', 'updatedAt']) &&
@@ -28,7 +43,9 @@ service cloud.firestore {
              data.installedPackages is list &&
              data.createdAt is timestamp &&
              data.updatedAt is timestamp &&
-             (!('credits' in data) || (data.credits is int && data.credits >= 0));
+             (!('credits' in data) || (data.credits is int && data.credits >= 0)) &&
+             (!('gems' in data) || (data.gems is int && data.gems >= 0)) &&
+             canModifyCredits;
     }
     
     // Helper function to validate package document structure
@@ -162,6 +179,26 @@ service cloud.firestore {
       // Allow delete only if user owns the review
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
+    }
+    
+    // Error Reports Collection
+    // Users can only read/write their own error reports
+    match /errorReports/{reportId} {
+      // Allow read only if user owns the report
+      allow read: if isOwner(resource.data.userId);
+      
+      // Allow create if user is authenticated and is the owner
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       checkRateLimit();
+      
+      // Allow update only if user owns the report
+      allow update: if isOwner(resource.data.userId) &&
+                       request.resource.data.userId == resource.data.userId &&
+                       checkRateLimit();
+      
+      // Allow delete only if user owns the report
+      allow delete: if isOwner(resource.data.userId);
     }
     
     // Deny all other access

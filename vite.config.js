@@ -53,7 +53,7 @@ export default defineConfig({
   
   // Define replacements for build-time constants
   define: {
-    __ENABLE_PACKAGES__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+    __ENABLE_PACKAGES__: JSON.stringify(true), // Packages and sidebar are now enabled for public
   },
   
   // Build optimizations

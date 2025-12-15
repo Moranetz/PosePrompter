@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, Copy, Sparkles, Award, Calendar, X } from 'lucide-react';
-import { getUserEngagementStats } from '../utils/engagementService';
+import { TrendingUp, Copy, Sparkles, Award, Calendar, X, Trophy } from 'lucide-react';
+import { getUserEngagementStats, ACHIEVEMENTS } from '../utils/engagementService';
 
 /**
  * EngagementStats - Subtle progress indicator
@@ -34,6 +34,17 @@ const EngagementStats = ({ userId, isOpen, onClose }) => {
 
   const userStats = stats?.stats || {};
   const achievements = stats?.achievements || { unlocked: [] };
+  
+  // Map unlocked achievement IDs to their full data
+  const unlockedAchievementsList = (achievements.unlocked || []).map(achievementId => {
+    // Find the achievement in ACHIEVEMENTS by ID
+    for (const [key, achievement] of Object.entries(ACHIEVEMENTS)) {
+      if (achievement.id === achievementId) {
+        return achievement;
+      }
+    }
+    return null;
+  }).filter(Boolean); // Remove any null entries
 
   return (
     <AnimatePresence mode="wait">
@@ -171,6 +182,45 @@ const EngagementStats = ({ userId, isOpen, onClose }) => {
                     <div style={{ fontSize: '20px', fontWeight: '700', color: '#fbbf24' }}>
                       {userStats.longestStreak} days
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Unlocked Achievements */}
+              {unlockedAchievementsList.length > 0 && (
+                <div>
+                  <h3 style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    marginBottom: '12px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                  }}>
+                    Unlocked Achievements
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {unlockedAchievementsList.map((achievement) => (
+                      <div key={achievement.id} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px',
+                        background: 'rgba(251, 191, 36, 0.1)',
+                        border: '1px solid rgba(251, 191, 36, 0.2)',
+                        borderRadius: '8px',
+                      }}>
+                        <Trophy size={20} color="#fbbf24" />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ color: '#fbbf24', fontSize: '14px', fontWeight: '600', marginBottom: '2px' }}>
+                            {achievement.name}
+                          </div>
+                          <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
+                            {achievement.description}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

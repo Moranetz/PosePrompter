@@ -66,6 +66,15 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
   // User custom options
   const [userCustomOptions, setUserCustomOptions] = useState({});
   const [loadingUserData, setLoadingUserData] = useState(false);
+  
+  // Package prompts (created directly in this modal, not from userCustomOptions)
+  // Structure: { category: [{ title: string, prompt: string, id: string }] }
+  const [packagePrompts, setPackagePrompts] = useState({});
+  
+  // State for adding new prompts
+  const [addingPromptCategory, setAddingPromptCategory] = useState(null);
+  const [newPromptTitle, setNewPromptTitle] = useState('');
+  const [newPromptText, setNewPromptText] = useState('');
 
   // Load user custom options
   useEffect(() => {
@@ -177,15 +186,66 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
     });
   };
 
-  // Get options count for selected categories
+  // Get options count for selected categories (includes both custom options and package prompts)
   const getTotalOptionsCount = useMemo(() => {
     let count = 0;
     formData.selectedCategories.forEach(category => {
       const customOptions = userCustomOptions[category] || [];
-      count += customOptions.length;
+      const packageOptions = packagePrompts[category] || [];
+      count += customOptions.length + packageOptions.length;
     });
     return count;
-  }, [formData.selectedCategories, userCustomOptions]);
+  }, [formData.selectedCategories, userCustomOptions, packagePrompts]);
+  
+  // Add a new prompt to a category
+  const handleAddPrompt = (category) => {
+    if (!newPromptTitle.trim() || !newPromptText.trim()) {
+      setError('Please enter both title and prompt text');
+      return;
+    }
+    
+    const promptId = `pkg_prompt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const newPrompt = {
+      id: promptId,
+      title: newPromptTitle.trim(),
+      prompt: newPromptText.trim(),
+    };
+    
+    setPackagePrompts(prev => ({
+      ...prev,
+      [category]: [...(prev[category] || []), newPrompt]
+    }));
+    
+    // Add category to selectedCategories if not already there
+    if (!formData.selectedCategories.includes(category)) {
+      setFormData(prev => ({
+        ...prev,
+        selectedCategories: [...prev.selectedCategories, category]
+      }));
+    }
+    
+    // Reset form
+    setNewPromptTitle('');
+    setNewPromptText('');
+    setAddingPromptCategory(null);
+    setError('');
+  };
+  
+  // Remove a prompt from a category
+  const handleRemovePrompt = (category, promptId) => {
+    setPackagePrompts(prev => {
+      const categoryPrompts = (prev[category] || []).filter(p => p.id !== promptId);
+      if (categoryPrompts.length === 0) {
+        const updated = { ...prev };
+        delete updated[category];
+        return updated;
+      }
+      return {
+        ...prev,
+        [category]: categoryPrompts
+      };
+    });
+  };
 
   // Validation
   const validateForm = () => {
@@ -204,13 +264,20 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
       return false;
     }
 
-    if (formData.selectedCategories.length === 0) {
-      setError('Please select at least one category');
+    // Check if we have any prompts (either from custom options or created in modal)
+    const hasAnyPrompts = formData.selectedCategories.some(category => {
+      const customOptions = userCustomOptions[category] || [];
+      const packageOptions = packagePrompts[category] || [];
+      return customOptions.length > 0 || packageOptions.length > 0;
+    });
+    
+    if (!hasAnyPrompts) {
+      setError('Please add at least one prompt to at least one category');
       return false;
     }
 
     if (getTotalOptionsCount < 3) {
-      setError('You must have at least 3 options across all selected categories');
+      setError('You must have at least 3 prompts across all selected categories');
       return false;
     }
 
@@ -244,11 +311,26 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
       console.log('[CreatePackageModal] Creating package, publish:', publish);
       
       // Build options object from selected categories
+      // Include both user custom options and package prompts
       const options = {};
       formData.selectedCategories.forEach(category => {
         const customOptions = userCustomOptions[category] || [];
-        // Extract text/prompt from each option
-        options[category] = customOptions.map(opt => opt.text || opt.prompt || opt.title || '');
+        const packageOptions = packagePrompts[category] || [];
+        
+        // Combine both sources, preserving titles and prompts
+        const allOptions = [
+          ...customOptions.map(opt => ({
+            title: opt.title || '',
+            prompt: opt.text || opt.prompt || opt.title || ''
+          })),
+          ...packageOptions.map(opt => ({
+            title: opt.title || '',
+            prompt: opt.prompt || ''
+          }))
+        ];
+        
+        // Store as array of objects with title and prompt
+        options[category] = allOptions;
       });
 
       // Calculate price in cents
@@ -309,10 +391,8 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
 
   if (!isOpen) return null;
 
-  // Get all available categories from userCustomOptions
-  const availableCategories = Object.keys(userCustomOptions).filter(
-    cat => userCustomOptions[cat] && userCustomOptions[cat].length > 0
-  );
+  // Get all available categories (show all categories, not just ones with custom options)
+  const availableCategories = Object.keys(categoryDisplayNames);
 
   return (
     <div
@@ -406,6 +486,58 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
           </p>
         </div>
 
+        {/* Creator Benefits Info */}
+        <div style={{
+          margin: '0 32px 24px',
+          padding: '16px',
+          background: 'rgba(139, 92, 246, 0.1)',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '12px'
+        }}>
+          <div style={{
+            minWidth: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            marginTop: '2px'
+          }}>
+            <span style={{ color: '#ffffff', fontSize: '12px', fontWeight: '600' }}>💎</span>
+          </div>
+          <div style={{ flex: 1 }}>
+            <h4 style={{
+              margin: '0 0 8px 0',
+              fontSize: '15px',
+              fontWeight: '600',
+              color: '#ffffff'
+            }}>
+              Creator Benefits
+            </h4>
+            <p style={{
+              margin: '0 0 8px 0',
+              fontSize: '13px',
+              color: 'rgba(255, 255, 255, 0.7)',
+              lineHeight: '1.5'
+            }}>
+              When users who have installed your package purchase gems, you automatically earn <strong style={{ color: '#fbbf24' }}>5% of their purchase</strong> as complimentary gems.
+            </p>
+            <p style={{
+              margin: 0,
+              fontSize: '12px',
+              color: 'rgba(255, 255, 255, 0.5)',
+              fontStyle: 'italic'
+            }}>
+              View your earnings in your profile after publishing.
+            </p>
+          </div>
+        </div>
+
         {/* Content */}
         <div style={{ padding: '0 32px 32px', display: 'flex', gap: '24px', flexDirection: 'column' }}>
           {/* Error/Success Messages */}
@@ -462,13 +594,13 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                     color: '#ffffff',
                   }}
                 >
-                  Package Name <span style={{ color: '#ef4444' }}>*</span>
+                  Package Title <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Enter package name"
+                  placeholder="Choose a unique title to differentiate your package"
                   disabled={loading}
                   style={{
                     width: '100%',
@@ -491,6 +623,16 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                     e.target.style.background = 'rgba(255, 255, 255, 0.05)';
                   }}
                 />
+                <p
+                  style={{
+                    margin: '6px 0 0 0',
+                    fontSize: '12px',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    fontStyle: 'italic',
+                  }}
+                >
+                  Use a unique, descriptive title to help users find your package
+                </p>
               </div>
 
               {/* Description */}
@@ -723,7 +865,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
 
             {/* Right Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {/* Category Selection */}
+              {/* Category Selection & Prompt Creation */}
               <div>
                 <label
                   style={{
@@ -734,105 +876,19 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                     color: '#ffffff',
                   }}
                 >
-                  Select Categories <span style={{ color: '#ef4444' }}>*</span>
+                  Add Prompts to Categories <span style={{ color: '#ef4444' }}>*</span>
                   <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px', fontWeight: '400', marginLeft: '8px' }}>
-                    ({formData.selectedCategories.length} selected, {getTotalOptionsCount} options)
+                    ({getTotalOptionsCount} prompts across {formData.selectedCategories.length} {formData.selectedCategories.length === 1 ? 'category' : 'categories'})
                   </span>
                 </label>
                 {loadingUserData ? (
                   <div style={{ padding: '20px', textAlign: 'center', color: 'rgba(255, 255, 255, 0.5)' }}>
                     <Loader2 size={20} style={{ animation: 'spin 1s linear infinite', margin: '0 auto' }} />
                   </div>
-                ) : availableCategories.length === 0 ? (
-                  <div style={{ padding: '20px', textAlign: 'center', color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px' }}>
-                    No custom options found. Create custom options first to create a package.
-                  </div>
                 ) : (
                   <div
                     style={{
-                      maxHeight: '300px',
-                      overflowY: 'auto',
-                      padding: '12px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(139, 92, 246, 0.3)',
-                      borderRadius: '10px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px',
-                    }}
-                  >
-                    {availableCategories.map(category => {
-                      const isSelected = formData.selectedCategories.includes(category);
-                      const optionCount = (userCustomOptions[category] || []).length;
-                      return (
-                        <label
-                          key={category}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            padding: '10px',
-                            background: isSelected ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
-                            border: isSelected ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid transparent',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isSelected) {
-                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isSelected) {
-                              e.currentTarget.style.background = 'transparent';
-                            }
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => toggleCategory(category)}
-                            disabled={loading}
-                            style={{
-                              width: '18px',
-                              height: '18px',
-                              cursor: 'pointer',
-                              accentColor: '#8b5cf6',
-                            }}
-                          />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: '500' }}>
-                              {categoryDisplayNames[category] || category}
-                            </div>
-                            <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
-                              {optionCount} {optionCount === 1 ? 'option' : 'options'}
-                            </div>
-                          </div>
-                        </label>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Selected Categories Options Preview */}
-              {formData.selectedCategories.length > 0 && (
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      marginBottom: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#ffffff',
-                    }}
-                  >
-                    Options Preview
-                  </label>
-                  <div
-                    style={{
-                      maxHeight: '200px',
+                      maxHeight: '400px',
                       overflowY: 'auto',
                       padding: '12px',
                       background: 'rgba(255, 255, 255, 0.05)',
@@ -843,40 +899,208 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                       gap: '12px',
                     }}
                   >
-                    {formData.selectedCategories.map(category => {
-                      const options = userCustomOptions[category] || [];
+                    {availableCategories.map(category => {
+                      const customOptions = userCustomOptions[category] || [];
+                      const packageOptions = packagePrompts[category] || [];
+                      const totalOptions = customOptions.length + packageOptions.length;
+                      const isSelected = formData.selectedCategories.includes(category) || totalOptions > 0;
+                      const isAdding = addingPromptCategory === category;
+                      
                       return (
-                        <div key={category}>
-                          <div style={{ color: '#8b5cf6', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>
-                            {categoryDisplayNames[category] || category}
+                        <div
+                          key={category}
+                          style={{
+                            padding: '12px',
+                            background: isSelected ? 'rgba(139, 92, 246, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                            border: isSelected ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '8px',
+                          }}
+                        >
+                          {/* Category Header */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <div>
+                              <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: '500' }}>
+                                {categoryDisplayNames[category] || category}
+                              </div>
+                              <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '12px' }}>
+                                {totalOptions} {totalOptions === 1 ? 'prompt' : 'prompts'}
+                                {customOptions.length > 0 && (
+                                  <span style={{ marginLeft: '8px' }}>
+                                    ({customOptions.length} from your custom options)
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (isAdding) {
+                                  setAddingPromptCategory(null);
+                                  setNewPromptTitle('');
+                                  setNewPromptText('');
+                                } else {
+                                  setAddingPromptCategory(category);
+                                  if (!formData.selectedCategories.includes(category)) {
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      selectedCategories: [...prev.selectedCategories, category]
+                                    }));
+                                  }
+                                }
+                              }}
+                              disabled={loading}
+                              style={{
+                                padding: '6px 12px',
+                                background: isAdding ? 'rgba(139, 92, 246, 0.3)' : 'rgba(139, 92, 246, 0.2)',
+                                border: '1px solid rgba(139, 92, 246, 0.5)',
+                                borderRadius: '6px',
+                                color: '#ffffff',
+                                fontSize: '12px',
+                                fontWeight: '500',
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                              }}
+                            >
+                              {isAdding ? <X size={14} /> : <Plus size={14} />}
+                              {isAdding ? 'Cancel' : 'Add Prompt'}
+                            </button>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '12px' }}>
-                            {options.slice(0, 3).map((opt, idx) => (
-                              <div
-                                key={idx}
+                          
+                          {/* Add Prompt Form */}
+                          {isAdding && (
+                            <div style={{ 
+                              marginTop: '12px', 
+                              padding: '12px', 
+                              background: 'rgba(0, 0, 0, 0.2)', 
+                              borderRadius: '6px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '8px'
+                            }}>
+                              <input
+                                type="text"
+                                value={newPromptTitle}
+                                onChange={(e) => setNewPromptTitle(e.target.value)}
+                                placeholder="Prompt title"
                                 style={{
-                                  color: 'rgba(255, 255, 255, 0.7)',
+                                  width: '100%',
+                                  padding: '8px',
+                                  background: 'rgba(255, 255, 255, 0.05)',
+                                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                                  borderRadius: '6px',
+                                  color: '#ffffff',
+                                  fontSize: '13px',
+                                  outline: 'none',
+                                }}
+                              />
+                              <textarea
+                                value={newPromptText}
+                                onChange={(e) => setNewPromptText(e.target.value)}
+                                placeholder="Enter the full prompt text..."
+                                rows={3}
+                                style={{
+                                  width: '100%',
+                                  padding: '8px',
+                                  background: 'rgba(255, 255, 255, 0.05)',
+                                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                                  borderRadius: '6px',
+                                  color: '#ffffff',
+                                  fontSize: '13px',
+                                  outline: 'none',
+                                  resize: 'vertical',
+                                  fontFamily: 'inherit',
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleAddPrompt(category)}
+                                disabled={loading || !newPromptTitle.trim() || !newPromptText.trim()}
+                                style={{
+                                  padding: '8px 12px',
+                                  background: (newPromptTitle.trim() && newPromptText.trim()) 
+                                    ? 'rgba(139, 92, 246, 0.4)' 
+                                    : 'rgba(139, 92, 246, 0.2)',
+                                  border: '1px solid rgba(139, 92, 246, 0.5)',
+                                  borderRadius: '6px',
+                                  color: '#ffffff',
                                   fontSize: '12px',
-                                  padding: '4px 8px',
-                                  background: 'rgba(255, 255, 255, 0.03)',
-                                  borderRadius: '4px',
+                                  fontWeight: '500',
+                                  cursor: (newPromptTitle.trim() && newPromptText.trim()) ? 'pointer' : 'not-allowed',
+                                  alignSelf: 'flex-end',
                                 }}
                               >
-                                {opt.title || opt.text?.substring(0, 50) || opt.prompt?.substring(0, 50) || 'Option'}
-                              </div>
-                            ))}
-                            {options.length > 3 && (
-                              <div style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '11px', paddingLeft: '8px' }}>
-                                +{options.length - 3} more
-                              </div>
-                            )}
-                          </div>
+                                Add
+                              </button>
+                            </div>
+                          )}
+                          
+                          {/* Existing Prompts List */}
+                          {totalOptions > 0 && (
+                            <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              {/* Custom Options */}
+                              {customOptions.map((opt, idx) => (
+                                <div
+                                  key={`custom_${idx}`}
+                                  style={{
+                                    padding: '8px',
+                                    background: 'rgba(255, 255, 255, 0.03)',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  <span>{opt.title || opt.text?.substring(0, 40) || opt.prompt?.substring(0, 40) || 'Custom Option'}</span>
+                                  <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '11px' }}>From your options</span>
+                                </div>
+                              ))}
+                              
+                              {/* Package Prompts */}
+                              {packageOptions.map((opt) => (
+                                <div
+                                  key={opt.id}
+                                  style={{
+                                    padding: '8px',
+                                    background: 'rgba(139, 92, 246, 0.1)',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  <span>{opt.title}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemovePrompt(category, opt.id)}
+                                    style={{
+                                      padding: '2px 6px',
+                                      background: 'rgba(239, 68, 68, 0.2)',
+                                      border: '1px solid rgba(239, 68, 68, 0.4)',
+                                      borderRadius: '4px',
+                                      color: '#fca5a5',
+                                      fontSize: '11px',
+                                      cursor: 'pointer',
+                                    }}
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+
 
               {/* Price */}
               <div>

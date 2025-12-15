@@ -13,8 +13,6 @@
  * - Generation history tracking
  */
 
-import Replicate from 'replicate';
-import OpenAI from 'openai';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { 
   doc, 
@@ -95,41 +93,8 @@ const USERS_COLLECTION = 'users';
 const GENERATION_HISTORY_COLLECTION = 'generationHistory';
 const GENERATION_QUEUE_COLLECTION = 'generationQueue';
 
-// Initialize API clients (lazy initialization)
-let replicateClient = null;
-let openaiClient = null;
-
-/**
- * Initialize Replicate client
- */
-const getReplicateClient = () => {
-  if (!replicateClient) {
-    const apiToken = import.meta.env.VITE_REPLICATE_API_TOKEN;
-    if (!apiToken) {
-      throw new Error('REPLICATE_API_TOKEN is not configured. Please add VITE_REPLICATE_API_TOKEN to your .env.local file.');
-    }
-    replicateClient = new Replicate({
-      auth: apiToken,
-    });
-  }
-  return replicateClient;
-};
-
-/**
- * Initialize OpenAI client
- */
-const getOpenAIClient = () => {
-  if (!openaiClient) {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY is not configured. Please add VITE_OPENAI_API_KEY to your .env.local file.');
-    }
-    openaiClient = new OpenAI({
-      apiKey: apiKey,
-    });
-  }
-  return openaiClient;
-};
+// All image generation now goes through the backend API
+// This ensures API keys stay secure on the server
 
 /**
  * Check if user has enough credits for a generation
@@ -319,190 +284,39 @@ const uploadToFirebaseStorage = async (userId, imageData, imageId) => {
 };
 
 /**
- * Generate image with Flux Pro (Replicate)
+ * Generate image with Flux Pro via backend API
  * 
  * @param {string} prompt - Full prompt text
  * @param {Object} options - Generation options
- * @param {number} [options.width=1024] - Image width
- * @param {number} [options.height=1024] - Image height
- * @param {number} [options.num_outputs=1] - Number of outputs
+ * @param {string} userId - User ID
  * @returns {Promise<string>} Image URL
  */
-const generateWithFlux = async (prompt, options = {}) => {
-  const replicate = getReplicateClient();
-
-  const {
-    width = 1024,
-    height = 1024,
-    num_outputs = 1,
-  } = options;
-
-  try {
-    logger.log('[imageGenerationService] Generating with Flux Pro...');
-    
-    const output = await replicate.run(
-      "black-forest-labs/flux-pro",
-      {
-        input: {
-          prompt: prompt,
-          width: width,
-          height: height,
-          num_outputs: num_outputs,
-        }
-      }
-    );
-
-    // Replicate returns an array of URLs
-    const imageUrl = Array.isArray(output) ? output[0] : output;
-    
-    if (!imageUrl) {
-      throw new Error('No image URL returned from Flux Pro');
-    }
-
-    logger.log('[imageGenerationService] Flux Pro generation successful');
-    return imageUrl;
-  } catch (error) {
-    logger.error('[imageGenerationService] Flux Pro generation error:', error);
-    
-    // Handle specific error types
-    if (error.message?.includes('rate limit')) {
-      throw new Error('Rate limit exceeded. Please try again in a moment.');
-    } else if (error.message?.includes('invalid')) {
-      throw new Error('Invalid prompt. Please try a different prompt.');
-    } else if (error.message?.includes('quota') || error.message?.includes('billing')) {
-      throw new Error('Service quota exceeded. Please contact support.');
-    }
-    
-    throw new Error(`Flux Pro generation failed: ${error.message || 'Unknown error'}`);
-  }
+const generateWithFlux = async (prompt, options = {}, userId = null) => {
+  return generateViaBackend('flux', prompt, options, userId);
 };
 
 /**
- * Generate image with SDXL (Replicate)
+ * Generate image with SDXL via backend API
  * 
  * @param {string} prompt - Full prompt text
  * @param {Object} options - Generation options
- * @param {number} [options.width=1024] - Image width
- * @param {number} [options.height=1024] - Image height
- * @param {number} [options.num_outputs=1] - Number of outputs
+ * @param {string} userId - User ID
  * @returns {Promise<string>} Image URL
  */
-const generateWithSDXL = async (prompt, options = {}) => {
-  const replicate = getReplicateClient();
-
-  const {
-    width = 1024,
-    height = 1024,
-    num_outputs = 1,
-  } = options;
-
-  try {
-    logger.log('[imageGenerationService] Generating with SDXL...');
-    
-    const output = await replicate.run(
-      "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
-      {
-        input: {
-          prompt: prompt,
-          width: width,
-          height: height,
-          num_outputs: num_outputs,
-        }
-      }
-    );
-
-    // Replicate returns an array of URLs
-    const imageUrl = Array.isArray(output) ? output[0] : output;
-    
-    if (!imageUrl) {
-      throw new Error('No image URL returned from SDXL');
-    }
-
-    logger.log('[imageGenerationService] SDXL generation successful');
-    return imageUrl;
-  } catch (error) {
-    logger.error('[imageGenerationService] SDXL generation error:', error);
-    
-    // Handle specific error types
-    if (error.message?.includes('rate limit')) {
-      throw new Error('Rate limit exceeded. Please try again in a moment.');
-    } else if (error.message?.includes('invalid')) {
-      throw new Error('Invalid prompt. Please try a different prompt.');
-    } else if (error.message?.includes('quota') || error.message?.includes('billing')) {
-      throw new Error('Service quota exceeded. Please contact support.');
-    }
-    
-    throw new Error(`SDXL generation failed: ${error.message || 'Unknown error'}`);
-  }
+const generateWithSDXL = async (prompt, options = {}, userId = null) => {
+  return generateViaBackend('sdxl', prompt, options, userId);
 };
 
 /**
- * Generate image with DALL-E 3 (OpenAI)
+ * Generate image with DALL-E 3 via backend API
  * 
  * @param {string} prompt - Full prompt text
  * @param {Object} options - Generation options
- * @param {string} [options.size='1024x1024'] - Image size (1024x1024, 1792x1024, 1024x1792)
- * @param {string} [options.quality='hd'] - Image quality (standard, hd)
+ * @param {string} userId - User ID
  * @returns {Promise<string>} Image URL
  */
 const generateWithDALLE3 = async (prompt, options = {}, userId = null) => {
-  const openai = getOpenAIClient();
-
-  const {
-    size = '1024x1024',
-    quality = 'hd',
-  } = options;
-
-  try {
-    logger.log('[imageGenerationService] Generating with DALL-E 3...');
-    
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: prompt,
-      size: size,
-      quality: quality,
-      n: 1,
-    });
-
-    const imageUrl = response.data[0]?.url;
-    
-    if (!imageUrl) {
-      throw new Error('No image URL returned from DALL-E 3');
-    }
-
-    logger.log('[imageGenerationService] DALL-E 3 generation successful');
-    return imageUrl;
-  } catch (error) {
-    logger.error('[imageGenerationService] DALL-E 3 generation error:', error);
-    
-    // Report error to user's account for debugging
-    if (userId) {
-      try {
-        const { reportError } = await import('./errorReportingService.js');
-        await reportError(userId, error, {
-          component: 'imageGenerationService',
-          action: 'generateWithDALLE3',
-          metadata: { provider: 'dalle3' },
-        });
-      } catch (reportErr) {
-        // Don't break on reporting errors
-        logger.warn('[imageGenerationService] Failed to report error:', reportErr);
-      }
-    }
-    
-    // Handle specific error types
-    if (error.status === 429) {
-      throw new Error('Rate limit exceeded. Please try again in a moment.');
-    } else if (error.status === 400) {
-      throw new Error('Invalid prompt. DALL-E 3 has content policy restrictions.');
-    } else if (error.status === 402) {
-      throw new Error('Insufficient API credits. Please contact support.');
-    }
-    
-    // Sanitize error message to remove Request IDs
-    const sanitizedMessage = sanitizeErrorMessage(error);
-    throw new Error(`DALL-E 3 generation failed: ${sanitizedMessage}`);
-  }
+  return generateViaBackend('dalle3', prompt, options, userId);
 };
 
 /**
@@ -514,8 +328,21 @@ const generateWithDALLE3 = async (prompt, options = {}, userId = null) => {
  * @returns {Promise<string>} Image URL
  */
 const generateWithNanoBanana = async (prompt, options = {}, userId = null) => {
+  return generateViaBackend('nanobanana', prompt, options, userId);
+};
+
+/**
+ * Unified backend API call for all image generation providers
+ * 
+ * @param {string} provider - Provider name (flux, sdxl, dalle3, nanobanana)
+ * @param {string} prompt - Full prompt text
+ * @param {Object} options - Generation options
+ * @param {string} userId - User ID
+ * @returns {Promise<string>} Image URL
+ */
+const generateViaBackend = async (provider, prompt, options = {}, userId = null) => {
   try {
-    logger.log('[imageGenerationService] Generating with Nano Banana Pro...');
+    logger.log(`[imageGenerationService] Generating with ${provider} via backend...`);
     
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
     
@@ -535,7 +362,7 @@ const generateWithNanoBanana = async (prompt, options = {}, userId = null) => {
         'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
-        provider: 'nanobanana',
+        provider: provider,
         prompt: prompt,
         options: options,
       }),
@@ -543,20 +370,38 @@ const generateWithNanoBanana = async (prompt, options = {}, userId = null) => {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      // Prefer the detailed message field, fallback to error field, then status text
+      const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+      
+      // Report error to user's account for debugging
+      if (userId) {
+        try {
+          const { reportError } = await import('./errorReportingService.js');
+          await reportError(userId, new Error(errorMessage), {
+            component: 'imageGenerationService',
+            action: 'generateViaBackend',
+            metadata: { provider, status: response.status },
+          });
+        } catch (reportErr) {
+          // Don't break on reporting errors
+          logger.warn('[imageGenerationService] Failed to report error:', reportErr);
+        }
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
     
     if (!data.imageUrl) {
-      throw new Error('No image URL returned from Nano Banana Pro');
+      throw new Error(`No image URL returned from ${provider}`);
     }
 
-    logger.log('[imageGenerationService] Nano Banana Pro generation successful');
+    logger.log(`[imageGenerationService] ${provider} generation successful`);
     return data.imageUrl;
   } catch (error) {
-    logger.error('[imageGenerationService] Nano Banana Pro generation error:', error);
-    throw new Error(`Nano Banana Pro generation failed: ${error.message || 'Unknown error'}`);
+    logger.error(`[imageGenerationService] ${provider} generation error:`, error);
+    throw error;
   }
 };
 
@@ -811,19 +656,70 @@ export const getGenerationHistory = async (userId, limitCount = 50) => {
  * @param {string} provider - Provider name
  * @returns {boolean}
  */
+// Cache for provider availability
+let availabilityCache = null;
+let availabilityCacheTime = 0;
+const CACHE_DURATION = 60000; // 1 minute
+
+/**
+ * Check if a provider is available (synchronous check with cached backend health)
+ * 
+ * @param {string} provider - Provider name
+ * @returns {boolean}
+ */
 export const isProviderAvailable = (provider) => {
-  switch (provider) {
-    case PROVIDERS.FLUX:
-    case PROVIDERS.SDXL:
-      return !!import.meta.env.VITE_REPLICATE_API_TOKEN;
-    case PROVIDERS.DALLE3:
-      return !!import.meta.env.VITE_OPENAI_API_KEY;
-    case PROVIDERS.NANOBANANA:
-      // Nano Banana Pro uses backend API, so check if backend is available
-      return !!import.meta.env.VITE_API_BASE_URL;
-    default:
-      return false;
+  // All providers now use backend API, so check if backend URL is configured
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+  
+  if (!API_BASE_URL) {
+    return false;
   }
+  
+  // For now, assume all providers are available if backend is configured
+  // The actual availability will be checked when generating
+  // This allows the UI to show all options, and errors will be handled during generation
+  return true;
+};
+
+/**
+ * Check provider availability from backend (async, for more accurate checks)
+ * 
+ * @param {string} provider - Provider name
+ * @returns {Promise<boolean>}
+ */
+export const checkProviderAvailability = async (provider) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+  
+  if (!API_BASE_URL) {
+    return false;
+  }
+  
+  // Use cache if available and fresh
+  const now = Date.now();
+  if (availabilityCache && (now - availabilityCacheTime) < CACHE_DURATION) {
+    return availabilityCache[provider] || false;
+  }
+  
+  // Fetch fresh availability from backend
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/health`);
+    if (response.ok) {
+      const health = await response.json();
+      availabilityCache = {
+        [PROVIDERS.FLUX]: health.replicate === true,
+        [PROVIDERS.SDXL]: health.replicate === true,
+        [PROVIDERS.DALLE3]: health.openai === true,
+        [PROVIDERS.NANOBANANA]: health.gemini === true,
+      };
+      availabilityCacheTime = now;
+      return availabilityCache[provider] || false;
+    }
+  } catch (error) {
+    logger.warn('[imageGenerationService] Could not check provider availability:', error);
+  }
+  
+  // Fallback: assume available if backend URL is configured
+  return true;
 };
 
 /**

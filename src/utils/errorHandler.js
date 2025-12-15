@@ -5,6 +5,36 @@
  */
 
 /**
+ * Sanitizes error messages to remove Request IDs and other sensitive information
+ * @param {string} message - The error message to sanitize
+ * @returns {string} Sanitized error message safe for user display
+ */
+const sanitizeErrorMessage = (message) => {
+  if (!message || typeof message !== 'string') {
+    return message;
+  }
+  
+  // Remove Request ID patterns from error message
+  // Pattern: "Request ID: <uuid>" or "request_id: <uuid>" or just the UUID pattern
+  const requestIdPatterns = [
+    /Request ID:\s*[a-f0-9-]{36}/gi,
+    /request_id:\s*[a-f0-9-]{36}/gi,
+    /requestId:\s*[a-f0-9-]{36}/gi,
+    /\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b/gi,
+  ];
+  
+  let sanitized = message;
+  requestIdPatterns.forEach(pattern => {
+    sanitized = sanitized.replace(pattern, '').trim();
+  });
+  
+  // Clean up any double spaces or trailing punctuation
+  sanitized = sanitized.replace(/\s+/g, ' ').replace(/[.,;:]\s*$/, '').trim();
+  
+  return sanitized;
+};
+
+/**
  * Gets a user-friendly error message from various error types
  * @param {Error|string|Object} error - The error object, message, or code
  * @returns {string} User-friendly error message
@@ -16,11 +46,19 @@ export const getErrorMessage = (error) => {
 
   // Handle string errors
   if (typeof error === 'string') {
-    return error;
+    return sanitizeErrorMessage(error);
   }
 
   // Handle error objects
   if (error && typeof error === 'object') {
+    // Log Request ID server-side only (if present) for debugging
+    if (error.request_id || error.headers?.['x-request-id']) {
+      logger.error('[ErrorHandler] Request ID detected (server-side only):', {
+        requestId: error.request_id || error.headers?.['x-request-id'],
+        message: error.message,
+      });
+    }
+    
     const errorCode = error.code || error.message || '';
     const errorMessage = error.message || '';
 
@@ -37,6 +75,17 @@ export const getErrorMessage = (error) => {
     // Firebase Storage errors
     if (errorCode.startsWith('storage/')) {
       return getStorageErrorMessage(errorCode, errorMessage);
+    }
+
+    // API configuration errors (check before network errors)
+    if (
+      errorMessage.includes('API not configured') ||
+      errorMessage.includes('not configured') ||
+      errorMessage.includes('API key') ||
+      errorMessage.includes('REPLICATE_API_TOKEN') ||
+      errorMessage.includes('OPENAI_API_KEY')
+    ) {
+      return errorMessage || 'AI service API is not configured. Please configure the API keys in the server settings.';
     }
 
     // Network errors
@@ -78,9 +127,9 @@ export const getErrorMessage = (error) => {
       return 'Please check your input';
     }
 
-    // Return the error message if available
+    // Return the sanitized error message if available
     if (errorMessage && errorMessage !== errorCode) {
-      return errorMessage;
+      return sanitizeErrorMessage(errorMessage);
     }
   }
 

@@ -166,7 +166,7 @@ Transform the technical dashboard into a **fun, magical, and creative dress-up g
 - **Active Indicator**: Smooth underline or highlight bar follows active category
 
 ### Randomize Action
-- **Shuffle Animation**: Buttons briefly shuffle/shake (0.5s)
+- **I'm Feeling Lucky Animation**: Buttons briefly shuffle/shake (0.5s)
 - **Confetti**: Optional subtle confetti particles on success
 - **Figure Spin**: Figure does a gentle 360° rotation (0.8s)
 
