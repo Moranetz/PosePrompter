@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { Copy, RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus, TrendingUp, Star, Heart } from 'lucide-react';
+import { RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus, TrendingUp, Star, Heart } from 'lucide-react';
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from './firebase-config';
 import { useAuth } from './contexts/UserContext';
@@ -4706,7 +4706,6 @@ const PhotoElementRandomizer = () => {
         onPrevCategory={navigatePrevCategory}
         onNextOption={navigateNextOption}
         onPrevOption={navigatePrevOption}
-        onCopy={copyToClipboard}
         onRandomize={handleRandomizeCurrent}
         onRandomizeAll={randomizeAll}
         onSave={() => setSaveModalOpen(true)}
@@ -4887,45 +4886,6 @@ const PhotoElementRandomizer = () => {
               >
                 <RotateCcw size={14} />
                 I'm Feeling Lucky
-              </button>
-              
-              {/* Copy - The goal action */}
-              <button
-                onClick={copyToClipboard}
-                style={{
-                  width: '100%',
-                  background: copied 
-                    ? 'rgba(20, 184, 166, 0.15)'
-                    : '#f4f4f5',
-                  color: copied ? '#14b8a6' : '#09090b',
-                  border: copied ? '1px solid rgba(20, 184, 166, 0.3)' : 'none',
-                  borderRadius: '6px',
-                  padding: '10px 14px',
-                  fontSize: '13px',
-                  fontWeight: '500',
-                  letterSpacing: '-0.01em',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                onMouseEnter={(e) => {
-                  if (!copied) {
-                    e.currentTarget.style.background = '#e4e4e7';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!copied) {
-                    e.currentTarget.style.background = '#f4f4f5';
-                  }
-                }}
-                aria-label={copied ? "Copied!" : "Copy prompt"}
-                title={copied ? "Copied!" : "Copy prompt"}
-              >
-                <Copy size={14} />
-                {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
 
