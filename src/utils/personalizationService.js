@@ -596,3 +596,63 @@ export const updateEnabledBodyPoseCategories = async (userId, categories) => {
   }
 };
 
+/**
+ * PERFORMANCE OPTIMIZATION: Get all enabled category preferences in a single query
+ * This replaces 6+ separate getUserPreferences() calls with one batch fetch
+ *
+ * @param {string} userId - The user's unique ID
+ * @returns {Promise<Object>} Object containing all category preferences
+ */
+export const getAllCategoryPreferences = async (userId) => {
+  if (!userId || !db) {
+    return {
+      clothing: [],
+      faceHead: [],
+      aestheticStyle: [],
+      framingComposition: [],
+      backgroundEnvironment: [],
+      bodyPose: []
+    };
+  }
+
+  try {
+    const prefs = await getUserPreferences(userId);
+    if (!prefs || !prefs.preferences) {
+      return {
+        clothing: [],
+        faceHead: [],
+        aestheticStyle: [],
+        framingComposition: [],
+        backgroundEnvironment: [],
+        bodyPose: []
+      };
+    }
+
+    const preferences = prefs.preferences;
+    return {
+      clothing: Array.isArray(preferences.enabledClothingCategories)
+        ? preferences.enabledClothingCategories : [],
+      faceHead: Array.isArray(preferences.enabledFaceHeadCategories)
+        ? preferences.enabledFaceHeadCategories : [],
+      aestheticStyle: Array.isArray(preferences.enabledAestheticStyleCategories)
+        ? preferences.enabledAestheticStyleCategories : [],
+      framingComposition: Array.isArray(preferences.enabledFramingCompositionCategories)
+        ? preferences.enabledFramingCompositionCategories : [],
+      backgroundEnvironment: Array.isArray(preferences.enabledBackgroundEnvironmentCategories)
+        ? preferences.enabledBackgroundEnvironmentCategories : [],
+      bodyPose: Array.isArray(preferences.enabledBodyPoseCategories)
+        ? preferences.enabledBodyPoseCategories : []
+    };
+  } catch (error) {
+    logger.error('[personalization] Error getting all category preferences:', error);
+    return {
+      clothing: [],
+      faceHead: [],
+      aestheticStyle: [],
+      framingComposition: [],
+      backgroundEnvironment: [],
+      bodyPose: []
+    };
+  }
+};
+

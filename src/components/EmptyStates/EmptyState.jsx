@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Package, Search, Inbox, Sparkles } from 'lucide-react';
 
-const EmptyState = ({ 
+// PERFORMANCE OPTIMIZATION: Memoize to prevent unnecessary re-renders
+const EmptyState = memo(({ 
   icon = 'package', 
   title, 
   description, 
@@ -119,7 +120,9 @@ const EmptyState = ({
       )}
     </motion.div>
   );
-};
+});
+
+EmptyState.displayName = 'EmptyState';
 
 export default EmptyState;
 

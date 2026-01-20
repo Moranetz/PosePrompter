@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 
-const ConfirmationDialog = ({
+// PERFORMANCE OPTIMIZATION: Memoize to prevent unnecessary re-renders
+const ConfirmationDialog = memo(({
   isOpen,
   onClose,
   onConfirm,
@@ -213,7 +214,9 @@ const ConfirmationDialog = ({
       </div>
     </div>
   );
-};
+});
+
+ConfirmationDialog.displayName = 'ConfirmationDialog';
 
 export default ConfirmationDialog;
 

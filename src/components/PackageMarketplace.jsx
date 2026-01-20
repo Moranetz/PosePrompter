@@ -69,12 +69,11 @@ const PackageMarketplace = () => {
       let results = [];
 
       if (showMyInstalls && user) {
+        // PERFORMANCE OPTIMIZATION: Reuse installedPackages state instead of duplicate query
         // Load user's installed packages
         const userPkgs = await getUserPackages(user.uid);
-        // Filter to only installed ones
-        const profile = await getUserProfile(user.uid);
-        const installedIds = profile?.installedPackages || [];
-        results = userPkgs.filter(pkg => installedIds.includes(pkg.packageId || pkg.id));
+        // Filter to only installed ones using cached state
+        results = userPkgs.filter(pkg => installedPackages.includes(pkg.packageId || pkg.id));
       } else {
         // Build filters
         const filters = {

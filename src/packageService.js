@@ -503,41 +503,39 @@ export const searchPackages = async (searchTerm, options = {}) => {
     );
 
     const querySnapshot = await getDocs(q);
-    const packages = [];
     const searchLower = searchTerm.toLowerCase();
-    
+
+    // PERFORMANCE OPTIMIZATION: Pre-calculate scores to avoid O(n²) during sort
+    // Calculate relevance score: name=3, description=2, tags=1
+    const calculateRelevanceScore = (data) => {
+      let score = 0;
+      if (data.name?.toLowerCase().includes(searchLower)) score += 3;
+      if (data.description?.toLowerCase().includes(searchLower)) score += 2;
+      if (data.tags?.some(tag => tag.toLowerCase().includes(searchLower))) score += 1;
+      return score;
+    };
+
+    // Build packages array with pre-calculated scores
+    const packagesWithScores = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      const nameMatch = data.name?.toLowerCase().includes(searchLower);
-      const descriptionMatch = data.description?.toLowerCase().includes(searchLower);
-      const tagMatch = data.tags?.some(tag => 
-        tag.toLowerCase().includes(searchLower)
-      );
+      const score = calculateRelevanceScore(data);
 
-      if (nameMatch || descriptionMatch || tagMatch) {
-        packages.push({
+      // Only include packages that match
+      if (score > 0) {
+        packagesWithScores.push({
           id: doc.id,
           ...data,
+          _searchScore: score, // Temporary field for sorting
         });
       }
     });
 
-    // Sort by relevance (name matches first, then description, then tags)
-    packages.sort((a, b) => {
-      const aNameMatch = a.name?.toLowerCase().includes(searchLower) ? 3 : 0;
-      const aDescMatch = a.description?.toLowerCase().includes(searchLower) ? 2 : 0;
-      const aTagMatch = a.tags?.some(tag => tag.toLowerCase().includes(searchLower)) ? 1 : 0;
-      const aScore = aNameMatch + aDescMatch + aTagMatch;
+    // Sort by pre-calculated scores (O(n log n) instead of O(n²))
+    packagesWithScores.sort((a, b) => b._searchScore - a._searchScore);
 
-      const bNameMatch = b.name?.toLowerCase().includes(searchLower) ? 3 : 0;
-      const bDescMatch = b.description?.toLowerCase().includes(searchLower) ? 2 : 0;
-      const bTagMatch = b.tags?.some(tag => tag.toLowerCase().includes(searchLower)) ? 1 : 0;
-      const bScore = bNameMatch + bDescMatch + bTagMatch;
-
-      return bScore - aScore;
-    });
-
-    const results = packages.slice(0, resultLimit);
+    // Remove temporary score field and limit results
+    const results = packagesWithScores.slice(0, resultLimit).map(({ _searchScore, ...pkg }) => pkg);
     logger.log('[searchPackages] Found', results.length, 'packages matching:', searchTerm);
     return results;
   } catch (error) {

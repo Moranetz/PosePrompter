@@ -5,13 +5,14 @@ import { useAuth } from '../contexts/UserContext';
 import { getUserProfile, uninstallPackage } from '../firestoreService';
 import { getPackage, getTopStarredPackages, starPackage, unstarPackage, getUserStarredPackages, installPackage } from '../packageService';
 import { getErrorMessage } from '../utils/errorHandler';
-import { 
+import {
   getEnabledClothingCategories,
   getEnabledFaceHeadCategories,
   getEnabledAestheticStyleCategories,
   getEnabledFramingCompositionCategories,
   getEnabledBackgroundEnvironmentCategories,
-  getEnabledBodyPoseCategories
+  getEnabledBodyPoseCategories,
+  getAllCategoryPreferences
 } from '../utils/personalizationService';
 import { db } from '../firebase-config';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -172,8 +173,14 @@ const InstalledPackagesModal = ({ isOpen, onClose, onUninstall, onClothingCatego
   const [restoringOption, setRestoringOption] = useState(null);
 
   // Load installed packages
+  // PERFORMANCE OPTIMIZATION: Batch all queries to reduce N+1 query anti-pattern
   useEffect(() => {
     if (isOpen && user) {
+      // Load category preferences once with batched query
+      loadAllCategoryPreferences();
+      loadStarredPackages();
+
+      // Load tab-specific data
       if (activeTab === 'installed') {
         loadInstalledPackages();
       } else if (activeTab === 'trashed') {
@@ -181,13 +188,6 @@ const InstalledPackagesModal = ({ isOpen, onClose, onUninstall, onClothingCatego
       } else {
         loadTopPackages();
       }
-      loadStarredPackages();
-      loadClothingCategoriesStatus();
-      loadFaceHeadCategoriesStatus();
-      loadAestheticStyleCategoriesStatus();
-      loadFramingCompositionCategoriesStatus();
-      loadBackgroundEnvironmentCategoriesStatus();
-      loadBodyPoseCategoriesStatus();
     }
   }, [isOpen, user, activeTab]);
 
@@ -263,69 +263,20 @@ const InstalledPackagesModal = ({ isOpen, onClose, onUninstall, onClothingCatego
     }
   };
 
-  // Load clothing categories status
-  const loadClothingCategoriesStatus = async () => {
+  // PERFORMANCE OPTIMIZATION: Load all category preferences in a single batch query
+  // This replaces 6 separate Firestore queries with 1
+  const loadAllCategoryPreferences = async () => {
     if (!user) return;
     try {
-      const enabled = await getEnabledClothingCategories(user.uid);
-      setEnabledClothingCategoriesCount(enabled?.length || 0);
+      const allPrefs = await getAllCategoryPreferences(user.uid);
+      setEnabledClothingCategoriesCount(allPrefs.clothing?.length || 0);
+      setEnabledFaceHeadCategoriesCount(allPrefs.faceHead?.length || 0);
+      setEnabledAestheticStyleCategoriesCount(allPrefs.aestheticStyle?.length || 0);
+      setEnabledFramingCompositionCategoriesCount(allPrefs.framingComposition?.length || 0);
+      setEnabledBackgroundEnvironmentCategoriesCount(allPrefs.backgroundEnvironment?.length || 0);
+      setEnabledBodyPoseCategoriesCount(allPrefs.bodyPose?.length || 0);
     } catch (err) {
-      console.error('[InstalledPackagesModal] Error loading clothing categories status:', err);
-    }
-  };
-
-  // Load Face & Head categories status
-  const loadFaceHeadCategoriesStatus = async () => {
-    if (!user) return;
-    try {
-      const enabled = await getEnabledFaceHeadCategories(user.uid);
-      setEnabledFaceHeadCategoriesCount(enabled?.length || 0);
-    } catch (err) {
-      console.error('[InstalledPackagesModal] Error loading Face & Head categories status:', err);
-    }
-  };
-
-  // Load Aesthetic & Style categories status
-  const loadAestheticStyleCategoriesStatus = async () => {
-    if (!user) return;
-    try {
-      const enabled = await getEnabledAestheticStyleCategories(user.uid);
-      setEnabledAestheticStyleCategoriesCount(enabled?.length || 0);
-    } catch (err) {
-      console.error('[InstalledPackagesModal] Error loading Aesthetic & Style categories status:', err);
-    }
-  };
-
-  // Load Framing & Composition categories status
-  const loadFramingCompositionCategoriesStatus = async () => {
-    if (!user) return;
-    try {
-      const enabled = await getEnabledFramingCompositionCategories(user.uid);
-      setEnabledFramingCompositionCategoriesCount(enabled?.length || 0);
-    } catch (err) {
-      console.error('[InstalledPackagesModal] Error loading Framing & Composition categories status:', err);
-    }
-  };
-
-  // Load Background & Environment categories status
-  const loadBackgroundEnvironmentCategoriesStatus = async () => {
-    if (!user) return;
-    try {
-      const enabled = await getEnabledBackgroundEnvironmentCategories(user.uid);
-      setEnabledBackgroundEnvironmentCategoriesCount(enabled?.length || 0);
-    } catch (err) {
-      console.error('[InstalledPackagesModal] Error loading Background & Environment categories status:', err);
-    }
-  };
-
-  // Load Body & Pose categories status
-  const loadBodyPoseCategoriesStatus = async () => {
-    if (!user) return;
-    try {
-      const enabled = await getEnabledBodyPoseCategories(user.uid);
-      setEnabledBodyPoseCategoriesCount(enabled?.length || 0);
-    } catch (err) {
-      console.error('[InstalledPackagesModal] Error loading Body & Pose categories status:', err);
+      console.error('[InstalledPackagesModal] Error loading category preferences:', err);
     }
   };
 
