@@ -7,6 +7,7 @@
 
 import { getAuth } from 'firebase/auth';
 import { logger } from './logger.js';
+import { getApiBaseUrl } from './apiConfig.js';
 
 /**
  * Generate an AI image using a face photo and prompt
@@ -30,7 +31,7 @@ export const generateAIImage = async ({ facePhotoUrl, prompt }) => {
       prompt: prompt.substring(0, 100) + '...'
     });
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    const API_BASE_URL = getApiBaseUrl();
     
     // Get auth token
     const auth = getAuth();

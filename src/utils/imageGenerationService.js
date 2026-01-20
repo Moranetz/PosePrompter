@@ -31,6 +31,7 @@ import {
 import { storage, db } from '../firebase-config';
 import { logger } from './logger.js';
 import { getGemBalance } from './paymentService.js';
+import { getApiBaseUrl } from './apiConfig.js';
 
 /**
  * Sanitizes error messages to remove Request IDs and other sensitive information
@@ -344,7 +345,7 @@ const generateViaBackend = async (provider, prompt, options = {}, userId = null)
   try {
     logger.log(`[imageGenerationService] Generating with ${provider} via backend...`);
     
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    const API_BASE_URL = getApiBaseUrl();
     
     // Get auth token
     const { getAuth } = await import('firebase/auth');
@@ -669,7 +670,7 @@ const CACHE_DURATION = 60000; // 1 minute
  */
 export const isProviderAvailable = (provider) => {
   // All providers now use backend API, so check if backend URL is configured
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+  const API_BASE_URL = getApiBaseUrl();
   
   if (!API_BASE_URL) {
     return false;
@@ -688,7 +689,7 @@ export const isProviderAvailable = (provider) => {
  * @returns {Promise<boolean>}
  */
 export const checkProviderAvailability = async (provider) => {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+  const API_BASE_URL = getApiBaseUrl();
   
   if (!API_BASE_URL) {
     return false;

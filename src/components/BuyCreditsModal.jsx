@@ -19,6 +19,7 @@ import { useAuth } from '../contexts/UserContext';
 import { getUserProfile } from '../firestoreService';
 import { getErrorMessage } from '../utils/errorHandler';
 import Confetti from './Animations/Confetti';
+import { getApiBaseUrl } from '../utils/apiConfig';
 
 // Load Stripe for nested Elements
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
@@ -33,7 +34,7 @@ const CREDIT_PACKAGES = [
   { id: '2300', credits: 2300, price: 240, label: 'For serious creators', bonus: { total: 2000, bonus: 300 } },
 ];
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = getApiBaseUrl();
 
 // Payment form component that uses PaymentElement (needs clientSecret)
 const PaymentForm = ({ selectedPackage, clientSecret, paymentIntentId, onSuccess, onClose, onError, isProcessing, setIsProcessing, oldCredits, onShowConfetti }) => {
