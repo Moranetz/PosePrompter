@@ -1,34 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 
 /**
  * Animated button that flies from source position to target position
+ *
+ * Security: Uses direct DOM node attachment instead of dangerouslySetInnerHTML
+ * to eliminate XSS vulnerabilities while preserving visual appearance.
  */
-const TrashAnimation = ({ 
-  startX, 
-  startY, 
-  endX, 
-  endY, 
+const TrashAnimation = ({
+  startX,
+  startY,
+  endX,
+  endY,
   onComplete,
   buttonElement,
   buttonText
 }) => {
   const controls = useAnimation();
-  const [buttonHTML, setButtonHTML] = useState('');
+  const [clonedElement, setClonedElement] = useState(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    // Extract button HTML if element is provided
+    // Extract and sanitize button element if provided
     if (buttonElement) {
       const cloned = buttonElement.cloneNode(true);
-      // Remove interactive elements
+
+      // Security: Sanitize the cloned element
+      // Remove interactive elements and potential XSS vectors
       cloned.style.pointerEvents = 'none';
       cloned.style.cursor = 'default';
+
       // Remove any buttons inside (like trash/favorite buttons)
       const innerButtons = cloned.querySelectorAll('button');
       innerButtons.forEach(btn => btn.remove());
-      // Remove script tags and event handlers for security
+
+      // Remove script tags
       const scripts = cloned.querySelectorAll('script');
       scripts.forEach(script => script.remove());
+
       // Remove all event handlers (onclick, onerror, etc.)
       const allElements = cloned.querySelectorAll('*');
       allElements.forEach(el => {
@@ -38,13 +47,16 @@ const TrashAnimation = ({
           }
         });
       });
+
       // Preserve all styles but remove transforms that might interfere
       cloned.style.transform = 'none';
       cloned.style.transition = 'none';
       cloned.style.position = 'relative';
+
       // Add shadow for visibility
       cloned.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.6)';
       cloned.style.filter = 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5))';
+
       // Sanitize: remove any javascript: URLs and data URIs that aren't images
       const links = cloned.querySelectorAll('a[href]');
       links.forEach(link => {
@@ -53,9 +65,20 @@ const TrashAnimation = ({
           link.removeAttribute('href');
         }
       });
-      setButtonHTML(cloned.outerHTML);
+
+      setClonedElement(cloned);
     }
   }, [buttonElement]);
+
+  // Attach the cloned DOM element to the container ref
+  useEffect(() => {
+    if (containerRef.current && clonedElement) {
+      // Clear any existing content
+      containerRef.current.innerHTML = '';
+      // Directly append the sanitized DOM node (no HTML parsing)
+      containerRef.current.appendChild(clonedElement);
+    }
+  }, [clonedElement]);
 
   useEffect(() => {
     const animate = async () => {
@@ -82,10 +105,12 @@ const TrashAnimation = ({
 
   // Render button content
   const renderButton = () => {
-    if (buttonHTML) {
+    if (clonedElement) {
+      // Security: Use ref to attach DOM node directly instead of dangerouslySetInnerHTML
+      // This eliminates XSS risk while preserving the visual appearance
       return (
         <div
-          dangerouslySetInnerHTML={{ __html: buttonHTML }}
+          ref={containerRef}
           style={{
             pointerEvents: 'none',
             filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5))',
@@ -93,7 +118,7 @@ const TrashAnimation = ({
         />
       );
     }
-    
+
     // Fallback: render a simple button with text
     return (
       <div
