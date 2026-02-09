@@ -19,6 +19,7 @@ import { useAuth } from '../contexts/UserContext';
 import { getUserProfile } from '../firestoreService';
 import { getErrorMessage } from '../utils/errorHandler';
 import Confetti from './Animations/Confetti';
+import { TOUCH_TARGETS, SPACING, TYPOGRAPHY, PATTERNS } from '../config/uxDesignSystem';
 
 // Load Stripe for nested Elements
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
@@ -33,7 +34,7 @@ const CREDIT_PACKAGES = [
   { id: '2300', credits: 2300, price: 240, label: 'For serious creators', bonus: { total: 2000, bonus: 300 } },
 ];
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+// API calls now use centralized apiClient
 
 // Payment form component that uses PaymentElement (needs clientSecret)
 const PaymentForm = ({ selectedPackage, clientSecret, paymentIntentId, onSuccess, onClose, onError, isProcessing, setIsProcessing, oldCredits, onShowConfetti }) => {
@@ -223,7 +224,7 @@ const PaymentForm = ({ selectedPackage, clientSecret, paymentIntentId, onSuccess
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ marginBottom: SPACING[3] }}>
         <div
           style={{
             background: 'rgba(255, 255, 255, 0.03)',
@@ -238,13 +239,13 @@ const PaymentForm = ({ selectedPackage, clientSecret, paymentIntentId, onSuccess
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: '12px',
+              marginBottom: SPACING.MD,
             }}
           >
             <span style={{ fontSize: '16px', color: 'rgba(255, 255, 255, 0.7)' }}>
               Package:
             </span>
-            <span style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>
+            <span style={{ fontSize: TYPOGRAPHY.LG, fontWeight: TYPOGRAPHY.SEMIBOLD, color: '#ffffff' }}>
               {selectedPackage.credits} Credits
             </span>
           </div>
@@ -430,6 +431,7 @@ const PaymentForm = ({ selectedPackage, clientSecret, paymentIntentId, onSuccess
         style={{
           width: '100%',
           padding: '14px 24px',
+          minHeight: '48px',
           background: isProcessing || success
             ? 'rgba(255, 255, 255, 0.1)'
             : 'rgba(139, 92, 246, 0.8)',
@@ -564,25 +566,17 @@ const BuyCreditsModal = ({ isOpen, onClose, onSuccess }) => {
     }
 
     try {
+      // Use centralized API client
+      const apiClient = (await import('../api/client.js')).default;
+      
       // Create payment intent on backend
-      const response = await fetch(`${API_BASE_URL}/api/create-payment-intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: pkg.price * 100, // Convert to cents
-          creditPackage: pkg.id,
-          userId: user.uid,
-        }),
+      const response = await apiClient.post('/create-payment-intent', {
+        amount: pkg.price * 100, // Convert to cents
+        creditPackage: pkg.id,
+        userId: user.uid,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create payment intent');
-      }
-
-      const data = await response.json();
+      const data = response.data;
       setClientSecret(data.clientSecret);
       setPaymentIntentId(data.paymentIntentId);
     } catch (err) {
@@ -664,8 +658,8 @@ const BuyCreditsModal = ({ isOpen, onClose, onSuccess }) => {
               background: 'rgba(255, 255, 255, 0.05)',
               border: 'none',
               borderRadius: '8px',
-              width: '32px',
-              height: '32px',
+              width: `${TOUCH_TARGETS.MEDIUM}px`,
+              height: `${TOUCH_TARGETS.MEDIUM}px`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -682,6 +676,7 @@ const BuyCreditsModal = ({ isOpen, onClose, onSuccess }) => {
               e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
               e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
             }}
+          aria-label="Close"
           >
             <X size={18} />
           </button>
@@ -770,6 +765,7 @@ const BuyCreditsModal = ({ isOpen, onClose, onSuccess }) => {
                       onClick={() => handleSelectPackage(pkg)}
                       disabled={isProcessing}
                       style={{
+                        position: 'relative',
                         background: pkg.popular
                           ? 'rgba(139, 92, 246, 0.1)'
                           : 'rgba(255, 255, 255, 0.05)',
@@ -778,6 +774,7 @@ const BuyCreditsModal = ({ isOpen, onClose, onSuccess }) => {
                           : '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '12px',
                         padding: '16px',
+                        minHeight: '120px', // Card-specific height
                         cursor: isProcessing ? 'not-allowed' : 'pointer',
                         transition: 'transform 0.1s ease, box-shadow 0.1s ease', // Only animate transform/shadow, colors change instantly
                         opacity: isProcessing ? 0.6 : 1,
@@ -804,6 +801,26 @@ const BuyCreditsModal = ({ isOpen, onClose, onSuccess }) => {
                         }
                       }}
                     >
+                      {pkg.popular && (
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            padding: '4px 8px',
+                            background: 'rgba(245, 158, 11, 0.2)',
+                            border: '1px solid rgba(245, 158, 11, 0.5)',
+                            borderRadius: '999px',
+                            fontSize: '10px',
+                            fontWeight: '600',
+                            color: '#fbbf24',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.06em'
+                          }}
+                        >
+                          Most Popular
+                        </span>
+                      )}
                       <div
                         style={{
                           fontSize: '20px',

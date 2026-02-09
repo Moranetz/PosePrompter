@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Upload, Loader2, Check, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, Loader2, Check, AlertCircle, Image as ImageIcon, Plus } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase-config';
 import { useAuth } from '../contexts/UserContext';
 import { getUserProfile } from '../firestoreService';
 import { createPackage, publishPackage } from '../packageService';
 import { getErrorMessage } from '../utils/errorHandler';
+import { TOUCH_TARGETS, PROGRESS, getProgressPercent, SPACING, TYPOGRAPHY, PATTERNS } from '../config/uxDesignSystem';
 
 // Category display names
 export const categoryDisplayNames = {
@@ -49,12 +50,14 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Form state
+    // Form state
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     coverImage: null,
     coverImageUrl: '',
+    coverImagePath: '', // Store path for cleanup
+    coverImageSaved: false, // Track if image is saved to a package
     selectedCategories: [],
     tags: '',
     price: 'free',
@@ -101,11 +104,29 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
   // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
+      // Cleanup uploaded image if modal closes without creating package
+      if (formData.coverImageUrl && !formData.coverImageSaved) {
+        const cleanupImage = async () => {
+          try {
+            const { deleteObject } = await import('firebase/storage');
+            if (formData.coverImagePath) {
+              await deleteObject(ref(storage, formData.coverImagePath));
+              console.log('[CreatePackageModal] Cleaned up orphaned image on modal close');
+            }
+          } catch (cleanupError) {
+            console.warn('[CreatePackageModal] Failed to cleanup image on modal close:', cleanupError);
+            // Don't block modal close if cleanup fails
+          }
+        };
+        cleanupImage();
+      }
+      
       setFormData({
         name: '',
         description: '',
         coverImage: null,
         coverImageUrl: '',
+        coverImagePath: '',
         selectedCategories: [],
         tags: '',
         price: 'free',
@@ -148,22 +169,62 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
 
     try {
       console.log('[CreatePackageModal] Uploading image:', file.name);
-      // Create a unique filename
-      const fileName = `package-covers/${user.uid}/${Date.now()}_${file.name}`;
+      
+      // Delete old image if exists (cleanup when replacing)
+      if (formData.coverImageUrl) {
+        try {
+          // Extract path from URL
+          const urlParts = formData.coverImageUrl.split('/');
+          const oldFileName = urlParts[urlParts.length - 1].split('?')[0]; // Remove query params
+          const oldPath = `package-covers/${user.uid}/${oldFileName}`;
+          const { deleteObject } = await import('firebase/storage');
+          await deleteObject(ref(storage, oldPath));
+          console.log('[CreatePackageModal] Deleted old cover image');
+        } catch (deleteError) {
+          console.warn('[CreatePackageModal] Failed to delete old image:', deleteError);
+          // Continue with new upload anyway
+        }
+      }
+      
+      // Sanitize filename to prevent path traversal and special characters
+      const sanitizeFileName = (name) => {
+        // Remove path traversal attempts
+        let sanitized = name.replace(/\.\./g, '').replace(/\//g, '_');
+        // Remove special characters except dots, hyphens, and underscores
+        sanitized = sanitized.replace(/[^a-zA-Z0-9._-]/g, '_');
+        // Limit length
+        sanitized = sanitized.substring(0, 255);
+        return sanitized;
+      };
+      
+      // Create a unique filename with collision prevention
+      const uniqueId = Math.random().toString(36).substring(2, 9);
+      const sanitizedFileName = sanitizeFileName(file.name);
+      const fileName = `package-covers/${user.uid}/${Date.now()}_${uniqueId}_${sanitizedFileName}`;
       const storageRef = ref(storage, fileName);
 
-      // Upload file
-      await uploadBytes(storageRef, file);
+      // Upload file with explicit content-type
+      await uploadBytes(storageRef, file, {
+        contentType: file.type || 'image/jpeg',
+        customMetadata: {
+          uploadedBy: user.uid,
+          uploadedAt: new Date().toISOString(),
+        }
+      });
       console.log('[CreatePackageModal] Image uploaded successfully');
 
-      // Get download URL
+      // Get download URL and validate it
       const downloadURL = await getDownloadURL(storageRef);
+      if (!downloadURL || !downloadURL.startsWith('http')) {
+        throw new Error('Failed to get valid download URL');
+      }
       console.log('[CreatePackageModal] Got download URL');
 
       setFormData(prev => ({
         ...prev,
         coverImage: file,
         coverImageUrl: downloadURL,
+        coverImagePath: fileName, // Store path for cleanup
       }));
     } catch (err) {
       console.error('[CreatePackageModal] Error uploading image:', err);
@@ -364,8 +425,26 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
       console.log('[CreatePackageModal] Package data prepared:', packageData);
 
       // Create package
-      const packageId = await createPackage(user.uid, packageData);
-      console.log('[CreatePackageModal] Package created:', packageId);
+      let packageId;
+      try {
+        packageId = await createPackage(user.uid, packageData);
+        console.log('[CreatePackageModal] Package created:', packageId);
+        
+        // Mark image as saved to prevent cleanup
+        setFormData(prev => ({ ...prev, coverImageSaved: true }));
+      } catch (createError) {
+        // If package creation fails, cleanup uploaded image
+        if (formData.coverImagePath) {
+          try {
+            const { deleteObject } = await import('firebase/storage');
+            await deleteObject(ref(storage, formData.coverImagePath));
+            console.log('[CreatePackageModal] Cleaned up image after package creation failure');
+          } catch (cleanupError) {
+            console.warn('[CreatePackageModal] Failed to cleanup image after creation failure:', cleanupError);
+          }
+        }
+        throw createError; // Re-throw to be caught by outer catch
+      }
 
       // If publishing, update status
       if (publish) {
@@ -393,6 +472,14 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
 
   // Get all available categories (show all categories, not just ones with custom options)
   const availableCategories = Object.keys(categoryDisplayNames);
+  const completionSteps = [
+    formData.name.trim().length > 0,
+    formData.description.trim().length > 0,
+    getTotalOptionsCount >= 3
+  ];
+  const completedStepsCount = completionSteps.filter(Boolean).length;
+  const totalSteps = completionSteps.length;
+  const completionPercent = getProgressPercent(completedStepsCount, totalSteps);
 
   return (
     <div
@@ -418,7 +505,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
         className="modal-content"
         style={{
           background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
-          borderRadius: '20px',
+          borderRadius: PATTERNS.MODAL_BORDER_RADIUS,
           padding: '0',
           maxWidth: '900px',
           width: '100%',
@@ -440,8 +527,8 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
             background: 'rgba(255, 255, 255, 0.1)',
             border: 'none',
             borderRadius: '8px',
-            width: '32px',
-            height: '32px',
+            width: '44px',
+            height: '44px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -456,20 +543,21 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
           onMouseLeave={(e) => {
             e.target.style.background = 'rgba(255, 255, 255, 0.1)';
           }}
+          aria-label="Close"
         >
           <X size={18} />
         </button>
 
         {/* Header */}
-        <div style={{ padding: '32px 32px 24px' }}>
+        <div style={{ padding: `${SPACING[4]} ${SPACING[4]} ${SPACING[3]}` }}>
           <h2
             style={{
               margin: 0,
-              fontSize: '28px',
-              fontWeight: '700',
+              fontSize: TYPOGRAPHY['2XL'],
+              fontWeight: TYPOGRAPHY.BOLD,
               color: '#ffffff',
               textAlign: 'center',
-              marginBottom: '8px',
+              marginBottom: SPACING.SM,
             }}
           >
             Create Package
@@ -477,13 +565,43 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
           <p
             style={{
               margin: 0,
-              fontSize: '14px',
+              fontSize: TYPOGRAPHY.BASE,
               color: 'rgba(255, 255, 255, 0.6)',
               textAlign: 'center',
             }}
           >
             Share your custom prompt collections with the community
           </p>
+          <div style={{
+            marginTop: SPACING.LG,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: SPACING.SM
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: TYPOGRAPHY.SM,
+              color: 'rgba(255, 255, 255, 0.6)'
+            }}>
+              <span>Setup progress</span>
+              <span>{completedSteps}/{totalSteps} complete</span>
+            </div>
+            <div style={{
+              height: PROGRESS.BAR_HEIGHT,
+              background: PROGRESS.BAR_BACKGROUND,
+              borderRadius: PROGRESS.BAR_BORDER_RADIUS,
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${completionPercent}%`,
+                background: 'rgba(139, 92, 246, 0.9)',
+                transition: 'width 200ms ease'
+              }} />
+            </div>
+          </div>
         </div>
 
         {/* Creator Benefits Info */}
@@ -951,6 +1069,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                               disabled={loading}
                               style={{
                                 padding: '6px 12px',
+                                minHeight: `${TOUCH_TARGETS.SMALL}px`,
                                 background: isAdding ? 'rgba(139, 92, 246, 0.3)' : 'rgba(139, 92, 246, 0.2)',
                                 border: '1px solid rgba(139, 92, 246, 0.5)',
                                 borderRadius: '6px',
@@ -1019,6 +1138,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                                 disabled={loading || !newPromptTitle.trim() || !newPromptText.trim()}
                                 style={{
                                   padding: '8px 12px',
+                                  minHeight: `${TOUCH_TARGETS.SMALL}px`,
                                   background: (newPromptTitle.trim() && newPromptText.trim()) 
                                     ? 'rgba(139, 92, 246, 0.4)' 
                                     : 'rgba(139, 92, 246, 0.2)',
@@ -1080,6 +1200,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
                                     onClick={() => handleRemovePrompt(category, opt.id)}
                                     style={{
                                       padding: '2px 6px',
+                                      minHeight: '32px',
                                       background: 'rgba(239, 68, 68, 0.2)',
                                       border: '1px solid rgba(239, 68, 68, 0.4)',
                                       borderRadius: '4px',
@@ -1329,6 +1450,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
               style={{
                 flex: 1,
                 padding: '14px',
+                minHeight: `${TOUCH_TARGETS.LARGE}px`,
                 background: loading ? 'rgba(139, 92, 246, 0.5)' : 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid rgba(139, 92, 246, 0.3)',
                 borderRadius: '10px',
@@ -1371,6 +1493,7 @@ const CreatePackageModal = ({ isOpen, onClose, onSuccess }) => {
               style={{
                 flex: 1,
                 padding: '14px',
+                minHeight: `${TOUCH_TARGETS.LARGE}px`,
                 background: loading
                   ? 'rgba(139, 92, 246, 0.5)'
                   : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',

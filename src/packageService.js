@@ -273,13 +273,64 @@ export const deletePackage = async (packageId) => {
   try {
     const packageRef = doc(db, PACKAGES_COLLECTION, packageId);
     
-    // Check if package exists
+    // Check if package exists and get data for cleanup
     const packageSnap = await getDoc(packageRef);
     if (!packageSnap.exists()) {
       throw new Error('Package does not exist');
     }
 
+    const packageData = packageSnap.data();
+    
+    // Delete Firestore document
     await deleteDoc(packageRef);
+    
+    // Delete cover image from storage if it exists
+    if (packageData.coverImage) {
+      try {
+        // Extract path from URL
+        const extractPathFromUrl = (url) => {
+          // Firebase Storage URLs are like: https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{path}?alt=media&token={token}
+          // Or: https://storage.googleapis.com/{bucket}/{path}
+          try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname.includes('firebasestorage.googleapis.com')) {
+              // Extract path from Firebase Storage URL
+              const pathMatch = urlObj.pathname.match(/\/o\/(.+)\?/);
+              if (pathMatch) {
+                return decodeURIComponent(pathMatch[1]);
+              }
+            } else if (urlObj.hostname.includes('storage.googleapis.com')) {
+              // Extract path from GCS URL
+              const pathParts = urlObj.pathname.split('/');
+              return pathParts.slice(2).join('/'); // Skip bucket name
+            }
+            // Fallback: try to extract from URL path
+            const pathParts = url.split('/');
+            const packageCoversIndex = pathParts.findIndex(part => part === 'package-covers');
+            if (packageCoversIndex !== -1) {
+              return pathParts.slice(packageCoversIndex).join('/').split('?')[0];
+            }
+          } catch (urlError) {
+            logger.warn('[deletePackage] Failed to parse cover image URL:', urlError);
+          }
+          return null;
+        };
+        
+        const imagePath = extractPathFromUrl(packageData.coverImage);
+        if (imagePath) {
+          const { ref, deleteObject } = await import('firebase/storage');
+          const { storage } = await import('./firebase-config');
+          if (storage) {
+            await deleteObject(ref(storage, imagePath));
+            logger.log('[deletePackage] Cover image deleted successfully');
+          }
+        }
+      } catch (imageError) {
+        logger.warn('[deletePackage] Failed to delete cover image (non-critical):', imageError);
+        // Don't fail package deletion if image deletion fails
+      }
+    }
+    
     logger.log('[deletePackage] Package deleted successfully:', packageId);
   } catch (error) {
     logger.error('[deletePackage] Error deleting package:', error);

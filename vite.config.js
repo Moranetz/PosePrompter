@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Use relative paths so the app works when opened directly in browser (file://)
-  base: './',
+  // Use absolute paths for proper module resolution
+  base: '/',
   
   plugins: [
     react({
@@ -66,30 +66,49 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Manual chunk splitting to prevent circular dependency issues
-        manualChunks: {
+        manualChunks: (id) => {
           // Firebase SDK in its own chunk
-          'firebase-vendor': [
-            'firebase/app',
-            'firebase/auth',
-            'firebase/firestore',
-            'firebase/storage',
-            'firebase/analytics',
-          ],
+          if (id.includes('firebase')) {
+            return 'firebase-vendor';
+          }
           // React ecosystem in its own chunk
-          'react-vendor': [
-            'react',
-            'react-dom',
-          ],
+          if (id.includes('react') || id.includes('react-dom')) {
+            return 'react-vendor';
+          }
           // Animation libraries
-          'animation-vendor': [
-            'framer-motion',
-          ],
+          if (id.includes('framer-motion')) {
+            return 'animation-vendor';
+          }
+          // UI libraries
+          if (id.includes('lucide-react')) {
+            return 'ui-vendor';
+          }
+          // Large components get their own chunks
+          if (id.includes('PhotoElementRandomizer')) {
+            return 'photo-randomizer';
+          }
+          if (id.includes('AIImageGenerator')) {
+            return 'ai-generator';
+          }
+          if (id.includes('PackageMarketplace')) {
+            return 'package-marketplace';
+          }
+          // API and utilities
+          if (id.includes('/api/') || id.includes('/utils/')) {
+            return 'api-utils';
+          }
+          // Hooks
+          if (id.includes('/hooks/')) {
+            return 'hooks';
+          }
         },
       },
     },
     // Improve minification
     minify: 'esbuild',
     target: 'es2020',
+    // Increase chunk size warning limit (we're splitting manually)
+    chunkSizeWarningLimit: 1000,
   },
   
   // Dependency pre-bundling optimization

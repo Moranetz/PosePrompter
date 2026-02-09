@@ -23,6 +23,7 @@ export function UserProvider({ children }) {
     // CRITICAL FIX: Set a timeout to prevent infinite loading
     // If onAuthStateChanged doesn't fire within timeout, force loading to false
     timeoutRef.current = setTimeout(() => {
+      // Double-check after timeout to prevent race condition
       if (!authListenerFired.current) {
         logAuthEvent('AUTH_TIMEOUT', { 
           type: 'WARNING', 
@@ -32,9 +33,20 @@ export function UserProvider({ children }) {
         console.warn('[UserContext] Forcing loading=false to prevent infinite spinner');
         
         // Print diagnostic report
-        printDiagnosticReport(auth, null, true);
+        try {
+          printDiagnosticReport(auth, null, true);
+        } catch (error) {
+          console.error('[UserContext] Error in printDiagnosticReport:', error);
+        }
         
-        setLoading(false);
+        // Use functional update to ensure we have latest state
+        setLoading(prev => {
+          // Double-check one more time before updating
+          if (!authListenerFired.current) {
+            return false;
+          }
+          return prev;
+        });
         // Don't set user - let Firebase's current state be the source of truth
         if (auth?.currentUser) {
           logAuthEvent('TIMEOUT_RECOVERY', { type: 'INFO', uid: auth.currentUser.uid });

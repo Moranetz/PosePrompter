@@ -13,6 +13,7 @@ import InstalledPackagesModal from './components/InstalledPackagesModal';
 import FirstTimeExperience from './components/FirstTimeExperience';
 import CopySuccessOverlay from './components/CopySuccessOverlay';
 import PolaroidFrame from './components/PolaroidFrame';
+import { TOUCH_TARGETS, SPACING, TYPOGRAPHY } from './config/uxDesignSystem';
 import NatureFrame from './components/NatureFrame';
 import ClosetFrame from './components/ClosetFrame';
 import AchievementNotification from './components/AchievementNotification';
@@ -50,6 +51,7 @@ import {
   updateEnabledBodyPoseCategories
 } from './utils/personalizationService';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
+import AuthModal from './components/AuthModal';
 
 const ONBOARDING_STORAGE_KEY = 'poseprompt_onboarding_complete';
 
@@ -2793,8 +2795,14 @@ const PhotoElementRandomizer = () => {
   };
 
   const [selections, setSelections] = useState(() => {
-    return getNaturalPoseDefaults(categories);
+    // Start with empty selections - no default prompt
+    return {};
   });
+
+  // Clear any old prompt from localStorage on mount
+  useEffect(() => {
+    localStorage.removeItem('currentPrompt');
+  }, []);
 
   const [lockedCategories, setLockedCategories] = useState({});
   const [includedCategories, setIncludedCategories] = useState(() => {
@@ -2905,6 +2913,7 @@ const PhotoElementRandomizer = () => {
   const [engagementStats, setEngagementStats] = useState(null);
   const [statsModalOpen, setStatsModalOpen] = useState(false);
   const [buyCreditsModalOpen, setBuyCreditsModalOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Listen for body class changes to detect BuyCreditsModal open/close
   useEffect(() => {
@@ -3121,9 +3130,8 @@ const PhotoElementRandomizer = () => {
           setUserHiddenOptions({});
           setUserFavorites({});
           
-          // Set natural pose for new account
-          const naturalPoseDefaults = getNaturalPoseDefaults(categories);
-          setSelections(naturalPoseDefaults);
+          // Start with empty selections for new account - no default prompt
+          setSelections({});
         }
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -3244,20 +3252,28 @@ const PhotoElementRandomizer = () => {
 
   // Memoized prompt generation
   const generatedPrompt = useMemo(() => {
+    // Return empty string if no selections
+    if (!selections || Object.keys(selections).length === 0) {
+      return '';
+    }
     const parts = Object.entries(selections)
       .filter(([category]) => includedCategories[category])
       .map(([category, index]) => {
         const item = mergedCategories[category]?.[index];
         if (!item) return '';
         return typeof item === 'string' ? item : item.prompt;
-      });
-    return parts.join(' ');
+      })
+      .filter(part => part && part.trim()); // Filter out empty parts
+    return parts.length > 0 ? parts.join(' ') : '';
   }, [selections, includedCategories, mergedCategories]);
 
-  // Save prompt to localStorage for Pose Studio
+  // Save prompt to localStorage for Pose Studio (only if prompt is not empty)
   useEffect(() => {
-    if (generatedPrompt) {
+    if (generatedPrompt && generatedPrompt.trim()) {
       localStorage.setItem('currentPrompt', generatedPrompt);
+    } else {
+      // Clear localStorage if prompt is empty
+      localStorage.removeItem('currentPrompt');
     }
   }, [generatedPrompt]);
 
@@ -3635,11 +3651,8 @@ const PhotoElementRandomizer = () => {
   // Trash an option (move to deletedOptions)
   const trashOption = useCallback(async (category, option, filteredIndex, buttonElement) => {
     console.log('[trashOption] Called with:', { category, option, filteredIndex, user: !!user, hasButtonElement: !!buttonElement });
-    
-    if (!user) {
-      alert('Please log in to trash options.');
-      return;
-    }
+
+    if (!requireAuth('trash option')) return;
     
     if (!option) {
       console.error('[trashOption] Option is null or undefined');
@@ -3983,6 +3996,16 @@ const PhotoElementRandomizer = () => {
     }
   }, [user, userSelectedOptions, mergedCategories, categories, saveUserData, selections, activeCategory, sortedCategoryOptions, userFavorites, setEnabledBackgroundEnvironmentCategories, setEnabledFramingCompositionCategories, setEnabledAestheticStyleCategories, setEnabledFaceHeadCategories, setEnabledBodyPoseCategories]);
 
+  // Helper function to check auth before premium actions
+  // Must be defined before functions that use it
+  const requireAuth = useCallback((action) => {
+    if (!user || !user.uid) {
+      setShowAuthModal(true);
+      return false;
+    }
+    return true;
+  }, [user]);
+
   // Add custom option
   const handleAddCustomOption = useCallback((category) => {
     setAddOptionModalOpen(category);
@@ -3990,7 +4013,8 @@ const PhotoElementRandomizer = () => {
   }, []);
 
   const saveCustomOption = useCallback(async (category) => {
-    if (!user || !newOptionText.trim()) return;
+    if (!requireAuth('save custom option')) return;
+    if (!newOptionText.trim()) return;
     
     const customId = `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const newOption = {
@@ -4021,14 +4045,11 @@ const PhotoElementRandomizer = () => {
       setAddOptionModalOpen(category);
       alert('Failed to save custom option. Please try again.');
     }
-  }, [user, newOptionText, newOptionTitle, userCustomOptions, saveUserData]);
+  }, [requireAuth, user, newOptionText, newOptionTitle, userCustomOptions, saveUserData]);
 
   // Save Create Set (custom prompt to category)
   const saveCreateSet = useCallback(async () => {
-    if (!user) {
-      alert('Please log in to create a set.');
-      return;
-    }
+    if (!requireAuth('create set')) return;
     
     if (!createSetFormData.name.trim() || !createSetFormData.promptText.trim() || !createSetFormData.category) {
       alert('Please fill in all fields: name, prompt text, and category.');
@@ -4068,7 +4089,7 @@ const PhotoElementRandomizer = () => {
       setCreateSetModalOpen(true);
       alert('Failed to save. Please try again.');
     }
-  }, [user, createSetFormData, userCustomOptions, saveUserData, categoryDisplayNames]);
+  }, [requireAuth, user, createSetFormData, userCustomOptions, saveUserData, categoryDisplayNames]);
 
   // Delete a custom option
   const deleteCustomOption = useCallback(async (category, optionId) => {
@@ -4115,10 +4136,7 @@ const PhotoElementRandomizer = () => {
 
   // Toggle favorite option
   const toggleFavorite = useCallback(async (category, optionId) => {
-    if (!user) {
-      alert('Please log in to favorite options.');
-      return;
-    }
+    if (!requireAuth('favorite')) return;
     
     const currentFavorites = userFavorites[category] || [];
     const isFavorite = currentFavorites.includes(optionId);
@@ -4144,7 +4162,7 @@ const PhotoElementRandomizer = () => {
       setUserFavorites(userFavorites);
       alert('Failed to save favorite. Please try again.');
     }
-  }, [user, userFavorites, saveUserData]);
+  }, [requireAuth, user, userFavorites, saveUserData]);
 
   // Reset category to defaults
   const resetCategoryToDefaults = useCallback(async (category) => {
@@ -4229,7 +4247,8 @@ const PhotoElementRandomizer = () => {
 
   // Save current setup
   const saveCurrentSetup = useCallback(async () => {
-    if (!user || !user.uid || !saveFormData.name.trim()) return;
+    if (!requireAuth('save')) return;
+    if (!saveFormData.name.trim()) return;
     if (!db) {
       console.error('Firestore database is not initialized');
       alert('Database is not available. Please refresh the page.');
@@ -4266,7 +4285,7 @@ const PhotoElementRandomizer = () => {
       console.error('Error saving setup:', error);
       alert('Failed to save setup. Please try again.');
     }
-  }, [user, saveFormData, selections, lockedCategories, includedCategories, editingSet, savedSetsSidebarOpen, loadSavedSets]);
+  }, [requireAuth, user, saveFormData, selections, lockedCategories, includedCategories, editingSet, savedSetsSidebarOpen, loadSavedSets]);
 
   // Load a saved setup
   const loadSavedSetup = useCallback((savedSet) => {
@@ -4645,47 +4664,8 @@ const PhotoElementRandomizer = () => {
     return displayIndex;
   }, [selections, activeCategory, mergedCategories, sortedCategoryOptions, currentCategoryOptions]);
 
-  // CRITICAL FIX: Guard against missing user/uid - show loading instead of blank screen
-  // This can happen during auth state transitions (e.g., after Google redirect)
-  if (!user || !user?.uid) {
-    console.warn('[PhotoElementRandomizer] User not available, showing loading state');
-    return (
-      <div 
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(180deg, #0a0a0f 0%, #12121a 100%)',
-          gap: '16px'
-        }}
-      >
-        <div 
-          style={{
-            width: '48px',
-            height: '48px',
-            border: '3px solid rgba(139, 92, 246, 0.2)',
-            borderTopColor: '#8b5cf6',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
-          }}
-        />
-        <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '15px', margin: 0 }}>
-          Loading your workspace...
-        </p>
-        <style>{`
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
-      </div>
-    );
-  }
+  // Allow guest access - users can try the product without signing in
+  // Auth is only required for saving prompts, custom options, and premium features
 
   // Show polaroid only when viewing Framing & Composition (index 1) or Aesthetic & Style (index 2) groups
   const shouldShowPolaroid = expandedGroup === 1 || expandedGroup === 2;
@@ -4708,7 +4688,11 @@ const PhotoElementRandomizer = () => {
         onPrevOption={navigatePrevOption}
         onRandomize={handleRandomizeCurrent}
         onRandomizeAll={randomizeAll}
-        onSave={() => setSaveModalOpen(true)}
+        onSave={() => {
+          if (requireAuth('save')) {
+            setSaveModalOpen(true);
+          }
+        }}
         onToggleLock={() => toggleLock(activeCategory)}
         onToggleInclude={() => toggleInclude(activeCategory)}
         onToggleFavorite={() => {
@@ -4852,7 +4836,7 @@ const PhotoElementRandomizer = () => {
               {/* Actions Sidebar - Clean & Minimal */}
               <div className="actions-sidebar">
             {/* Primary Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {/* I'm Feeling Lucky - The main action */}
               <button
                 onClick={randomizeAll}
@@ -4862,7 +4846,8 @@ const PhotoElementRandomizer = () => {
                   color: '#f4f4f5',
                   border: '1px solid rgba(255, 255, 255, 0.08)',
                   borderRadius: '6px',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
+                  minHeight: '44px',
                   fontSize: '13px',
                   fontWeight: '500',
                   letterSpacing: '-0.01em',
@@ -4871,7 +4856,8 @@ const PhotoElementRandomizer = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '6px',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxSizing: 'border-box'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
@@ -4896,23 +4882,25 @@ const PhotoElementRandomizer = () => {
               margin: '6px 0' 
             }} />
 
-            {/* Secondary Actions */}
-            {user && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <button
-                  onClick={() => {
+            {/* Secondary Actions - Visible to all, auth required to use */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button
+                onClick={() => {
+                  if (requireAuth('save')) {
                     setEditingSet(null);
                     setSaveFormData({ name: '', description: '', tags: '', isPublic: false });
                     setSaveModalOpen(true);
-                  }}
+                  }
+                }}
                   style={{
                     width: '100%',
                     background: 'transparent',
                     color: '#a1a1aa',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
                     borderRadius: '6px',
-                    padding: '8px 12px',
-                    fontSize: '12px',
+                    padding: '10px 12px',
+                    minHeight: '44px',
+                    fontSize: '13px',
                     fontWeight: '400',
                     letterSpacing: '-0.01em',
                     cursor: 'pointer',
@@ -4933,20 +4921,25 @@ const PhotoElementRandomizer = () => {
                   aria-label="Save current setup"
                   title="Save current setup"
                 >
-                  <Save size={13} />
+                  <Save size={14} />
                   Save Setup
                 </button>
 
                 <button
-                  onClick={() => setSavedSetsSidebarOpen(true)}
+                  onClick={() => {
+                    if (requireAuth('view saved sets')) {
+                      setSavedSetsSidebarOpen(true);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     background: 'transparent',
                     color: '#a1a1aa',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
                     borderRadius: '6px',
-                    padding: '8px 12px',
-                    fontSize: '12px',
+                    padding: '10px 12px',
+                    minHeight: '44px',
+                    fontSize: '13px',
                     fontWeight: '400',
                     letterSpacing: '-0.01em',
                     cursor: 'pointer',
@@ -4967,17 +4960,19 @@ const PhotoElementRandomizer = () => {
                   aria-label="My saved sets"
                   title="My saved sets"
                 >
-                  <FolderOpen size={13} />
+                  <FolderOpen size={14} />
                   My Sets
                 </button>
 
                 <button
                   onClick={() => {
-                    setSelectedFavorites(new Set());
-                    setUnfavoritedInSession(new Set());
-                    // Capture snapshot of current favorites
-                    favoritesSnapshotRef.current = getAllFavoritePrompts();
-                    setFavoritesSidebarOpen(true);
+                    if (requireAuth('view favorites')) {
+                      setSelectedFavorites(new Set());
+                      setUnfavoritedInSession(new Set());
+                      // Capture snapshot of current favorites
+                      favoritesSnapshotRef.current = getAllFavoritePrompts();
+                      setFavoritesSidebarOpen(true);
+                    }
                   }}
                   style={{
                     width: '100%',
@@ -4985,8 +4980,9 @@ const PhotoElementRandomizer = () => {
                     color: '#a1a1aa',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
                     borderRadius: '6px',
-                    padding: '8px 12px',
-                    fontSize: '12px',
+                    padding: '10px 12px',
+                    minHeight: '44px',
+                    fontSize: '13px',
                     fontWeight: '400',
                     letterSpacing: '-0.01em',
                     cursor: 'pointer',
@@ -5007,14 +5003,16 @@ const PhotoElementRandomizer = () => {
                   aria-label="My favorite prompts"
                   title="View all favorite prompts and create sets from them"
                 >
-                  <Star size={13} />
+                  <Star size={14} />
                   My Favorites
                 </button>
 
                 <button
                   onClick={() => {
-                    setCreateSetFormData({ name: '', promptText: '', category: '' });
-                    setCreateSetModalOpen(true);
+                    if (requireAuth('create set')) {
+                      setCreateSetFormData({ name: '', promptText: '', category: '' });
+                      setCreateSetModalOpen(true);
+                    }
                   }}
                   style={{
                     width: '100%',
@@ -5022,8 +5020,9 @@ const PhotoElementRandomizer = () => {
                     color: '#a1a1aa',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
                     borderRadius: '6px',
-                    padding: '8px 12px',
-                    fontSize: '12px',
+                    padding: '10px 12px',
+                    minHeight: '44px',
+                    fontSize: '13px',
                     fontWeight: '400',
                     letterSpacing: '-0.01em',
                     cursor: 'pointer',
@@ -5044,7 +5043,7 @@ const PhotoElementRandomizer = () => {
                   aria-label="Create Set"
                   title="Create Set - Add custom prompt to category"
                 >
-                  <Plus size={13} />
+                  <Plus size={14} />
                   Create Set
                 </button>
 
@@ -5052,7 +5051,11 @@ const PhotoElementRandomizer = () => {
                 {__ENABLE_PACKAGES__ && (
                   <button
                     data-packages-button
-                    onClick={() => setInstalledPackagesModalOpen(true)}
+                    onClick={() => {
+                      if (requireAuth('view packages')) {
+                        setInstalledPackagesModalOpen(true);
+                      }
+                    }}
                     style={{
                       width: '100%',
                       background: 'transparent',
@@ -5060,7 +5063,8 @@ const PhotoElementRandomizer = () => {
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       borderRadius: '8px',
                       padding: '10px 12px',
-                      fontSize: '13px',
+                      minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
+                      fontSize: TYPOGRAPHY.BASE,
                       fontWeight: '500',
                       cursor: 'pointer',
                       display: 'flex',
@@ -5086,7 +5090,11 @@ const PhotoElementRandomizer = () => {
                 )}
 
                 <button
-                  onClick={() => setStatsModalOpen(true)}
+                  onClick={() => {
+                    if (requireAuth('view stats')) {
+                      setStatsModalOpen(true);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     background: 'transparent',
@@ -5094,6 +5102,7 @@ const PhotoElementRandomizer = () => {
                     border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '8px',
                     padding: '10px 12px',
+                    minHeight: '44px',
                     fontSize: '13px',
                     fontWeight: '500',
                     cursor: 'pointer',
@@ -5118,7 +5127,6 @@ const PhotoElementRandomizer = () => {
                   Stats
                 </button>
               </div>
-            )}
           </div>
         </div>
           </div>
@@ -5426,8 +5434,8 @@ const PhotoElementRandomizer = () => {
         onClose={() => setCurrentAchievement(null)}
       />
       
-      {/* Engagement Stats Modal */}
-      {user && (
+      {/* Engagement Stats Modal - Visible to all, auth required to use */}
+      {statsModalOpen && user && (
         <EngagementStats 
           userId={user.uid}
           isOpen={statsModalOpen}
@@ -7132,6 +7140,13 @@ const PhotoElementRandomizer = () => {
           onComplete={() => setTrashAnimation(null)}
         />
       )}
+
+      {/* Auth Modal - shown when guest users try to use premium features */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onAuthSuccess={() => setShowAuthModal(false)}
+      />
     </>
   );
 };

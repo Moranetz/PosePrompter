@@ -30,55 +30,37 @@ export const generateAIImage = async ({ facePhotoUrl, prompt }) => {
       prompt: prompt.substring(0, 100) + '...'
     });
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    // Use centralized API client
+    const apiClient = (await import('../api/client.js')).default;
     
-    // Get auth token
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (!user) {
-      return {
-        success: false,
-        error: 'User not authenticated'
-      };
-    }
-    const token = await user.getIdToken();
-    
-    // Call backend API with face photo
-    const response = await fetch(`${API_BASE_URL}/api/generate-image`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+    // Call backend API with face photo using centralized client
+    const response = await apiClient.post('/generate-image', {
+      provider: 'flux', // Use Flux for face photo generation
+      prompt: prompt,
+      facePhotoUrl: facePhotoUrl,
+      options: {
+        width: 1024,
+        height: 1024,
+        num_outputs: 1,
       },
-      body: JSON.stringify({
-        provider: 'flux', // Use Flux for face photo generation
-        prompt: prompt,
-        facePhotoUrl: facePhotoUrl,
-        options: {
-          width: 1024,
-          height: 1024,
-          num_outputs: 1,
-        },
-      }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+    // Check if response has data property (from axios/fetch wrapper)
+    let data;
+    if (response.data) {
+      data = response.data;
+    } else {
+      // Fallback: try to parse as JSON
+      data = await response.json();
+    }
+
+    if (!data || !data.imageUrl) {
+      const errorMessage = data?.message || data?.error || `HTTP ${response.status}: ${response.statusText}` || 'No image URL returned from server';
       
       logger.error('[aiImageService] Generation failed:', errorMessage);
       return {
         success: false,
         error: errorMessage
-      };
-    }
-
-    const data = await response.json();
-    
-    if (!data.imageUrl) {
-      return {
-        success: false,
-        error: 'No image URL returned from server'
       };
     }
 

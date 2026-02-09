@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Check, Heart, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { logger } from '../../utils/logger.js';
+import { TOUCH_TARGETS, SPACING, TYPOGRAPHY, PATTERNS } from '../../config/uxDesignSystem';
 
 const WordButton = ({ 
   text, 
@@ -22,7 +24,8 @@ const WordButton = ({
   const trashButtonRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const handleClick = (e) => {
+  // Memoize click handler to prevent unnecessary re-renders
+  const handleClick = useCallback((e) => {
     if (isDisabled) return;
     
     // Create ripple effect
@@ -32,14 +35,15 @@ const WordButton = ({
     setRipple({ x, y });
     setTimeout(() => setRipple(null), 300);
     
-    onClick && onClick();
-  };
+    onClick?.();
+  }, [isDisabled, onClick]);
 
-  const baseStyle = {
-    minHeight: '40px',
-    padding: '10px 18px',
-    borderRadius: '6px',
-    fontSize: '13px',
+  // Memoize styles to avoid recreation on every render
+  const baseStyle = useMemo(() => ({
+    minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
+    padding: `${SPACING.MD} ${SPACING.XL}`,
+    borderRadius: PATTERNS.RADIUS.MD,
+    fontSize: TYPOGRAPHY.SM,
     fontWeight: isSelected ? '500' : '400',
     letterSpacing: '-0.01em',
     border: isSelected 
@@ -60,14 +64,15 @@ const WordButton = ({
     alignItems: 'center',
     gap: '8px',
     whiteSpace: 'nowrap',
-    transform: 'translateY(0) scale(1)'
-  };
+    transform: 'translateY(0) scale(1)',
+    outline: 'none'
+  }), [isSelected, isDisabled]);
 
-  const hoverStyle = !isDisabled ? {
+  const hoverStyle = useMemo(() => !isDisabled ? {
     transform: 'translateY(-2px) scale(1.02)',
     boxShadow: '0 6px 20px rgba(0, 0, 0, 0.4)',
     background: isSelected ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)'
-  } : {};
+  } : {}, [isDisabled, isSelected]);
 
   return (
     <motion.button
@@ -97,6 +102,13 @@ const WordButton = ({
         ease: [0.4, 0, 0.2, 1]
       }}
       aria-label={text}
+      aria-pressed={isSelected}
+      onFocus={(e) => {
+        e.currentTarget.style.boxShadow = '0 0 0 2px rgba(245, 158, 11, 0.4)';
+      }}
+      onBlur={(e) => {
+        e.currentTarget.style.boxShadow = 'none';
+      }}
     >
       {/* Ripple Effect */}
       {ripple && (
@@ -139,7 +151,7 @@ const WordButton = ({
             padding: '2px 5px',
             background: 'rgba(99, 102, 241, 0.15)',
             border: '1px solid rgba(99, 102, 241, 0.25)',
-            borderRadius: '3px',
+            borderRadius: PATTERNS.RADIUS.SM,
             color: '#818cf8',
             fontWeight: '500',
             textTransform: 'uppercase',
@@ -161,12 +173,12 @@ const WordButton = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              console.log('[WordButton] Trash button clicked, calling onTrash');
+              logger.log('[WordButton] Trash button clicked, calling onTrash');
               if (onTrash && buttonRef.current) {
                 // Pass the entire button element, not just the trash icon
                 onTrash(buttonRef.current);
               } else {
-                console.error('[WordButton] onTrash is not a function or button ref missing:', typeof onTrash);
+                logger.error('[WordButton] onTrash is not a function or button ref missing:', typeof onTrash);
               }
             }}
             onMouseDown={(e) => {
@@ -187,7 +199,9 @@ const WordButton = ({
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              padding: '4px',
+              padding: '6px',
+              minWidth: `${TOUCH_TARGETS.MEDIUM}px`,
+              minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -203,6 +217,7 @@ const WordButton = ({
               e.currentTarget.style.color = '#71717a';
             }}
             title="Trash this option"
+            aria-label="Trash this option"
           >
             <Trash2 size={14} />
           </motion.button>
@@ -226,7 +241,9 @@ const WordButton = ({
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              padding: '4px',
+              padding: '6px',
+              minWidth: `${TOUCH_TARGETS.MEDIUM}px`,
+              minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -236,6 +253,8 @@ const WordButton = ({
               outline: 'none'
             }}
             title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            aria-pressed={isFavorite}
           >
             <Heart 
               size={14} 
@@ -250,5 +269,6 @@ const WordButton = ({
   );
 };
 
-export default WordButton;
+// Memoize component to prevent unnecessary re-renders
+export default React.memo(WordButton);
 

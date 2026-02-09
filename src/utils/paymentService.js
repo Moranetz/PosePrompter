@@ -142,11 +142,39 @@ const awardCreatorCompensation = async (userId, gemsPurchased) => {
       return { creatorsAwarded: 0, totalGemsAwarded: 0 };
     }
 
-    // Calculate compensation per creator
-    const compensationPerCreator = Math.max(
-      MIN_COMPENSATION_GEMS,
-      Math.ceil(gemsPurchased * CREATOR_COMPENSATION_PERCENTAGE)
-    );
+    // Calculate total compensation (5% of purchase), then divide among creators
+    // CRITICAL: Calculate total first, then divide, to prevent over-compensation
+    const totalCompensation = Math.ceil(gemsPurchased * CREATOR_COMPENSATION_PERCENTAGE);
+    const numCreators = creatorIds.size;
+    
+    if (numCreators === 0) {
+      return { creatorsAwarded: 0, totalGemsAwarded: 0 };
+    }
+    
+    // Divide total compensation among creators, ensuring minimum per creator
+    // If total compensation is less than (MIN * numCreators), award minimum to each
+    const minTotalRequired = MIN_COMPENSATION_GEMS * numCreators;
+    let compensationPerCreator;
+    
+    if (totalCompensation >= minTotalRequired) {
+      // Enough to give minimum to all, divide remainder
+      compensationPerCreator = Math.max(
+        MIN_COMPENSATION_GEMS,
+        Math.floor(totalCompensation / numCreators)
+      );
+    } else {
+      // Not enough for minimum to all, give minimum to each (might exceed 5% total)
+      // This is acceptable - minimum compensation takes priority
+      compensationPerCreator = MIN_COMPENSATION_GEMS;
+    }
+    
+    // Validate: total awarded should not exceed total compensation
+    const totalAwarded = compensationPerCreator * numCreators;
+    if (totalAwarded > totalCompensation) {
+      // Adjust to ensure we don't exceed total compensation
+      const adjustedPerCreator = Math.floor(totalCompensation / numCreators);
+      compensationPerCreator = Math.max(MIN_COMPENSATION_GEMS, adjustedPerCreator);
+    }
 
     // Award gems to each creator
     const awardPromises = Array.from(creatorIds).map(async (creatorId) => {

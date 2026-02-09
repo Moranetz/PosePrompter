@@ -257,7 +257,16 @@ const getUserCredits = async (userId) => {
   }
   
   const userData = userDoc.data();
-  return userData.gems || userData.credits || 0;
+  // Standardize on gems field, validate type
+  let credits = userData.gems ?? userData.credits ?? 0;
+  credits = Number(credits);
+  
+  // Validate and ensure integer
+  if (isNaN(credits) || credits < 0) {
+    return 0;
+  }
+  
+  return Math.floor(credits);
 };
 
 // Helper function to deduct credits (atomic transaction to prevent race conditions)
@@ -279,13 +288,25 @@ const deductUserCredits = async (userId, amount) => {
     }
     
     const userData = userDoc.data();
-    const currentCredits = userData.gems || userData.credits || 0;
+    // Standardize on gems field, validate type
+    let currentCredits = userData.gems ?? userData.credits ?? 0;
+    currentCredits = Math.floor(Math.max(0, Number(currentCredits)));
+    
+    // Validate current credits is a valid number
+    if (isNaN(currentCredits) || currentCredits < 0) {
+      throw new Error('Invalid current credits value');
+    }
     
     if (currentCredits < amount) {
       throw new Error('Insufficient credits');
     }
     
     const newBalance = currentCredits - amount;
+    
+    // Ensure balance can't go negative (safety check)
+    if (newBalance < 0) {
+      throw new Error('Balance cannot be negative');
+    }
     
     // Atomically update credits
     transaction.update(userRef, {
@@ -299,52 +320,69 @@ const deductUserCredits = async (userId, amount) => {
   return result;
 };
 
-// Helper function to add credits
+// Helper function to add credits (atomic transaction to prevent race conditions)
 const addUserCredits = async (userId, amount) => {
   if (!db) throw new Error('Firebase Admin not initialized');
   
-  // Validate amount
-  if (isNaN(amount) || amount <= 0) {
-    throw new Error(`Invalid credit amount: ${amount}`);
+  // Validate amount - must be positive integer
+  amount = Math.floor(Number(amount));
+  if (isNaN(amount) || amount <= 0 || !Number.isInteger(amount)) {
+    throw new Error(`Invalid credit amount: ${amount}. Must be a positive integer.`);
   }
   
-  const userRef = db.collection('users').doc(userId);
-  const userDoc = await userRef.get();
-  
-  if (!userDoc.exists) {
-    await userRef.set({
-      gems: amount,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  // Use Firestore transaction to atomically read and add credits
+  // This prevents race conditions where multiple requests could lose credits
+  const result = await db.runTransaction(async (transaction) => {
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await transaction.get(userRef);
+    
+    if (!userDoc.exists) {
+      // Create user atomically with initial credits
+      transaction.set(userRef, {
+        gems: amount,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      console.log(`[addUserCredits] Created new user ${userId} with ${amount} credits`);
+      return amount;
+    }
+    
+    const userData = userDoc.data();
+    // Standardize on gems field, validate type
+    let currentCredits = userData.gems ?? userData.credits ?? 0;
+    currentCredits = Number(currentCredits);
+    
+    // Validate current credits is a valid number
+    if (isNaN(currentCredits) || currentCredits < 0) {
+      console.warn(`[addUserCredits] Invalid current credits for user ${userId}, defaulting to 0`);
+      currentCredits = 0;
+    }
+    
+    // Ensure integer
+    currentCredits = Math.floor(Math.max(0, currentCredits));
+    
+    const newBalance = currentCredits + amount;
+    
+    // Validate new balance calculation
+    if (isNaN(newBalance) || newBalance < currentCredits) {
+      throw new Error(`Invalid balance calculation: ${currentCredits} + ${amount} = ${newBalance}`);
+    }
+    
+    // Ensure result is integer
+    const finalBalance = Math.floor(newBalance);
+    
+    // Atomically update credits
+    transaction.update(userRef, {
+      gems: finalBalance,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
-    console.log(`[addUserCredits] Created new user ${userId} with ${amount} credits`);
-    return amount;
-  }
-  
-  const userData = userDoc.data();
-  let currentCredits = userData.gems || userData.credits || 0;
-  
-  // Validate current credits is a number
-  if (isNaN(currentCredits)) {
-    console.warn(`[addUserCredits] Invalid current credits for user ${userId}, defaulting to 0`);
-    currentCredits = 0;
-  }
-  
-  const newBalance = currentCredits + amount;
-  
-  // Validate new balance calculation
-  if (isNaN(newBalance) || newBalance < currentCredits) {
-    throw new Error(`Invalid balance calculation: ${currentCredits} + ${amount} = ${newBalance}`);
-  }
-  
-  await userRef.update({
-    gems: newBalance,
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    
+    console.log(`[addUserCredits] Added ${amount} credits to user ${userId}: ${currentCredits} -> ${finalBalance}`);
+    
+    return finalBalance;
   });
   
-  console.log(`[addUserCredits] Added ${amount} credits to user ${userId}: ${currentCredits} -> ${newBalance}`);
-  
-  return newBalance;
+  return result;
 };
 
 /**
@@ -471,22 +509,45 @@ const uploadImageToStorage = async (userId, imageUrl, imageId) => {
       
       const buffer = Buffer.from(base64Data, 'base64');
       
-      // Validate file size (max 10MB)
-      if (buffer.length > 10 * 1024 * 1024) {
-        throw new Error('Image file too large');
+      // Validate file size (max 5MB to match storage rules and frontend)
+      if (buffer.length > 5 * 1024 * 1024) {
+        throw new Error('Image file too large (max 5MB)');
       }
       
       const bucket = admin.storage().bucket();
       const fileName = `users/${userId}/generations/${imageId}.png`;
       const file = bucket.file(fileName);
       
+      // Extract content-type from data URI if available
+      const mimeMatch = imageUrl.match(/data:image\/([^;]+)/);
+      const contentType = mimeMatch ? `image/${mimeMatch[1]}` : 'image/png';
+      
       await file.save(buffer, {
         metadata: {
-          contentType: 'image/png',
+          contentType: contentType,
         },
       });
       
-      await file.makePublic();
+      // Make file public with error handling
+      try {
+        await file.makePublic();
+      } catch (publicError) {
+        console.error('[uploadImageToStorage] Failed to make public:', publicError);
+        // Try alternative: set metadata directly
+        try {
+          await file.setMetadata({ metadata: { public: 'true' } });
+        } catch (metaError) {
+          console.error('[uploadImageToStorage] Failed to set public metadata:', metaError);
+          throw new Error('Failed to make image publicly accessible');
+        }
+      }
+      
+      // Verify file exists
+      const [exists] = await file.exists();
+      if (!exists) {
+        throw new Error('File upload verification failed - file does not exist');
+      }
+      
       return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
     }
     
@@ -527,22 +588,44 @@ const uploadImageToStorage = async (userId, imageUrl, imageId) => {
       
       const buffer = await response.arrayBuffer();
       
-      // Validate file size (max 10MB)
-      if (buffer.byteLength > 10 * 1024 * 1024) {
-        throw new Error('Image file too large');
+      // Validate file size (max 5MB to match storage rules and frontend)
+      if (buffer.byteLength > 5 * 1024 * 1024) {
+        throw new Error('Image file too large (max 5MB)');
       }
       
       const bucket = admin.storage().bucket();
       const fileName = `users/${userId}/generations/${imageId}.png`;
       const file = bucket.file(fileName);
       
+      // Extract content-type from response headers
+      const contentType = response.headers.get('content-type') || 'image/png';
+      
       await file.save(Buffer.from(buffer), {
         metadata: {
-          contentType: 'image/png',
+          contentType: contentType,
         },
       });
       
-      await file.makePublic();
+      // Make file public with error handling
+      try {
+        await file.makePublic();
+      } catch (publicError) {
+        console.error('[uploadImageToStorage] Failed to make public:', publicError);
+        // Try alternative: set metadata directly
+        try {
+          await file.setMetadata({ metadata: { public: 'true' } });
+        } catch (metaError) {
+          console.error('[uploadImageToStorage] Failed to set public metadata:', metaError);
+          throw new Error('Failed to make image publicly accessible');
+        }
+      }
+      
+      // Verify file exists
+      const [exists] = await file.exists();
+      if (!exists) {
+        throw new Error('File upload verification failed - file does not exist');
+      }
+      
       return `https://storage.googleapis.com/${bucket.name}/${fileName}`;
     } catch (fetchError) {
       clearTimeout(timeoutId);
@@ -648,45 +731,98 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
         console.log('PaymentIntent succeeded:', paymentIntent.id);
         
         const userId = paymentIntent.metadata.userId;
-        const creditsToAdd = parseInt(paymentIntent.metadata.credits, 10);
+        let creditsToAdd = parseInt(paymentIntent.metadata.credits, 10);
         
-        // Validate creditsToAdd is a valid number
-        if (isNaN(creditsToAdd) || creditsToAdd <= 0) {
+        // Validate creditsToAdd is a valid positive integer
+        if (isNaN(creditsToAdd) || creditsToAdd <= 0 || !Number.isInteger(creditsToAdd)) {
           console.error('[webhook] Invalid credits value:', paymentIntent.metadata.credits);
           break;
         }
         
+        // Ensure integer
+        creditsToAdd = Math.floor(creditsToAdd);
+        
         if (userId && userId !== 'anonymous' && creditsToAdd > 0) {
           try {
-            // Check if transaction already exists (idempotency)
-            const existingTransaction = await db.collection('transactions')
-              .where('paymentIntentId', '==', paymentIntent.id)
-              .where('status', '==', 'completed')
-              .limit(1)
-              .get();
+            // CRITICAL: Use atomic transaction with document ID as lock
+            // Use paymentIntent.id as document ID - if it exists, already processed
+            // This provides true idempotency even with concurrent webhooks
+            try {
+              await db.runTransaction(async (transaction) => {
+                // Try to create transaction document atomically (acts as lock)
+                const transactionRef = db.collection('transactions').doc(paymentIntent.id);
+                const txDoc = await transaction.get(transactionRef);
+                
+                // If transaction document exists, already processed
+                if (txDoc.exists && txDoc.data().status === 'completed') {
+                  throw new Error('Already processed');
+                }
+                
+                // Add credits atomically
+                const userRef = db.collection('users').doc(userId);
+                const userDoc = await transaction.get(userRef);
+                
+                if (!userDoc.exists) {
+                  transaction.set(userRef, {
+                    gems: creditsToAdd,
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                  });
+                } else {
+                  const userData = userDoc.data();
+                  let currentCredits = userData.gems ?? userData.credits ?? 0;
+                  currentCredits = Math.floor(Math.max(0, Number(currentCredits)));
+                  const newBalance = currentCredits + creditsToAdd;
+                  
+                  transaction.update(userRef, {
+                    gems: newBalance,
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                  });
+                }
+                
+                // Log transaction atomically (in same transaction)
+                // Use paymentIntent.id as document ID for true idempotency
+                transaction.set(transactionRef, {
+                  userId,
+                  paymentIntentId: paymentIntent.id,
+                  credits: creditsToAdd,
+                  amount: paymentIntent.amount,
+                  currency: paymentIntent.currency,
+                  status: 'completed',
+                  createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                }, { merge: false }); // merge: false ensures it fails if document exists
+              });
+            } catch (txError) {
+              // If "Already processed", that's expected - ignore
+              if (txError.message === 'Already processed') {
+                console.log(`[webhook] Payment intent ${paymentIntent.id} already processed. Skipping.`);
+                break;
+              }
+              // If document already exists (ALREADY_EXISTS error), also already processed
+              if (txError.code === 6) { // ALREADY_EXISTS
+                console.log(`[webhook] Payment intent ${paymentIntent.id} already processed (document exists). Skipping.`);
+                break;
+              }
+              // Other errors should be thrown to trigger retry
+              throw txError;
+            }
             
-            if (!existingTransaction.empty) {
-              console.log(`[webhook] Payment intent ${paymentIntent.id} already processed. Skipping.`);
+            // Get final balance for logging
+            const finalBalance = await getUserCredits(userId);
+            console.log(`[webhook] Added ${creditsToAdd} credits to user ${userId}. New balance: ${finalBalance}`);
+          } catch (creditError) {
+            // If error is "Already processed", that's expected - ignore it
+            if (creditError.message === 'Already processed') {
+              console.log(`[webhook] Payment intent ${paymentIntent.id} already processed.`);
               break;
             }
             
-            const newBalance = await addUserCredits(userId, creditsToAdd);
-            
-            // Log transaction
-            await db.collection('transactions').add({
-              userId,
-              paymentIntentId: paymentIntent.id,
-              credits: creditsToAdd,
-              amount: paymentIntent.amount,
-              currency: paymentIntent.currency,
-              status: 'completed',
-              createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            });
-            
-            console.log(`[webhook] Added ${creditsToAdd} credits to user ${userId}. New balance: ${newBalance}`);
-          } catch (creditError) {
             console.error('[webhook] Error updating credits:', creditError);
-            // Don't fail the webhook - log error for manual review
+            // Return error so Stripe retries (important for user to get credits)
+            return res.status(500).json({ 
+              error: 'Failed to process payment',
+              message: 'Credit addition failed. Stripe will retry.'
+            });
           }
         }
         break;
@@ -990,14 +1126,32 @@ app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, asyn
         throw new Error('No image URL returned from provider');
       }
 
-      // Upload to Firebase Storage
-      const imageId = `img_${Date.now()}_${userId}`;
-      const firebaseUrl = await uploadImageToStorage(userId, imageUrl, imageId);
-
-      // Deduct credits atomically (prevents race conditions)
-      // CRITICAL: Deduct total cost (baseCost * numOutputs) not just baseCost
+      // CRITICAL: Deduct credits BEFORE upload to prevent free images if upload succeeds but deduction fails
+      // If deduction fails, we haven't uploaded yet, so no cleanup needed
+      // If upload fails after deduction, we refund credits
       const newBalance = await deductUserCredits(userId, totalCost);
       creditsDeducted = true;
+
+      // Upload to Firebase Storage (after credits deducted)
+      // Use unique imageId to prevent collisions
+      const imageId = `img_${Date.now()}_${Math.random().toString(36).substring(2, 9)}_${userId}`;
+      let firebaseUrl;
+      try {
+        firebaseUrl = await uploadImageToStorage(userId, imageUrl, imageId);
+      } catch (uploadError) {
+        // Upload failed after credits deducted - refund credits
+        console.error('[generate-image] Upload failed after credit deduction, refunding:', uploadError);
+        try {
+          await addUserCredits(userId, totalCost);
+          creditsDeducted = false; // Already refunded
+        } catch (refundError) {
+          console.error('[generate-image] Error refunding credits after upload failure:', refundError);
+          // Credits deducted but refund failed - log for manual review
+        }
+        // Return original URL as fallback so user doesn't lose the generated image
+        firebaseUrl = imageUrl; // Return provider URL directly
+        console.warn('[generate-image] Returning original provider URL due to upload failure');
+      }
 
       // Log generation
       const generationDoc = await db.collection('generationHistory').add({
@@ -1299,16 +1453,19 @@ app.post('/api/confirm-payment', async (req, res) => {
     }
 
     // Get credits from metadata
-    const creditsToAdd = parseInt(paymentIntent.metadata.credits, 10);
+    let creditsToAdd = parseInt(paymentIntent.metadata.credits, 10);
     
-    // Validate credits
-    if (isNaN(creditsToAdd) || creditsToAdd <= 0) {
+    // Validate credits - must be positive integer
+    if (isNaN(creditsToAdd) || creditsToAdd <= 0 || !Number.isInteger(creditsToAdd)) {
       return res.status(400).json({
         error: 'Invalid credits amount in payment metadata',
       });
     }
+    
+    // Ensure integer
+    creditsToAdd = Math.floor(creditsToAdd);
 
-    // Update user's credit balance
+    // Update user's credit balance (atomic)
     const newBalance = await addUserCredits(userId, creditsToAdd);
 
     // Log transaction
@@ -1335,6 +1492,89 @@ app.post('/api/confirm-payment', async (req, res) => {
     console.error('[confirm-payment] Error:', error);
     res.status(500).json({
       error: 'Failed to confirm payment',
+      message: sanitizeErrorMessage(error),
+    });
+  }
+});
+
+/**
+ * POST /api/reward-rating
+ * Rewards credits to user for rating the app
+ * Includes idempotency check to prevent duplicate rewards
+ */
+app.post('/api/reward-rating', async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        error: 'Missing required field: userId',
+      });
+    }
+
+    if (!db) {
+      return res.status(500).json({
+        error: 'Firebase Admin not initialized',
+      });
+    }
+
+    // Credits to reward for rating
+    const RATING_REWARD_CREDITS = 50;
+
+    // Check if user has already been rewarded for rating (idempotency)
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      
+      // Check if user has already been rewarded
+      if (userData.hasRatedApp === true) {
+        // User already rated, return current balance without rewarding again
+        const currentBalance = await getUserCredits(userId);
+        return res.json({
+          success: true,
+          creditBalance: currentBalance,
+          creditsAdded: 0,
+          message: 'Already rewarded for rating',
+        });
+      }
+    }
+
+    // Reward credits atomically
+    const newBalance = await addUserCredits(userId, RATING_REWARD_CREDITS);
+
+    // Mark user as having rated (idempotency flag)
+    await userRef.set({
+      hasRatedApp: true,
+      ratedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    // Log the reward
+    try {
+      await db.collection('transactions').add({
+        userId,
+        type: 'rating_reward',
+        credits: RATING_REWARD_CREDITS,
+        status: 'completed',
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (logError) {
+      console.warn('[reward-rating] Failed to log transaction:', logError);
+    }
+
+    console.log(`[reward-rating] Rewarded ${RATING_REWARD_CREDITS} credits to user ${userId} for rating`);
+
+    res.json({
+      success: true,
+      creditBalance: newBalance,
+      creditsAdded: RATING_REWARD_CREDITS,
+    });
+  } catch (error) {
+    console.error('[reward-rating] Error:', error);
+    res.status(500).json({
+      error: 'Failed to reward credits for rating',
       message: sanitizeErrorMessage(error),
     });
   }

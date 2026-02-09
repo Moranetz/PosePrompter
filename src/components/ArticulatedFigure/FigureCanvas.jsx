@@ -1,5 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+
+// Constants moved outside component to avoid recreation
+const TRANSITION_CONFIG = { 
+  type: 'spring', 
+  stiffness: 80, 
+  damping: 20 
+};
+
+// Memoize color validation regex for performance
+const HEX_COLOR_REGEX = /^#[0-9A-Fa-f]{6}$/;
 
 /**
  * A clean, minimal figure that responds to actual pose selections
@@ -94,27 +104,33 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     return 'mixed';
   };
 
+  // Memoize getPoseData function to avoid recreating it on every render
+  const getPoseData = useCallback((categoryKey) => {
+    if (!categories?.[categoryKey]) return { title: '', prompt: '', originalTitle: '', originalPrompt: '' };
+    const options = categories[categoryKey];
+    if (!options?.length) return { title: '', prompt: '', originalTitle: '', originalPrompt: '' };
+    
+    // Ensure index is within bounds and is a valid number
+    let index = selections?.[categoryKey] ?? 0;
+    // Validate index is a valid number
+    if (typeof index !== 'number' || isNaN(index) || !isFinite(index)) {
+      index = 0;
+    }
+    if (index < 0) index = 0;
+    if (index >= options.length) index = options.length - 1;
+    
+    const option = options[index];
+    if (!option) return { title: '', prompt: '', originalTitle: '', originalPrompt: '' };
+    const originalTitle = typeof option === 'string' ? option : (option?.title ?? '');
+    const originalPrompt = typeof option === 'string' ? option : (option?.prompt ?? '');
+    // Ensure strings before calling toLowerCase
+    const title = (originalTitle || '').toString().toLowerCase();
+    const prompt = (originalPrompt || '').toString().toLowerCase();
+    return { title, prompt, originalTitle, originalPrompt };
+  }, [categories, selections]);
+
   // Determine pose based on actual selected options - OPTIONS WORK TOGETHER
   const poseVariant = useMemo(() => {
-    // Get the actual pose title and prompt from selection index
-    const getPoseData = (categoryKey) => {
-      if (!categories || !categories[categoryKey]) return { title: '', prompt: '', originalTitle: '', originalPrompt: '' };
-      const options = categories[categoryKey];
-      if (!options || options.length === 0) return { title: '', prompt: '', originalTitle: '', originalPrompt: '' };
-      
-      // Ensure index is within bounds
-      let index = selections?.[categoryKey] || 0;
-      if (index < 0) index = 0;
-      if (index >= options.length) index = options.length - 1;
-      
-      const option = options[index];
-      if (!option) return { title: '', prompt: '', originalTitle: '', originalPrompt: '' };
-      const originalTitle = typeof option === 'string' ? option : (option.title || '');
-      const originalPrompt = typeof option === 'string' ? option : (option.prompt || '');
-      const title = originalTitle.toLowerCase();
-      const prompt = originalPrompt.toLowerCase();
-      return { title, prompt, originalTitle, originalPrompt };
-    };
 
     const bodyPose = getPoseData('BodyPose');
     const arms = getPoseData('Arms');
@@ -128,30 +144,30 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     const eyes = getPoseData('Eyes');
     const mouth = getPoseData('Mouth');
     
-    // Combine title and prompt for more context
-    const bodyText = bodyPose.title + ' ' + bodyPose.prompt;
-    const armsText = arms.title + ' ' + arms.prompt;
-    const headText = head.title + ' ' + head.prompt;
-    const torsoText = torsoData.title + ' ' + torsoData.prompt;
-    const handsText = hands.title + ' ' + hands.prompt;
-    const legsText = legs.title + ' ' + legs.prompt;
-    const feetText = feet.title + ' ' + feet.prompt;
-    const expressionText = facialExpression.title + ' ' + facialExpression.prompt;
-    const eyesText = eyes.title + ' ' + eyes.prompt;
-    const mouthText = mouth.title + ' ' + mouth.prompt;
+    // Combine title and prompt for more context (safe string concatenation with consistent optional chaining)
+    const bodyText = `${bodyPose?.title ?? ''} ${bodyPose?.prompt ?? ''}`;
+    const armsText = `${arms?.title ?? ''} ${arms?.prompt ?? ''}`;
+    const headText = `${head?.title ?? ''} ${head?.prompt ?? ''}`;
+    const torsoText = `${torsoData?.title ?? ''} ${torsoData?.prompt ?? ''}`;
+    const handsText = `${hands?.title ?? ''} ${hands?.prompt ?? ''}`;
+    const legsText = `${legs?.title ?? ''} ${legs?.prompt ?? ''}`;
+    const feetText = `${feet?.title ?? ''} ${feet?.prompt ?? ''}`;
+    const expressionText = `${facialExpression?.title ?? ''} ${facialExpression?.prompt ?? ''}`;
+    const eyesText = `${eyes?.title ?? ''} ${eyes?.prompt ?? ''}`;
+    const mouthText = `${mouth?.title ?? ''} ${mouth?.prompt ?? ''}`;
     
-    // Get original titles for exact matching (more reliable than keyword matching)
-    const bodyTitleOriginal = bodyPose.originalTitle;
-    const armsTitleOriginal = arms.originalTitle;
-    const handsTitleOriginal = hands.originalTitle;
-    const headTitleOriginal = head.originalTitle;
-    const expressionTitleOriginal = facialExpression.originalTitle;
-    const eyesTitleOriginal = eyes.originalTitle;
-    const mouthTitleOriginal = mouth.originalTitle;
-    const legsTitleOriginal = legs.originalTitle;
-    const feetTitleOriginal = feet.originalTitle;
-    const torsoTitleOriginal = torsoData.originalTitle;
-    const bodySizeTitleOriginal = bodySize.originalTitle;
+    // Get original titles for exact matching (more reliable than keyword matching) - using optional chaining
+    const bodyTitleOriginal = bodyPose?.originalTitle ?? '';
+    const armsTitleOriginal = arms?.originalTitle ?? '';
+    const handsTitleOriginal = hands?.originalTitle ?? '';
+    const headTitleOriginal = head?.originalTitle ?? '';
+    const expressionTitleOriginal = facialExpression?.originalTitle ?? '';
+    const eyesTitleOriginal = eyes?.originalTitle ?? '';
+    const mouthTitleOriginal = mouth?.originalTitle ?? '';
+    const legsTitleOriginal = legs?.originalTitle ?? '';
+    const feetTitleOriginal = feet?.originalTitle ?? '';
+    const torsoTitleOriginal = torsoData?.originalTitle ?? '';
+    const bodySizeTitleOriginal = bodySize?.originalTitle ?? '';
     
     // ===== STEP 1: Determine major body position first =====
     // Check specific pose titles FIRST for accuracy, then fall back to keyword matching
@@ -1236,16 +1252,22 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
       torsoWidthScale = 1.3;
     }
     
+    // Ensure all numeric values have safe defaults to prevent NaN in calculations
+    const clamp = (value, min, max) => {
+      if (typeof value !== 'number' || isNaN(value) || !isFinite(value)) return min;
+      return Math.max(min, Math.min(max, value));
+    };
+    
     return { 
-      head: headRotate, 
-      headTilt,
-      headTurn,
-      torso, 
-      leftArm, 
-      rightArm,
-      leftElbow,
-      rightElbow,
-      stance, 
+      head: clamp(headRotate, -180, 180) || 0, 
+      headTilt: clamp(headTilt, -90, 90) || 0,
+      headTurn: clamp(headTurn, -180, 180) || 0,
+      torso: clamp(torso, -90, 90) || 0, 
+      leftArm: clamp(leftArm, -180, 180) || 0, 
+      rightArm: clamp(rightArm, -180, 180) || 0,
+      leftElbow: clamp(leftElbow, -180, 180) || 0,
+      rightElbow: clamp(rightElbow, -180, 180) || 0,
+      stance: clamp(stance, -50, 50) || 0, 
       isSitting, 
       isLeaning, 
       isReclining,
@@ -1260,19 +1282,16 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
       eyeState,
       mouthState,
       eyebrowState,
-      // Body size scaling
-      bodyScale,
-      shoulderWidthScale,
-      hipWidthScale,
-      torsoWidthScale
+      // Body size scaling - ensure valid scale values
+      bodyScale: clamp(bodyScale || 1.0, 0.1, 10.0),
+      shoulderWidthScale: clamp(shoulderWidthScale || 1.0, 0.1, 10.0),
+      hipWidthScale: clamp(hipWidthScale || 1.0, 0.1, 10.0),
+      torsoWidthScale: clamp(torsoWidthScale || 1.0, 0.1, 10.0)
     };
-  }, [selections, categories]);
+  }, [selections, categories, getPoseData]); // Include getPoseData in dependencies
 
-  const transition = { 
-    type: 'spring', 
-    stiffness: 80, 
-    damping: 20 
-  };
+  // Move transition constant outside component to avoid recreation
+  // (moved to top of file after imports)
 
   // Figure measurements - adjust for pose type
   const { 
@@ -1287,97 +1306,123 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
   const jointSize = 6; // Visual size (increased from 4)
   const jointHitSize = 12; // Clickable hit area (much larger for easier interaction)
   
-  // Accent color for interactive joints
-  const jointColor = categoryColors?.['BodyPose'] || '#10b981';
+  // Helper to validate and get color (memoized)
+  const getValidColor = useCallback((color, defaultColor) => {
+    if (!color || typeof color !== 'string') return defaultColor;
+    // Check if it's a valid hex color (simple validation)
+    if (HEX_COLOR_REGEX.test(color)) return color;
+    // If not hex, return default
+    return defaultColor;
+  }, []);
 
-  // Get accent color from categoryColors - use it to tint the figure based on pose
-  const accentColor = categoryColors?.['BodyPose'] || '#10b981';
+  // Memoize color calculations to avoid recalculating on every render
+  const jointColor = useMemo(() => getValidColor(categoryColors?.['BodyPose'], '#10b981'), [categoryColors, getValidColor]);
+  const accentColor = useMemo(() => getValidColor(categoryColors?.['BodyPose'], '#10b981'), [categoryColors, getValidColor]);
   const baseStroke = 'rgba(255, 255, 255, 0.35)';
   // Subtly tint the figure with accent color when in non-standing pose
-  const strokeColor = (isSitting || isLeaning || isReclining) 
-    ? `${accentColor}99` // 60% opacity accent 
-    : baseStroke;
+  // Memoize stroke color calculation
+  const strokeColor = useMemo(() => {
+    return (isSitting || isLeaning || isReclining) 
+      ? `${accentColor}99` // 60% opacity accent 
+      : baseStroke;
+  }, [isSitting, isLeaning, isReclining, accentColor]);
   
-  // Adjust vertical positions based on pose
-  let headY = isSitting ? 80 : isReclining ? 120 : 45;
-  // Apply body scale to head size
-  const headSize = 28 * bodyScale;
-  let neckY = headY + headSize + 8;
-  let shoulderY = neckY + 15;
-  // Apply body scale to torso length
-  let torsoLength = (isSitting ? 80 : 100) * bodyScale;
-  let torsoBottom = shoulderY + torsoLength;
-  let hipY = torsoBottom + 5;
-  // Apply body scale to leg length
-  let legLength = (isSitting ? 80 : 140) * bodyScale;
-  
-  // Apply body scale to widths
-  const shoulderWidth = 30 * shoulderWidthScale;
-  const hipWidth = 20 * hipWidthScale;
-  const torsoWidth = 15 * torsoWidthScale;
+  // Memoize body measurements to avoid recalculation on every render
+  const bodyMeasurements = useMemo(() => {
+    const headY = isSitting ? 80 : isReclining ? 120 : 45;
+    const headSize = 28 * bodyScale;
+    const neckY = headY + headSize + 8;
+    const shoulderY = neckY + 15;
+    const torsoLength = (isSitting ? 80 : 100) * bodyScale;
+    const torsoBottom = shoulderY + torsoLength;
+    const hipY = torsoBottom + 5;
+    const legLength = (isSitting ? 80 : 140) * bodyScale;
+    const shoulderWidth = 30 * shoulderWidthScale;
+    const hipWidth = 20 * hipWidthScale;
+    const torsoWidth = 15 * torsoWidthScale;
+    
+    return {
+      headY,
+      headSize,
+      neckY,
+      shoulderY,
+      torsoLength,
+      torsoBottom,
+      hipY,
+      legLength,
+      shoulderWidth,
+      hipWidth,
+      torsoWidth
+    };
+  }, [isSitting, isReclining, bodyScale, shoulderWidthScale, hipWidthScale, torsoWidthScale]);
 
-  // Leg angles for different poses
-  let leftLegAngle = 0;
-  let rightLegAngle = 0;
-  
-  if (isSitting) {
-    if (legsCrossed) {
-      // Crossed legs - one over the other, angled to the side
-      leftLegAngle = 85;   // More horizontal
-      rightLegAngle = 60;  // Lower leg
-    } else if (isKneeUp) {
-      // One knee drawn up (for arm resting on knee)
-      leftLegAngle = 75;   // Lower leg more horizontal
-      rightLegAngle = 45;  // Right knee drawn up more
-    } else {
-      leftLegAngle = 70;  // Legs bent forward
-      rightLegAngle = 75;
+  // Memoize leg angles calculation
+  const legAngles = useMemo(() => {
+    let leftLegAngle = 0;
+    let rightLegAngle = 0;
+    
+    if (isSitting) {
+      if (legsCrossed) {
+        // Crossed legs - one over the other, angled to the side
+        leftLegAngle = 85;   // More horizontal
+        rightLegAngle = 60;  // Lower leg
+      } else if (isKneeUp) {
+        // One knee drawn up (for arm resting on knee)
+        leftLegAngle = 75;   // Lower leg more horizontal
+        rightLegAngle = 45;  // Right knee drawn up more
+      } else {
+        leftLegAngle = 70;  // Legs bent forward
+        rightLegAngle = 75;
+      }
+    } else if (isReclining && isKneeUp) {
+      // Reclining with one knee up
+      rightLegAngle = 35;  // Knee bent up
+      leftLegAngle = 10;   // Other leg more extended
     }
-  } else if (isReclining && isKneeUp) {
-    // Reclining with one knee up
-    rightLegAngle = 35;  // Knee bent up
-    leftLegAngle = 10;   // Other leg more extended
-  }
+    
+    return { leftLegAngle, rightLegAngle };
+  }, [isSitting, isReclining, legsCrossed, isKneeUp]);
 
-  // Click handler for body parts
-  const handlePartClick = (category) => {
-    if (onPartClick) {
-      onPartClick(category);
-    }
-  };
+  // Destructure memoized values
+  const { headY, headSize, neckY, shoulderY, torsoLength, torsoBottom, hipY, legLength, shoulderWidth, hipWidth, torsoWidth } = bodyMeasurements;
+  const { leftLegAngle, rightLegAngle } = legAngles;
 
-  // Hover styles for interactive parts
-  const getInteractiveProps = (category) => ({
+  // Removed handlePartClick - using optional chaining directly in getInteractiveProps
+
+  // Memoize interactive props to prevent unnecessary re-renders
+  const getInteractiveProps = useCallback((category) => ({
     style: { 
       cursor: onPartClick ? 'pointer' : 'default',
       transition: 'all 0.2s ease'
     },
     onMouseEnter: () => setHoveredPart(category),
     onMouseLeave: () => setHoveredPart(null),
-    onClick: () => handlePartClick(category)
-  });
+    onClick: () => onPartClick?.(category)
+  }), [onPartClick]);
 
-  // Get highlight color when hovered
-  const getPartColor = (category, defaultColor) => {
+  // Memoize getPartColor to prevent unnecessary recalculations
+  const getPartColor = useCallback((category, defaultColor) => {
     if (hoveredPart === category) {
-      return categoryColors?.[category] || '#10b981';
+      return getValidColor(categoryColors?.[category], '#10b981');
     }
     return defaultColor;
-  };
+  }, [hoveredPart, categoryColors]);
 
-  return (
-    <svg
-      width="100%"
-      height="100%"
-      viewBox={`0 0 ${width} ${height}`}
-      preserveAspectRatio="xMidYMid meet"
-      style={{
-        display: 'block',
-        maxWidth: '100%',
-        maxHeight: '100%',
-        overflow: 'hidden'
-      }}
-    >
+  // Error boundary - catch any rendering errors
+  try {
+    return (
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="xMidYMid meet"
+        style={{
+          display: 'block',
+          maxWidth: '100%',
+          maxHeight: '100%',
+          overflow: 'hidden'
+        }}
+      >
       <defs>
         <clipPath id="figureClip">
           <rect x="0" y="0" width={width} height={height} />
@@ -1389,7 +1434,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
           x: poseVariant.stance,
           rotate: isReclining ? -45 : isLeaning ? -8 : 0
         }}
-        transition={transition}
+        transition={TRANSITION_CONFIG}
         style={{ transformOrigin: `${centerX}px ${height / 2}px` }}
         clipPath="url(#figureClip)"
       >
@@ -1399,7 +1444,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             rotate: poseVariant.head,
             y: headTilt * 0.3 // Subtle vertical offset for head tilt effect
           }}
-          transition={transition}
+          transition={TRANSITION_CONFIG}
           style={{ transformOrigin: `${centerX}px ${headY}px` }}
           {...getInteractiveProps('HeadPosition')}
         >
@@ -1418,9 +1463,10 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             {/* Eye positions adjusted for head turn */}
             {(() => {
               const eyeY = headY - 5;
-              const leftEyeX = centerX - 8 + (lookingAway ? 4 : 0) + (headTurn || 0) * 0.1;
-              const rightEyeX = centerX + 8 + (lookingAway ? 6 : 0) + (headTurn || 0) * 0.1;
-              const eyeColor = categoryColors?.['FacialExpression'] || accentColor;
+              const leftEyeX = centerX - 8 + (lookingAway ? 4 : 0) + (headTurn ?? 0) * 0.1;
+              const rightEyeX = centerX + 8 + (lookingAway ? 6 : 0) + (headTurn ?? 0) * 0.1;
+              // Memoize eye color calculation
+              const eyeColor = getValidColor(categoryColors?.['FacialExpression'], accentColor);
               
               // Render eyes based on eyeState
               const renderEye = (x, isRight) => {
@@ -1441,7 +1487,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                         strokeLinecap="round"
                         opacity={eyeOpacity}
                         animate={{ pathLength: 1 }}
-                        transition={transition}
+                        transition={TRANSITION_CONFIG}
                       />
                     );
                     break;
@@ -1865,7 +1911,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         {/* Torso - Click to edit Torso */}
         <motion.g
           animate={{ rotate: poseVariant.torso }}
-          transition={transition}
+          transition={TRANSITION_CONFIG}
           style={{ transformOrigin: `${centerX}px ${shoulderY}px` }}
           {...getInteractiveProps('Torso')}
         >
@@ -1938,7 +1984,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               x2: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
               y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale
             }}
-            transition={transition}
+            transition={TRANSITION_CONFIG}
             stroke={getPartColor('Arms', strokeColor)}
             strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
             strokeLinecap="round"
@@ -1962,7 +2008,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               r={jointSize}
               fill={hoveredPart === 'Arms' ? getPartColor('Arms', accentColor) : accentColor}
               opacity={hoveredPart === 'Arms' ? 1 : 0.7}
-              transition={transition}
+              transition={TRANSITION_CONFIG}
             />
           </g>
           {/* Left Forearm */}
@@ -1973,7 +2019,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               x2: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale,
               y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale
             }}
-            transition={transition}
+            transition={TRANSITION_CONFIG}
             stroke={getPartColor('Arms', strokeColor)}
             strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
             strokeLinecap="round"
@@ -1989,7 +2035,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             fill={hoveredPart === 'Hands' ? getPartColor('Hands', 'rgba(255,255,255,0.2)') : (handsOpen ? 'none' : strokeColor)}
             stroke={getPartColor('Hands', strokeColor)}
             strokeWidth={hoveredPart === 'Hands' ? 3 : 2}
-            transition={transition}
+            transition={TRANSITION_CONFIG}
           />
         </motion.g>
 
@@ -2002,7 +2048,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               x2: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
               y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale
             }}
-            transition={transition}
+            transition={TRANSITION_CONFIG}
             stroke={getPartColor('Arms', strokeColor)}
             strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
             strokeLinecap="round"
@@ -2026,7 +2072,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               r={jointSize}
               fill={hoveredPart === 'Arms' ? getPartColor('Arms', accentColor) : accentColor}
               opacity={hoveredPart === 'Arms' ? 1 : 0.7}
-              transition={transition}
+              transition={TRANSITION_CONFIG}
             />
           </g>
           {/* Right Forearm */}
@@ -2037,7 +2083,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               x2: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale,
               y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale
             }}
-            transition={transition}
+            transition={TRANSITION_CONFIG}
             stroke={getPartColor('Arms', strokeColor)}
             strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
             strokeLinecap="round"
@@ -2053,7 +2099,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
             fill={hoveredPart === 'Hands' ? getPartColor('Hands', 'rgba(255,255,255,0.2)') : (handsOpen ? 'none' : strokeColor)}
             stroke={getPartColor('Hands', strokeColor)}
             strokeWidth={hoveredPart === 'Hands' ? 3 : 2}
-            transition={transition}
+            transition={TRANSITION_CONFIG}
           />
         </motion.g>
 
@@ -2079,7 +2125,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX + 35,
                   y2: hipY + 30
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2111,7 +2157,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX + 25,
                   y2: hipY + 75
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2146,7 +2192,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX + 50,
                   y2: hipY + 45
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2178,7 +2224,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX + 40,
                   y2: hipY + 85
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2216,7 +2262,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50,
                   y2: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2233,7 +2279,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   stroke="none"
                   style={{ cursor: onPartClick ? 'pointer' : 'default' }}
                   {...getInteractiveProps('Legs')}
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
                 <motion.circle
                   animate={{
@@ -2243,7 +2289,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   r={jointSize}
                   fill={accentColor}
                   opacity={0.7}
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
               </g>
               {/* Left Calf */}
@@ -2254,7 +2300,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50 - 10,
                   y2: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50 + 45
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2271,7 +2317,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   stroke="none"
                   style={{ cursor: onPartClick ? 'pointer' : 'default' }}
                   {...getInteractiveProps('Feet')}
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
                 <motion.ellipse
                   animate={{
@@ -2283,7 +2329,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   fill="none"
                   stroke={strokeColor}
                   strokeWidth="2"
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
               </g>
               
@@ -2295,7 +2341,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50,
                   y2: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2312,7 +2358,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   stroke="none"
                   style={{ cursor: onPartClick ? 'pointer' : 'default' }}
                   {...getInteractiveProps('Legs')}
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
                 <motion.circle
                   animate={{
@@ -2322,7 +2368,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   r={jointSize}
                   fill={accentColor}
                   opacity={0.7}
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
               </g>
               {/* Right Calf */}
@@ -2333,7 +2379,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   x2: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50 + 5,
                   y2: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50 + 45
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
                 stroke={strokeColor}
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -2350,7 +2396,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   stroke="none"
                   style={{ cursor: onPartClick ? 'pointer' : 'default' }}
                   {...getInteractiveProps('Feet')}
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
                 <motion.ellipse
                   animate={{
@@ -2362,7 +2408,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                   fill="none"
                   stroke={strokeColor}
                   strokeWidth="2"
-                  transition={transition}
+                  transition={TRANSITION_CONFIG}
                 />
               </g>
             </>
@@ -2393,7 +2439,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 animate={{ 
                   cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
               <motion.circle
                 cx={centerX - hipWidth * 1.1}
@@ -2404,7 +2450,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 animate={{ 
                   cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
             </g>
             {/* Left Calf */}
@@ -2418,7 +2464,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               stroke={strokeColor}
               strokeWidth="2"
               strokeLinecap="round"
-              transition={transition}
+              transition={TRANSITION_CONFIG}
             />
             {/* Left Foot */}
             <g>
@@ -2432,7 +2478,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 stroke="none"
                 style={{ cursor: onPartClick ? 'pointer' : 'default' }}
                 {...getInteractiveProps('Feet')}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
               <motion.ellipse
                 animate={{
@@ -2444,7 +2490,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 fill="none"
                 stroke={strokeColor}
                 strokeWidth="2"
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
             </g>
             
@@ -2471,7 +2517,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 animate={{ 
                   cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
               <motion.circle
                 cx={centerX + hipWidth * 1.1}
@@ -2482,7 +2528,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 animate={{ 
                   cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
                 }}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
             </g>
             {/* Right Calf */}
@@ -2496,7 +2542,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
               stroke={strokeColor}
               strokeWidth="2"
               strokeLinecap="round"
-              transition={transition}
+              transition={TRANSITION_CONFIG}
             />
             {/* Right Foot */}
             <g>
@@ -2510,7 +2556,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 stroke="none"
                 style={{ cursor: onPartClick ? 'pointer' : 'default' }}
                 {...getInteractiveProps('Feet')}
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
               <motion.ellipse
                 animate={{
@@ -2522,7 +2568,7 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                 fill="none"
                 stroke={strokeColor}
                 strokeWidth="2"
-                transition={transition}
+                transition={TRANSITION_CONFIG}
               />
             </g>
           </>
@@ -2530,7 +2576,36 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         </g>
       </motion.g>
     </svg>
-  );
+    );
+  } catch (error) {
+    console.error('[FigureCanvas] Rendering error:', error);
+    // Render fallback figure on error
+    return (
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="xMidYMid meet"
+        style={{
+          display: 'block',
+          maxWidth: '100%',
+          maxHeight: '100%',
+          overflow: 'hidden'
+        }}
+      >
+        <text
+          x={centerX}
+          y={height / 2}
+          textAnchor="middle"
+          fill="rgba(255, 255, 255, 0.5)"
+          fontSize="14"
+          fontFamily="system-ui"
+        >
+          Error rendering figure
+        </text>
+      </svg>
+    );
+  }
 };
 
 export default FigureCanvas;

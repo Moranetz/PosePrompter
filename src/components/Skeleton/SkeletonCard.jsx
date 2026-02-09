@@ -63,6 +63,9 @@ const ShimmerBox = ({ height, width = '100%' }) => {
 };
 
 export const SkeletonGrid = ({ count = 6 }) => {
+  // Ensure count is a valid positive number
+  const safeCount = Math.max(0, Math.floor(count || 0));
+  
   return (
     <div
       style={{
@@ -71,9 +74,9 @@ export const SkeletonGrid = ({ count = 6 }) => {
         gap: '24px',
       }}
     >
-      {Array.from({ length: count }).map((_, i) => (
+      {Array.from({ length: safeCount }).map((_, i) => (
         <motion.div
-          key={i}
+          key={`skeleton-${i}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.1 }}

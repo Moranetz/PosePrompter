@@ -5,6 +5,7 @@ import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebas
 import { storage } from '../firebase-config';
 import { useAuth } from '../contexts/UserContext';
 import { getErrorMessage } from '../utils/errorHandler';
+import { logger } from '../utils/logger';
 import Header from './Header';
 
 const FacePhotosPage = () => {
@@ -38,7 +39,7 @@ const FacePhotosPage = () => {
         }
       }
     } catch (err) {
-      console.warn('Error loading cached photos:', err);
+      logger.warn('Error loading cached photos:', err);
     }
     return [];
   }, [getCacheKey]);
@@ -54,7 +55,7 @@ const FacePhotosPage = () => {
         timestamp: Date.now()
       }));
     } catch (err) {
-      console.warn('Error saving photos to cache:', err);
+      logger.warn('Error saving photos to cache:', err);
     }
   }, [getCacheKey]);
 
@@ -67,7 +68,7 @@ const FacePhotosPage = () => {
 
     // Prevent multiple simultaneous fetches
     if (isFetchingRef.current) {
-      console.log('[FacePhotosPage] Fetch already in progress, skipping...');
+      logger.log('[FacePhotosPage] Fetch already in progress, skipping...');
       return;
     }
 
@@ -87,11 +88,11 @@ const FacePhotosPage = () => {
     setError('');
 
     try {
-      console.log('[FacePhotosPage] Fetching photos from Firebase...');
+      logger.log('[FacePhotosPage] Fetching photos from Firebase...');
       const folderRef = ref(storage, `face-photos/${user.uid}`);
       const result = await listAll(folderRef);
       
-      console.log('[FacePhotosPage] Found', result.items.length, 'photos');
+      logger.log('[FacePhotosPage] Found', result.items.length, 'photos');
       
       // If no photos, clear and return
       if (result.items.length === 0) {
@@ -103,7 +104,7 @@ const FacePhotosPage = () => {
       }
       
       // Fetch all URLs in parallel - no progressive updates to avoid re-renders
-      console.log('[FacePhotosPage] Fetching download URLs...');
+      logger.log('[FacePhotosPage] Fetching download URLs...');
       const photoPromises = result.items.map(async (itemRef) => {
         try {
           const url = await getDownloadURL(itemRef);
@@ -113,21 +114,21 @@ const FacePhotosPage = () => {
             fullPath: itemRef.fullPath
           };
         } catch (err) {
-          console.error(`Error fetching URL for ${itemRef.name}:`, err);
+          logger.error(`Error fetching URL for ${itemRef.name}:`, err);
           return null;
         }
       });
       
       // Wait for all photos to load at once
       const photos = (await Promise.all(photoPromises)).filter(Boolean);
-      console.log('[FacePhotosPage] Loaded', photos.length, 'photos successfully');
+      logger.log('[FacePhotosPage] Loaded', photos.length, 'photos successfully');
       
       // Update state once with all photos
       setFacePhotos(photos);
       saveToCache(photos);
       setLoading(false);
     } catch (err) {
-      console.error('[FacePhotosPage] Error fetching face photos:', err);
+      logger.error('[FacePhotosPage] Error fetching face photos:', err);
       // Don't show error for expected cases
       if (err.code === 'storage/object-not-found' || err.code === 'storage/unauthorized') {
         // These are expected - folder might not exist yet or permission issue
@@ -159,22 +160,22 @@ const FacePhotosPage = () => {
   const handleFileUpload = useCallback(async (e) => {
     const file = e.target.files?.[0];
     if (!file) {
-      console.warn('[FacePhotosPage] No file selected');
+      logger.warn('[FacePhotosPage] No file selected');
       return;
     }
     
     if (!user) {
-      console.warn('[FacePhotosPage] No user authenticated');
+      logger.warn('[FacePhotosPage] No user authenticated');
       setError('Please log in to upload photos.');
       return;
     }
 
     if (uploading) {
-      console.warn('[FacePhotosPage] Upload already in progress');
+      logger.warn('[FacePhotosPage] Upload already in progress');
       return;
     }
     
-    console.log('[FacePhotosPage] File selected:', {
+    logger.log('[FacePhotosPage] File selected:', {
       name: file.name,
       size: file.size,
       type: file.type
@@ -234,11 +235,12 @@ const FacePhotosPage = () => {
     }
 
     try {
-      // Create a unique filename
-      const fileName = `face-photos/${user.uid}/${Date.now()}_${file.name}`;
+      // Create a unique filename to prevent collisions and duplicates
+      const uniqueId = Math.random().toString(36).substring(2, 9);
+      const fileName = `face-photos/${user.uid}/${Date.now()}_${uniqueId}_${file.name}`;
       const storageRef = ref(storage, fileName);
 
-      console.log('[FacePhotosPage] Starting upload:', { 
+      logger.log('[FacePhotosPage] Starting upload:', { 
         fileName, 
         fileSize: file.size, 
         fileType: file.type,
@@ -249,7 +251,7 @@ const FacePhotosPage = () => {
       await uploadBytes(storageRef, file, {
         contentType: file.type || 'image/jpeg'
       });
-      console.log('[FacePhotosPage] Upload completed, getting download URL...');
+      logger.log('[FacePhotosPage] Upload completed, getting download URL...');
       
       // Get download URL with retry logic
       let downloadURL;
@@ -257,14 +259,14 @@ const FacePhotosPage = () => {
       while (retries > 0) {
         try {
           downloadURL = await getDownloadURL(storageRef);
-          console.log('[FacePhotosPage] Download URL obtained:', downloadURL);
+          logger.log('[FacePhotosPage] Download URL obtained:', downloadURL);
           break;
         } catch (urlError) {
           retries--;
           if (retries === 0) {
             throw urlError;
           }
-          console.warn('[FacePhotosPage] Retrying getDownloadURL, attempts left:', retries);
+          logger.warn('[FacePhotosPage] Retrying getDownloadURL, attempts left:', retries);
           await new Promise(resolve => setTimeout(resolve, 500));
         }
       }
@@ -276,18 +278,18 @@ const FacePhotosPage = () => {
         fullPath: fileName
       };
       
-      console.log('[FacePhotosPage] Adding photo to state:', newPhoto);
+      logger.log('[FacePhotosPage] Adding photo to state:', newPhoto);
       
       setFacePhotos(prev => {
         // Check if photo already exists to avoid duplicates
         const exists = prev.some(p => p.fullPath === newPhoto.fullPath);
         if (exists) {
-          console.warn('[FacePhotosPage] Photo already exists, skipping duplicate');
+          logger.warn('[FacePhotosPage] Photo already exists, skipping duplicate');
           return prev;
         }
         const updated = [newPhoto, ...prev];
         saveToCache(updated);
-        console.log('[FacePhotosPage] State updated, total photos:', updated.length);
+        logger.log('[FacePhotosPage] State updated, total photos:', updated.length);
         return updated;
       });
 
@@ -299,10 +301,10 @@ const FacePhotosPage = () => {
         fileInputRef.current.value = '';
       }
       
-      console.log('[FacePhotosPage] Upload process completed successfully');
+      logger.log('[FacePhotosPage] Upload process completed successfully');
     } catch (err) {
-      console.error('[FacePhotosPage] Error uploading face photo:', err);
-      console.error('[FacePhotosPage] Error details:', {
+      logger.error('[FacePhotosPage] Error uploading face photo:', err);
+      logger.error('[FacePhotosPage] Error details:', {
         code: err.code,
         message: err.message,
         name: err.name,
@@ -363,7 +365,7 @@ const FacePhotosPage = () => {
       }
     } finally {
       setUploading(false);
-      console.log('[FacePhotosPage] Upload handler finished, uploading set to false');
+      logger.log('[FacePhotosPage] Upload handler finished, uploading set to false');
     }
   }, [user, uploading, saveToCache]);
 
@@ -388,7 +390,7 @@ const FacePhotosPage = () => {
       setSuccessMessage('Photo deleted successfully');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
-      console.error('Error deleting photo:', err);
+      logger.error('Error deleting photo:', err);
       setError('Failed to delete photo. Please try again.');
     }
   }, [user]);

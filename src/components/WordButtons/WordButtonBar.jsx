@@ -325,6 +325,9 @@ const WordButtonBar = ({
         {/* Category Label */}
         <div
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             fontSize: '10px',
             fontWeight: '500',
             color: '#71717a',
@@ -333,7 +336,10 @@ const WordButtonBar = ({
             opacity: isIncluded ? 1 : 0.4
           }}
         >
-          {categoryDisplayName}
+          <span>{categoryDisplayName}</span>
+          <span style={{ color: '#52525b', fontWeight: 600 }}>
+            {options.length} options
+          </span>
         </div>
 
         {/* Scrollable Button Container */}
@@ -360,6 +366,8 @@ const WordButtonBar = ({
             paddingLeft: '24px',
             paddingRight: '24px'
           }}
+          role="listbox"
+          aria-label={`${categoryDisplayName} options`}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {options.map((option, index) => {
@@ -420,7 +428,7 @@ const WordButtonBar = ({
                     packageId={option.packageId}
                     isFavorite={favorites?.[category]?.includes(option.id || index)}
                     onToggleFavorite={() => handleToggleFavorite(category, option.id || index)}
-                    showFavoriteButton={isLoggedIn}
+                    showFavoriteButton={true}
                     onTrash={(buttonElement) => {
                       console.log('[WordButtonBar] Trash clicked for option:', option, 'at index:', index);
                       // Set trashing state immediately so button hides and layout can shift
@@ -437,7 +445,7 @@ const WordButtonBar = ({
                         setTrashingIndex(null);
                       }
                     }}
-                    showTrashButton={isLoggedIn}
+                    showTrashButton={true}
                     isTrashing={isTrashing}
                   />
                 </motion.div>

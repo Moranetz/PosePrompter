@@ -289,7 +289,7 @@ const uploadToFirebaseStorage = async (userId, imageData, imageId) => {
  * @param {string} prompt - Full prompt text
  * @param {Object} options - Generation options
  * @param {string} userId - User ID
- * @returns {Promise<string>} Image URL
+ * @returns {Promise<Object>} Backend response with imageUrl, cost, newBalance, etc.
  */
 const generateWithFlux = async (prompt, options = {}, userId = null) => {
   return generateViaBackend('flux', prompt, options, userId);
@@ -344,62 +344,58 @@ const generateViaBackend = async (provider, prompt, options = {}, userId = null)
   try {
     logger.log(`[imageGenerationService] Generating with ${provider} via backend...`);
     
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    // Use centralized API client
+    const apiClient = (await import('../api/client.js')).default;
     
-    // Get auth token
-    const { getAuth } = await import('firebase/auth');
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
-    const token = await user.getIdToken();
-    
-    const response = await fetch(`${API_BASE_URL}/api/generate-image`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        provider: provider,
-        prompt: prompt,
-        options: options,
-      }),
+    // Call backend API using centralized client
+    const response = await apiClient.post('/generate-image', {
+      provider: provider,
+      prompt: prompt,
+      options: options,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      // Prefer the detailed message field, fallback to error field, then status text
-      const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
-      
-      // Report error to user's account for debugging
-      if (userId) {
-        try {
-          const { reportError } = await import('./errorReportingService.js');
-          await reportError(userId, new Error(errorMessage), {
-            component: 'imageGenerationService',
-            action: 'generateViaBackend',
-            metadata: { provider, status: response.status },
-          });
-        } catch (reportErr) {
-          // Don't break on reporting errors
-          logger.warn('[imageGenerationService] Failed to report error:', reportErr);
-        }
-      }
-      
-      throw new Error(errorMessage);
-    }
-
-    const data = await response.json();
+    const data = response.data;
     
     if (!data.imageUrl) {
       throw new Error(`No image URL returned from ${provider}`);
     }
 
-    logger.log(`[imageGenerationService] ${provider} generation successful`);
-    return data.imageUrl;
+    logger.log(`[imageGenerationService] ${provider} generation successful`, {
+      imageUrl: data.imageUrl,
+      cost: data.cost,
+      newBalance: data.newBalance,
+      numOutputs: data.numOutputs,
+    });
+    
+    // Backend already handled:
+    // - Credit deduction (data.newBalance is updated)
+    // - Firebase Storage upload (data.imageUrl is Firebase URL)
+    // - Generation history logging (data.generationId)
+    
+    // Return the full response data so caller can access cost, newBalance, etc.
+    return {
+      imageUrl: data.imageUrl,
+      cost: data.cost || CREDIT_COSTS[provider],
+      newBalance: data.newBalance,
+      generationId: data.generationId,
+      metadata: data.metadata || {},
+    };
   } catch (error) {
+    // Report error to user's account for debugging
+    if (userId) {
+      try {
+        const { reportError } = await import('./errorReportingService.js');
+        await reportError(userId, error, {
+          component: 'imageGenerationService',
+          action: 'generateViaBackend',
+          metadata: { provider, status: error.status },
+        });
+      } catch (reportErr) {
+        // Don't break on reporting errors
+        logger.warn('[imageGenerationService] Failed to report error:', reportErr);
+      }
+    }
+    
     logger.error(`[imageGenerationService] ${provider} generation error:`, error);
     throw error;
   }
@@ -550,54 +546,68 @@ export const generateImage = async (provider, prompt, options = {}, userId = nul
   }
 
   // Generate image directly
-  let imageUrl = null;
-  let creditsDeducted = false;
-
+  // NOTE: All providers now go through backend API which handles:
+  // - Credit deduction (atomic, prevents race conditions)
+  // - Firebase Storage upload
+  // - Generation history logging
+  // Frontend should NOT duplicate these operations
+  
   try {
-    // Call provider-specific function
+    let backendResponse = null;
+    
+    // Call provider-specific function (all go through backend API)
+    // Backend handles: credit deduction, storage upload, history logging
     switch (provider) {
       case PROVIDERS.FLUX:
-        imageUrl = await generateWithFlux(prompt, options);
+        backendResponse = await generateWithFlux(prompt, options, userId);
         break;
       case PROVIDERS.SDXL:
-        imageUrl = await generateWithSDXL(prompt, options);
+        backendResponse = await generateWithSDXL(prompt, options, userId);
         break;
       case PROVIDERS.DALLE3:
-        imageUrl = await generateWithDALLE3(prompt, options, userId);
+        backendResponse = await generateWithDALLE3(prompt, options, userId);
         break;
       case PROVIDERS.NANOBANANA:
         // Nano Banana Pro uses backend API
-        imageUrl = await generateWithNanoBanana(prompt, options, userId);
+        backendResponse = await generateWithNanoBanana(prompt, options, userId);
         break;
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
 
-    // Upload to Firebase Storage
-    const imageId = `img_${Date.now()}_${userId}`;
-    const firebaseUrl = await uploadToFirebaseStorage(userId, imageUrl, imageId);
-
-    // Deduct credits after successful generation
-    const deductionResult = await deductCredits(userId, provider, firebaseUrl, prompt);
-    creditsDeducted = true;
+    // Backend already:
+    // 1. Uploaded image to Firebase Storage
+    // 2. Deducted credits atomically (prevents race conditions)
+    // 3. Logged to generation history
+    // 4. Returned imageUrl, cost, newBalance, generationId, etc.
+    
+    // Handle both old format (just imageUrl string) and new format (object with full data)
+    const imageUrl = typeof backendResponse === 'string' 
+      ? backendResponse 
+      : backendResponse.imageUrl;
+    
+    const cost = typeof backendResponse === 'object' && backendResponse.cost
+      ? backendResponse.cost
+      : CREDIT_COSTS[provider];
+    
+    const newBalance = typeof backendResponse === 'object' && backendResponse.newBalance
+      ? backendResponse.newBalance
+      : null;
 
     return {
-      imageUrl: firebaseUrl,
+      imageUrl: imageUrl, // Already in Firebase Storage from backend
       provider,
-      cost: CREDIT_COSTS[provider],
+      cost: cost, // Actual cost from backend (baseCost * numOutputs)
       metadata: {
         originalUrl: imageUrl,
-        imageId,
-        transactionId: deductionResult.transactionId,
-        newBalance: deductionResult.newBalance,
         options,
+        newBalance: newBalance,
+        generationId: typeof backendResponse === 'object' ? backendResponse.generationId : null,
       },
     };
   } catch (error) {
-    // Refund credits if generation failed but credits were deducted
-    if (creditsDeducted) {
-      await refundCredits(userId, provider, CREDIT_COSTS[provider]);
-    }
+    // Backend handles all refunds automatically if generation fails
+    // No need for frontend refund logic
 
     // Report error to user's account for debugging
     if (userId) {

@@ -176,10 +176,18 @@ export const FloatingParticles = ({ count = 15, className = '' }) => {
   const [screenHeight, setScreenHeight] = React.useState(1000);
   
   React.useEffect(() => {
+    let isMounted = true;
     setScreenHeight(window.innerHeight);
-    const handleResize = () => setScreenHeight(window.innerHeight);
+    const handleResize = () => {
+      if (isMounted) {
+        setScreenHeight(window.innerHeight);
+      }
+    };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const particles = Array.from({ length: count }, (_, i) => ({

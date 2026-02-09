@@ -182,6 +182,23 @@ const auth = initializeAuth(app);
 const db = initializeFirestore(app);
 const storage = initializeStorage(app);
 
+// Debug: Log Firebase initialization status
+if (import.meta.env.DEV) {
+  console.log('[Firebase] Initialization status:', {
+    app: app ? 'initialized' : 'null (config missing)',
+    auth: auth ? 'initialized' : 'null',
+    db: db ? 'initialized' : 'null',
+    storage: storage ? 'initialized' : 'null',
+    configValid: isConfigValid
+  });
+  
+  if (!isConfigValid) {
+    console.warn('[Firebase] ⚠️  Firebase config is missing or invalid.');
+    console.warn('[Firebase] Please check your .env.local file and ensure all VITE_FIREBASE_* variables are set.');
+    console.warn('[Firebase] The app may not work correctly without Firebase configuration.');
+  }
+}
+
 // Set up auth persistence asynchronously (improves embedded browser support)
 if (app) {
   initializeAuthAsync(app).then(() => {

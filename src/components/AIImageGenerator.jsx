@@ -18,10 +18,13 @@ import {
 import { useAuth } from '../contexts/UserContext';
 import { generateImage, PROVIDERS, checkCredits, isProviderAvailable } from '../utils/imageGenerationService';
 import { getErrorMessage } from '../utils/errorHandler';
+import { logger } from '../utils/logger';
 import Header from './Header';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase-config';
 import { generateAIImage } from '../utils/aiImageService';
+import RateAppModal from './RateAppModal';
+import { TOUCH_TARGETS, PROGRESS, getProgressPercent, SPACING, TYPOGRAPHY, PATTERNS } from '../config/uxDesignSystem';
 
 // Model configurations
 const MODELS = [
@@ -63,8 +66,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const { user } = useAuth();
   const [selectedModel, setSelectedModel] = useState(PROVIDERS.FLUX);
   // Initialize prompt from external prop, localStorage, or empty string
+  // Don't load from localStorage on initial mount - start fresh
   const [prompt, setPrompt] = useState(() => {
-    return externalPrompt || localStorage.getItem('currentPrompt') || '';
+    return externalPrompt || '';
   });
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
@@ -85,6 +89,10 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const [selectedFacePhoto, setSelectedFacePhoto] = useState(null);
   const [loadingFacePhotos, setLoadingFacePhotos] = useState(false);
   const [showFaceSelector, setShowFaceSelector] = useState(false);
+  const [showRateAppModal, setShowRateAppModal] = useState(false);
+  const progressPercent = numVariations > 0
+    ? Math.round((generatingCount / numVariations) * 100)
+    : 0;
 
   // Check if model is available
   const isModelAvailable = useCallback((modelId) => {
@@ -167,7 +175,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
       const photos = await Promise.all(photoPromises);
       setFacePhotos(photos);
     } catch (err) {
-      console.error('Error fetching face photos:', err);
+      logger.error('Error fetching face photos:', err);
       if (err.code !== 'storage/object-not-found') {
         setError('Failed to load face photos. Please try again.');
       }
@@ -197,7 +205,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
     }
     setSelectedModel(modelId);
     setError('');
-  }, []);
+  }, [isModelAvailable]);
 
   // Handle generation with multiple variations
   const handleGenerate = useCallback(async () => {
@@ -263,7 +271,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
               throw new Error(result.error || 'Generation failed');
             }
           } catch (err) {
-            console.error(`Generation error for variation ${index + 1}:`, err);
+            logger.error(`Generation error for variation ${index + 1}:`, err);
             errors.push(`Variation ${index + 1}: ${getErrorMessage(err)}`);
             setGeneratingCount(prev => prev + 1);
             return null;
@@ -292,8 +300,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
           try {
             const options = {
               ...advancedOptions,
+              // Backend limits num_outputs to max 4, enforce same limit in frontend
               num_outputs: selectedModel === PROVIDERS.FLUX || selectedModel === PROVIDERS.SDXL 
-                ? (advancedOptions.numOutputs || 1) 
+                ? Math.min(Math.max(1, advancedOptions.numOutputs || 1), 4) // Clamp between 1-4
                 : 1
             };
 
@@ -317,7 +326,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
               };
             }
           } catch (err) {
-            console.error(`Generation error for variation ${index + 1}:`, err);
+            logger.error(`Generation error for variation ${index + 1}:`, err);
             errors.push(`Variation ${index + 1}: ${getErrorMessage(err)}`);
             setGeneratingCount(prev => prev + 1);
             return null;
@@ -342,7 +351,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
         }
       }
     } catch (err) {
-      console.error('Generation error:', err);
+      logger.error('Generation error:', err);
       const errorMsg = getErrorMessage(err);
       
       if (errorMsg.includes('Insufficient credits')) {
@@ -385,11 +394,36 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
       }
       setSuccessMessage(`${generatedImages.length} image(s) downloaded!`);
       setTimeout(() => setSuccessMessage(''), 2000);
+
+      // Show rate app modal after download (if user hasn't rated yet)
+      // Check localStorage to avoid showing repeatedly
+      const hasRated = localStorage.getItem('hasRatedApp') === 'true';
+      const hasSeenRatingPrompt = localStorage.getItem('hasSeenRatingPrompt') === 'true';
+      
+      // Show modal if:
+      // 1. User is logged in
+      // 2. User hasn't rated yet (localStorage check)
+      // 3. User hasn't dismissed the prompt recently (or show it anyway after some time)
+      if (user && !hasRated) {
+        // Show immediately if they haven't seen it, or show again after 7 days
+        const lastPromptTime = localStorage.getItem('lastRatingPromptTime');
+        const shouldShow = !hasSeenRatingPrompt || 
+          (lastPromptTime && Date.now() - parseInt(lastPromptTime) > 7 * 24 * 60 * 60 * 1000);
+        
+        if (shouldShow) {
+          // Small delay to let download complete smoothly
+          setTimeout(() => {
+            setShowRateAppModal(true);
+            localStorage.setItem('hasSeenRatingPrompt', 'true');
+            localStorage.setItem('lastRatingPromptTime', Date.now().toString());
+          }, 500);
+        }
+      }
     } catch (err) {
-      console.error('Download error:', err);
+      logger.error('Download error:', err);
       setError('Failed to download images');
     }
-  }, [generatedImages]);
+  }, [generatedImages, user]);
 
   // Handle regenerate
   const handleRegenerate = useCallback(async () => {
@@ -470,7 +504,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
-        console.error('Share error:', err);
+        logger.error('Share error:', err);
         // Fallback to copy
         try {
           await navigator.clipboard.writeText(generatedImage);
@@ -504,7 +538,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 16px',
+                padding: `${SPACING.MD} ${SPACING.LG}`,
+                minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
                 background: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '8px',
@@ -531,7 +566,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              padding: '60px 20px',
+              padding: `${SPACING[8]} ${SPACING.XL}`,
               background: 'rgba(255, 255, 255, 0.03)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '12px'
@@ -575,7 +610,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            padding: '8px 16px',
+            padding: '10px 18px',
+            minHeight: '44px',
             background: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '8px',
@@ -653,7 +689,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 border: 'none',
                 color: '#fca5a5',
                 cursor: 'pointer',
-                padding: '4px',
+                padding: '8px',
+                minWidth: '36px',
+                minHeight: '36px',
                 display: 'flex',
                 alignItems: 'center'
               }}
@@ -761,11 +799,12 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
       >
         <button
           onClick={() => setShowFaceSelector(!showFaceSelector)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 12px',
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 14px',
+              minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
             background: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '16px',
@@ -846,7 +885,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                       window.location.hash = '#face-photos';
                     }}
                     style={{
-                      padding: '6px 12px',
+                      padding: '10px 16px',
+                      minHeight: '44px',
                       background: 'rgba(139, 92, 246, 0.1)',
                       border: '1px solid rgba(139, 92, 246, 0.3)',
                       borderRadius: '8px',
@@ -1018,7 +1058,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '6px 12px',
+                padding: '8px 14px',
+                minHeight: '44px',
                 background: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '16px',
@@ -1028,8 +1069,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 cursor: generating ? 'not-allowed' : 'pointer',
                 whiteSpace: 'nowrap',
                 opacity: generating ? 0.5 : 1,
-                transition: 'all 0.15s ease',
-                height: '32px'
+                transition: 'all 0.15s ease'
               }}
               onMouseEnter={(e) => {
                 if (!generating) {
@@ -1102,6 +1142,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                           alignItems: 'center',
                           gap: '12px',
                           padding: '12px 16px',
+                          minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
                           background: isSelected 
                             ? 'rgba(139, 92, 246, 0.15)' 
                             : 'transparent',
@@ -1157,7 +1198,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              padding: '6px 12px',
+              padding: '8px 14px',
+              minHeight: '44px',
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '16px',
@@ -1167,8 +1209,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
               cursor: generating ? 'not-allowed' : 'pointer',
               whiteSpace: 'nowrap',
               opacity: generating ? 0.5 : 1,
-              transition: 'all 0.15s ease',
-              height: '32px'
+              transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
               if (!generating) {
@@ -1208,8 +1249,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '32px',
-              height: '32px',
+              width: '44px',
+              height: '44px',
               padding: 0,
               background: (!prompt || prompt.trim() === '' || generating || !selectedModel)
                 ? 'rgba(255, 255, 255, 0.05)'
@@ -1237,6 +1278,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 e.target.style.transform = 'scale(1)';
               }
             }}
+            aria-label="Generate images"
           >
             {generating ? (
               <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
@@ -1531,6 +1573,33 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
             }}>
               This usually takes 10-30 seconds
             </p>
+            <div style={{
+              marginTop: '20px'
+            }}>
+              <div style={{
+                height: PROGRESS.BAR_HEIGHT,
+                width: '100%',
+                maxWidth: '320px',
+                margin: '0 auto',
+                background: PROGRESS.BAR_BACKGROUND,
+                borderRadius: PROGRESS.BAR_BORDER_RADIUS,
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  height: '100%',
+                  width: `${progressPercent}%`,
+                  background: PROGRESS.BAR_FILL,
+                  transition: PROGRESS.TRANSITION
+                }} />
+              </div>
+              <p style={{
+                fontSize: '12px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                marginTop: '8px'
+              }}>
+                Progress: {generatingCount}/{numVariations}
+              </p>
+            </div>
           </motion.div>
         )}
 
@@ -1567,7 +1636,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 <button
                   onClick={handleDownload}
                   style={{
-                    padding: '8px 16px',
+                    padding: '10px 16px',
+                    minHeight: '44px',
                     background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '6px',
@@ -1593,7 +1663,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                   onClick={handleRegenerate}
                   disabled={generating}
                   style={{
-                    padding: '8px 16px',
+                    padding: '10px 16px',
+                    minHeight: '44px',
                     background: 'rgba(139, 92, 246, 0.1)',
                     border: '1px solid rgba(139, 92, 246, 0.3)',
                     borderRadius: '6px',
@@ -1623,7 +1694,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                 <button
                   onClick={handleShare}
                   style={{
-                    padding: '8px 16px',
+                    padding: '10px 16px',
+                    minHeight: '44px',
                     background: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '6px',
@@ -1704,16 +1776,40 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                     gap: '6px'
                   }}>
                     <button
-                      onClick={() => {
-                        const a = document.createElement('a');
-                        a.href = img.imageUrl;
-                        a.download = `ai-image-v${index + 1}-${Date.now()}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
+                      onClick={async () => {
+                        try {
+                          const a = document.createElement('a');
+                          a.href = img.imageUrl;
+                          a.download = `ai-image-v${index + 1}-${Date.now()}.png`;
+                          document.body.appendChild(a);
+                          a.click();
+                          document.body.removeChild(a);
+
+                          // Show rate app modal after download (if user hasn't rated yet)
+                          const hasRated = localStorage.getItem('hasRatedApp') === 'true';
+                          const hasSeenRatingPrompt = localStorage.getItem('hasSeenRatingPrompt') === 'true';
+                          
+                          if (user && !hasRated) {
+                            const lastPromptTime = localStorage.getItem('lastRatingPromptTime');
+                            const shouldShow = !hasSeenRatingPrompt || 
+                              (lastPromptTime && Date.now() - parseInt(lastPromptTime) > 7 * 24 * 60 * 60 * 1000);
+                            
+                            if (shouldShow) {
+                              setTimeout(() => {
+                                setShowRateAppModal(true);
+                                localStorage.setItem('hasSeenRatingPrompt', 'true');
+                                localStorage.setItem('lastRatingPromptTime', Date.now().toString());
+                              }, 500);
+                            }
+                          }
+                        } catch (err) {
+                          logger.error('Individual download error:', err);
+                        }
                       }}
                       style={{
-                        padding: '6px 10px',
+                        padding: '8px 12px',
+                        minWidth: '36px',
+                        minHeight: '36px',
                         background: 'rgba(0, 0, 0, 0.7)',
                         border: '1px solid rgba(255, 255, 255, 0.2)',
                         borderRadius: '6px',
@@ -1803,6 +1899,16 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
           </div>
         </motion.div>
       )}
+
+      {/* Rate App Modal */}
+      <RateAppModal
+        isOpen={showRateAppModal}
+        onClose={() => setShowRateAppModal(false)}
+        onSuccess={(data) => {
+          // Credits updated via event dispatch in modal
+          logger.log('[AIImageGenerator] Rating reward successful:', data);
+        }}
+      />
       </div>
     </div>
   );
