@@ -28,6 +28,7 @@ import { db } from './firebase-config';
 import { getUserProfile, installPackage as firestoreInstallPackage } from './firestoreService';
 import { getErrorMessage } from './utils/errorHandler';
 import { logger } from './utils/logger.js';
+import { trackPackagePublished } from './utils/engagementService';
 
 // Collection name for packages
 const PACKAGES_COLLECTION = 'packages';
@@ -380,7 +381,6 @@ export const publishPackage = async (packageId) => {
     
     // Track achievement for the creator
     if (packageData.author && packageData.author.userId) {
-      const { trackPackagePublished } = await import('./utils/engagementService');
       trackPackagePublished(packageData.author.userId).catch(err => {
         logger.warn('[publishPackage] Error tracking achievement:', err);
       });

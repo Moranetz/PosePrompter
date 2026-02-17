@@ -90,10 +90,7 @@ export default defineConfig({
           if (id.includes('AIImageGenerator')) {
             return 'ai-generator';
           }
-          if (id.includes('PackageMarketplace')) {
-            return 'package-marketplace';
-          }
-          // API and utilities
+// API and utilities
           if (id.includes('/api/') || id.includes('/utils/')) {
             return 'api-utils';
           }

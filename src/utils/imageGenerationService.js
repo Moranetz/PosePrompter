@@ -14,6 +14,7 @@
  */
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { reportError } from './errorReportingService.js';
 import { 
   doc, 
   getDoc, 
@@ -384,7 +385,6 @@ const generateViaBackend = async (provider, prompt, options = {}, userId = null)
     // Report error to user's account for debugging
     if (userId) {
       try {
-        const { reportError } = await import('./errorReportingService.js');
         await reportError(userId, error, {
           component: 'imageGenerationService',
           action: 'generateViaBackend',
@@ -612,7 +612,6 @@ export const generateImage = async (provider, prompt, options = {}, userId = nul
     // Report error to user's account for debugging
     if (userId) {
       try {
-        const { reportError } = await import('./errorReportingService.js');
         await reportError(userId, error, {
           component: 'imageGenerationService',
           action: 'generateImage',

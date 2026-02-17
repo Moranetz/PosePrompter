@@ -21,6 +21,7 @@ import {
 import { db } from './firebase-config';
 import { getErrorMessage } from './utils/errorHandler';
 import { logger } from './utils/logger.js';
+import { trackPackageInstalled } from './utils/engagementService';
 
 // Collection name for users
 const USERS_COLLECTION = 'users';
@@ -855,7 +856,6 @@ export const installPackageWithMerge = async (userId, packageData, mergeMode = '
         const { getPackage } = await import('./packageService');
         const pkg = await getPackage(packageData.packageId);
         if (pkg && pkg.author && pkg.author.userId) {
-          const { trackPackageInstalled } = await import('./utils/engagementService');
           trackPackageInstalled(pkg.author.userId).catch(err => {
             logger.warn('[installPackageWithMerge] Error tracking achievement:', err);
           });
