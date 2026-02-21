@@ -9,19 +9,29 @@ const Header = ({ onOpenVisibilitySettings }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
+  const [restartConfirmStep, setRestartConfirmStep] = useState(0); // 0=idle, 1=confirm, 2=confirmed
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [credits, setCredits] = useState(null);
   const [creditsLoading, setCreditsLoading] = useState(false);
   const userMenuRef = useRef(null);
   const { user, signOut } = useAuth();
 
+  // Reset confirmation when menu closes
+  useEffect(() => {
+    if (!userMenuOpen && !mobileMenuOpen) {
+      setRestartConfirmStep(0);
+    }
+  }, [userMenuOpen, mobileMenuOpen]);
+
   const handleRestartAccount = async (onComplete) => {
     if (!user || !user.uid || isRestarting) return;
 
-    const confirmed = window.confirm(
-      'Restart your account?\n\nThis will clear your favorites, customizations, and local cache, then sign you out so you can start fresh.'
-    );
-    if (!confirmed) return;
+    // Two-step confirmation: first click shows warning, second click confirms
+    if (restartConfirmStep === 0) {
+      setRestartConfirmStep(1);
+      return;
+    }
+    if (restartConfirmStep < 2) return; // Wait for second confirmation
 
     setIsRestarting(true);
 
@@ -513,35 +523,86 @@ const Header = ({ onOpenVisibilitySettings }) => {
                       Sign out
                     </button>
 
-                    <button
-                      onClick={() => handleRestartAccount(() => setUserMenuOpen(false))}
-                      disabled={isRestarting}
-                      style={{
-                        width: '100%',
-                        padding: '6px 10px',
-                        background: 'transparent',
-                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                    {/* Two-step restart: first click reveals warning, second confirms */}
+                    {restartConfirmStep === 0 ? (
+                      <button
+                        onClick={() => setRestartConfirmStep(1)}
+                        style={{
+                          width: '100%',
+                          padding: '6px 10px',
+                          background: 'transparent',
+                          border: 'none',
+                          borderRadius: '6px',
+                          color: 'var(--text-faint, #52525b)',
+                          fontSize: '11px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          textAlign: 'left'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'rgba(248, 113, 113, 0.7)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'var(--text-faint, #52525b)';
+                        }}
+                      >
+                        Restart account...
+                      </button>
+                    ) : (
+                      <div style={{
+                        padding: '8px',
+                        background: 'rgba(239, 68, 68, 0.06)',
+                        border: '1px solid rgba(239, 68, 68, 0.2)',
                         borderRadius: '6px',
-                        color: 'rgba(248, 113, 113, 0.9)',
-                        fontSize: '12px',
-                        cursor: isRestarting ? 'default' : 'pointer',
-                        opacity: isRestarting ? 0.6 : 0.9,
-                        transition: 'all 0.2s ease',
-                        textAlign: 'left'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (isRestarting) return;
-                        e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
-                        e.currentTarget.style.color = '#fecaca';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = 'rgba(248, 113, 113, 0.9)';
-                      }}
-                      title="Restart clears favorites and local data but keeps your credits."
-                    >
-                      {isRestarting ? 'Restarting…' : 'Restart account'}
-                    </button>
+                      }}>
+                        <p style={{
+                          margin: '0 0 8px',
+                          fontSize: '11px',
+                          color: 'rgba(248, 113, 113, 0.9)',
+                          lineHeight: 1.4,
+                        }}>
+                          This clears favorites, customizations, and local data. Credits are kept.
+                        </p>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <button
+                            onClick={() => setRestartConfirmStep(0)}
+                            style={{
+                              flex: 1,
+                              padding: '5px 8px',
+                              background: 'rgba(255, 255, 255, 0.06)',
+                              border: '1px solid rgba(255, 255, 255, 0.1)',
+                              borderRadius: '4px',
+                              color: 'var(--text-secondary, #a1a1aa)',
+                              fontSize: '11px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => {
+                              setRestartConfirmStep(2);
+                              handleRestartAccount(() => setUserMenuOpen(false));
+                            }}
+                            disabled={isRestarting}
+                            style={{
+                              flex: 1,
+                              padding: '5px 8px',
+                              background: 'rgba(239, 68, 68, 0.15)',
+                              border: '1px solid rgba(239, 68, 68, 0.4)',
+                              borderRadius: '4px',
+                              color: '#fca5a5',
+                              fontSize: '11px',
+                              fontWeight: 600,
+                              cursor: isRestarting ? 'default' : 'pointer',
+                              opacity: isRestarting ? 0.6 : 1,
+                            }}
+                          >
+                            {isRestarting ? 'Restarting...' : 'Yes, restart'}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -785,30 +846,80 @@ const Header = ({ onOpenVisibilitySettings }) => {
                   Sign out
                 </button>
 
-                <button
-                  onClick={() =>
-                    handleRestartAccount(() => {
-                      setMobileMenuOpen(false);
-                    })
-                  }
-                  disabled={isRestarting}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    background: 'transparent',
-                    border: '1px solid rgba(239, 68, 68, 0.4)',
+                {/* Two-step restart: first click reveals warning, second confirms */}
+                {restartConfirmStep === 0 ? (
+                  <button
+                    onClick={() => setRestartConfirmStep(1)}
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      background: 'transparent',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: 'var(--text-faint, #52525b)',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Restart account...
+                  </button>
+                ) : (
+                  <div style={{
+                    padding: '10px 12px',
+                    background: 'rgba(239, 68, 68, 0.06)',
+                    border: '1px solid rgba(239, 68, 68, 0.2)',
                     borderRadius: '8px',
-                    color: 'rgba(248, 113, 113, 0.9)',
-                    fontSize: '13px',
-                    cursor: isRestarting ? 'default' : 'pointer',
-                    textAlign: 'left',
-                    opacity: isRestarting ? 0.6 : 0.9,
-                    transition: 'all 0.2s ease'
-                  }}
-                  title="Restart clears favorites and local data but keeps your credits."
-                >
-                  {isRestarting ? 'Restarting…' : 'Restart account'}
-                </button>
+                  }}>
+                    <p style={{
+                      margin: '0 0 10px',
+                      fontSize: '12px',
+                      color: 'rgba(248, 113, 113, 0.9)',
+                      lineHeight: 1.4,
+                    }}>
+                      This clears favorites, customizations, and local data. Credits are kept.
+                    </p>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() => setRestartConfirmStep(0)}
+                        style={{
+                          flex: 1,
+                          padding: '8px 10px',
+                          background: 'rgba(255, 255, 255, 0.06)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: 'var(--text-secondary, #a1a1aa)',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          setRestartConfirmStep(2);
+                          handleRestartAccount(() => setMobileMenuOpen(false));
+                        }}
+                        disabled={isRestarting}
+                        style={{
+                          flex: 1,
+                          padding: '8px 10px',
+                          background: 'rgba(239, 68, 68, 0.15)',
+                          border: '1px solid rgba(239, 68, 68, 0.4)',
+                          borderRadius: '6px',
+                          color: '#fca5a5',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          cursor: isRestarting ? 'default' : 'pointer',
+                          opacity: isRestarting ? 0.6 : 1,
+                        }}
+                      >
+                        {isRestarting ? 'Restarting...' : 'Yes, restart'}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

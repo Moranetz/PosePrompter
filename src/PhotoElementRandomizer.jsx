@@ -52,6 +52,9 @@ import {
 } from './utils/personalizationService';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 import AuthModal from './components/AuthModal';
+import PromptCompletenessBar from './components/PromptCompletenessBar';
+import RandomizeSparkle from './components/RandomizeSparkle';
+import GroupContextBadge from './components/GroupContextBadge';
 
 const ONBOARDING_STORAGE_KEY = 'poseprompt_onboarding_complete';
 
@@ -2816,6 +2819,7 @@ const PhotoElementRandomizer = () => {
   const [activeCategory, setActiveCategory] = useState('Aesthetic');
   const [expandedGroup, setExpandedGroup] = useState(2); // Start with "Aesthetic & Style"
   const [isGenerating, setIsGenerating] = useState(false);
+  const [randomizeTrigger, setRandomizeTrigger] = useState(0);
   
   // User data state
   const [userCustomOptions, setUserCustomOptions] = useState({});
@@ -3437,8 +3441,9 @@ const PhotoElementRandomizer = () => {
       message: 'Randomized all categories',
     });
     
-    // Trigger figure spin animation
+    // Trigger figure spin animation + sparkle effect
     setIsGenerating(true);
+    setRandomizeTrigger(prev => prev + 1);
     setTimeout(() => setIsGenerating(false), 800);
     
     // Track prompt generation for engagement
@@ -4790,6 +4795,17 @@ const PhotoElementRandomizer = () => {
 
           {/* Center workspace column */}
           <div className="workspace-stacked">
+            {/* Prompt Completeness Bar - Progress + live preview (Endowed Progress Effect) */}
+            <PromptCompletenessBar
+              categoryGroups={categoryGroups}
+              includedCategories={includedCategories}
+              selections={selections}
+              categories={mergedCategories}
+              generatedPrompt={generatedPrompt}
+              onCopy={copyToClipboard}
+              copied={copied}
+            />
+
             {/* Preview and Actions Area */}
             <div className="preview-actions-area">
               {/* Preview Area */}
@@ -4799,6 +4815,18 @@ const PhotoElementRandomizer = () => {
                   position: 'relative',
                 }}
               >
+                {/* Group Context Badge - ambient cue for current domain */}
+                <div style={{
+                  position: 'absolute',
+                  top: '4px',
+                  left: '12px',
+                  zIndex: 4,
+                }}>
+                  <GroupContextBadge expandedGroup={expandedGroup} />
+                </div>
+
+                {/* Randomize sparkle celebration */}
+                <RandomizeSparkle trigger={randomizeTrigger} />
                 <div
                   style={{
                     position: 'relative',
