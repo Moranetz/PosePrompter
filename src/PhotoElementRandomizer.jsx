@@ -381,6 +381,11 @@ const PhotoElementRandomizer = () => {
         title: "Raw Early Webcam Nostalgia",
         prompt: "Generate an image that embodies raw intimately awkward and deeply nostalgic \"early webcam/mid-2000s internet\" aesthetic evoking sense of casual vulnerability and unpolished self-expression. This vibe is entirely product of specific often technically limited imaging process creating visual experience far removed from how scene would be perceived by human eye. Camera simulation utilizes vintage low-resolution webcam specifically emphasizing its inherent technical constraints as aesthetic choices - image exhibits noticeable yet subtle pixelation and softness characteristic of low-megapixel sensors this isn't sharp modern clarity it's deliberate digital artifact that immediately transports viewer to earlier era of internet communication making image feel authentic to its niche it creates dreamlike slightly fuzzy quality that contributes to nostalgic vulnerability - visible digital noise chroma and luminance noise particularly in darker areas and flat tones furthermore subtle compression artifacts should be present especially around edges or areas of detail these imperfections crucial they are not errors but integral elements that lend raw unpolished and genuinely internet-native texture that human eye would never perceive in real life they contribute to image's grittiness and authenticity - camera exhibits limited dynamic range leading to areas where highlights are subtly blown out clipped to pure white without detail and shadows are slightly crushed losing detail in dark areas this lack of sophisticated light handling makes image feel stark and unfiltered amplifying sense of unflattering honesty and awkward vulnerability direct contrast to polished high-dynamic-range photography - perspective suggests fixed slightly wide-angle lens typical of webcams which can subtly distort facial features if too close contributing to awkward charm fixed focus means certain areas might be slightly soft adding to unpolished feel. Subject framed in medium-close shot looking directly at camera with intense slightly bemused yet deeply direct gaze holding pair of glasses in front of face in unconventional almost playful manner this expression amplified by camera's lo-fi quality conveys intimate awkwardness direct stare combined with slightly unusual pose feels deeply personal and little self-conscious common expression during early webcam interactions low fidelity of image enhances sense of raw unedited encounter - unfiltered vulnerability lack of photographic polish strips away artifice making emotional state feel more exposed and genuine image doesn't try to hide imperfections it embraces them making subject feel more relatable and vulnerable - subtle playfulness gesture with glasses adds touch of quirky playfulness hinting at personality despite serious gaze nuance that lo-fi aesthetic makes feel more spontaneous. Lighting utilizes harsh uneven and often unflattering indoor ambient lighting typical of dimly lit room with overhead artificial light - camera's low-light performance poor resulting in general flatness of light across scene with shadows that lack depth and highlights that lack nuance this absence of sophisticated light rendering contributes to raw unpolished and slightly depressing aesthetic - visible light bulb hanging from ceiling in background rendered as harsh almost blown-out point of light contributing to raw unfiltered quality of lighting. Color palette features slightly cool desaturated color grade with subtle green or magenta cast reminiscent of early digital sensors and display technologies - colors muted and slightly dull lacking vibrant saturation of modern cameras this contributes directly to nostalgic retro feel making image instantly recognizable as belonging to specific era - skin tones appear somewhat flat and lack luminous quality of high-end photography reflecting camera's limited ability to render subtle skin variations reinforcing unenhanced real aesthetic. Composition maintains straight-on static composition typical of fixed webcam view making image feel like unedited screen capture. Textures rendered with inherent noise and pixelation of low-res capture creating digital grain or texture across entire image that feels distinctly different from film grain this digital texture visible in hair sweater and background wall contributes heavily to image's unique lo-fi charm and tactile rawness effect entirely created by camera's limitations and processed in way human eye never perceives.",
       },
+      {
+        id: "aesthetic_023",
+        title: "Early 2000s Indie Sleaze Suburban Angst",
+        prompt: "Generate an image that embodies a raw rebellious \"early 2000s indie sleaze\" or \"suburban angst\" aesthetic charged with a sense of defiant youth and unfiltered authenticity. This vibe is not merely captured but aggressively amplified by the camera's specific characteristics creating a visual narrative far more impactful than direct observation.",
+      },
     ],
 
     // ============================================================================
@@ -452,6 +457,11 @@ const PhotoElementRandomizer = () => {
         id: "bodypose_013",
         title: "Innocent",
         prompt: "The paw gesture creates an innocent/vicious contradiction, a trope lifted from alt-Japanese fashion subcultures.",
+      },
+      {
+        id: "bodypose_014",
+        title: "Casual Defiant Mid-Exhale Smoke",
+        prompt: "Her pose is casual and almost defiant mid-exhale of smoke with her gaze obscured by the smoke enhancing the mystery and focus on the act itself.",
       },
     ],
 
@@ -2216,6 +2226,11 @@ const PhotoElementRandomizer = () => {
         title: "Contemplative Introspection Architecture",
         prompt: "Medium-close slightly off-center composition placing subject within context of architecture and vast ocean with relaxed confident pose yet hint of contemplative introspection looking directly at viewer inviting connection",
       },
+      {
+        id: "framing_017",
+        title: "Full-Body Low-Angle Central Pool",
+        prompt: "Maintain a full-body slightly low-angle composition placing her centrally and allowing the pool and fence to frame her.",
+      },
     ],
 
     'CameraAngle': [
@@ -2391,6 +2406,11 @@ const PhotoElementRandomizer = () => {
         title: "Logitech QuickCam Internet-Native",
         prompt: "Captured on vintage low-resolution webcam Logitech QuickCam or early laptop's built-in camera from 2004-2008 specifically emphasizing inherent technical constraints as aesthetic choices. Image exhibits noticeable yet subtle pixelation and softness characteristic of low-megapixel sensors creating dreamlike slightly fuzzy quality. Visible digital noise chroma and luminance noise particularly in darker areas and flat tones. Subtle compression artifacts present especially around edges or areas of detail these imperfections integral elements that lend raw unpolished and genuinely internet-native texture. Limited dynamic range leading to areas where highlights are subtly blown out and shadows are slightly crushed losing detail making image feel stark and unfiltered. Fixed slightly wide-angle lens typical of webcams can subtly distort facial features if too close contributing to awkward charm fixed focus means certain areas might be slightly soft adding to unpolished feel.",
       },
+      {
+        id: "cameratype_025",
+        title: "Canon PowerShot Gritty Realism",
+        prompt: "This image must simulate being captured on an early 2000s consumer-grade digital point-and-shoot camera Canon PowerShot A-series. Limited dynamic range gritty realism - the camera's inherently limited dynamic range should be evident - highlights should be noticeably clipped blown out and shadows should be deep and slightly crushed losing detail in both extremes - this lack of subtle tonal gradation is a signature of older digital cameras lending a gritty almost unforgiving realism to the scene mirroring the raw unpolished emotion. Soft focus and chromatic aberration imperfect authenticity - the lens should exhibit a slight softness or imperfection in focus especially towards the edges and potentially subtle chromatic aberration color fringing around high-contrast areas - these flaws in real-life optics are deliberately embraced here to create an authentic un-retouched feel suggesting a moment caught spontaneously rather than meticulously posed.",
+      },
     ],
 
     'Lighting': [
@@ -2443,6 +2463,11 @@ const PhotoElementRandomizer = () => {
         id: "lighting_010",
         title: "Serene Complexity Diffused",
         prompt: "Soft Natural Diffused Daylight: Soft natural diffused daylight creating even illumination and serene complexity - natural light providing soft even illumination that reveals subtle textures and colors without harsh shadows",
+      },
+      {
+        id: "lighting_011",
+        title: "Harsh On-Camera Flash Override",
+        prompt: "The light is primarily from the harsh direct on-camera flash overriding any natural ambient light. Apply a cool-leaning slightly desaturated color grade with a distinct digital film simulation feel of early point-and-shoot cameras.",
       },
     ],
 
@@ -2512,6 +2537,11 @@ const PhotoElementRandomizer = () => {
         title: "Portra 400 Curated Artistic",
         prompt: "Sophisticated Warm-Neutral Color Grade for Earthy Nostalgic Vibrancy: Apply sophisticated warm-neutral color grade meticulously calibrated to evoke color science of Kodak Portra 400 film aesthetic. Overall color palette subtly desaturated yet rich and vibrant creating expensive and timeless aesthetic that feels more curated and artistic than direct unedited capture. Greens of background warm and inviting not overly yellow or harsh. Skin tones rendered with natural luminous quality rich in subtle healthy undertones peaches and creams avoiding any plastic overly smoothed or digitally flat appearance. Excellent color separation where different hues remain distinct and harmonious within overall palette contributing to visual pleasure.",
       },
+      {
+        id: "colorpalette_014",
+        title: "Muted Cool Suburban Mundanity",
+        prompt: "Slightly muted cool tones evoking suburban mundanity - the colors should lean towards cooler greens and blues in the environment with bright white being almost clinical due to the flash - plaid patterns should retain their design but with a slightly desaturated muted feel - this palette evokes a sense of suburban mundanity and mild detachment against which rebellious acts stand out.",
+      },
     ],
 
     'Texture': [
@@ -2544,6 +2574,11 @@ const PhotoElementRandomizer = () => {
         id: "texture_006",
         title: "Hyper-Realistic Tangible Immediate",
         prompt: "Intricate Natural Micro-Details: Every crack in weathered rock surface revealing mineral composition - tiny moss leaves and lichen patterns with incredible sharpness - delicate flower petals showing translucent edges and fine veining - varied surfaces from rough stone to soft organic growth - dewdrops clinging to surfaces catching light - tactile richness inviting viewer to reach out and touch - hyper-realistic rendering making scene tangible and immediate",
+      },
+      {
+        id: "texture_007",
+        title: "Raw Un-Beautified Skin Flash Impact",
+        prompt: "Skin tones raw and unfiltered - skin tones should be rendered with a raw un-beautified quality showing natural imperfections and the direct impact of the flash avoiding any overly warm or soft appearance.",
       },
     ],
 
