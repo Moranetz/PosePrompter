@@ -386,6 +386,11 @@ const PhotoElementRandomizer = () => {
         title: "Early 2000s Indie Sleaze Suburban Angst",
         prompt: "Generate an image that embodies a raw rebellious \"early 2000s indie sleaze\" or \"suburban angst\" aesthetic charged with a sense of defiant youth and unfiltered authenticity. This vibe is not merely captured but aggressively amplified by the camera's specific characteristics creating a visual narrative far more impactful than direct observation.",
       },
+      {
+        id: "aesthetic_024",
+        title: "Vintage Americana Indie Film Heroine",
+        prompt: "Generate an image that embodies an effortlessly cool sun-drenched \"vintage Americana\" or \"indie film heroine\" aesthetic infused with a compelling blend of confidence and subtle vulnerability. This entire vibe is not merely a snapshot of reality but is meticulously crafted and amplified by the specific characteristics of analog film photography rendering a scene that feels richer and more emotionally resonant than direct visual experience.",
+      },
     ],
 
     // ============================================================================
@@ -462,6 +467,11 @@ const PhotoElementRandomizer = () => {
         id: "bodypose_014",
         title: "Casual Defiant Mid-Exhale Smoke",
         prompt: "Her pose is casual and almost defiant mid-exhale of smoke with her gaze obscured by the smoke enhancing the mystery and focus on the act itself.",
+      },
+      {
+        id: "bodypose_015",
+        title: "Leaning Car Door Confident Gaze",
+        prompt: "Leaning slightly out of the car door with gaze direct and confident yet with a hint of something unsaid - relaxed posture conveying effortless cool.",
       },
     ],
 
@@ -2231,6 +2241,11 @@ const PhotoElementRandomizer = () => {
         title: "Full-Body Low-Angle Central Pool",
         prompt: "Maintain a full-body slightly low-angle composition placing her centrally and allowing the pool and fence to frame her.",
       },
+      {
+        id: "framing_018",
+        title: "Dynamic Medium Shot Car Door",
+        prompt: "Maintain a dynamic medium shot composition with her leaning slightly out of the car door - the car door frames her adding a sense of candid intimacy.",
+      },
     ],
 
     'CameraAngle': [
@@ -2411,6 +2426,11 @@ const PhotoElementRandomizer = () => {
         title: "Canon PowerShot Gritty Realism",
         prompt: "This image must simulate being captured on an early 2000s consumer-grade digital point-and-shoot camera Canon PowerShot A-series. Limited dynamic range gritty realism - the camera's inherently limited dynamic range should be evident - highlights should be noticeably clipped blown out and shadows should be deep and slightly crushed losing detail in both extremes - this lack of subtle tonal gradation is a signature of older digital cameras lending a gritty almost unforgiving realism to the scene mirroring the raw unpolished emotion. Soft focus and chromatic aberration imperfect authenticity - the lens should exhibit a slight softness or imperfection in focus especially towards the edges and potentially subtle chromatic aberration color fringing around high-contrast areas - these flaws in real-life optics are deliberately embraced here to create an authentic un-retouched feel suggesting a moment caught spontaneously rather than meticulously posed.",
       },
+      {
+        id: "cameratype_026",
+        title: "Contax T2 Portra 400 Organic Film",
+        prompt: "This image must simulate being captured on a 35mm film camera Contax T2 or a classic SLR like a Canon AE-1 paired with a fast prime lens 50mm f/1.4 or 35mm f/2 utilizing Kodak Portra 400 film stock. Film grain authentic texture and nostalgia - the image should exhibit a beautiful organic fine-grained texture characteristic of Portra 400 film subtly visible across all tones - this film grain is a key element that instantly imparts a feeling of authenticity nostalgia and timelessness making the image feel more tactile and real in an artistic sense than a perfectly smooth digital capture - it adds a layer of depth and character that the naked eye does not perceive in real-time. Creamy bokeh intimate focus - the depth of field should be moderately shallow creating a dreamy creamy bokeh that elegantly blurs the background - this effect a hallmark of fast prime lenses on film softly isolates the subject drawing the viewer's eye directly to expressive gaze and relaxed posture intensifying the intimacy of the moment far beyond what natural human vision would achieve - the bokeh should be smooth and pleasing with subtle light transitions. Lens character organic imperfection - the lens should subtly introduce minimal optical imperfections like a very gentle vignetting slight darkening towards the edges and possibly a soft organic flaring if a bright light source is just out of frame - these subtle imperfections are celebrated in film photography adding character and a raw unpolished beauty that enhances the indie film aesthetic unlike the clinical perfection often sought in digital.",
+      },
     ],
 
     'Lighting': [
@@ -2542,6 +2562,11 @@ const PhotoElementRandomizer = () => {
         title: "Muted Cool Suburban Mundanity",
         prompt: "Slightly muted cool tones evoking suburban mundanity - the colors should lean towards cooler greens and blues in the environment with bright white being almost clinical due to the flash - plaid patterns should retain their design but with a slightly desaturated muted feel - this palette evokes a sense of suburban mundanity and mild detachment against which rebellious acts stand out.",
       },
+      {
+        id: "colorpalette_015",
+        title: "Portra 400 Warm Americana Radiance",
+        prompt: "Apply a warm natural and subtly rich color grade directly mimicking the color science of Kodak Portra 400 film. Flattering skin tones natural radiance - skin tones must be rendered with Portra's signature exceptionally natural and luminous quality rich in subtle warm undertones that make her appear effortlessly radiant - this specific film stock is renowned for its ability to capture human skin beautifully giving her a healthy sun-kissed look that feels authentic. Warm earthy palette grounded elegance - the browns of her jacket and the car interior should be rich warm and inviting creating a grounded classic aesthetic - the creamy white of her ribbed tank top should hold a subtle warmth rather than being stark white blending harmoniously with the overall palette. Subtle color separation visual harmony - even within the predominantly warm palette ensure excellent color separation allowing the subtle greens of the distant foliage or the deep blacks of the car interior to remain distinct yet harmonious contributing to the overall visual richness.",
+      },
     ],
 
     'Texture': [
@@ -2580,6 +2605,11 @@ const PhotoElementRandomizer = () => {
         title: "Raw Un-Beautified Skin Flash Impact",
         prompt: "Skin tones raw and unfiltered - skin tones should be rendered with a raw un-beautified quality showing natural imperfections and the direct impact of the flash avoiding any overly warm or soft appearance.",
       },
+      {
+        id: "texture_008",
+        title: "Suede Ribbing Leather Tangible Fidelity",
+        prompt: "Heightened tactile sensation sensory richness - render all textures with exceptional almost tangible fidelity - the soft suede of her jacket the fine ribbing of her tank top the subtle texture of her denim if visible the sleekness of her hair the worn leather of the car seats and the subtle glint of metal details - these textures from the smooth skin to the fabric's weave are rendered with a tactile precision by the film and lens that transcends casual observation inviting a closer more appreciative gaze that accentuates the sensory richness of the scene.",
+      },
     ],
 
     'Mood': [
@@ -2617,6 +2647,11 @@ const PhotoElementRandomizer = () => {
         id: "mood_007",
         title: "Wilderness Resilience Harsh Environments",
         prompt: "Authentic Wilderness Serenity: Mood celebrates raw beauty of nature's resilience and strength - intimate documentary perspective inviting viewer to appreciate minute details of overlooked natural ecosystems - sense of peace connection to earth and quiet contemplation - despite busy composition overall impression is harmonious and grounded - evokes respect for life thriving in harsh environments",
+      },
+      {
+        id: "mood_008",
+        title: "Curated Authentic Subtle Glamour",
+        prompt: "This image is perfectly suited for a fashion editorial an indie lifestyle blog a personal portfolio or a social media feed aiming for a curated authentic and subtly glamorous aesthetic all elevated and made timeless by the unique evocative qualities of film photography.",
       },
     ],
 
