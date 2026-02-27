@@ -6,385 +6,108 @@
 <title>PosePrompter - Onboarding Preview</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #050508;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    -webkit-font-smoothing: antialiased;
+    background: #050508; min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 16px; -webkit-font-smoothing: antialiased;
   }
-
   .modal {
     background: linear-gradient(160deg, #08080f 0%, #0c0c16 50%, #0a0a12 100%);
-    border-radius: 24px;
-    max-width: 920px;
-    width: 100%;
-    border: 1px solid rgba(255,255,255,0.05);
-    position: relative;
-    overflow: hidden;
-    max-height: 94vh;
-    overflow-y: auto;
+    border-radius: 24px; max-width: 920px; width: 100%;
+    border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;
+    max-height: 94vh; overflow-y: auto;
     animation: modalIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 0 80px rgba(0,0,0,0.6), 0 0 200px rgba(120, 80, 200, 0.03);
   }
-
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.92) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
+  @keyframes modalIn { from { opacity:0; transform:scale(0.92) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
   .skip-btn {
-    position: absolute;
-    top: 16px;
-    right: 18px;
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.2);
-    font-size: 13px;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: all 0.3s;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-family: inherit;
-    letter-spacing: 0.3px;
+    position: absolute; top: 16px; right: 18px; background: transparent; border: none;
+    color: rgba(255,255,255,0.2); font-size: 13px; cursor: pointer; padding: 8px 12px;
+    border-radius: 8px; transition: all 0.3s; z-index: 10; display: flex;
+    align-items: center; gap: 5px; font-family: inherit; letter-spacing: 0.3px;
   }
   .skip-btn:hover { color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.04); }
-
-  .layout {
-    display: flex;
-    flex-direction: row;
-    min-height: 520px;
-  }
-
+  .layout { display: flex; flex-direction: row; min-height: 520px; }
   .left-panel {
-    flex: 0 0 46%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 20px;
-    position: relative;
+    flex: 0 0 46%; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 32px 20px; position: relative;
     border-right: 1px solid rgba(255,255,255,0.03);
   }
-
-  .ambient-glow {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    transition: opacity 1.5s, background 1.5s;
-    opacity: 0;
-  }
-
-  .figure-container {
-    width: 100%;
-    max-width: 420px;
-    aspect-ratio: 1;
-    position: relative;
-  }
-
-  .figure-container svg {
-    width: 100%;
-    height: 100%;
-  }
-
+  .ambient-glow { position: absolute; inset: 0; pointer-events: none; transition: opacity 1.5s, background 1.5s; opacity: 0; }
+  .figure-container { width: 100%; max-width: 420px; aspect-ratio: 1; position: relative; }
+  .figure-container svg { width: 100%; height: 100%; }
   .prompt-preview {
-    width: 100%;
-    max-width: 360px;
-    margin-top: 4px;
-    padding: 14px 16px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 12px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    backdrop-filter: blur(10px);
+    width: 100%; max-width: 360px; margin-top: 4px; padding: 14px 16px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px; opacity: 0; transform: translateY(10px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px);
   }
-  .prompt-preview.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .prompt-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-  .prompt-label span {
-    font-size: 9.5px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.3);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-
+  .prompt-preview.visible { opacity: 1; transform: translateY(0); }
+  .prompt-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .prompt-label span { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.5px; }
   .copy-btn {
-    padding: 3px 10px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 6px;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    font-size: 10px;
-    font-weight: 600;
-    transition: all 0.25s;
-    font-family: inherit;
+    padding: 3px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 10px;
+    font-weight: 600; transition: all 0.25s; font-family: inherit;
   }
   .copy-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
-  .copy-btn.copied {
-    background: rgba(34, 197, 94, 0.12);
-    border-color: rgba(34,197,94,0.25);
-    color: #22c55e;
-  }
-
-  .prompt-text {
-    font-size: 11px;
-    color: rgba(255,255,255,0.45);
-    line-height: 1.7;
-    font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace;
-    max-height: 72px;
-    overflow-y: auto;
-  }
-
-  .right-panel {
-    flex: 1;
-    padding: clamp(28px, 4vw, 44px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .right-panel h2 {
-    font-size: clamp(22px, 4vw, 28px);
-    font-weight: 300;
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 6px;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-    animation: fadeSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
-  }
-  .right-panel h2 em {
-    font-style: normal;
-    font-weight: 600;
-    background: linear-gradient(135deg, #c4b5fd, #a78bfa, #818cf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .right-panel > p {
-    font-size: clamp(13px, 2.5vw, 14px);
-    color: rgba(255,255,255,0.3);
-    margin-bottom: 30px;
-    line-height: 1.5;
-    font-weight: 400;
-    animation: fadeSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
-  }
-
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .category-group {
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: catIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  .category-group:nth-child(1) { animation-delay: 0.22s; }
-  .category-group:nth-child(2) { animation-delay: 0.32s; }
-  .category-group:nth-child(3) { animation-delay: 0.42s; }
-  .category-group:nth-child(4) { animation-delay: 0.52s; }
-
-  @keyframes catIn {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .category-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 9px;
-  }
-  .category-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .category-dot.active {
-    box-shadow: 0 0 10px var(--cat-color), 0 0 20px var(--cat-color);
-    transform: scale(1.3);
-  }
-  .category-name {
-    font-size: 11px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.3);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    transition: color 0.4s;
-  }
-
+  .copy-btn.copied { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.25); color: #22c55e; }
+  .prompt-text { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.7; font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace; max-height: 72px; overflow-y: auto; }
+  .right-panel { flex: 1; padding: clamp(28px, 4vw, 44px); display: flex; flex-direction: column; justify-content: center; }
+  .right-panel h2 { font-size: clamp(22px,4vw,28px); font-weight: 300; color: rgba(255,255,255,0.9); margin-bottom: 6px; letter-spacing: -0.5px; line-height: 1.2; animation: fadeSlide 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+  .right-panel h2 em { font-style: normal; font-weight: 600; background: linear-gradient(135deg,#c4b5fd,#a78bfa,#818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .right-panel > p { font-size: clamp(13px,2.5vw,14px); color: rgba(255,255,255,0.3); margin-bottom: 30px; line-height: 1.5; font-weight: 400; animation: fadeSlide 0.6s cubic-bezier(0.16,1,0.3,1) 0.18s both; }
+  @keyframes fadeSlide { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .category-group { margin-bottom: 20px; opacity: 0; animation: catIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+  .category-group:nth-child(1) { animation-delay: 0.22s; } .category-group:nth-child(2) { animation-delay: 0.32s; }
+  .category-group:nth-child(3) { animation-delay: 0.42s; } .category-group:nth-child(4) { animation-delay: 0.52s; }
+  @keyframes catIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+  .category-header { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+  .category-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: all 0.5s cubic-bezier(0.16,1,0.3,1); }
+  .category-dot.active { box-shadow: 0 0 10px var(--cat-color), 0 0 20px var(--cat-color); transform: scale(1.3); }
+  .category-name { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.2px; transition: color 0.4s; }
   .option-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
   .option-btn {
-    padding: 9px 18px;
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px;
-    color: rgba(255,255,255,0.5);
-    font-size: 13px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    white-space: nowrap;
-    font-family: inherit;
-    position: relative;
-    overflow: hidden;
+    padding: 9px 18px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 400;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); white-space: nowrap;
+    font-family: inherit; position: relative; overflow: hidden;
   }
-  .option-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 50%, var(--btn-glow, transparent) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .option-btn:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.12);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  }
+  .option-btn::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 50%, var(--btn-glow,transparent) 0%, transparent 70%); opacity:0; transition:opacity 0.3s; }
+  .option-btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.12); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .option-btn:hover::before { opacity: 1; }
   .option-btn:active { transform: scale(0.96) translateY(0); }
-  .option-btn.selected {
-    font-weight: 600;
-    border-color: transparent;
-    box-shadow: 0 0 20px var(--btn-shadow, transparent);
-  }
-
-  .bottom-section {
-    margin-top: 28px;
-    animation: fadeSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
-  }
-
-  .progress-row {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 16px;
-  }
-  .progress-bar {
-    flex: 1;
-    height: 2px;
-    border-radius: 1px;
-    background: rgba(255,255,255,0.06);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-  }
-  .progress-bar.filled {
-    box-shadow: 0 0 8px var(--bar-color);
-    height: 2.5px;
-  }
-  .progress-count {
-    font-size: 11px;
-    color: rgba(255,255,255,0.2);
-    margin-left: 8px;
-    white-space: nowrap;
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .info-text {
-    font-size: 12.5px;
-    color: rgba(255,255,255,0.25);
-    line-height: 1.6;
-    margin-bottom: 18px;
-    font-weight: 400;
-  }
-
+  .option-btn.selected { font-weight: 600; border-color: transparent; box-shadow: 0 0 20px var(--btn-shadow,transparent); }
+  .bottom-section { margin-top: 28px; animation: fadeSlide 0.6s cubic-bezier(0.16,1,0.3,1) 0.6s both; }
+  .progress-row { display: flex; align-items: center; gap: 5px; margin-bottom: 16px; }
+  .progress-bar { flex: 1; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.06); transition: all 0.5s cubic-bezier(0.16,1,0.3,1); position: relative; }
+  .progress-bar.filled { box-shadow: 0 0 8px var(--bar-color); height: 2.5px; }
+  .progress-count { font-size: 11px; color: rgba(255,255,255,0.2); margin-left: 8px; white-space: nowrap; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .info-text { font-size: 12.5px; color: rgba(255,255,255,0.25); line-height: 1.6; margin-bottom: 18px; font-weight: 400; }
   .cta-btn {
-    width: 100%;
-    padding: 15px 24px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    color: rgba(255,255,255,0.35);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: inherit;
-    position: relative;
-    overflow: hidden;
-    letter-spacing: 0.2px;
+    width: 100%; padding: 15px 24px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; color: rgba(255,255,255,0.35);
+    font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 10px; transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+    font-family: inherit; position: relative; overflow: hidden; letter-spacing: 0.2px;
   }
-  .cta-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6);
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-  .cta-btn:hover {
-    transform: translateY(-1px);
-    border-color: rgba(255,255,255,0.1);
-  }
-  .cta-btn.active {
-    color: #fff;
-    border-color: transparent;
-    box-shadow: 0 4px 30px rgba(120, 80, 200, 0.2), 0 0 60px rgba(120, 80, 200, 0.1);
-    font-weight: 600;
-  }
-  .cta-btn.active::before {
-    opacity: 1;
-    animation: shimmer 4s ease-in-out infinite;
-  }
-  .cta-btn.active span,
-  .cta-btn.active svg { position: relative; z-index: 1; }
-
-  @keyframes shimmer {
-    0%, 100% { filter: hue-rotate(0deg) brightness(1); }
-    33% { filter: hue-rotate(15deg) brightness(1.1); }
-    66% { filter: hue-rotate(-15deg) brightness(1.05); }
-  }
-
+  .cta-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#a855f7,#6366f1,#3b82f6); opacity:0; transition:opacity 0.5s; }
+  .cta-btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.1); }
+  .cta-btn.active { color:#fff; border-color:transparent; box-shadow:0 4px 30px rgba(120,80,200,0.2),0 0 60px rgba(120,80,200,0.1); font-weight:600; }
+  .cta-btn.active::before { opacity:1; animation:shimmer 4s ease-in-out infinite; }
+  .cta-btn.active span, .cta-btn.active svg { position:relative; z-index:1; }
+  @keyframes shimmer { 0%,100% { filter:hue-rotate(0deg) brightness(1); } 33% { filter:hue-rotate(15deg) brightness(1.1); } 66% { filter:hue-rotate(-15deg) brightness(1.05); } }
   @media (max-width: 700px) {
     .layout { flex-direction: column; min-height: auto; }
-    .left-panel {
-      border-right: none;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      padding: 24px 16px 16px;
-      flex: none;
-    }
+    .left-panel { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.03); padding: 24px 16px 16px; flex: none; }
     .modal { border-radius: 18px; }
   }
 </style>
 </head>
 <body>
-
 <div class="modal">
-  <button class="skip-btn" onclick="handleComplete()">
-    skip
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-  </button>
-
+  <button class="skip-btn" onclick="handleComplete()">skip <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   <div class="layout">
     <div class="left-panel">
       <div class="ambient-glow" id="ambientGlow"></div>
@@ -392,125 +115,76 @@
         <svg id="figureSvg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="wcFilter" x="-8%" y="-8%" width="116%" height="116%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="3" result="noise"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+              <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="3" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
-            <filter id="glowFilter" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="12" in="SourceGraphic" result="blur"/>
-              <feColorMatrix type="matrix" in="blur" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.4 0" result="softBlur"/>
-              <feMerge>
-                <feMergeNode in="softBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
+            <filter id="washBlur" x="-15%" y="-15%" width="130%" height="130%">
+              <feGaussianBlur stdDeviation="4"/>
             </filter>
-            <filter id="softFilter">
-              <feGaussianBlur stdDeviation="0.6"/>
+            <filter id="glowBlur" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="18"/>
             </filter>
+            <linearGradient id="dressGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop id="gradTop" offset="0%"/><stop id="gradMid" offset="45%"/><stop id="gradBot" offset="100%"/>
+            </linearGradient>
+            <linearGradient id="skinGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop id="skinTop" offset="0%"/><stop id="skinBot" offset="100%"/>
+            </linearGradient>
           </defs>
-
-          <!-- Background effects layer -->
-          <g id="bgLayer"></g>
-          <g id="aestheticLayer"></g>
-          <g id="lightingLayer"></g>
-
-          <!-- Ground shadow -->
-          <ellipse id="groundShadow" cx="200" cy="366" rx="55" ry="6" fill="rgba(0,0,0,0.12)"/>
-
-          <!-- Figure glow (behind figure) -->
-          <g id="figGlowLayer" filter="url(#softFilter)">
-            <ellipse id="figGlow" cx="200" cy="190" rx="65" ry="120" fill="transparent"/>
-          </g>
-
-          <!-- Figure layer -->
+          <g id="bgLayer"/><g id="aestheticLayer"/><g id="lightingLayer"/>
+          <ellipse id="groundShadow" cx="200" cy="370" rx="50" ry="5" fill="rgba(0,0,0,0.08)"/>
+          <ellipse id="figGlow" cx="200" cy="200" rx="70" ry="130" fill="transparent" filter="url(#glowBlur)"/>
+          <path id="bodyWash" fill="transparent" filter="url(#washBlur)" opacity="0.18"/>
           <g id="figureLayer" filter="url(#wcFilter)">
-            <!-- Hair back -->
             <path id="hairBack" fill="transparent"/>
-            <!-- Legs -->
-            <path id="legL" fill="transparent"/>
-            <path id="legR" fill="transparent"/>
-            <!-- Shoes -->
-            <g id="shoeL"><path d="M 3,-3 Q -8,-6 -18,-2 Q -12,2 2,1 Z"/><path d="M 1,0 L 5,13 7,14 3,14 0,1 Z"/></g>
-            <g id="shoeR"><path d="M -3,-3 Q 8,-6 18,-2 Q 12,2 -2,1 Z"/><path d="M -1,0 L -5,13 -7,14 -3,14 0,1 Z"/></g>
-            <!-- Torso -->
-            <path id="torsoPath" fill="transparent"/>
-            <!-- Dress (skirt) -->
-            <path id="dressWash" fill="transparent" opacity="0.2" filter="url(#softFilter)"/>
-            <path id="dressPath" fill="transparent"/>
-            <!-- Dress details -->
-            <path id="necklineDetail" fill="none" stroke="transparent" stroke-width="1.2" stroke-linecap="round" opacity="0.15"/>
-            <path id="beltLine" fill="none" stroke="transparent" stroke-width="1.8" stroke-linecap="round" opacity="0.18"/>
-            <rect id="buckle" fill="transparent" opacity="0.22"/>
-            <path id="fold1" fill="none" stroke="transparent" stroke-width="0.8" opacity="0.06"/>
-            <path id="fold2" fill="none" stroke="transparent" stroke-width="0.8" opacity="0.06"/>
-            <path id="fold3" fill="none" stroke="transparent" stroke-width="0.8" opacity="0.06"/>
-            <!-- Arms -->
-            <path id="armUL" fill="transparent"/>
-            <path id="armLL" fill="transparent"/>
-            <path id="armUR" fill="transparent"/>
-            <path id="armLR" fill="transparent"/>
-            <!-- Hands -->
-            <ellipse id="handL" fill="transparent"/>
-            <ellipse id="handR" fill="transparent"/>
-            <!-- Head -->
-            <ellipse id="headShape" fill="transparent"/>
-            <!-- Face -->
+            <path id="bodyDress" fill="url(#dressGrad)"/>
+            <path id="neckPath" fill="transparent"/>
+            <ellipse id="headShape" fill="url(#skinGrad)"/>
+            <path id="legL" fill="transparent"/><path id="legR" fill="transparent"/>
+            <g id="shoeL"><path d="M 3,-3 Q -6,-5 -14,-1 Q -9,2 2,1 Z"/><path d="M 1,0 L 4,11 6,12 2,12 0,1 Z"/></g>
+            <g id="shoeR"><path d="M -3,-3 Q 6,-5 14,-1 Q 9,2 -2,1 Z"/><path d="M -1,0 L -4,11 -6,12 -2,12 0,1 Z"/></g>
+            <path id="armL" fill="none" stroke="transparent" stroke-width="2.5" stroke-linecap="round"/>
+            <path id="armR" fill="none" stroke="transparent" stroke-width="2.5" stroke-linecap="round"/>
+            <path id="waistDetail" fill="none" stroke="transparent" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
+            <path id="necklineV" fill="none" stroke="transparent" stroke-width="1" stroke-linecap="round" opacity="0.15"/>
+            <path id="fold1" fill="none" stroke="transparent" stroke-width="0.7" opacity="0.08"/>
+            <path id="fold2" fill="none" stroke="transparent" stroke-width="0.7" opacity="0.08"/>
             <g id="faceGroup">
-              <!-- Eyes -->
-              <path id="eyeL" d="M -7.5,-1.5 Q -5.5,-4.5 -3,-1.5 Q -5.5,0.5 -7.5,-1.5 Z" fill="rgba(40,30,30,0.6)"/>
-              <path id="eyeR" d="M 3,-1.5 Q 5.5,-4.5 7.5,-1.5 Q 5.5,0.5 3,-1.5 Z" fill="rgba(40,30,30,0.6)"/>
-              <!-- Upper lash lines -->
-              <path id="lashL" d="M -8.5,-1.8 Q -5.5,-5.2 -2.5,-2" fill="none" stroke="rgba(30,20,20,0.55)" stroke-width="1.3" stroke-linecap="round"/>
-              <path id="lashR" d="M 2.5,-2 Q 5.5,-5.2 8.5,-1.8" fill="none" stroke="rgba(30,20,20,0.55)" stroke-width="1.3" stroke-linecap="round"/>
-              <!-- Lash tips (fashion illustration style) -->
-              <path id="lashTipL" d="M -8.8,-2 L -10,-3.5" fill="none" stroke="rgba(30,20,20,0.35)" stroke-width="0.8" stroke-linecap="round"/>
-              <path id="lashTipR" d="M 8.8,-2 L 10,-3.5" fill="none" stroke="rgba(30,20,20,0.35)" stroke-width="0.8" stroke-linecap="round"/>
-              <!-- Eyebrows -->
-              <path id="browL" d="M -9,-5.5 Q -5.5,-8.5 -2,-6" fill="none" stroke="rgba(50,35,25,0.4)" stroke-width="1" stroke-linecap="round"/>
-              <path id="browR" d="M 2,-6 Q 5.5,-8.5 9,-5.5" fill="none" stroke="rgba(50,35,25,0.4)" stroke-width="1" stroke-linecap="round"/>
-              <!-- Nose -->
-              <path id="nose" d="M -0.3,0 C -0.5,2.5 -1.5,4.5 -1,5.5 Q 0,6.2 1,5.5 C 1.5,4.5 0.5,2.5 0.3,0" fill="none" stroke="rgba(60,40,30,0.18)" stroke-width="0.7" stroke-linecap="round"/>
-              <!-- Lips -->
-              <path id="lipUpper" d="M -3.5,7 Q -1.8,5.8 0,6.5 Q 1.8,5.8 3.5,7" fill="rgba(180,80,80,0.35)" stroke="rgba(160,60,60,0.3)" stroke-width="0.6"/>
-              <path id="lipLower" d="M -3.5,7 Q -1.5,9.5 0,10 Q 1.5,9.5 3.5,7" fill="rgba(180,80,80,0.28)" stroke="rgba(160,60,60,0.2)" stroke-width="0.5"/>
-              <!-- Subtle cheek blush -->
-              <circle id="blushL" cx="-9" cy="3" r="4" fill="rgba(220,120,120,0.08)"/>
-              <circle id="blushR" cx="9" cy="3" r="4" fill="rgba(220,120,120,0.08)"/>
+              <path d="M -7,-1.5 Q -5,-4.5 -2.5,-1.5 Q -5,0.5 -7,-1.5 Z" fill="rgba(40,30,30,0.55)"/>
+              <path d="M 2.5,-1.5 Q 5,-4.5 7,-1.5 Q 5,0.5 2.5,-1.5 Z" fill="rgba(40,30,30,0.55)"/>
+              <path d="M -8,-1.5 Q -5,-5 -2,-1.8" fill="none" stroke="rgba(30,20,20,0.5)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 2,-1.8 Q 5,-5 8,-1.5" fill="none" stroke="rgba(30,20,20,0.5)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M -8.5,-1.8 L -9.8,-3.2" fill="none" stroke="rgba(30,20,20,0.3)" stroke-width="0.7" stroke-linecap="round"/>
+              <path d="M 8.5,-1.8 L 9.8,-3.2" fill="none" stroke="rgba(30,20,20,0.3)" stroke-width="0.7" stroke-linecap="round"/>
+              <path d="M -8,-5 Q -5,-8 -2,-5.5" fill="none" stroke="rgba(50,35,25,0.35)" stroke-width="0.9" stroke-linecap="round"/>
+              <path d="M 2,-5.5 Q 5,-8 8,-5" fill="none" stroke="rgba(50,35,25,0.35)" stroke-width="0.9" stroke-linecap="round"/>
+              <path d="M 0,0 C -0.3,2 -1.2,4 -0.8,5 Q 0,5.8 0.8,5 C 1.2,4 0.3,2 0,0" fill="none" stroke="rgba(60,40,30,0.15)" stroke-width="0.6" stroke-linecap="round"/>
+              <path d="M -3,6.5 Q -1.5,5.5 0,6 Q 1.5,5.5 3,6.5" fill="rgba(180,80,80,0.3)" stroke="rgba(160,60,60,0.25)" stroke-width="0.5"/>
+              <path d="M -3,6.5 Q -1,9 0,9.5 Q 1,9 3,6.5" fill="rgba(180,80,80,0.22)" stroke="rgba(160,60,60,0.15)" stroke-width="0.4"/>
+              <circle cx="-8" cy="3" r="3.5" fill="rgba(220,120,120,0.06)"/>
+              <circle cx="8" cy="3" r="3.5" fill="rgba(220,120,120,0.06)"/>
             </g>
-            <!-- Glasses -->
             <g id="glassesGroup">
-              <path d="M -2,-3 C -3,-6.5 -9.5,-7.5 -12.5,-5 C -14.5,-3 -13.5,2.5 -10.5,3.5 C -7.5,4.5 -3,1 -2,-1 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.3)" stroke-width="1.3"/>
-              <path d="M 2,-3 C 3,-6.5 9.5,-7.5 12.5,-5 C 14.5,-3 13.5,2.5 10.5,3.5 C 7.5,4.5 3,1 2,-1 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.3)" stroke-width="1.3"/>
-              <path d="M -2,-2.5 Q 0,-4.5 2,-2.5" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="1.1"/>
-              <line x1="-13" y1="-4.5" x2="-15" y2="-3" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
-              <line x1="13" y1="-4.5" x2="15" y2="-3" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+              <path d="M -2,-3 C -3,-6 -9,-7 -12,-4.5 C -13.5,-2.5 -12.5,2 -10,3 C -7,4 -3,1 -2,-1 Z" fill="rgba(0,0,0,0.06)" stroke="rgba(0,0,0,0.28)" stroke-width="1.2"/>
+              <path d="M 2,-3 C 3,-6 9,-7 12,-4.5 C 13.5,-2.5 12.5,2 10,3 C 7,4 3,1 2,-1 Z" fill="rgba(0,0,0,0.06)" stroke="rgba(0,0,0,0.28)" stroke-width="1.2"/>
+              <path d="M -2,-2.5 Q 0,-4 2,-2.5" fill="none" stroke="rgba(0,0,0,0.28)" stroke-width="1"/>
+              <line x1="-12.5" y1="-4" x2="-14.5" y2="-2.5" stroke="rgba(0,0,0,0.22)" stroke-width="0.9"/>
+              <line x1="12.5" y1="-4" x2="14.5" y2="-2.5" stroke="rgba(0,0,0,0.22)" stroke-width="0.9"/>
             </g>
-            <!-- Hair front -->
             <ellipse id="hairCap" fill="transparent"/>
             <g id="hairStrands"></g>
-            <!-- Scarf -->
             <path id="scarfWrap" fill="transparent"/>
             <path id="scarfTail1" fill="transparent"/>
-            <path id="scarfTail2" fill="transparent" opacity="0.6"/>
+            <path id="scarfTail2" fill="transparent" opacity="0.5"/>
           </g>
-
-          <!-- Edge highlight -->
-          <path id="edgeHighlight" fill="none" stroke="transparent" stroke-width="0.8" opacity="0.1"/>
-
-          <!-- Ambient particles -->
-          <g id="particleLayer"></g>
-          <!-- Burst particles -->
-          <g id="burstLayer"></g>
+          <g id="particleLayer"/><g id="burstLayer"/>
         </svg>
       </div>
       <div class="prompt-preview" id="promptPreview">
-        <div class="prompt-label">
-          <span>Generated prompt</span>
-          <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy</button>
-        </div>
+        <div class="prompt-label"><span>Generated prompt</span><button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy</button></div>
         <div class="prompt-text" id="promptText"></div>
       </div>
     </div>
-
     <div class="right-panel">
       <h2>Compose your <em>vision</em></h2>
       <p>Select from each category. Watch the prompt write itself.</p>
@@ -520,7 +194,7 @@
         <div class="info-text" id="infoText">Each category adds a layer to the final prompt.</div>
         <button class="cta-btn" id="ctaBtn" onclick="handleComplete()">
           <span>Skip to the studio</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
       </div>
     </div>
@@ -529,11 +203,9 @@
 
 <script>
 // ─── Data ───────────────────────────────────────────────────────────────────
-
 const POSES = {
   default: {
-    head:{x:200,y:52}, neck:{x:200,y:72},
-    sL:{x:183,y:88}, sR:{x:217,y:88},
+    head:{x:200,y:52}, sL:{x:183,y:88}, sR:{x:217,y:88},
     torso:{x:200,y:148}, hL:{x:191,y:176}, hR:{x:209,y:176},
     eL:{x:170,y:138}, eR:{x:230,y:138},
     wL:{x:166,y:192}, wR:{x:234,y:192},
@@ -541,8 +213,7 @@ const POSES = {
     fL:{x:193,y:338}, fR:{x:207,y:338},
   },
   confident: {
-    head:{x:200,y:48}, neck:{x:200,y:70},
-    sL:{x:180,y:86}, sR:{x:220,y:86},
+    head:{x:200,y:48}, sL:{x:180,y:86}, sR:{x:220,y:86},
     torso:{x:200,y:146}, hL:{x:189,y:174}, hR:{x:211,y:174},
     eL:{x:164,y:134}, eR:{x:236,y:134},
     wL:{x:158,y:186}, wR:{x:242,y:186},
@@ -550,8 +221,7 @@ const POSES = {
     fL:{x:188,y:338}, fR:{x:212,y:338},
   },
   relaxed: {
-    head:{x:198,y:54}, neck:{x:198,y:74},
-    sL:{x:183,y:90}, sR:{x:216,y:87},
+    head:{x:198,y:54}, sL:{x:183,y:90}, sR:{x:216,y:87},
     torso:{x:199,y:150}, hL:{x:191,y:178}, hR:{x:209,y:175},
     eL:{x:172,y:148}, eR:{x:232,y:130},
     wL:{x:170,y:200}, wR:{x:236,y:178},
@@ -559,8 +229,7 @@ const POSES = {
     fL:{x:193,y:338}, fR:{x:211,y:338},
   },
   dramatic: {
-    head:{x:198,y:50}, neck:{x:199,y:72},
-    sL:{x:182,y:87}, sR:{x:218,y:85},
+    head:{x:198,y:50}, sL:{x:182,y:87}, sR:{x:218,y:85},
     torso:{x:200,y:148}, hL:{x:192,y:176}, hR:{x:210,y:174},
     eL:{x:166,y:130}, eR:{x:236,y:120},
     wL:{x:160,y:172}, wR:{x:246,y:108},
@@ -570,714 +239,361 @@ const POSES = {
 };
 
 const CATEGORIES = [
-  {
-    key: 'pose', label: 'Pose', color: '#10b981',
-    options: [
-      { id:'confident', label:'Confident', pose:'confident', prompt:'shoulders back, commanding presence, power stance, one foot forward' },
-      { id:'relaxed', label:'Relaxed', pose:'relaxed', prompt:'leaning, one leg bent, hip shifted, elegant S-curve' },
-      { id:'dramatic', label:'Dramatic', pose:'dramatic', prompt:'back half-turned, looking over shoulder, one hand raised, dynamic tension' },
-    ]
-  },
-  {
-    key: 'lighting', label: 'Lighting', color: '#f59e0b',
-    options: [
-      { id:'golden', label:'Golden Hour', lighting:'golden', prompt:'warm golden hour light, soft glow, elongated shadows, romantic radiance' },
-      { id:'dramatic', label:'Hard Light', lighting:'dramatic', prompt:'dramatic hard light, high-contrast, sharp shadows, theatrical' },
-      { id:'soft', label:'Soft Diffused', lighting:'soft', prompt:'soft diffused window light, gentle glow, minimal shadows, dreamlike' },
-    ]
-  },
-  {
-    key: 'aesthetic', label: 'Aesthetic', color: '#a855f7',
-    options: [
-      { id:'timeless', label:'Timeless', prompt:'sophisticated timeless elegance, classic Hollywood, serene luxury' },
-      { id:'indie', label:'Indie Film', prompt:'raw indie warmth, candid feel, analog grain, authentic moment' },
-      { id:'ethereal', label:'Ethereal', prompt:'ethereal softness, dreamy pastels, gentle otherworldly glow' },
-    ]
-  },
-  {
-    key: 'background', label: 'Background', color: '#06b6d4',
-    options: [
-      { id:'garden', label:'Garden', prompt:'lush garden, cascading wisteria, stone terraces, topiary' },
-      { id:'coastal', label:'Coastal', prompt:'private beach, weathered fence, sand dunes, mist over water' },
-      { id:'studio', label:'Studio', prompt:'minimalist interior, high ceilings, large windows, polished floors' },
-    ]
-  },
+  { key:'pose', label:'Pose', color:'#10b981', options:[
+    { id:'confident', label:'Confident', pose:'confident', prompt:'shoulders back, commanding presence, power stance, one foot forward' },
+    { id:'relaxed', label:'Relaxed', pose:'relaxed', prompt:'leaning, one leg bent, hip shifted, elegant S-curve' },
+    { id:'dramatic', label:'Dramatic', pose:'dramatic', prompt:'back half-turned, looking over shoulder, one hand raised, dynamic tension' },
+  ]},
+  { key:'lighting', label:'Lighting', color:'#f59e0b', options:[
+    { id:'golden', label:'Golden Hour', lighting:'golden', prompt:'warm golden hour light, soft glow, elongated shadows, romantic radiance' },
+    { id:'dramatic', label:'Hard Light', lighting:'dramatic', prompt:'dramatic hard light, high-contrast, sharp shadows, theatrical' },
+    { id:'soft', label:'Soft Diffused', lighting:'soft', prompt:'soft diffused window light, gentle glow, minimal shadows, dreamlike' },
+  ]},
+  { key:'aesthetic', label:'Aesthetic', color:'#a855f7', options:[
+    { id:'timeless', label:'Timeless', prompt:'sophisticated timeless elegance, classic Hollywood, serene luxury' },
+    { id:'indie', label:'Indie Film', prompt:'raw indie warmth, candid feel, analog grain, authentic moment' },
+    { id:'ethereal', label:'Ethereal', prompt:'ethereal softness, dreamy pastels, gentle otherworldly glow' },
+  ]},
+  { key:'background', label:'Background', color:'#06b6d4', options:[
+    { id:'garden', label:'Garden', prompt:'lush garden, cascading wisteria, stone terraces, topiary' },
+    { id:'coastal', label:'Coastal', prompt:'private beach, weathered fence, sand dunes, mist over water' },
+    { id:'studio', label:'Studio', prompt:'minimalist interior, high ceilings, large windows, polished floors' },
+  ]},
 ];
 
 // ─── State ──────────────────────────────────────────────────────────────────
-
 let selections = {};
 let currentPose = JSON.parse(JSON.stringify(POSES.default));
 let targetPose = POSES.default;
 let morphProgress = 1;
 let breath = 0;
-let lightingStyle = null;
-let aestheticStyle = null;
-let backgroundStyle = null;
+let lightingStyle = null, aestheticStyle = null, backgroundStyle = null;
 
-// Multi-color system (skin, dress, hair, scarf, shoes, glow)
-const colors = {
-  skin:  { h:25, s:35, l:80, a:0.85 },
+const C = {
   dress: { h:280, s:22, l:72, a:0.55 },
+  skin:  { h:25, s:35, l:82, a:0.85 },
   hair:  { h:28, s:40, l:28, a:0.75 },
   scarf: { h:310, s:28, l:72, a:0.5 },
   shoe:  { h:280, s:18, l:35, a:0.65 },
   glow:  { h:280, s:35, l:60, a:0.12 },
-  outline: { h:225, s:15, l:70, a:0.12 },
-  detail:  { h:225, s:15, l:75, a:0.15 },
 };
-const targets = JSON.parse(JSON.stringify(colors));
+const T = JSON.parse(JSON.stringify(C));
 
-// Particles
-const NUM_PARTICLES = 50;
-const particles = [];
-let burstParticles = [];
+// Helpers
+function v(n) { return Math.round(n * 10) / 10; }
+function lerp(a, b, t) { return a + (b - a) * t; }
+function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+function hsl(c) { return `hsla(${v(c.h)},${v(c.s)}%,${v(c.l)}%,${v(c.a)})`; }
+function lerpC(c, t) { c.h+=(t.h-c.h)*0.025; c.s+=(t.s-c.s)*0.025; c.l+=(t.l-c.l)*0.025; c.a+=(t.a-c.a)*0.025; }
+function lerpPose(cur, tgt, t) { const r = {}; for (const k in tgt) { r[k] = {}; for (const s in tgt[k]) r[k][s] = lerp(cur[k]?.[s] ?? tgt[k][s], tgt[k][s], t); } return r; }
+const $ = id => document.getElementById(id);
 
-function initParticles() {
-  const layer = document.getElementById('particleLayer');
-  for (let i = 0; i < NUM_PARTICLES; i++) {
-    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    const pt = {
-      el: c,
-      x: 60 + Math.random() * 280,
-      y: 30 + Math.random() * 340,
-      vx: (Math.random() - 0.5) * 0.15,
-      vy: -0.05 - Math.random() * 0.1,
-      size: 0.4 + Math.random() * 2.2,
-      alpha: 0.03 + Math.random() * 0.1,
-      phase: Math.random() * Math.PI * 2,
-      drift: 0.3 + Math.random() * 0.7,
-    };
-    c.setAttribute('r', pt.size);
-    c.setAttribute('cx', pt.x);
-    c.setAttribute('cy', pt.y);
-    c.setAttribute('fill', 'white');
-    c.setAttribute('opacity', pt.alpha);
-    layer.appendChild(c);
-    particles.push(pt);
-  }
+// ─── Silhouette Path Builder ────────────────────────────────────────────────
+function bodyDressD(p) {
+  const hemY = Math.max(p.kL.y, p.kR.y) + 20;
+  const fl = Math.sin(breath * 0.5) * 2;
+  const sY = (p.sL.y + p.sR.y) / 2;
+  const cx = (p.sL.x + p.sR.x) / 2;
+  const cxW = p.torso.x;
+  const cxH = (p.hL.x + p.hR.x) / 2;
+  const neckVy = sY + 14;
+  const bustY = sY + 20;
+  const wY = p.torso.y;
+  const hY = (p.hL.y + p.hR.y) / 2;
+  // Half-widths at each height
+  const shW = 18, buW = 16, waW = 9, hiW = 13, heW = 22;
+  return [
+    `M ${v(cx)},${v(neckVy)}`,
+    `C ${v(cx+3)},${v(neckVy-8)} ${v(cx+shW-5)},${v(sY-2)} ${v(cx+shW)},${v(sY+2)}`,
+    `C ${v(cx+shW+1)},${v(sY+10)} ${v(cxW+buW+2)},${v(bustY-4)} ${v(cxW+buW)},${v(bustY)}`,
+    `C ${v(cxW+buW-2)},${v(bustY+6)} ${v(cxW+waW+3)},${v(wY-6)} ${v(cxW+waW)},${v(wY)}`,
+    `C ${v(cxW+waW-1)},${v(wY+6)} ${v(cxH+hiW-2)},${v(hY-6)} ${v(cxH+hiW)},${v(hY)}`,
+    `C ${v(cxH+hiW+4)},${v((hY+hemY)/2)} ${v(cxH+heW+fl)},${v(hemY-12)} ${v(cxH+heW+fl)},${v(hemY)}`,
+    `Q ${v(cxH)},${v(hemY+6)} ${v(cxH-heW-fl)},${v(hemY)}`,
+    `C ${v(cxH-heW-fl)},${v(hemY-12)} ${v(cxH-hiW-4)},${v((hY+hemY)/2)} ${v(cxH-hiW)},${v(hY)}`,
+    `C ${v(cxH-hiW+2)},${v(hY-6)} ${v(cxW-waW+1)},${v(wY+6)} ${v(cxW-waW)},${v(wY)}`,
+    `C ${v(cxW-waW-3)},${v(wY-6)} ${v(cxW-buW+2)},${v(bustY+6)} ${v(cxW-buW)},${v(bustY)}`,
+    `C ${v(cxW-buW-2)},${v(bustY-4)} ${v(cx-shW-1)},${v(sY+10)} ${v(cx-shW)},${v(sY+2)}`,
+    `C ${v(cx-shW+5)},${v(sY-2)} ${v(cx-3)},${v(neckVy-8)} ${v(cx)},${v(neckVy)}`,
+    'Z'
+  ].join(' ');
 }
-initParticles();
 
-// Hair strand configs
-const strandConfigs = [
-  { side: -1, startAngle: -0.78, len: 65, width: 3.5, alphaBase: 0.5, offset: 0 },
-  { side: -1, startAngle: -0.65, len: 55, width: 2.5, alphaBase: 0.35, offset: 1.2 },
-  { side: -1, startAngle: -0.88, len: 48, width: 2, alphaBase: 0.25, offset: 2.5 },
-  { side: 1, startAngle: -0.22, len: 62, width: 3.5, alphaBase: 0.5, offset: 0.5 },
-  { side: 1, startAngle: -0.35, len: 52, width: 2.5, alphaBase: 0.35, offset: 1.8 },
-  { side: 1, startAngle: -0.12, len: 45, width: 2, alphaBase: 0.25, offset: 3 },
+function neckD(p) {
+  const hx = p.head.x, hy = p.head.y;
+  const sY = (p.sL.y + p.sR.y) / 2;
+  return `M ${v(hx-5)},${v(hy+14)} C ${v(hx-4)},${v(hy+20)} ${v(p.sL.x+6)},${v(sY-2)} ${v(p.sL.x+10)},${v(sY+2)} L ${v(p.sR.x-10)},${v(sY+2)} C ${v(p.sR.x-6)},${v(sY-2)} ${v(hx+4)},${v(hy+20)} ${v(hx+5)},${v(hy+14)} Z`;
+}
+
+function hairBackD(p) {
+  const hx = p.head.x, hy = p.head.y, dir = (hx-200)*0.08;
+  return `M ${v(hx-12)},${v(hy-6)} C ${v(hx-22)},${v(hy)} ${v(hx-24+dir)},${v(hy+20)} ${v(hx-20+dir)},${v(hy+50)} C ${v(hx-18+dir)},${v(hy+65)} ${v(hx-14+dir)},${v(hy+68)} ${v(hx-10+dir)},${v(hy+58)} C ${v(hx-6)},${v(hy+42)} ${v(hx-3)},${v(hy+22)} ${v(hx)},${v(hy+12)} C ${v(hx+3)},${v(hy+22)} ${v(hx+6)},${v(hy+38)} ${v(hx+10+dir)},${v(hy+52)} C ${v(hx+14+dir)},${v(hy+62)} ${v(hx+18+dir)},${v(hy+60)} ${v(hx+20+dir)},${v(hy+46)} C ${v(hx+24+dir)},${v(hy+20)} ${v(hx+22)},${v(hy)} ${v(hx+12)},${v(hy-6)} Z`;
+}
+
+function armD(s, e, w) { return `M ${v(s.x)},${v(s.y)} Q ${v(e.x)},${v(e.y)} ${v(w.x)},${v(w.y)}`; }
+
+function legD(knee, foot, hemY) {
+  const tx = knee.x, ty = hemY + 2;
+  return `M ${v(tx-2.5)},${v(ty)} C ${v(tx-2)},${v((ty+foot.y)/2)} ${v(foot.x-2)},${v(foot.y-10)} ${v(foot.x)},${v(foot.y+2)} C ${v(foot.x+2)},${v(foot.y-10)} ${v(tx+2)},${v((ty+foot.y)/2)} ${v(tx+2.5)},${v(ty)} Z`;
+}
+
+function scarfD(p) {
+  const sw1=Math.sin(breath*0.35)*5, sw2=Math.sin(breath*0.28+0.8)*4, sw3=Math.sin(breath*0.4+1.5)*3;
+  const ny=(p.sL.y+p.sR.y)/2-2;
+  const wrap=`M ${v(p.sL.x+8)},${v(ny-3)} Q ${v(p.head.x)},${v(ny+6)} ${v(p.sR.x-6)},${v(ny-2)} Q ${v(p.head.x)},${v(ny+11)} ${v(p.sL.x+8)},${v(ny+3)} Z`;
+  const sx=p.sR.x-8, sy=ny;
+  const t1=`M ${v(sx)},${v(sy)} C ${v(sx+10+sw1)},${v(sy+28)} ${v(sx+3+sw2)},${v(sy+58)} ${v(sx+8+sw1+sw3)},${v(sy+88)} L ${v(sx+5+sw1+sw3)},${v(sy+92)} C ${v(sx-1+sw2)},${v(sy+60)} ${v(sx+5+sw1)},${v(sy+30)} ${v(sx-4)},${v(sy+4)} Z`;
+  const t2=`M ${v(sx-2)},${v(sy+2)} C ${v(sx+5+sw1*0.6)},${v(sy+20)} ${v(sx-1+sw2*0.7)},${v(sy+42)} ${v(sx+3+sw3)},${v(sy+60)} L ${v(sx+1+sw3)},${v(sy+63)} C ${v(sx-4+sw2*0.5)},${v(sy+42)} ${v(sx+1+sw1*0.4)},${v(sy+22)} ${v(sx-5)},${v(sy+5)} Z`;
+  return { wrap, t1, t2 };
+}
+
+// Strand configs
+const STRANDS = [
+  { side:-1, angle:-0.78, len:70, w:3.5, a:0.5, off:0 },
+  { side:-1, angle:-0.65, len:58, w:2.5, a:0.35, off:1.2 },
+  { side:-1, angle:-0.88, len:50, w:2, a:0.25, off:2.5 },
+  { side:1, angle:-0.22, len:68, w:3.5, a:0.5, off:0.5 },
+  { side:1, angle:-0.35, len:55, w:2.5, a:0.35, off:1.8 },
+  { side:1, angle:-0.12, len:48, w:2, a:0.25, off:3 },
 ];
-
-// Create strand elements
 const strandEls = [];
-(function initStrands() {
-  const g = document.getElementById('hairStrands');
-  strandConfigs.forEach(s => {
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('stroke-width', s.width);
-    g.appendChild(path);
-    strandEls.push(path);
+
+// Init strands
+(function() {
+  const g = $('hairStrands');
+  STRANDS.forEach(s => {
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('fill', 'none'); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-width', s.w);
+    g.appendChild(p); strandEls.push(p);
   });
 })();
 
-// ─── SVG Refs ───────────────────────────────────────────────────────────────
-
-const svg = document.getElementById('figureSvg');
-const $ = id => document.getElementById(id);
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-function r(n) { return Math.round(n * 10) / 10; }
-function lerp(a, b, t) { return a + (b - a) * t; }
-function easeInOut(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
-function hsla(c) { return `hsla(${r(c.h)}, ${r(c.s)}%, ${r(c.l)}%, ${r(c.a)})`; }
-function hslaMod(c, dl, da) { return `hsla(${r(c.h)}, ${r(c.s)}%, ${r(c.l + (dl||0))}%, ${r(c.a + (da||0))})`; }
-
-function lerpPose(current, target, t) {
-  const result = {};
-  for (const key in target) {
-    result[key] = {};
-    for (const sub in target[key]) {
-      result[key][sub] = lerp(current[key]?.[sub] ?? target[key][sub], target[key][sub], t);
-    }
-  }
-  return result;
-}
-
-function lerpColor(c, t, speed) {
-  const sp = speed || 0.025;
-  c.h += (t.h - c.h) * sp;
-  c.s += (t.s - c.s) * sp;
-  c.l += (t.l - c.l) * sp;
-  c.a += (t.a - c.a) * sp;
-}
-
-// ─── Path Builders ──────────────────────────────────────────────────────────
-
-function limbPath(start, end, startW, endW) {
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
-  const len = Math.sqrt(dx*dx + dy*dy) || 1;
-  const nx = -dy / len;
-  const ny = dx / len;
-  const mx = (start.x + end.x) / 2;
-  const my = (start.y + end.y) / 2;
-  const aw = (startW + endW) / 2;
-  return `M ${r(start.x+nx*startW/2)},${r(start.y+ny*startW/2)} ` +
-    `Q ${r(mx+nx*aw*0.55)},${r(my+ny*aw*0.55)} ${r(end.x+nx*endW/2)},${r(end.y+ny*endW/2)} ` +
-    `Q ${r(end.x+nx*endW*0.1)},${r(end.y+ny*endW*0.1+1)} ${r(end.x-nx*endW/2)},${r(end.y-ny*endW/2)} ` +
-    `Q ${r(mx-nx*aw*0.45)},${r(my-ny*aw*0.45)} ${r(start.x-nx*startW/2)},${r(start.y-ny*startW/2)} Z`;
-}
-
-function torsoPath(p) {
-  return `M ${r(p.sL.x)},${r(p.sL.y)} ` +
-    `Q ${r(p.head.x-6)},${r(p.sL.y-6)} ${r(p.head.x-6)},${r(p.head.y+18)} ` +
-    `L ${r(p.head.x+6)},${r(p.head.y+18)} ` +
-    `Q ${r(p.head.x+6)},${r(p.sR.y-6)} ${r(p.sR.x)},${r(p.sR.y)} ` +
-    `C ${r(p.sR.x+3)},${r(p.sR.y+22)} ${r(p.torso.x+15)},${r(p.torso.y-12)} ${r(p.torso.x+12)},${r(p.torso.y)} ` +
-    `C ${r(p.torso.x+14)},${r(p.torso.y+10)} ${r(p.hR.x+6)},${r(p.hR.y-6)} ${r(p.hR.x)},${r(p.hR.y)} ` +
-    `Q ${r((p.hL.x+p.hR.x)/2)},${r(Math.max(p.hL.y,p.hR.y)+6)} ${r(p.hL.x)},${r(p.hL.y)} ` +
-    `C ${r(p.hL.x-6)},${r(p.hL.y-6)} ${r(p.torso.x-14)},${r(p.torso.y+10)} ${r(p.torso.x-12)},${r(p.torso.y)} ` +
-    `C ${r(p.torso.x-15)},${r(p.torso.y-12)} ${r(p.sL.x-3)},${r(p.sL.y+22)} ${r(p.sL.x)},${r(p.sL.y)} Z`;
-}
-
-function dressPath(p) {
-  const hemY = Math.max(p.kL.y, p.kR.y) + 18;
-  const flare = 16;
-  const fl = Math.sin(breath * 0.5) * 2;
-  const fl2 = Math.sin(breath * 0.4 + 1.2) * 1.5;
-  const mx = (p.hL.x + p.hR.x) / 2;
-  return `M ${r(p.hL.x-4)},${r(p.hL.y-3)} ` +
-    `C ${r(p.hL.x-10)},${r((p.hL.y+hemY)/2)} ${r(p.kL.x-flare+fl)},${r(hemY-14)} ${r(p.kL.x-flare+fl)},${r(hemY)} ` +
-    `Q ${r(mx-12)},${r(hemY+6+fl2)} ${r(mx)},${r(hemY+5+fl2)} ` +
-    `Q ${r(mx+12)},${r(hemY+6+fl2)} ${r(p.kR.x+flare-fl)},${r(hemY)} ` +
-    `C ${r(p.kR.x+flare-fl)},${r(hemY-14)} ${r(p.hR.x+10)},${r((p.hR.y+hemY)/2)} ${r(p.hR.x+4)},${r(p.hR.y-3)} Z`;
-}
-
-function hairBackPath(p) {
-  const hx = p.head.x;
-  const hy = p.head.y;
-  const dir = (hx - 200) * 0.08;
-  // Flowing hair behind head, both sides
-  return `M ${r(hx-12)},${r(hy-8)} ` +
-    `C ${r(hx-20)},${r(hy-5)} ${r(hx-22+dir)},${r(hy+15)} ${r(hx-18+dir)},${r(hy+45)} ` +
-    `C ${r(hx-16+dir)},${r(hy+60)} ${r(hx-14+dir)},${r(hy+65)} ${r(hx-10+dir)},${r(hy+55)} ` +
-    `C ${r(hx-6)},${r(hy+40)} ${r(hx-4)},${r(hy+20)} ${r(hx)},${r(hy+10)} ` +
-    `C ${r(hx+4)},${r(hy+20)} ${r(hx+6)},${r(hy+35)} ${r(hx+10+dir)},${r(hy+48)} ` +
-    `C ${r(hx+14+dir)},${r(hy+58)} ${r(hx+16+dir)},${r(hy+55)} ${r(hx+18+dir)},${r(hy+42)} ` +
-    `C ${r(hx+22+dir)},${r(hy+15)} ${r(hx+20)},${r(hy-5)} ${r(hx+12)},${r(hy-8)} Z`;
-}
-
-function scarfPaths(p) {
-  const sw1 = Math.sin(breath * 0.35) * 5;
-  const sw2 = Math.sin(breath * 0.28 + 0.8) * 4;
-  const sw3 = Math.sin(breath * 0.4 + 1.5) * 3;
-  const ny = (p.sL.y + p.sR.y) / 2 - 2;
-  const wrap = `M ${r(p.sL.x+8)},${r(ny-3)} Q ${r(p.head.x)},${r(ny+6)} ${r(p.sR.x-6)},${r(ny-2)} Q ${r(p.head.x)},${r(ny+11)} ${r(p.sL.x+8)},${r(ny+3)} Z`;
-  const sx = p.sR.x - 8;
-  const sy = ny;
-  const tail1 = `M ${r(sx)},${r(sy)} C ${r(sx+10+sw1)},${r(sy+28)} ${r(sx+3+sw2)},${r(sy+58)} ${r(sx+8+sw1+sw3)},${r(sy+88)} L ${r(sx+5+sw1+sw3)},${r(sy+92)} C ${r(sx-1+sw2)},${r(sy+60)} ${r(sx+5+sw1)},${r(sy+30)} ${r(sx-4)},${r(sy+4)} Z`;
-  const tail2 = `M ${r(sx-2)},${r(sy+2)} C ${r(sx+5+sw1*0.6)},${r(sy+20)} ${r(sx-1+sw2*0.7)},${r(sy+42)} ${r(sx+3+sw3)},${r(sy+60)} L ${r(sx+1+sw3)},${r(sy+63)} C ${r(sx-4+sw2*0.5)},${r(sy+42)} ${r(sx+1+sw1*0.4)},${r(sy+22)} ${r(sx-5)},${r(sy+5)} Z`;
-  return { wrap, tail1, tail2 };
-}
-
-// ─── Background Drawing (SVG) ──────────────────────────────────────────────
-
-function updateBackground() {
-  const bg = $('bgLayer');
-  bg.innerHTML = '';
-
-  if (backgroundStyle === 'garden') {
-    // Foliage washes
-    bg.innerHTML += `<circle cx="60" cy="200" r="120" fill="rgba(34,197,94,0.05)" filter="url(#softFilter)"/>`;
-    bg.innerHTML += `<circle cx="340" cy="180" r="100" fill="rgba(34,197,94,0.035)" filter="url(#softFilter)"/>`;
-    // Vines
-    const vineStyle = 'fill="none" stroke="rgba(34,197,94,0.06)" stroke-width="1.5" stroke-linecap="round"';
-    bg.innerHTML += `<path d="M 25,400 C 35,300 45,220 55,150 C 50,100 60,60 65,20" ${vineStyle}/>`;
-    bg.innerHTML += `<path d="M 375,400 C 365,280 350,200 345,130 C 350,80 340,40 335,0" ${vineStyle}/>`;
-    // Leaves
-    const lf = 'fill="none" stroke="rgba(34,197,94,0.05)" stroke-width="1.2"';
-    bg.innerHTML += `<ellipse cx="48" cy="180" rx="14" ry="5" transform="rotate(-23 48 180)" ${lf}/>`;
-    bg.innerHTML += `<ellipse cx="58" cy="130" rx="14" ry="5" transform="rotate(-34 58 130)" ${lf}/>`;
-    bg.innerHTML += `<ellipse cx="352" cy="190" rx="14" ry="5" transform="rotate(23 352 190)" ${lf}/>`;
-    // Wisteria
-    let wist = '';
-    for (let i = 0; i < 6; i++) {
-      const wx = 50 + i * 62;
-      wist += `<path d="M ${wx},0 C ${wx+8},20 ${wx-4},40 ${wx+4},55" fill="none" stroke="rgba(168,85,247,0.04)" stroke-width="1.2"/>`;
-    }
-    bg.innerHTML += wist;
-
-  } else if (backgroundStyle === 'coastal') {
-    bg.innerHTML += `<rect x="0" y="0" width="400" height="140" fill="url(#coastalSky)" opacity="0.04"/>`;
-    // Create gradient inline
-    const defs = svg.querySelector('defs');
-    if (!document.getElementById('coastalSky')) {
-      const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-      grad.id = 'coastalSky';
-      grad.setAttribute('x1','0'); grad.setAttribute('y1','0');
-      grad.setAttribute('x2','0'); grad.setAttribute('y2','1');
-      grad.innerHTML = '<stop offset="0%" stop-color="rgb(6,100,150)"/><stop offset="100%" stop-color="transparent"/>';
-      defs.appendChild(grad);
-    }
-    bg.innerHTML += `<line x1="0" y1="125" x2="400" y2="123" stroke="rgba(6,182,212,0.07)" stroke-width="0.8"/>`;
-    // Waves
-    let waves = '';
-    for (let w = 0; w < 5; w++) {
-      const wy = 140 + w * 22;
-      let d = '';
-      for (let x = 0; x <= 400; x += 8) {
-        const y = wy + Math.sin(x * 0.025 + w * 1.8) * (2.5 + w * 0.8);
-        d += (x === 0 ? 'M' : 'L') + ` ${r(x)},${r(y)} `;
-      }
-      waves += `<path d="${d}" fill="none" stroke="rgba(6,182,212,0.04)" stroke-width="0.8"/>`;
-    }
-    bg.innerHTML += waves;
-    bg.innerHTML += `<rect x="0" y="330" width="400" height="70" fill="rgba(245,158,11,0.025)"/>`;
-
-  } else if (backgroundStyle === 'studio') {
-    // Window light beams
-    bg.innerHTML += `<polygon points="30,30 85,30 200,380 100,380" fill="rgba(255,255,255,0.025)"/>`;
-    bg.innerHTML += `<polygon points="315,30 370,30 300,380 200,380" fill="rgba(255,255,255,0.025)"/>`;
-    // Window frames
-    const fs = 'fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"';
-    bg.innerHTML += `<rect x="25" y="25" width="65" height="105" ${fs}/>`;
-    bg.innerHTML += `<line x1="57" y1="25" x2="57" y2="130" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>`;
-    bg.innerHTML += `<line x1="25" y1="77" x2="90" y2="77" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>`;
-    bg.innerHTML += `<rect x="310" y="25" width="65" height="105" ${fs}/>`;
-    bg.innerHTML += `<line x1="342" y1="25" x2="342" y2="130" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>`;
-    bg.innerHTML += `<line x1="310" y1="77" x2="375" y2="77" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>`;
-    bg.innerHTML += `<line x1="0" y1="365" x2="400" y2="365" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/>`;
-  }
-}
-
-function updateAesthetic() {
-  const layer = $('aestheticLayer');
-  layer.innerHTML = '';
-  if (aestheticStyle === 'timeless') {
-    layer.innerHTML = `<circle cx="200" cy="160" r="200" fill="rgba(245,180,80,0.04)" filter="url(#softFilter)"/>`;
-  } else if (aestheticStyle === 'indie') {
-    // Warm vignette
-    layer.innerHTML = `<circle cx="200" cy="200" r="220" fill="rgba(100,50,10,0.04)" filter="url(#softFilter)"/>`;
-  } else if (aestheticStyle === 'ethereal') {
-    layer.innerHTML = `<circle cx="130" cy="110" r="140" fill="rgba(168,85,247,0.04)" filter="url(#softFilter)"/>` +
-      `<circle cx="280" cy="200" r="120" fill="rgba(236,72,153,0.03)" filter="url(#softFilter)"/>` +
-      `<circle cx="170" cy="300" r="130" fill="rgba(6,182,212,0.025)" filter="url(#softFilter)"/>`;
-  }
-}
-
-function updateLighting() {
-  const layer = $('lightingLayer');
-  layer.innerHTML = '';
-  if (lightingStyle === 'golden') {
-    layer.innerHTML = `<rect x="0" y="0" width="400" height="400" fill="rgba(245,180,60,0.05)"/>`;
-  } else if (lightingStyle === 'dramatic') {
-    layer.innerHTML = `<rect x="0" y="0" width="200" height="400" fill="rgba(255,255,255,0.03)"/>` +
-      `<rect x="200" y="0" width="200" height="400" fill="rgba(0,0,0,0.06)"/>`;
-  } else if (lightingStyle === 'soft') {
-    layer.innerHTML = `<circle cx="200" cy="80" r="200" fill="rgba(255,255,255,0.04)" filter="url(#softFilter)"/>`;
-  }
-}
-
-// ─── Figure Update ──────────────────────────────────────────────────────────
-
-function updateFigure() {
-  // Pose interpolation
-  if (morphProgress < 1) {
-    morphProgress = Math.min(1, morphProgress + 0.022);
-    currentPose = lerpPose(currentPose, targetPose, easeInOut(morphProgress));
-  }
-
-  // Apply breathing
-  const bOff = Math.sin(breath) * 1.8;
-  const p = {};
-  for (const key in currentPose) p[key] = { ...currentPose[key] };
-  const breathMap = { head:0.3, neck:0.25, sL:0.15, sR:0.15, eL:0.08, eR:0.08, wL:0.04, wR:0.04 };
-  Object.keys(breathMap).forEach(k => { if (p[k]) p[k].y += bOff * breathMap[k]; });
-
-  const skinColor = hsla(colors.skin);
-  const dressColor = hsla(colors.dress);
-  const hairColor = hsla(colors.hair);
-  const scarfColor = hsla(colors.scarf);
-  const shoeColor = hsla(colors.shoe);
-  const glowColor = hsla(colors.glow);
-  const detailColor = hslaMod(colors.dress, 15, 0);
-  const dressWashColor = hslaMod(colors.dress, 5, -0.25);
-
-  // Ground shadow
-  const heelY = Math.max(p.fL.y, p.fR.y) + 18;
-  $('groundShadow').setAttribute('cx', r(p.torso.x));
-  $('groundShadow').setAttribute('cy', r(heelY));
-  $('groundShadow').setAttribute('fill', `hsla(${r(colors.glow.h)}, ${r(colors.glow.s)}%, 30%, 0.1)`);
-
-  // Figure glow
-  $('figGlow').setAttribute('cx', r(p.torso.x));
-  $('figGlow').setAttribute('cy', r((p.head.y + p.torso.y) / 2 + 20));
-  $('figGlow').setAttribute('fill', glowColor);
-
-  // Hair back
-  $('hairBack').setAttribute('d', hairBackPath(p));
-  $('hairBack').setAttribute('fill', hairColor);
-
-  // Legs
-  $('legL').setAttribute('d', limbPath(p.kL, p.fL, 7, 4.5));
-  $('legL').setAttribute('fill', skinColor);
-  $('legR').setAttribute('d', limbPath(p.kR, p.fR, 7, 4.5));
-  $('legR').setAttribute('fill', skinColor);
-
-  // Shoes
-  $('shoeL').setAttribute('transform', `translate(${r(p.fL.x)},${r(p.fL.y)})`);
-  $('shoeL').querySelectorAll('path').forEach(el => el.setAttribute('fill', shoeColor));
-  $('shoeR').setAttribute('transform', `translate(${r(p.fR.x)},${r(p.fR.y)})`);
-  $('shoeR').querySelectorAll('path').forEach(el => el.setAttribute('fill', shoeColor));
-
-  // Torso
-  $('torsoPath').setAttribute('d', torsoPath(p));
-  $('torsoPath').setAttribute('fill', skinColor);
-
-  // Dress
-  const dp = dressPath(p);
-  $('dressWash').setAttribute('d', dp);
-  $('dressWash').setAttribute('fill', dressWashColor);
-  $('dressPath').setAttribute('d', dp);
-  $('dressPath').setAttribute('fill', dressColor);
-
-  // Dress details
-  const neckY = (p.sL.y + p.sR.y) / 2;
-  $('necklineDetail').setAttribute('d', `M ${r(p.sL.x+7)},${r(neckY+2)} L ${r(p.head.x)},${r(neckY+16)} L ${r(p.sR.x-7)},${r(neckY+2)}`);
-  $('necklineDetail').setAttribute('stroke', detailColor);
-
-  $('beltLine').setAttribute('d', `M ${r(p.torso.x-13)},${r(p.torso.y+1)} Q ${r(p.torso.x)},${r(p.torso.y+3)} ${r(p.torso.x+13)},${r(p.torso.y+1)}`);
-  $('beltLine').setAttribute('stroke', detailColor);
-
-  $('buckle').setAttribute('x', r(p.torso.x-2));
-  $('buckle').setAttribute('y', r(p.torso.y-1));
-  $('buckle').setAttribute('width', '4');
-  $('buckle').setAttribute('height', '4');
-  $('buckle').setAttribute('fill', detailColor);
-
-  // Fold lines
-  const hemY2 = Math.max(p.kL.y, p.kR.y) + 18;
-  const mx = (p.hL.x + p.hR.x) / 2;
-  const ft = p.hL.y + 8;
-  const fb = hemY2 - 6;
-  const fl = Math.sin(breath * 0.5) * 3;
-  const foldStroke = hslaMod(colors.dress, 10, 0);
-  $('fold1').setAttribute('d', `M ${r(mx-8)},${r(ft)} Q ${r(mx-12)},${r((ft+fb)/2)} ${r(mx-14+fl*0.3)},${r(fb)}`);
-  $('fold1').setAttribute('stroke', foldStroke);
-  $('fold2').setAttribute('d', `M ${r(mx+6)},${r(ft)} Q ${r(mx+10)},${r((ft+fb)/2)} ${r(mx+12-fl*0.3)},${r(fb)}`);
-  $('fold2').setAttribute('stroke', foldStroke);
-  $('fold3').setAttribute('d', `M ${r(mx-1)},${r(ft-3)} Q ${r(mx)},${r((ft+fb)/2)} ${r(mx+1)},${r(fb)}`);
-  $('fold3').setAttribute('stroke', foldStroke);
-
-  // Arms
-  $('armUL').setAttribute('d', limbPath(p.sL, p.eL, 7, 5));
-  $('armUL').setAttribute('fill', skinColor);
-  $('armLL').setAttribute('d', limbPath(p.eL, p.wL, 5, 3));
-  $('armLL').setAttribute('fill', skinColor);
-  $('armUR').setAttribute('d', limbPath(p.sR, p.eR, 7, 5));
-  $('armUR').setAttribute('fill', skinColor);
-  $('armLR').setAttribute('d', limbPath(p.eR, p.wR, 5, 3));
-  $('armLR').setAttribute('fill', skinColor);
-
-  // Hands
-  $('handL').setAttribute('cx', r(p.wL.x));
-  $('handL').setAttribute('cy', r(p.wL.y + 2));
-  $('handL').setAttribute('rx', '2.8');
-  $('handL').setAttribute('ry', '3.2');
-  $('handL').setAttribute('fill', skinColor);
-  $('handR').setAttribute('cx', r(p.wR.x));
-  $('handR').setAttribute('cy', r(p.wR.y + 2));
-  $('handR').setAttribute('rx', '2.8');
-  $('handR').setAttribute('ry', '3.2');
-  $('handR').setAttribute('fill', skinColor);
-
-  // Head
-  $('headShape').setAttribute('cx', r(p.head.x));
-  $('headShape').setAttribute('cy', r(p.head.y));
-  $('headShape').setAttribute('rx', '14');
-  $('headShape').setAttribute('ry', '17');
-  $('headShape').setAttribute('fill', skinColor);
-
-  // Face group position
-  $('faceGroup').setAttribute('transform', `translate(${r(p.head.x)}, ${r(p.head.y)})`);
-
-  // Glasses position
-  $('glassesGroup').setAttribute('transform', `translate(${r(p.head.x)}, ${r(p.head.y)})`);
-  // Tint glasses lenses
-  const glassFill = `hsla(${r(colors.dress.h)}, ${r(colors.dress.s+10)}%, ${r(colors.dress.l-5)}%, 0.08)`;
-  const glassStroke = `hsla(${r(colors.dress.h)}, ${r(colors.dress.s)}%, ${r(colors.dress.l-20)}%, 0.35)`;
-  $('glassesGroup').querySelectorAll('path').forEach((el, i) => {
-    if (i < 2) { el.setAttribute('fill', glassFill); el.setAttribute('stroke', glassStroke); }
-    else { el.setAttribute('stroke', glassStroke); }
-  });
-  $('glassesGroup').querySelectorAll('line').forEach(el => el.setAttribute('stroke', glassStroke));
-
-  // Hair cap
-  $('hairCap').setAttribute('cx', r(p.head.x));
-  $('hairCap').setAttribute('cy', r(p.head.y - 4));
-  $('hairCap').setAttribute('rx', '15');
-  $('hairCap').setAttribute('ry', '18');
-  $('hairCap').setAttribute('fill', hairColor);
-
-  // Hair strands
-  const headDir = (p.head.x - 200) * 0.12;
-  strandConfigs.forEach((sc, i) => {
-    const angle = Math.PI * sc.startAngle;
-    const sx = p.head.x + Math.cos(angle) * 18;
-    const sy = p.head.y + Math.sin(angle) * 18;
-    const sway = Math.sin(breath * 0.35 + sc.offset) * 3;
-    const sway2 = Math.sin(breath * 0.25 + sc.offset + 1) * 4;
-    const d = `M ${r(sx)},${r(sy)} C ${r(sx+sc.side*8+headDir+sway)},${r(sy+sc.len*0.35)} ${r(sx+sc.side*4+headDir+sway2)},${r(sy+sc.len*0.65)} ${r(sx+sc.side*6+headDir+sway+sway2*0.5)},${r(sy+sc.len)}`;
-    strandEls[i].setAttribute('d', d);
-    strandEls[i].setAttribute('stroke', hairColor);
-    strandEls[i].setAttribute('opacity', sc.alphaBase);
-  });
-
-  // Scarf
-  const sc = scarfPaths(p);
-  $('scarfWrap').setAttribute('d', sc.wrap);
-  $('scarfWrap').setAttribute('fill', scarfColor);
-  $('scarfTail1').setAttribute('d', sc.tail1);
-  $('scarfTail1').setAttribute('fill', scarfColor);
-  $('scarfTail2').setAttribute('d', sc.tail2);
-  $('scarfTail2').setAttribute('fill', scarfColor);
-
-  // Edge highlight
-  $('edgeHighlight').setAttribute('d', `M ${r(p.head.x-13.5)},${r(p.head.y)} A 13.5 16.5 0 0 1 ${r(p.head.x+5)},${r(p.head.y-16)}`);
-  $('edgeHighlight').setAttribute('stroke', `hsla(${r(colors.skin.h)}, ${r(colors.skin.s+20)}%, 92%, 0.12)`);
-}
-
-// ─── Particles ──────────────────────────────────────────────────────────────
-
-function updateParticles() {
-  const pHue = colors.glow.h;
-  particles.forEach(pt => {
-    pt.x += pt.vx + Math.sin(breath * 0.4 + pt.phase) * pt.drift * 0.15;
-    pt.y += pt.vy + Math.cos(breath * 0.25 + pt.phase) * 0.08;
-    pt.vx += (200 - pt.x) * 0.00003;
-    pt.vy += (190 - pt.y) * 0.00003;
-    if (pt.y < -10) { pt.y = 410; pt.x = 60 + Math.random() * 280; }
-    if (pt.y > 410) { pt.y = -10; pt.x = 60 + Math.random() * 280; }
-    if (pt.x < -10) pt.x = 410;
-    if (pt.x > 410) pt.x = -10;
-
-    const flicker = 0.5 + 0.5 * Math.sin(breath * 0.8 + pt.phase);
-    pt.el.setAttribute('cx', r(pt.x));
-    pt.el.setAttribute('cy', r(pt.y));
-    pt.el.setAttribute('opacity', r(pt.alpha * flicker));
-    pt.el.setAttribute('fill', `hsl(${r(pHue + (pt.phase*20)%40 - 20)}, 40%, 75%)`);
-  });
-
-  // Burst particles
-  const bl = $('burstLayer');
-  burstParticles = burstParticles.filter(bp => {
-    bp.life -= 0.015;
-    if (bp.life <= 0) { if (bp.el && bp.el.parentNode) bp.el.parentNode.removeChild(bp.el); return false; }
-    bp.x += bp.vx;
-    bp.y += bp.vy;
-    bp.vy += 0.02;
-    bp.vx *= 0.99;
-    bp.el.setAttribute('cx', r(bp.x));
-    bp.el.setAttribute('cy', r(bp.y));
-    bp.el.setAttribute('r', r(bp.size * bp.life));
-    bp.el.setAttribute('opacity', r(bp.life * 0.6));
-    return true;
-  });
-}
-
-function spawnBurst(color) {
-  const bl = $('burstLayer');
-  for (let i = 0; i < 20; i++) {
-    const angle = (i / 20) * Math.PI * 2 + Math.random() * 0.3;
-    const speed = 1 + Math.random() * 3;
+// Init particles
+const particles = [];
+(function() {
+  const g = $('particleLayer');
+  for (let i = 0; i < 50; i++) {
     const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('fill', color);
-    bl.appendChild(c);
-    burstParticles.push({
-      el: c,
-      x: 200, y: 180,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 1,
-      size: 1 + Math.random() * 3,
-      life: 0.7 + Math.random() * 0.3,
-    });
+    const pt = { el:c, x:60+Math.random()*280, y:30+Math.random()*340, vx:(Math.random()-0.5)*0.15, vy:-0.05-Math.random()*0.1, size:0.4+Math.random()*2.2, alpha:0.03+Math.random()*0.1, phase:Math.random()*Math.PI*2, drift:0.3+Math.random()*0.7 };
+    c.setAttribute('r',pt.size); c.setAttribute('cx',pt.x); c.setAttribute('cy',pt.y); c.setAttribute('fill','white'); c.setAttribute('opacity',pt.alpha);
+    g.appendChild(c); particles.push(pt);
   }
+})();
+let burstParticles = [];
+
+// ─── Background Builders ────────────────────────────────────────────────────
+function buildBg(bg) {
+  if (bg==='garden') { return '<circle cx="60" cy="200" r="120" fill="rgba(34,197,94,0.05)"/><circle cx="340" cy="180" r="100" fill="rgba(34,197,94,0.035)"/><path d="M 25,400 C 35,300 45,220 55,150 C 50,100 60,60 65,20" fill="none" stroke="rgba(34,197,94,0.06)" stroke-width="1.5"/><path d="M 375,400 C 365,280 350,200 345,130 C 350,80 340,40 335,0" fill="none" stroke="rgba(34,197,94,0.06)" stroke-width="1.5"/>'; }
+  if (bg==='coastal') { let w=''; for(let i=0;i<5;i++){const wy=140+i*22;let d='';for(let x=0;x<=400;x+=8){const y=wy+Math.sin(x*0.025+i*1.8)*(2.5+i*0.8);d+=(x===0?'M':'L')+` ${v(x)},${v(y)} `;}w+=`<path d="${d}" fill="none" stroke="rgba(6,182,212,0.04)" stroke-width="0.8"/>`;} return `<rect x="0" y="0" width="400" height="140" fill="rgba(6,100,150,0.04)"/><line x1="0" y1="125" x2="400" y2="123" stroke="rgba(6,182,212,0.07)" stroke-width="0.8"/>${w}<rect x="0" y="330" width="400" height="70" fill="rgba(245,158,11,0.025)"/>`; }
+  if (bg==='studio') { return '<polygon points="30,30 85,30 200,380 100,380" fill="rgba(255,255,255,0.025)"/><polygon points="315,30 370,30 300,380 200,380" fill="rgba(255,255,255,0.025)"/><rect x="25" y="25" width="65" height="105" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><rect x="310" y="25" width="65" height="105" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>'; }
+  return '';
+}
+function buildAes(a) {
+  if (a==='timeless') return '<circle cx="200" cy="160" r="200" fill="rgba(245,180,80,0.04)"/>';
+  if (a==='indie') return '<circle cx="200" cy="200" r="220" fill="rgba(100,50,10,0.04)"/>';
+  if (a==='ethereal') return '<circle cx="130" cy="110" r="140" fill="rgba(168,85,247,0.04)"/><circle cx="280" cy="200" r="120" fill="rgba(236,72,153,0.03)"/>';
+  return '';
+}
+function buildLt(l) {
+  if (l==='golden') return '<rect x="0" y="0" width="400" height="400" fill="rgba(245,180,60,0.05)"/>';
+  if (l==='dramatic') return '<rect x="0" y="0" width="200" height="400" fill="rgba(255,255,255,0.03)"/><rect x="200" y="0" width="200" height="400" fill="rgba(0,0,0,0.06)"/>';
+  if (l==='soft') return '<circle cx="200" cy="80" r="200" fill="rgba(255,255,255,0.04)"/>';
+  return '';
 }
 
 // ─── Main Loop ──────────────────────────────────────────────────────────────
-
 function animate() {
   breath += 0.018;
+  for (const k in C) lerpC(C[k], T[k]);
 
-  // Interpolate colors
-  for (const key in colors) lerpColor(colors[key], targets[key]);
+  if (morphProgress < 1) { morphProgress = Math.min(1, morphProgress + 0.022); currentPose = lerpPose(currentPose, targetPose, ease(morphProgress)); }
+  const bOff = Math.sin(breath) * 1.8;
+  const p = {};
+  for (const k in currentPose) p[k] = { ...currentPose[k] };
+  ['head','sL','sR'].forEach(k => { if(p[k]) p[k].y += bOff * 0.2; });
+  ['eL','eR'].forEach(k => { if(p[k]) p[k].y += bOff * 0.08; });
 
-  updateFigure();
-  updateParticles();
+  const dressC = hsl(C.dress);
+  const skinC = hsl(C.skin);
+  const hairC = hsl(C.hair);
+  const scarfC = hsl(C.scarf);
+  const shoeC = hsl(C.shoe);
+  const glowC = hsl(C.glow);
+  const hemY = Math.max(p.kL.y, p.kR.y) + 20;
 
+  // Gradient stops
+  $('gradTop').setAttribute('stop-color', `hsla(${v(C.dress.h)},${v(C.dress.s)}%,${v(C.dress.l+8)}%,${v(C.dress.a+0.1)})`);
+  $('gradMid').setAttribute('stop-color', `hsla(${v(C.dress.h)},${v(C.dress.s+5)}%,${v(C.dress.l)}%,${v(C.dress.a)})`);
+  $('gradBot').setAttribute('stop-color', `hsla(${v(C.dress.h)},${v(C.dress.s)}%,${v(C.dress.l-8)}%,${v(Math.max(0,C.dress.a-0.08))})`);
+  $('skinTop').setAttribute('stop-color', `hsla(${v(C.skin.h)},${v(C.skin.s)}%,${v(C.skin.l+3)}%,${v(C.skin.a)})`);
+  $('skinBot').setAttribute('stop-color', `hsla(${v(C.skin.h)},${v(C.skin.s+5)}%,${v(C.skin.l-3)}%,${v(C.skin.a)})`);
+
+  // Ground shadow
+  $('groundShadow').setAttribute('cx', v(p.torso.x));
+  $('groundShadow').setAttribute('cy', v(Math.max(p.fL.y, p.fR.y) + 14));
+
+  // Glow
+  $('figGlow').setAttribute('cx', v(p.torso.x));
+  $('figGlow').setAttribute('cy', v((p.head.y + p.torso.y) / 2 + 20));
+  $('figGlow').setAttribute('fill', glowC);
+
+  // Body silhouette
+  const bd = bodyDressD(p);
+  $('bodyWash').setAttribute('d', bd);
+  $('bodyWash').setAttribute('fill', `hsla(${v(C.dress.h)},${v(C.dress.s)}%,${v(C.dress.l+5)}%,0.18)`);
+  $('bodyDress').setAttribute('d', bd);
+
+  // Neck
+  $('neckPath').setAttribute('d', neckD(p));
+  $('neckPath').setAttribute('fill', skinC);
+
+  // Head
+  $('headShape').setAttribute('cx', v(p.head.x));
+  $('headShape').setAttribute('cy', v(p.head.y));
+  $('headShape').setAttribute('rx', '14');
+  $('headShape').setAttribute('ry', '17');
+
+  // Hair back
+  $('hairBack').setAttribute('d', hairBackD(p));
+  $('hairBack').setAttribute('fill', hairC);
+
+  // Legs
+  $('legL').setAttribute('d', legD(p.kL, p.fL, hemY));
+  $('legL').setAttribute('fill', skinC);
+  $('legR').setAttribute('d', legD(p.kR, p.fR, hemY));
+  $('legR').setAttribute('fill', skinC);
+
+  // Shoes
+  $('shoeL').setAttribute('transform', `translate(${v(p.fL.x)},${v(p.fL.y)})`);
+  $('shoeL').querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC));
+  $('shoeR').setAttribute('transform', `translate(${v(p.fR.x)},${v(p.fR.y)})`);
+  $('shoeR').querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC));
+
+  // Arms (thin strokes)
+  $('armL').setAttribute('d', armD(p.sL, p.eL, p.wL));
+  $('armL').setAttribute('stroke', `hsla(${v(C.skin.h)},${v(C.skin.s)}%,${v(C.skin.l-5)}%,${v(C.skin.a * 0.6)})`);
+  $('armR').setAttribute('d', armD(p.sR, p.eR, p.wR));
+  $('armR').setAttribute('stroke', `hsla(${v(C.skin.h)},${v(C.skin.s)}%,${v(C.skin.l-5)}%,${v(C.skin.a * 0.6)})`);
+
+  // Dress details
+  const sY = (p.sL.y + p.sR.y) / 2;
+  $('necklineV').setAttribute('d', `M ${v(p.sL.x+8)},${v(sY+2)} L ${v(p.head.x)},${v(sY+14)} L ${v(p.sR.x-8)},${v(sY+2)}`);
+  $('necklineV').setAttribute('stroke', `hsla(${v(C.dress.h)},${v(C.dress.s+10)}%,${v(C.dress.l+15)}%,1)`);
+  $('waistDetail').setAttribute('d', `M ${v(p.torso.x-9)},${v(p.torso.y+1)} Q ${v(p.torso.x)},${v(p.torso.y+3)} ${v(p.torso.x+9)},${v(p.torso.y+1)}`);
+  $('waistDetail').setAttribute('stroke', `hsla(${v(C.dress.h)},${v(C.dress.s+10)}%,${v(C.dress.l+15)}%,1)`);
+
+  const mx = (p.hL.x+p.hR.x)/2, ft=p.hL.y+8, fb=hemY-6, fl=Math.sin(breath*0.5)*2;
+  const fc = `hsla(${v(C.dress.h)},${v(C.dress.s)}%,${v(C.dress.l+10)}%,1)`;
+  $('fold1').setAttribute('d', `M ${v(mx-6)},${v(ft)} Q ${v(mx-9)},${v((ft+fb)/2)} ${v(mx-10+fl*0.3)},${v(fb)}`);
+  $('fold1').setAttribute('stroke', fc);
+  $('fold2').setAttribute('d', `M ${v(mx+5)},${v(ft)} Q ${v(mx+8)},${v((ft+fb)/2)} ${v(mx+9-fl*0.3)},${v(fb)}`);
+  $('fold2').setAttribute('stroke', fc);
+
+  // Face & glasses
+  $('faceGroup').setAttribute('transform', `translate(${v(p.head.x)},${v(p.head.y)})`);
+  $('glassesGroup').setAttribute('transform', `translate(${v(p.head.x)},${v(p.head.y)})`);
+  const gst = `hsla(${v(C.dress.h)},${v(C.dress.s)}%,${v(C.dress.l-20)}%,0.3)`;
+  $('glassesGroup').querySelectorAll('path').forEach((el,i) => { if(i<2) { el.setAttribute('fill',`hsla(${v(C.dress.h)},${v(C.dress.s+10)}%,${v(C.dress.l-5)}%,0.06)`); el.setAttribute('stroke',gst); } else el.setAttribute('stroke',gst); });
+  $('glassesGroup').querySelectorAll('line').forEach(el => el.setAttribute('stroke',gst));
+
+  // Hair cap + strands
+  $('hairCap').setAttribute('cx', v(p.head.x));
+  $('hairCap').setAttribute('cy', v(p.head.y-4));
+  $('hairCap').setAttribute('rx', '15');
+  $('hairCap').setAttribute('ry', '19');
+  $('hairCap').setAttribute('fill', hairC);
+
+  const hDir = (p.head.x-200)*0.12;
+  STRANDS.forEach((sc,i) => {
+    const ang = Math.PI*sc.angle;
+    const sx = p.head.x + Math.cos(ang)*18;
+    const sy = p.head.y + Math.sin(ang)*18;
+    const sw = Math.sin(breath*0.35+sc.off)*3;
+    const sw2 = Math.sin(breath*0.25+sc.off+1)*4;
+    strandEls[i].setAttribute('d', `M ${v(sx)},${v(sy)} C ${v(sx+sc.side*8+hDir+sw)},${v(sy+sc.len*0.35)} ${v(sx+sc.side*4+hDir+sw2)},${v(sy+sc.len*0.65)} ${v(sx+sc.side*6+hDir+sw+sw2*0.5)},${v(sy+sc.len)}`);
+    strandEls[i].setAttribute('stroke', hairC);
+    strandEls[i].setAttribute('opacity', sc.a);
+  });
+
+  // Scarf
+  const sc = scarfD(p);
+  $('scarfWrap').setAttribute('d', sc.wrap); $('scarfWrap').setAttribute('fill', scarfC);
+  $('scarfTail1').setAttribute('d', sc.t1); $('scarfTail1').setAttribute('fill', scarfC);
+  $('scarfTail2').setAttribute('d', sc.t2); $('scarfTail2').setAttribute('fill', scarfC);
+
+  // Particles
+  const pH = C.glow.h;
+  particles.forEach(pt => {
+    pt.x += pt.vx + Math.sin(breath*0.4+pt.phase)*pt.drift*0.15;
+    pt.y += pt.vy + Math.cos(breath*0.25+pt.phase)*0.08;
+    pt.vx += (200-pt.x)*0.00003; pt.vy += (190-pt.y)*0.00003;
+    if(pt.y<-10){pt.y=410;pt.x=60+Math.random()*280;} if(pt.y>410){pt.y=-10;pt.x=60+Math.random()*280;}
+    if(pt.x<-10)pt.x=410; if(pt.x>410)pt.x=-10;
+    const fl = 0.5+0.5*Math.sin(breath*0.8+pt.phase);
+    pt.el.setAttribute('cx',v(pt.x)); pt.el.setAttribute('cy',v(pt.y));
+    pt.el.setAttribute('opacity',v(pt.alpha*fl));
+    pt.el.setAttribute('fill',`hsl(${v(pH+(pt.phase*20)%40-20)},40%,75%)`);
+  });
+  burstParticles = burstParticles.filter(bp => {
+    bp.life -= 0.015; if(bp.life<=0){bp.el?.parentNode?.removeChild(bp.el);return false;}
+    bp.x+=bp.vx;bp.y+=bp.vy;bp.vy+=0.02;bp.vx*=0.99;
+    bp.el.setAttribute('cx',v(bp.x));bp.el.setAttribute('cy',v(bp.y));
+    bp.el.setAttribute('r',v(bp.size*bp.life));bp.el.setAttribute('opacity',v(bp.life*0.6));
+    return true;
+  });
   requestAnimationFrame(animate);
 }
 animate();
 
-// ─── Color Updates ──────────────────────────────────────────────────────────
+function spawnBurst(color) {
+  const bl=$('burstLayer');
+  for(let i=0;i<20;i++){const a=(i/20)*Math.PI*2+Math.random()*0.3;const sp=1+Math.random()*3;
+  const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('fill',color);bl.appendChild(c);
+  burstParticles.push({el:c,x:200,y:180,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,size:1+Math.random()*3,life:0.7+Math.random()*0.3});}
+}
 
 function updateColors() {
   const count = Object.keys(selections).length;
-
-  // Skin stays warm, slightly varies
-  targets.skin = { h:25, s:35, l:80, a: 0.8 + count * 0.04 };
-
-  // Dress changes with aesthetic
-  if (aestheticStyle === 'timeless') {
-    targets.dress = { h:38, s:45, l:76, a:0.6 };
-    targets.scarf = { h:15, s:38, l:68, a:0.55 };
-    targets.shoe = { h:30, s:25, l:32, a:0.7 };
-  } else if (aestheticStyle === 'indie') {
-    targets.dress = { h:18, s:42, l:58, a:0.6 };
-    targets.scarf = { h:45, s:48, l:72, a:0.55 };
-    targets.shoe = { h:15, s:30, l:28, a:0.7 };
-  } else if (aestheticStyle === 'ethereal') {
-    targets.dress = { h:270, s:42, l:78, a:0.55 };
-    targets.scarf = { h:195, s:42, l:75, a:0.5 };
-    targets.shoe = { h:260, s:25, l:40, a:0.65 };
-  } else {
-    targets.dress = { h:280, s:22, l:72, a:0.5 + count * 0.05 };
-    targets.scarf = { h:310, s:28, l:72, a:0.45 + count * 0.04 };
-    targets.shoe = { h:280, s:18, l:35, a:0.6 + count * 0.03 };
-  }
-
-  // Hair gets richer with selections
-  targets.hair = { h:28, s:35 + count * 4, l:26 + count * 2, a:0.7 + count * 0.05 };
-
-  // Lighting drives glow
-  if (lightingStyle === 'golden') {
-    targets.glow = { h:40, s:60, l:60, a:0.22 };
-    targets.skin.h = 28; targets.skin.s = 42; // warmer skin
-  } else if (lightingStyle === 'dramatic') {
-    targets.glow = { h:0, s:0, l:50, a:0.25 };
-  } else if (lightingStyle === 'soft') {
-    targets.glow = { h:210, s:25, l:70, a:0.18 };
-  } else {
-    targets.glow = { h:280, s:35, l:60, a:0.1 + count * 0.04 };
-  }
-
-  targets.outline = { h:colors.dress.h, s:15, l:70, a:0.1 + count * 0.02 };
-  targets.detail = { h:colors.dress.h, s:15, l:75, a:0.12 + count * 0.02 };
+  T.skin = { h:25, s:35, l:82, a:0.8+count*0.04 };
+  if (aestheticStyle==='timeless') { T.dress={h:38,s:45,l:76,a:0.6}; T.scarf={h:15,s:38,l:68,a:0.55}; T.shoe={h:30,s:25,l:32,a:0.7}; }
+  else if (aestheticStyle==='indie') { T.dress={h:18,s:42,l:58,a:0.6}; T.scarf={h:45,s:48,l:72,a:0.55}; T.shoe={h:15,s:30,l:28,a:0.7}; }
+  else if (aestheticStyle==='ethereal') { T.dress={h:270,s:42,l:78,a:0.55}; T.scarf={h:195,s:42,l:75,a:0.5}; T.shoe={h:260,s:25,l:40,a:0.65}; }
+  else { T.dress={h:280,s:22,l:72,a:0.5+count*0.05}; T.scarf={h:310,s:28,l:72,a:0.45+count*0.04}; T.shoe={h:280,s:18,l:35,a:0.6+count*0.03}; }
+  T.hair = { h:28, s:35+count*4, l:26+count*2, a:0.7+count*0.05 };
+  if (lightingStyle==='golden') { T.glow={h:40,s:60,l:60,a:0.22}; T.skin.h=28; T.skin.s=42; }
+  else if (lightingStyle==='dramatic') { T.glow={h:0,s:0,l:50,a:0.25}; }
+  else if (lightingStyle==='soft') { T.glow={h:210,s:25,l:70,a:0.18}; }
+  else { T.glow={h:280,s:35,l:60,a:0.1+count*0.04}; }
 }
 
 // ─── UI ─────────────────────────────────────────────────────────────────────
-
 function render() {
-  const catContainer = document.getElementById('categories');
-  catContainer.innerHTML = '';
-
-  CATEGORIES.forEach((cat, catIdx) => {
-    const group = document.createElement('div');
-    group.className = 'category-group';
-    group.style.animationDelay = `${0.22 + catIdx * 0.1}s`;
-
-    const selected = selections[cat.key];
-    const dotColor = selected ? cat.color : 'rgba(255,255,255,0.12)';
-    const nameColor = selected ? cat.color : 'rgba(255,255,255,0.3)';
-
-    group.innerHTML = `
-      <div class="category-header">
-        <div class="category-dot ${selected ? 'active' : ''}" style="background:${dotColor}; --cat-color:${cat.color}"></div>
-        <span class="category-name" style="color:${nameColor}">${cat.label}</span>
-      </div>
-      <div class="option-row">
-        ${cat.options.map(opt => {
-          const isSel = selected?.id === opt.id;
-          const bg = isSel ? `${cat.color}15` : 'rgba(255,255,255,0.025)';
-          const border = isSel ? `${cat.color}40` : 'rgba(255,255,255,0.06)';
-          const color = isSel ? cat.color : 'rgba(255,255,255,0.5)';
-          const shadow = isSel ? `${cat.color}20` : 'transparent';
-          const glow = `${cat.color}10`;
-          return `<button class="option-btn ${isSel?'selected':''}"
-            style="background:${bg};border-color:${border};color:${color};--btn-glow:${glow};--btn-shadow:${shadow}"
-            onclick="selectOption('${cat.key}','${opt.id}')">${opt.label}</button>`;
-        }).join('')}
-      </div>
-    `;
+  const catContainer = $('categories'); catContainer.innerHTML = '';
+  CATEGORIES.forEach((cat, idx) => {
+    const sel = selections[cat.key];
+    const group = document.createElement('div'); group.className = 'category-group'; group.style.animationDelay = `${0.22+idx*0.1}s`;
+    group.innerHTML = `<div class="category-header"><div class="category-dot ${sel?'active':''}" style="background:${sel?cat.color:'rgba(255,255,255,0.12)'};--cat-color:${cat.color}"></div><span class="category-name" style="color:${sel?cat.color:'rgba(255,255,255,0.3)'}">${cat.label}</span></div><div class="option-row">${cat.options.map(o => { const is=sel?.id===o.id; return `<button class="option-btn ${is?'selected':''}" style="background:${is?cat.color+'15':'rgba(255,255,255,0.025)'};border-color:${is?cat.color+'40':'rgba(255,255,255,0.06)'};color:${is?cat.color:'rgba(255,255,255,0.5)'};--btn-glow:${cat.color}10;--btn-shadow:${is?cat.color+'20':'transparent'}" onclick="selectOption('${cat.key}','${o.id}')">${o.label}</button>`; }).join('')}</div>`;
     catContainer.appendChild(group);
   });
-
-  // Progress
-  const progressRow = document.getElementById('progressRow');
-  const count = Object.keys(selections).length;
-  progressRow.innerHTML = CATEGORIES.map(cat => {
-    const filled = !!selections[cat.key];
-    return `<div class="progress-bar ${filled?'filled':''}" style="background:${filled?cat.color:'rgba(255,255,255,0.06)'}; --bar-color:${cat.color}"></div>`;
-  }).join('') + `<span class="progress-count">${count} / ${CATEGORIES.length}</span>`;
-
-  // Info
-  const info = document.getElementById('infoText');
-  if (count === 0) info.textContent = 'Each category adds a layer to the final prompt.';
-  else if (count < CATEGORIES.length) info.textContent = `${CATEGORIES.length - count} more to explore — or dive in now.`;
-  else info.textContent = 'The full tool has 33 categories across pose, styling, camera, and more.';
-
-  // CTA
-  const cta = document.getElementById('ctaBtn');
-  cta.className = 'cta-btn' + (count > 0 ? ' active' : '');
-  cta.querySelector('span').textContent = count > 0 ? 'Open the full studio' : 'Skip to the studio';
-
-  // Prompt preview
-  const preview = document.getElementById('promptPreview');
-  const promptText = document.getElementById('promptText');
-  if (count > 0) {
-    preview.classList.add('visible');
-    const fullPrompt = Object.values(selections).map(o => o.prompt).join('. ') + '.';
-    promptText.textContent = fullPrompt;
-  } else {
-    preview.classList.remove('visible');
-  }
-
-  // Ambient glow
-  const glow = document.getElementById('ambientGlow');
-  if (count > 0) {
-    const keys = Object.keys(selections);
-    const lastCat = CATEGORIES.find(c => c.key === keys[keys.length - 1]);
-    const col = lastCat?.color || '#8b5cf6';
-    glow.style.background = `radial-gradient(ellipse at 50% 50%, ${col}0a 0%, transparent 70%)`;
-    glow.style.opacity = '1';
-  } else {
-    glow.style.opacity = '0';
-  }
+  const count=Object.keys(selections).length;
+  $('progressRow').innerHTML = CATEGORIES.map(c => `<div class="progress-bar ${selections[c.key]?'filled':''}" style="background:${selections[c.key]?c.color:'rgba(255,255,255,0.06)'};--bar-color:${c.color}"></div>`).join('')+`<span class="progress-count">${count} / ${CATEGORIES.length}</span>`;
+  $('infoText').textContent = count===0?'Each category adds a layer to the final prompt.':count<CATEGORIES.length?`${CATEGORIES.length-count} more to explore \u2014 or dive in now.`:'The full tool has 33 categories across pose, styling, camera, and more.';
+  const cta=$('ctaBtn'); cta.className='cta-btn'+(count>0?' active':''); cta.querySelector('span').textContent=count>0?'Open the full studio':'Skip to the studio';
+  const prev=$('promptPreview'); if(count>0){prev.classList.add('visible');$('promptText').textContent=Object.values(selections).map(o=>o.prompt).join('. ')+'.';} else prev.classList.remove('visible');
+  const glow=$('ambientGlow'); if(count>0){const keys=Object.keys(selections);const lc=CATEGORIES.find(c=>c.key===keys[keys.length-1]);glow.style.background=`radial-gradient(ellipse at 50% 50%,${lc?.color||'#8b5cf6'}0a 0%,transparent 70%)`;glow.style.opacity='1';} else glow.style.opacity='0';
 }
 
 function selectOption(catKey, optId) {
-  const cat = CATEGORIES.find(c => c.key === catKey);
-  const opt = cat.options.find(o => o.id === optId);
-  selections[catKey] = opt;
-
-  if (opt.pose) { targetPose = POSES[opt.pose]; morphProgress = 0; }
-  if (catKey === 'lighting') { lightingStyle = opt.lighting || null; updateLighting(); }
-  if (catKey === 'aesthetic') { aestheticStyle = opt.id; updateAesthetic(); }
-  if (catKey === 'background') { backgroundStyle = opt.id; updateBackground(); }
-
-  updateColors();
-  spawnBurst(cat.color);
-  render();
+  const cat=CATEGORIES.find(c=>c.key===catKey); const opt=cat.options.find(o=>o.id===optId);
+  selections[catKey]=opt;
+  if(opt.pose){targetPose=POSES[opt.pose];morphProgress=0;}
+  if(catKey==='lighting'){lightingStyle=opt.lighting||null;$('lightingLayer').innerHTML=buildLt(lightingStyle);}
+  if(catKey==='aesthetic'){aestheticStyle=opt.id;$('aestheticLayer').innerHTML=buildAes(aestheticStyle);}
+  if(catKey==='background'){backgroundStyle=opt.id;$('bgLayer').innerHTML=buildBg(backgroundStyle);}
+  updateColors(); spawnBurst(cat.color); render();
 }
-
-function copyPrompt() {
-  const text = Object.values(selections).map(o => o.prompt).join('. ') + '.';
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-function handleComplete() {
-  alert('This is a preview — in the real app, this opens the full studio with 33 categories.');
-}
-
+function copyPrompt(){const t=Object.values(selections).map(o=>o.prompt).join('. ')+'.';navigator.clipboard.writeText(t).then(()=>{const b=$('copyBtn');b.textContent='Copied!';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy';b.classList.remove('copied');},2000);});}
+function handleComplete(){alert('This is a preview — in the real app, this opens the full studio with 33 categories.');}
 render();
 </script>
 </body>

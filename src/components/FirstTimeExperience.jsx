@@ -12,8 +12,7 @@ const ONBOARDING_KEY = 'poseprompt_onboarding_complete';
 
 const FIGURE_POSES = {
   default: {
-    head:{x:200,y:52}, neck:{x:200,y:72},
-    sL:{x:183,y:88}, sR:{x:217,y:88},
+    head:{x:200,y:52}, sL:{x:183,y:88}, sR:{x:217,y:88},
     torso:{x:200,y:148}, hL:{x:191,y:176}, hR:{x:209,y:176},
     eL:{x:170,y:138}, eR:{x:230,y:138},
     wL:{x:166,y:192}, wR:{x:234,y:192},
@@ -21,8 +20,7 @@ const FIGURE_POSES = {
     fL:{x:193,y:338}, fR:{x:207,y:338},
   },
   confident: {
-    head:{x:200,y:48}, neck:{x:200,y:70},
-    sL:{x:180,y:86}, sR:{x:220,y:86},
+    head:{x:200,y:48}, sL:{x:180,y:86}, sR:{x:220,y:86},
     torso:{x:200,y:146}, hL:{x:189,y:174}, hR:{x:211,y:174},
     eL:{x:164,y:134}, eR:{x:236,y:134},
     wL:{x:158,y:186}, wR:{x:242,y:186},
@@ -30,8 +28,7 @@ const FIGURE_POSES = {
     fL:{x:188,y:338}, fR:{x:212,y:338},
   },
   relaxed: {
-    head:{x:198,y:54}, neck:{x:198,y:74},
-    sL:{x:183,y:90}, sR:{x:216,y:87},
+    head:{x:198,y:54}, sL:{x:183,y:90}, sR:{x:216,y:87},
     torso:{x:199,y:150}, hL:{x:191,y:178}, hR:{x:209,y:175},
     eL:{x:172,y:148}, eR:{x:232,y:130},
     wL:{x:170,y:200}, wR:{x:236,y:178},
@@ -39,8 +36,7 @@ const FIGURE_POSES = {
     fL:{x:193,y:338}, fR:{x:211,y:338},
   },
   dramatic: {
-    head:{x:198,y:50}, neck:{x:199,y:72},
-    sL:{x:182,y:87}, sR:{x:218,y:85},
+    head:{x:198,y:50}, sL:{x:182,y:87}, sR:{x:218,y:85},
     torso:{x:200,y:148}, hL:{x:192,y:176}, hR:{x:210,y:174},
     eL:{x:166,y:130}, eR:{x:236,y:120},
     wL:{x:160,y:172}, wR:{x:246,y:108},
@@ -67,27 +63,48 @@ function lerpPose(current, target, t) {
 
 function n(v) { return Math.round(v * 10) / 10; }
 function hsla(c) { return `hsla(${n(c.h)}, ${n(c.s)}%, ${n(c.l)}%, ${n(c.a)})`; }
-function hslaMod(c, dl, da) { return `hsla(${n(c.h)}, ${n(c.s)}%, ${n(c.l + (dl||0))}%, ${n(c.a + (da||0))})`; }
 function lerpColor(c, t, sp) { const s = sp || 0.025; c.h += (t.h - c.h) * s; c.s += (t.s - c.s) * s; c.l += (t.l - c.l) * s; c.a += (t.a - c.a) * s; }
 
-function limbPath(start, end, startW, endW) {
-  const dx = end.x - start.x, dy = end.y - start.y;
-  const len = Math.sqrt(dx*dx + dy*dy) || 1;
-  const nx = -dy / len, ny = dx / len;
-  const mx = (start.x + end.x) / 2, my = (start.y + end.y) / 2;
-  const aw = (startW + endW) / 2;
-  return `M ${n(start.x+nx*startW/2)},${n(start.y+ny*startW/2)} Q ${n(mx+nx*aw*0.55)},${n(my+ny*aw*0.55)} ${n(end.x+nx*endW/2)},${n(end.y+ny*endW/2)} Q ${n(end.x+nx*endW*0.1)},${n(end.y+ny*endW*0.1+1)} ${n(end.x-nx*endW/2)},${n(end.y-ny*endW/2)} Q ${n(mx-nx*aw*0.45)},${n(my-ny*aw*0.45)} ${n(start.x-nx*startW/2)},${n(start.y-ny*startW/2)} Z`;
+function bodyDressD(p, breath) {
+  const hemY = Math.max(p.kL.y, p.kR.y) + 20;
+  const fl = Math.sin(breath * 0.5) * 2;
+  const sY = (p.sL.y + p.sR.y) / 2;
+  const cx = (p.sL.x + p.sR.x) / 2;
+  const cxW = p.torso.x;
+  const cxH = (p.hL.x + p.hR.x) / 2;
+  const neckVy = sY + 14;
+  const bustY = sY + 20;
+  const wY = p.torso.y;
+  const hY = (p.hL.y + p.hR.y) / 2;
+  const shW = 18, buW = 16, waW = 9, hiW = 13, heW = 22;
+  return [
+    `M ${n(cx)},${n(neckVy)}`,
+    `C ${n(cx+3)},${n(neckVy-8)} ${n(cx+shW-5)},${n(sY-2)} ${n(cx+shW)},${n(sY+2)}`,
+    `C ${n(cx+shW+1)},${n(sY+10)} ${n(cxW+buW+2)},${n(bustY-4)} ${n(cxW+buW)},${n(bustY)}`,
+    `C ${n(cxW+buW-2)},${n(bustY+6)} ${n(cxW+waW+3)},${n(wY-6)} ${n(cxW+waW)},${n(wY)}`,
+    `C ${n(cxW+waW-1)},${n(wY+6)} ${n(cxH+hiW-2)},${n(hY-6)} ${n(cxH+hiW)},${n(hY)}`,
+    `C ${n(cxH+hiW+4)},${n((hY+hemY)/2)} ${n(cxH+heW+fl)},${n(hemY-12)} ${n(cxH+heW+fl)},${n(hemY)}`,
+    `Q ${n(cxH)},${n(hemY+6)} ${n(cxH-heW-fl)},${n(hemY)}`,
+    `C ${n(cxH-heW-fl)},${n(hemY-12)} ${n(cxH-hiW-4)},${n((hY+hemY)/2)} ${n(cxH-hiW)},${n(hY)}`,
+    `C ${n(cxH-hiW+2)},${n(hY-6)} ${n(cxW-waW+1)},${n(wY+6)} ${n(cxW-waW)},${n(wY)}`,
+    `C ${n(cxW-waW-3)},${n(wY-6)} ${n(cxW-buW+2)},${n(bustY+6)} ${n(cxW-buW)},${n(bustY)}`,
+    `C ${n(cxW-buW-2)},${n(bustY-4)} ${n(cx-shW-1)},${n(sY+10)} ${n(cx-shW)},${n(sY+2)}`,
+    `C ${n(cx-shW+5)},${n(sY-2)} ${n(cx-3)},${n(neckVy-8)} ${n(cx)},${n(neckVy)}`,
+    'Z'
+  ].join(' ');
 }
 
-function torsoPathD(p) {
-  return `M ${n(p.sL.x)},${n(p.sL.y)} Q ${n(p.head.x-6)},${n(p.sL.y-6)} ${n(p.head.x-6)},${n(p.head.y+18)} L ${n(p.head.x+6)},${n(p.head.y+18)} Q ${n(p.head.x+6)},${n(p.sR.y-6)} ${n(p.sR.x)},${n(p.sR.y)} C ${n(p.sR.x+3)},${n(p.sR.y+22)} ${n(p.torso.x+15)},${n(p.torso.y-12)} ${n(p.torso.x+12)},${n(p.torso.y)} C ${n(p.torso.x+14)},${n(p.torso.y+10)} ${n(p.hR.x+6)},${n(p.hR.y-6)} ${n(p.hR.x)},${n(p.hR.y)} Q ${n((p.hL.x+p.hR.x)/2)},${n(Math.max(p.hL.y,p.hR.y)+6)} ${n(p.hL.x)},${n(p.hL.y)} C ${n(p.hL.x-6)},${n(p.hL.y-6)} ${n(p.torso.x-14)},${n(p.torso.y+10)} ${n(p.torso.x-12)},${n(p.torso.y)} C ${n(p.torso.x-15)},${n(p.torso.y-12)} ${n(p.sL.x-3)},${n(p.sL.y+22)} ${n(p.sL.x)},${n(p.sL.y)} Z`;
+function neckD(p) {
+  const hx = p.head.x, hy = p.head.y;
+  const sY = (p.sL.y + p.sR.y) / 2;
+  return `M ${n(hx-5)},${n(hy+14)} C ${n(hx-4)},${n(hy+20)} ${n(p.sL.x+6)},${n(sY-2)} ${n(p.sL.x+10)},${n(sY+2)} L ${n(p.sR.x-10)},${n(sY+2)} C ${n(p.sR.x-6)},${n(sY-2)} ${n(hx+4)},${n(hy+20)} ${n(hx+5)},${n(hy+14)} Z`;
 }
 
-function dressPathD(p, breath) {
-  const hemY = Math.max(p.kL.y, p.kR.y) + 18;
-  const flare = 16, fl = Math.sin(breath * 0.5) * 2, fl2 = Math.sin(breath * 0.4 + 1.2) * 1.5;
-  const mx = (p.hL.x + p.hR.x) / 2;
-  return `M ${n(p.hL.x-4)},${n(p.hL.y-3)} C ${n(p.hL.x-10)},${n((p.hL.y+hemY)/2)} ${n(p.kL.x-flare+fl)},${n(hemY-14)} ${n(p.kL.x-flare+fl)},${n(hemY)} Q ${n(mx-12)},${n(hemY+6+fl2)} ${n(mx)},${n(hemY+5+fl2)} Q ${n(mx+12)},${n(hemY+6+fl2)} ${n(p.kR.x+flare-fl)},${n(hemY)} C ${n(p.kR.x+flare-fl)},${n(hemY-14)} ${n(p.hR.x+10)},${n((p.hR.y+hemY)/2)} ${n(p.hR.x+4)},${n(p.hR.y-3)} Z`;
+function armD(s, e, w) { return `M ${n(s.x)},${n(s.y)} Q ${n(e.x)},${n(e.y)} ${n(w.x)},${n(w.y)}`; }
+
+function legD(knee, foot, hemY) {
+  const tx = knee.x, ty = hemY + 2;
+  return `M ${n(tx-2.5)},${n(ty)} C ${n(tx-2)},${n((ty+foot.y)/2)} ${n(foot.x-2)},${n(foot.y-10)} ${n(foot.x)},${n(foot.y+2)} C ${n(foot.x+2)},${n(foot.y-10)} ${n(tx+2)},${n((ty+foot.y)/2)} ${n(tx+2.5)},${n(ty)} Z`;
 }
 
 function hairBackD(p) {
@@ -107,12 +124,12 @@ function scarfPathsD(p, breath) {
 
 // Strand configs
 const STRAND_CONFIGS = [
-  { side: -1, startAngle: -0.78, len: 65, width: 3.5, alphaBase: 0.5, offset: 0 },
-  { side: -1, startAngle: -0.65, len: 55, width: 2.5, alphaBase: 0.35, offset: 1.2 },
-  { side: -1, startAngle: -0.88, len: 48, width: 2, alphaBase: 0.25, offset: 2.5 },
-  { side: 1, startAngle: -0.22, len: 62, width: 3.5, alphaBase: 0.5, offset: 0.5 },
-  { side: 1, startAngle: -0.35, len: 52, width: 2.5, alphaBase: 0.35, offset: 1.8 },
-  { side: 1, startAngle: -0.12, len: 45, width: 2, alphaBase: 0.25, offset: 3 },
+  { side: -1, startAngle: -0.78, len: 70, width: 3.5, alphaBase: 0.5, offset: 0 },
+  { side: -1, startAngle: -0.65, len: 58, width: 2.5, alphaBase: 0.35, offset: 1.2 },
+  { side: -1, startAngle: -0.88, len: 50, width: 2, alphaBase: 0.25, offset: 2.5 },
+  { side: 1, startAngle: -0.22, len: 68, width: 3.5, alphaBase: 0.5, offset: 0.5 },
+  { side: 1, startAngle: -0.35, len: 55, width: 2.5, alphaBase: 0.35, offset: 1.8 },
+  { side: 1, startAngle: -0.12, len: 48, width: 2, alphaBase: 0.25, offset: 3 },
 ];
 
 // ─── Background SVG Builders ─────────────────────────────────────────────────
@@ -317,27 +334,50 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
     const bOff = Math.sin(s.breath) * 1.8;
     const p = {};
     for (const key in s.currentPose) p[key] = { ...s.currentPose[key] };
-    const breathMap = { head:0.3, neck:0.25, sL:0.15, sR:0.15, eL:0.08, eR:0.08, wL:0.04, wR:0.04 };
-    Object.keys(breathMap).forEach(k => { if (p[k]) p[k].y += bOff * breathMap[k]; });
+    ['head','sL','sR'].forEach(k => { if (p[k]) p[k].y += bOff * 0.2; });
+    ['eL','eR'].forEach(k => { if (p[k]) p[k].y += bOff * 0.08; });
 
     const skinC = hsla(s.colors.skin);
-    const dressC = hsla(s.colors.dress);
     const hairC = hsla(s.colors.hair);
     const scarfC = hsla(s.colors.scarf);
     const shoeC = hsla(s.colors.shoe);
     const glowC = hsla(s.colors.glow);
-    const detailC = hslaMod(s.colors.dress, 15, 0);
-    const dressWashC = hslaMod(s.colors.dress, 5, -0.25);
-    const foldC = hslaMod(s.colors.dress, 10, 0);
+    const hemY = Math.max(p.kL.y, p.kR.y) + 20;
+
+    // Gradient stops
+    const gradTop = $('gradTop');
+    const gradMid = $('gradMid');
+    const gradBot = $('gradBot');
+    const skinTop = $('skinTop');
+    const skinBot = $('skinBot');
+    if (gradTop) gradTop.setAttribute('stop-color', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s)}%,${n(s.colors.dress.l+8)}%,${n(s.colors.dress.a+0.1)})`);
+    if (gradMid) gradMid.setAttribute('stop-color', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s+5)}%,${n(s.colors.dress.l)}%,${n(s.colors.dress.a)})`);
+    if (gradBot) gradBot.setAttribute('stop-color', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s)}%,${n(s.colors.dress.l-8)}%,${n(Math.max(0,s.colors.dress.a-0.08))})`);
+    if (skinTop) skinTop.setAttribute('stop-color', `hsla(${n(s.colors.skin.h)},${n(s.colors.skin.s)}%,${n(s.colors.skin.l+3)}%,${n(s.colors.skin.a)})`);
+    if (skinBot) skinBot.setAttribute('stop-color', `hsla(${n(s.colors.skin.h)},${n(s.colors.skin.s+5)}%,${n(s.colors.skin.l-3)}%,${n(s.colors.skin.a)})`);
 
     // Ground shadow
-    const heelY = Math.max(p.fL.y, p.fR.y) + 18;
     const gs = $('groundShadow');
-    if (gs) { gs.setAttribute('cx', n(p.torso.x)); gs.setAttribute('cy', n(heelY)); gs.setAttribute('fill', `hsla(${n(s.colors.glow.h)}, ${n(s.colors.glow.s)}%, 30%, 0.1)`); }
+    if (gs) { gs.setAttribute('cx', n(p.torso.x)); gs.setAttribute('cy', n(Math.max(p.fL.y, p.fR.y) + 14)); }
 
     // Figure glow
     const fg = $('figGlow');
     if (fg) { fg.setAttribute('cx', n(p.torso.x)); fg.setAttribute('cy', n((p.head.y + p.torso.y) / 2 + 20)); fg.setAttribute('fill', glowC); }
+
+    // Body silhouette
+    const bd = bodyDressD(p, s.breath);
+    const bw = $('bodyWash');
+    if (bw) { bw.setAttribute('d', bd); bw.setAttribute('fill', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s)}%,${n(s.colors.dress.l+5)}%,0.18)`); }
+    const bdr = $('bodyDress');
+    if (bdr) bdr.setAttribute('d', bd);
+
+    // Neck
+    const np = $('neckPath');
+    if (np) { np.setAttribute('d', neckD(p)); np.setAttribute('fill', skinC); }
+
+    // Head
+    const hs = $('headShape');
+    if (hs) { hs.setAttribute('cx', n(p.head.x)); hs.setAttribute('cy', n(p.head.y)); hs.setAttribute('rx', '14'); hs.setAttribute('ry', '17'); }
 
     // Hair back
     const hb = $('hairBack');
@@ -345,61 +385,35 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
 
     // Legs
     const ll = $('legL'), lr = $('legR');
-    if (ll) { ll.setAttribute('d', limbPath(p.kL, p.fL, 7, 4.5)); ll.setAttribute('fill', skinC); }
-    if (lr) { lr.setAttribute('d', limbPath(p.kR, p.fR, 7, 4.5)); lr.setAttribute('fill', skinC); }
+    if (ll) { ll.setAttribute('d', legD(p.kL, p.fL, hemY)); ll.setAttribute('fill', skinC); }
+    if (lr) { lr.setAttribute('d', legD(p.kR, p.fR, hemY)); lr.setAttribute('fill', skinC); }
 
     // Shoes
     const sl = $('shoeL'), sr = $('shoeR');
     if (sl) { sl.setAttribute('transform', `translate(${n(p.fL.x)},${n(p.fL.y)})`); sl.querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC)); }
     if (sr) { sr.setAttribute('transform', `translate(${n(p.fR.x)},${n(p.fR.y)})`); sr.querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC)); }
 
-    // Torso
-    const tp = $('torsoPath');
-    if (tp) { tp.setAttribute('d', torsoPathD(p)); tp.setAttribute('fill', skinC); }
-
-    // Dress
-    const dp = dressPathD(p, s.breath);
-    const dw = $('dressWash'), dr = $('dressPath');
-    if (dw) { dw.setAttribute('d', dp); dw.setAttribute('fill', dressWashC); }
-    if (dr) { dr.setAttribute('d', dp); dr.setAttribute('fill', dressC); }
+    // Arms (thin strokes)
+    const armLEl = $('armL');
+    if (armLEl) { armLEl.setAttribute('d', armD(p.sL, p.eL, p.wL)); armLEl.setAttribute('stroke', `hsla(${n(s.colors.skin.h)},${n(s.colors.skin.s)}%,${n(s.colors.skin.l-5)}%,${n(s.colors.skin.a * 0.6)})`); }
+    const armREl = $('armR');
+    if (armREl) { armREl.setAttribute('d', armD(p.sR, p.eR, p.wR)); armREl.setAttribute('stroke', `hsla(${n(s.colors.skin.h)},${n(s.colors.skin.s)}%,${n(s.colors.skin.l-5)}%,${n(s.colors.skin.a * 0.6)})`); }
 
     // Dress details
-    const neckY = (p.sL.y + p.sR.y) / 2;
-    const nd = $('necklineDetail');
-    if (nd) { nd.setAttribute('d', `M ${n(p.sL.x+7)},${n(neckY+2)} L ${n(p.head.x)},${n(neckY+16)} L ${n(p.sR.x-7)},${n(neckY+2)}`); nd.setAttribute('stroke', detailC); }
-    const bl = $('beltLine');
-    if (bl) { bl.setAttribute('d', `M ${n(p.torso.x-13)},${n(p.torso.y+1)} Q ${n(p.torso.x)},${n(p.torso.y+3)} ${n(p.torso.x+13)},${n(p.torso.y+1)}`); bl.setAttribute('stroke', detailC); }
-    const bk = $('buckle');
-    if (bk) { bk.setAttribute('x', n(p.torso.x-2)); bk.setAttribute('y', n(p.torso.y-1)); bk.setAttribute('width', '4'); bk.setAttribute('height', '4'); bk.setAttribute('fill', detailC); }
+    const sY = (p.sL.y + p.sR.y) / 2;
+    const nv = $('necklineV');
+    if (nv) { nv.setAttribute('d', `M ${n(p.sL.x+8)},${n(sY+2)} L ${n(p.head.x)},${n(sY+14)} L ${n(p.sR.x-8)},${n(sY+2)}`); nv.setAttribute('stroke', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s+10)}%,${n(s.colors.dress.l+15)}%,1)`); }
+    const wd = $('waistDetail');
+    if (wd) { wd.setAttribute('d', `M ${n(p.torso.x-9)},${n(p.torso.y+1)} Q ${n(p.torso.x)},${n(p.torso.y+3)} ${n(p.torso.x+9)},${n(p.torso.y+1)}`); wd.setAttribute('stroke', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s+10)}%,${n(s.colors.dress.l+15)}%,1)`); }
 
-    const hemY2 = Math.max(p.kL.y, p.kR.y) + 18;
     const mx = (p.hL.x + p.hR.x) / 2;
-    const ft = p.hL.y + 8, fb = hemY2 - 6;
-    const fl = Math.sin(s.breath * 0.5) * 3;
-    ['fold1','fold2','fold3'].forEach((id, i) => {
-      const el = $(id);
-      if (!el) return;
-      el.setAttribute('stroke', foldC);
-      if (i === 0) el.setAttribute('d', `M ${n(mx-8)},${n(ft)} Q ${n(mx-12)},${n((ft+fb)/2)} ${n(mx-14+fl*0.3)},${n(fb)}`);
-      else if (i === 1) el.setAttribute('d', `M ${n(mx+6)},${n(ft)} Q ${n(mx+10)},${n((ft+fb)/2)} ${n(mx+12-fl*0.3)},${n(fb)}`);
-      else el.setAttribute('d', `M ${n(mx-1)},${n(ft-3)} Q ${n(mx)},${n((ft+fb)/2)} ${n(mx+1)},${n(fb)}`);
-    });
-
-    // Arms
-    const aul = $('armUL'), all = $('armLL'), aur = $('armUR'), alr = $('armLR');
-    if (aul) { aul.setAttribute('d', limbPath(p.sL, p.eL, 7, 5)); aul.setAttribute('fill', skinC); }
-    if (all) { all.setAttribute('d', limbPath(p.eL, p.wL, 5, 3)); all.setAttribute('fill', skinC); }
-    if (aur) { aur.setAttribute('d', limbPath(p.sR, p.eR, 7, 5)); aur.setAttribute('fill', skinC); }
-    if (alr) { alr.setAttribute('d', limbPath(p.eR, p.wR, 5, 3)); alr.setAttribute('fill', skinC); }
-
-    // Hands
-    const hl = $('handL'), hr2 = $('handR');
-    if (hl) { hl.setAttribute('cx', n(p.wL.x)); hl.setAttribute('cy', n(p.wL.y+2)); hl.setAttribute('rx','2.8'); hl.setAttribute('ry','3.2'); hl.setAttribute('fill', skinC); }
-    if (hr2) { hr2.setAttribute('cx', n(p.wR.x)); hr2.setAttribute('cy', n(p.wR.y+2)); hr2.setAttribute('rx','2.8'); hr2.setAttribute('ry','3.2'); hr2.setAttribute('fill', skinC); }
-
-    // Head
-    const hs = $('headShape');
-    if (hs) { hs.setAttribute('cx', n(p.head.x)); hs.setAttribute('cy', n(p.head.y)); hs.setAttribute('rx','14'); hs.setAttribute('ry','17'); hs.setAttribute('fill', skinC); }
+    const ft = p.hL.y + 8, fb = hemY - 6;
+    const fl = Math.sin(s.breath * 0.5) * 2;
+    const fc = `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s)}%,${n(s.colors.dress.l+10)}%,1)`;
+    const f1 = $('fold1');
+    if (f1) { f1.setAttribute('d', `M ${n(mx-6)},${n(ft)} Q ${n(mx-9)},${n((ft+fb)/2)} ${n(mx-10+fl*0.3)},${n(fb)}`); f1.setAttribute('stroke', fc); }
+    const f2 = $('fold2');
+    if (f2) { f2.setAttribute('d', `M ${n(mx+5)},${n(ft)} Q ${n(mx+8)},${n((ft+fb)/2)} ${n(mx+9-fl*0.3)},${n(fb)}`); f2.setAttribute('stroke', fc); }
 
     // Face & glasses positions
     const faceG = $('faceGroup');
@@ -407,15 +421,14 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
     const glassG = $('glassesGroup');
     if (glassG) {
       glassG.setAttribute('transform', `translate(${n(p.head.x)}, ${n(p.head.y)})`);
-      const gf = `hsla(${n(s.colors.dress.h)}, ${n(s.colors.dress.s+10)}%, ${n(s.colors.dress.l-5)}%, 0.08)`;
-      const gst = `hsla(${n(s.colors.dress.h)}, ${n(s.colors.dress.s)}%, ${n(s.colors.dress.l-20)}%, 0.35)`;
-      glassG.querySelectorAll('path').forEach((el, i) => { if (i < 2) { el.setAttribute('fill', gf); el.setAttribute('stroke', gst); } else el.setAttribute('stroke', gst); });
+      const gst = `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s)}%,${n(s.colors.dress.l-20)}%,0.3)`;
+      glassG.querySelectorAll('path').forEach((el, i) => { if (i < 2) { el.setAttribute('fill', `hsla(${n(s.colors.dress.h)},${n(s.colors.dress.s+10)}%,${n(s.colors.dress.l-5)}%,0.06)`); el.setAttribute('stroke', gst); } else el.setAttribute('stroke', gst); });
       glassG.querySelectorAll('line').forEach(el => el.setAttribute('stroke', gst));
     }
 
     // Hair cap
     const hc = $('hairCap');
-    if (hc) { hc.setAttribute('cx', n(p.head.x)); hc.setAttribute('cy', n(p.head.y-4)); hc.setAttribute('rx','15'); hc.setAttribute('ry','18'); hc.setAttribute('fill', hairC); }
+    if (hc) { hc.setAttribute('cx', n(p.head.x)); hc.setAttribute('cy', n(p.head.y-4)); hc.setAttribute('rx', '15'); hc.setAttribute('ry', '19'); hc.setAttribute('fill', hairC); }
 
     // Hair strands
     const headDir = (p.head.x - 200) * 0.12;
@@ -438,10 +451,6 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
     if (sw) { sw.setAttribute('d', sc.wrap); sw.setAttribute('fill', scarfC); }
     if (st1) { st1.setAttribute('d', sc.tail1); st1.setAttribute('fill', scarfC); }
     if (st2) { st2.setAttribute('d', sc.tail2); st2.setAttribute('fill', scarfC); }
-
-    // Edge highlight
-    const eh = $('edgeHighlight');
-    if (eh) { eh.setAttribute('d', `M ${n(p.head.x-13.5)},${n(p.head.y)} A 13.5 16.5 0 0 1 ${n(p.head.x+5)},${n(p.head.y-16)}`); eh.setAttribute('stroke', `hsla(${n(s.colors.skin.h)}, ${n(s.colors.skin.s+20)}%, 92%, 0.12)`); }
 
     // Particles
     const pHue = s.colors.glow.h;
@@ -485,79 +494,72 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
     <svg ref={svgRef} viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '420px', height: 'auto', aspectRatio: '400/400' }}>
       <defs>
         <filter id="wcFilter" x="-8%" y="-8%" width="116%" height="116%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="3" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="3" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
         </filter>
-        <filter id="softFilter">
-          <feGaussianBlur stdDeviation="0.6"/>
+        <filter id="washBlur" x="-15%" y="-15%" width="130%" height="130%">
+          <feGaussianBlur stdDeviation="4"/>
         </filter>
+        <filter id="glowBlur" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="18"/>
+        </filter>
+        <linearGradient id="dressGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop id="gradTop" offset="0%"/><stop id="gradMid" offset="45%"/><stop id="gradBot" offset="100%"/>
+        </linearGradient>
+        <linearGradient id="skinGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+          <stop id="skinTop" offset="0%"/><stop id="skinBot" offset="100%"/>
+        </linearGradient>
       </defs>
 
-      <g id="bgLayer"/>
-      <g id="aestheticLayer"/>
-      <g id="lightingLayer"/>
-
-      <ellipse id="groundShadow" cx="200" cy="366" rx="55" ry="6" fill="rgba(0,0,0,0.12)"/>
-
-      <g filter="url(#softFilter)">
-        <ellipse id="figGlow" cx="200" cy="190" rx="65" ry="120" fill="transparent"/>
-      </g>
+      <g id="bgLayer"/><g id="aestheticLayer"/><g id="lightingLayer"/>
+      <ellipse id="groundShadow" cx="200" cy="370" rx="50" ry="5" fill="rgba(0,0,0,0.08)"/>
+      <ellipse id="figGlow" cx="200" cy="200" rx="70" ry="130" fill="transparent" filter="url(#glowBlur)"/>
+      <path id="bodyWash" fill="transparent" filter="url(#washBlur)" opacity="0.18"/>
 
       <g id="figureLayer" filter="url(#wcFilter)">
         <path id="hairBack" fill="transparent"/>
-        <path id="legL" fill="transparent"/>
-        <path id="legR" fill="transparent"/>
-        <g id="shoeL"><path d="M 3,-3 Q -8,-6 -18,-2 Q -12,2 2,1 Z"/><path d="M 1,0 L 5,13 7,14 3,14 0,1 Z"/></g>
-        <g id="shoeR"><path d="M -3,-3 Q 8,-6 18,-2 Q 12,2 -2,1 Z"/><path d="M -1,0 L -5,13 -7,14 -3,14 0,1 Z"/></g>
-        <path id="torsoPath" fill="transparent"/>
-        <path id="dressWash" fill="transparent" opacity="0.2" filter="url(#softFilter)"/>
-        <path id="dressPath" fill="transparent"/>
-        <path id="necklineDetail" fill="none" stroke="transparent" strokeWidth="1.2" strokeLinecap="round" opacity="0.15"/>
-        <path id="beltLine" fill="none" stroke="transparent" strokeWidth="1.8" strokeLinecap="round" opacity="0.18"/>
-        <rect id="buckle" fill="transparent" opacity="0.22"/>
-        <path id="fold1" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.06"/>
-        <path id="fold2" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.06"/>
-        <path id="fold3" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.06"/>
-        <path id="armUL" fill="transparent"/>
-        <path id="armLL" fill="transparent"/>
-        <path id="armUR" fill="transparent"/>
-        <path id="armLR" fill="transparent"/>
-        <ellipse id="handL" fill="transparent"/>
-        <ellipse id="handR" fill="transparent"/>
-        <ellipse id="headShape" fill="transparent"/>
+        <path id="bodyDress" fill="url(#dressGrad)"/>
+        <path id="neckPath" fill="transparent"/>
+        <ellipse id="headShape" fill="url(#skinGrad)"/>
+        <path id="legL" fill="transparent"/><path id="legR" fill="transparent"/>
+        <g id="shoeL"><path d="M 3,-3 Q -6,-5 -14,-1 Q -9,2 2,1 Z"/><path d="M 1,0 L 4,11 6,12 2,12 0,1 Z"/></g>
+        <g id="shoeR"><path d="M -3,-3 Q 6,-5 14,-1 Q 9,2 -2,1 Z"/><path d="M -1,0 L -4,11 -6,12 -2,12 0,1 Z"/></g>
+        <path id="armL" fill="none" stroke="transparent" strokeWidth="2.5" strokeLinecap="round"/>
+        <path id="armR" fill="none" stroke="transparent" strokeWidth="2.5" strokeLinecap="round"/>
+        <path id="waistDetail" fill="none" stroke="transparent" strokeWidth="1.5" strokeLinecap="round" opacity="0.2"/>
+        <path id="necklineV" fill="none" stroke="transparent" strokeWidth="1" strokeLinecap="round" opacity="0.15"/>
+        <path id="fold1" fill="none" stroke="transparent" strokeWidth="0.7" opacity="0.08"/>
+        <path id="fold2" fill="none" stroke="transparent" strokeWidth="0.7" opacity="0.08"/>
         <g id="faceGroup">
-          <path d="M -7.5,-1.5 Q -5.5,-4.5 -3,-1.5 Q -5.5,0.5 -7.5,-1.5 Z" fill="rgba(40,30,30,0.6)"/>
-          <path d="M 3,-1.5 Q 5.5,-4.5 7.5,-1.5 Q 5.5,0.5 3,-1.5 Z" fill="rgba(40,30,30,0.6)"/>
-          <path d="M -8.5,-1.8 Q -5.5,-5.2 -2.5,-2" fill="none" stroke="rgba(30,20,20,0.55)" strokeWidth="1.3" strokeLinecap="round"/>
-          <path d="M 2.5,-2 Q 5.5,-5.2 8.5,-1.8" fill="none" stroke="rgba(30,20,20,0.55)" strokeWidth="1.3" strokeLinecap="round"/>
-          <path d="M -8.8,-2 L -10,-3.5" fill="none" stroke="rgba(30,20,20,0.35)" strokeWidth="0.8" strokeLinecap="round"/>
-          <path d="M 8.8,-2 L 10,-3.5" fill="none" stroke="rgba(30,20,20,0.35)" strokeWidth="0.8" strokeLinecap="round"/>
-          <path d="M -9,-5.5 Q -5.5,-8.5 -2,-6" fill="none" stroke="rgba(50,35,25,0.4)" strokeWidth="1" strokeLinecap="round"/>
-          <path d="M 2,-6 Q 5.5,-8.5 9,-5.5" fill="none" stroke="rgba(50,35,25,0.4)" strokeWidth="1" strokeLinecap="round"/>
-          <path d="M -0.3,0 C -0.5,2.5 -1.5,4.5 -1,5.5 Q 0,6.2 1,5.5 C 1.5,4.5 0.5,2.5 0.3,0" fill="none" stroke="rgba(60,40,30,0.18)" strokeWidth="0.7" strokeLinecap="round"/>
-          <path d="M -3.5,7 Q -1.8,5.8 0,6.5 Q 1.8,5.8 3.5,7" fill="rgba(180,80,80,0.35)" stroke="rgba(160,60,60,0.3)" strokeWidth="0.6"/>
-          <path d="M -3.5,7 Q -1.5,9.5 0,10 Q 1.5,9.5 3.5,7" fill="rgba(180,80,80,0.28)" stroke="rgba(160,60,60,0.2)" strokeWidth="0.5"/>
-          <circle cx="-9" cy="3" r="4" fill="rgba(220,120,120,0.08)"/>
-          <circle cx="9" cy="3" r="4" fill="rgba(220,120,120,0.08)"/>
+          <path d="M -7,-1.5 Q -5,-4.5 -2.5,-1.5 Q -5,0.5 -7,-1.5 Z" fill="rgba(40,30,30,0.55)"/>
+          <path d="M 2.5,-1.5 Q 5,-4.5 7,-1.5 Q 5,0.5 2.5,-1.5 Z" fill="rgba(40,30,30,0.55)"/>
+          <path d="M -8,-1.5 Q -5,-5 -2,-1.8" fill="none" stroke="rgba(30,20,20,0.5)" strokeWidth="1.2" strokeLinecap="round"/>
+          <path d="M 2,-1.8 Q 5,-5 8,-1.5" fill="none" stroke="rgba(30,20,20,0.5)" strokeWidth="1.2" strokeLinecap="round"/>
+          <path d="M -8.5,-1.8 L -9.8,-3.2" fill="none" stroke="rgba(30,20,20,0.3)" strokeWidth="0.7" strokeLinecap="round"/>
+          <path d="M 8.5,-1.8 L 9.8,-3.2" fill="none" stroke="rgba(30,20,20,0.3)" strokeWidth="0.7" strokeLinecap="round"/>
+          <path d="M -8,-5 Q -5,-8 -2,-5.5" fill="none" stroke="rgba(50,35,25,0.35)" strokeWidth="0.9" strokeLinecap="round"/>
+          <path d="M 2,-5.5 Q 5,-8 8,-5" fill="none" stroke="rgba(50,35,25,0.35)" strokeWidth="0.9" strokeLinecap="round"/>
+          <path d="M 0,0 C -0.3,2 -1.2,4 -0.8,5 Q 0,5.8 0.8,5 C 1.2,4 0.3,2 0,0" fill="none" stroke="rgba(60,40,30,0.15)" strokeWidth="0.6" strokeLinecap="round"/>
+          <path d="M -3,6.5 Q -1.5,5.5 0,6 Q 1.5,5.5 3,6.5" fill="rgba(180,80,80,0.3)" stroke="rgba(160,60,60,0.25)" strokeWidth="0.5"/>
+          <path d="M -3,6.5 Q -1,9 0,9.5 Q 1,9 3,6.5" fill="rgba(180,80,80,0.22)" stroke="rgba(160,60,60,0.15)" strokeWidth="0.4"/>
+          <circle cx="-8" cy="3" r="3.5" fill="rgba(220,120,120,0.06)"/>
+          <circle cx="8" cy="3" r="3.5" fill="rgba(220,120,120,0.06)"/>
         </g>
         <g id="glassesGroup">
-          <path d="M -2,-3 C -3,-6.5 -9.5,-7.5 -12.5,-5 C -14.5,-3 -13.5,2.5 -10.5,3.5 C -7.5,4.5 -3,1 -2,-1 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.3)" strokeWidth="1.3"/>
-          <path d="M 2,-3 C 3,-6.5 9.5,-7.5 12.5,-5 C 14.5,-3 13.5,2.5 10.5,3.5 C 7.5,4.5 3,1 2,-1 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.3)" strokeWidth="1.3"/>
-          <path d="M -2,-2.5 Q 0,-4.5 2,-2.5" fill="none" stroke="rgba(0,0,0,0.3)" strokeWidth="1.1"/>
-          <line x1="-13" y1="-4.5" x2="-15" y2="-3" stroke="rgba(0,0,0,0.25)" strokeWidth="1"/>
-          <line x1="13" y1="-4.5" x2="15" y2="-3" stroke="rgba(0,0,0,0.25)" strokeWidth="1"/>
+          <path d="M -2,-3 C -3,-6 -9,-7 -12,-4.5 C -13.5,-2.5 -12.5,2 -10,3 C -7,4 -3,1 -2,-1 Z" fill="rgba(0,0,0,0.06)" stroke="rgba(0,0,0,0.28)" strokeWidth="1.2"/>
+          <path d="M 2,-3 C 3,-6 9,-7 12,-4.5 C 13.5,-2.5 12.5,2 10,3 C 7,4 3,1 2,-1 Z" fill="rgba(0,0,0,0.06)" stroke="rgba(0,0,0,0.28)" strokeWidth="1.2"/>
+          <path d="M -2,-2.5 Q 0,-4 2,-2.5" fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="1"/>
+          <line x1="-12.5" y1="-4" x2="-14.5" y2="-2.5" stroke="rgba(0,0,0,0.22)" strokeWidth="0.9"/>
+          <line x1="12.5" y1="-4" x2="14.5" y2="-2.5" stroke="rgba(0,0,0,0.22)" strokeWidth="0.9"/>
         </g>
         <ellipse id="hairCap" fill="transparent"/>
         <g id="hairStrands"/>
         <path id="scarfWrap" fill="transparent"/>
         <path id="scarfTail1" fill="transparent"/>
-        <path id="scarfTail2" fill="transparent" opacity="0.6"/>
+        <path id="scarfTail2" fill="transparent" opacity="0.5"/>
       </g>
 
-      <path id="edgeHighlight" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.1"/>
-
-      <g id="particleLayer"/>
-      <g id="burstLayer"/>
+      <g id="particleLayer"/><g id="burstLayer"/>
     </svg>
   );
 };
