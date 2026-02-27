@@ -12,7 +12,11 @@ export const Outfit = [
     title: "Pale Yellow Paisley Details",
     prompt: "Their pale yellow ruched blouse and tan skirt, adorned with embossed paisley details, evoke a timeless yet youthful appeal.",
   },
-  "Draped in vintage designer.",
+  {
+    id: "outfit_003",
+    title: "Draped Vintage Designer",
+    prompt: "Draped in vintage designer.",
+  },
   {
     id: "outfit_004",
     title: "Jet-Black Vintage Alaïa Lace Gown",
@@ -231,7 +235,11 @@ export const OutfitTop = [
     title: "4-Ply Scottish",
     prompt: "Oversized heather-grey cashmere mockneck, 4-ply Scottish, visibly plush",
   },
-  "Oversized cream cashmere sweater",
+  {
+    id: "outfittop_003",
+    title: "Oversized Cream Cashmere",
+    prompt: "Oversized cream cashmere sweater",
+  },
   {
     id: "outfittop_004",
     title: "Polo Player Logo",
@@ -430,7 +438,11 @@ export const OutfitBottom = [
     title: "Embossed Paisley Tan",
     prompt: "Tan skirt with embossed paisley details",
   },
-  "Mini skirt with delicate details",
+  {
+    id: "outfitbottom_009",
+    title: "Delicate Details Mini Skirt",
+    prompt: "Mini skirt with delicate details",
+  },
   {
     id: "outfitbottom_010",
     title: "Ruffled Layers Cream",
@@ -489,7 +501,11 @@ export const OutfitBottom = [
 ];
 
 export const Shoes = [
-  "Barefoot, no shoes",
+  {
+    id: "shoes_001",
+    title: "Barefoot No Shoes",
+    prompt: "Barefoot, no shoes",
+  },
   {
     id: "shoes_002",
     title: "Pearl-Tinged Laces Sambas",
@@ -593,7 +609,11 @@ export const Jewelry = [
     title: "Personal Tokens Charm",
     prompt: "Charm bracelet with personal tokens",
   },
-  "No jewelry, minimalist approach",
+  {
+    id: "jewelry_007b",
+    title: "No Jewelry Minimalist",
+    prompt: "No jewelry, minimalist approach",
+  },
   {
     id: "jewelry_008",
     title: "Subtle Ring One Finger",
@@ -755,7 +775,11 @@ export const Bags = [
     title: "Backpack",
     prompt: "Backpack in luxe material",
   },
-  "No bag visible",
+  {
+    id: "bags_009",
+    title: "No Bag Visible",
+    prompt: "No bag visible",
+  },
 ];
 
 export const BrandDesigner = [

@@ -100,7 +100,11 @@ export const FacialExpression = [
     title: "Warm Friendly Approachable",
     prompt: "Warm friendly approachable demeanor",
   },
-  "Soft but intelligent expression",
+  {
+    id: "facialexpression_008",
+    title: "Soft Intelligent Expression",
+    prompt: "Soft but intelligent expression",
+  },
   {
     id: "facialexpression_009",
     title: "Contemplative Air Soft Mystery",
@@ -111,7 +115,11 @@ export const FacialExpression = [
     title: "Gentle Introspection",
     prompt: "Gentle introspection and connection with nature",
   },
-  "Dreamy faraway look",
+  {
+    id: "facialexpression_011",
+    title: "Dreamy Faraway Look",
+    prompt: "Dreamy faraway look",
+  },
   {
     id: "facialexpression_012",
     title: "Wistful Expression",
@@ -132,9 +140,21 @@ export const FacialExpression = [
     title: "Relaxed Confident Contemplative Introspection",
     prompt: "Relaxed confident yet hint of contemplative introspection",
   },
-  "Captivating mysterious gaze",
-  "Mysterious and enigmatic allure",
-  "Intimate knowing expression",
+  {
+    id: "facialexpression_016",
+    title: "Captivating Mysterious Gaze",
+    prompt: "Captivating mysterious gaze",
+  },
+  {
+    id: "facialexpression_017",
+    title: "Mysterious Enigmatic Allure",
+    prompt: "Mysterious and enigmatic allure",
+  },
+  {
+    id: "facialexpression_018",
+    title: "Intimate Knowing Expression",
+    prompt: "Intimate knowing expression",
+  },
   {
     id: "facialexpression_019",
     title: "Vulnerable Exposed Emotional State",
@@ -158,7 +178,11 @@ export const Eyes = [
     title: "Knowing Look Slight Smirk",
     prompt: "Knowing look with slight smirk",
   },
-  "Vulnerable open gaze",
+  {
+    id: "eyes_004",
+    title: "Vulnerable Open Gaze",
+    prompt: "Vulnerable open gaze",
+  },
   {
     id: "eyes_005",
     title: "Glancing Off Camera Contemplative",
@@ -184,7 +208,11 @@ export const Eyes = [
     title: "Lowered Quiet Introspection",
     prompt: "Eyes lowered in quiet introspection",
   },
-  "Eyes cast downward shyly",
+  {
+    id: "eyes_010",
+    title: "Eyes Cast Downward Shyly",
+    prompt: "Eyes cast downward shyly",
+  },
   {
     id: "eyes_011",
     title: "Gaze Upward Cap Brim",
@@ -200,7 +228,11 @@ export const Eyes = [
     title: "Wistful Expression",
     prompt: "Gazing out toward water with wistful expression",
   },
-  "Looking toward horizon line",
+  {
+    id: "eyes_014",
+    title: "Looking Toward Horizon Line",
+    prompt: "Looking toward horizon line",
+  },
   {
     id: "eyes_015",
     title: "Intense Focused Gaze",
@@ -216,7 +248,11 @@ export const Eyes = [
     title: "Eyes Sparkling Joy Laughter",
     prompt: "Eyes sparkling with joy or laughter",
   },
-  "Squinting slightly against sunlight",
+  {
+    id: "eyes_018",
+    title: "Squinting Slightly Against Sunlight",
+    prompt: "Squinting slightly against sunlight",
+  },
   {
     id: "eyes_019",
     title: "Eyes Half-Closed",
@@ -235,9 +271,21 @@ export const Mouth = [
     title: "Warm Genuine Smile Teeth",
     prompt: "Warm genuine smile showing teeth",
   },
-  "Soft subtle smile",
-  "Slight natural smile",
-  "Whisper of a smile",
+  {
+    id: "mouth_002",
+    title: "Soft Subtle Smile",
+    prompt: "Soft subtle smile",
+  },
+  {
+    id: "mouth_003",
+    title: "Slight Natural Smile",
+    prompt: "Slight natural smile",
+  },
+  {
+    id: "mouth_004",
+    title: "Whisper Of A Smile",
+    prompt: "Whisper of a smile",
+  },
   {
     id: "mouth_005",
     title: "Gentle Smile With Warmth",
@@ -253,7 +301,11 @@ export const Mouth = [
     title: "Mouth Open Mid-Laugh Speech",
     prompt: "Mouth open mid-laugh or speech",
   },
-  "Relaxed neutral expression",
+  {
+    id: "mouth_008",
+    title: "Relaxed Neutral Expression",
+    prompt: "Relaxed neutral expression",
+  },
   {
     id: "mouth_009",
     title: "Lips Slightly Parted Naturally",
@@ -284,9 +336,7 @@ export const Mouth = [
     title: "Pout Fuller Lips Emphasized",
     prompt: "Pout or fuller lips emphasized",
   },
-];// ============================================================================
-// HAIR - KEEP ALL 31 ENTRIES EXACTLY AS PROVIDED
-// ============================================================================;
+];
 
 export const Hair = [
   {

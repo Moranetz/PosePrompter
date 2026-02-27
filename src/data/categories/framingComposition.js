@@ -198,9 +198,7 @@ export const CameraAngle = [
     title: "Chest Height Proportional",
     prompt: "Medium distance chest height perspective keeping everything proportional and approachable",
   },
-];// ============================================================================
-// KEEP ALL REMAINING COMPREHENSIVE CATEGORIES EXACTLY AS PROVIDED
-// ============================================================================;
+];
 
 export const CameraType = [
   {
