@@ -143,8 +143,6 @@
             <path id="legL" fill="transparent"/><path id="legR" fill="transparent"/>
             <g id="shoeL"><path d="M 3,-3 Q -6,-5 -14,-1 Q -9,2 2,1 Z"/><path d="M 1,0 L 4,11 6,12 2,12 0,1 Z"/></g>
             <g id="shoeR"><path d="M -3,-3 Q 6,-5 14,-1 Q 9,2 -2,1 Z"/><path d="M -1,0 L -4,11 -6,12 -2,12 0,1 Z"/></g>
-            <path id="armL" fill="none" stroke="transparent" stroke-width="2.5" stroke-linecap="round"/>
-            <path id="armR" fill="none" stroke="transparent" stroke-width="2.5" stroke-linecap="round"/>
             <path id="waistDetail" fill="none" stroke="transparent" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
             <path id="necklineV" fill="none" stroke="transparent" stroke-width="1" stroke-linecap="round" opacity="0.15"/>
             <path id="fold1" fill="none" stroke="transparent" stroke-width="0.7" opacity="0.08"/>
@@ -300,21 +298,27 @@ function bodyDressD(p) {
   const bustY = sY + 20;
   const wY = p.torso.y;
   const hY = (p.hL.y + p.hR.y) / 2;
-  // Half-widths at each height
-  const shW = 18, buW = 16, waW = 9, hiW = 13, heW = 22;
+  // Half-widths: shoulder, cap (sleeve edge), bust, waist, hip, hem
+  const shW = 16, capW = 22, buW = 15, waW = 9, hiW = 14, heW = 24;
+  const capY = sY + 8; // where shoulder cap ends
   return [
     `M ${v(cx)},${v(neckVy)}`,
-    `C ${v(cx+3)},${v(neckVy-8)} ${v(cx+shW-5)},${v(sY-2)} ${v(cx+shW)},${v(sY+2)}`,
-    `C ${v(cx+shW+1)},${v(sY+10)} ${v(cxW+buW+2)},${v(bustY-4)} ${v(cxW+buW)},${v(bustY)}`,
-    `C ${v(cxW+buW-2)},${v(bustY+6)} ${v(cxW+waW+3)},${v(wY-6)} ${v(cxW+waW)},${v(wY)}`,
-    `C ${v(cxW+waW-1)},${v(wY+6)} ${v(cxH+hiW-2)},${v(hY-6)} ${v(cxH+hiW)},${v(hY)}`,
-    `C ${v(cxH+hiW+4)},${v((hY+hemY)/2)} ${v(cxH+heW+fl)},${v(hemY-12)} ${v(cxH+heW+fl)},${v(hemY)}`,
-    `Q ${v(cxH)},${v(hemY+6)} ${v(cxH-heW-fl)},${v(hemY)}`,
-    `C ${v(cxH-heW-fl)},${v(hemY-12)} ${v(cxH-hiW-4)},${v((hY+hemY)/2)} ${v(cxH-hiW)},${v(hY)}`,
-    `C ${v(cxH-hiW+2)},${v(hY-6)} ${v(cxW-waW+1)},${v(wY+6)} ${v(cxW-waW)},${v(wY)}`,
-    `C ${v(cxW-waW-3)},${v(wY-6)} ${v(cxW-buW+2)},${v(bustY+6)} ${v(cxW-buW)},${v(bustY)}`,
-    `C ${v(cxW-buW-2)},${v(bustY-4)} ${v(cx-shW-1)},${v(sY+10)} ${v(cx-shW)},${v(sY+2)}`,
-    `C ${v(cx-shW+5)},${v(sY-2)} ${v(cx-3)},${v(neckVy-8)} ${v(cx)},${v(neckVy)}`,
+    // Right side: neck → shoulder → cap sleeve → bust → waist → hip → hem
+    `C ${v(cx+4)},${v(neckVy-6)} ${v(cx+shW-4)},${v(sY-3)} ${v(cx+shW)},${v(sY)}`,
+    `C ${v(cx+shW+5)},${v(sY+2)} ${v(cx+capW+2)},${v(capY-3)} ${v(cx+capW)},${v(capY)}`,
+    `C ${v(cx+capW-3)},${v(capY+4)} ${v(cxW+buW+2)},${v(bustY-3)} ${v(cxW+buW)},${v(bustY)}`,
+    `C ${v(cxW+buW-2)},${v(bustY+8)} ${v(cxW+waW+3)},${v(wY-8)} ${v(cxW+waW)},${v(wY)}`,
+    `C ${v(cxW+waW-1)},${v(wY+8)} ${v(cxH+hiW-2)},${v(hY-6)} ${v(cxH+hiW)},${v(hY)}`,
+    `C ${v(cxH+hiW+5)},${v((hY+hemY)/2)} ${v(cxH+heW+fl)},${v(hemY-14)} ${v(cxH+heW+fl)},${v(hemY)}`,
+    // Bottom hem curve
+    `Q ${v(cxH)},${v(hemY+8)} ${v(cxH-heW-fl)},${v(hemY)}`,
+    // Left side: hem → hip → waist → bust → cap sleeve → shoulder → neck
+    `C ${v(cxH-heW-fl)},${v(hemY-14)} ${v(cxH-hiW-5)},${v((hY+hemY)/2)} ${v(cxH-hiW)},${v(hY)}`,
+    `C ${v(cxH-hiW+2)},${v(hY-6)} ${v(cxW-waW+1)},${v(wY+8)} ${v(cxW-waW)},${v(wY)}`,
+    `C ${v(cxW-waW-3)},${v(wY-8)} ${v(cxW-buW+2)},${v(bustY+8)} ${v(cxW-buW)},${v(bustY)}`,
+    `C ${v(cxW-buW-2)},${v(bustY-3)} ${v(cx-capW+3)},${v(capY+4)} ${v(cx-capW)},${v(capY)}`,
+    `C ${v(cx-capW-2)},${v(capY-3)} ${v(cx-shW-5)},${v(sY+2)} ${v(cx-shW)},${v(sY)}`,
+    `C ${v(cx-shW+4)},${v(sY-3)} ${v(cx-4)},${v(neckVy-6)} ${v(cx)},${v(neckVy)}`,
     'Z'
   ].join(' ');
 }
@@ -329,8 +333,6 @@ function hairBackD(p) {
   const hx = p.head.x, hy = p.head.y, dir = (hx-200)*0.08;
   return `M ${v(hx-12)},${v(hy-6)} C ${v(hx-22)},${v(hy)} ${v(hx-24+dir)},${v(hy+20)} ${v(hx-20+dir)},${v(hy+50)} C ${v(hx-18+dir)},${v(hy+65)} ${v(hx-14+dir)},${v(hy+68)} ${v(hx-10+dir)},${v(hy+58)} C ${v(hx-6)},${v(hy+42)} ${v(hx-3)},${v(hy+22)} ${v(hx)},${v(hy+12)} C ${v(hx+3)},${v(hy+22)} ${v(hx+6)},${v(hy+38)} ${v(hx+10+dir)},${v(hy+52)} C ${v(hx+14+dir)},${v(hy+62)} ${v(hx+18+dir)},${v(hy+60)} ${v(hx+20+dir)},${v(hy+46)} C ${v(hx+24+dir)},${v(hy+20)} ${v(hx+22)},${v(hy)} ${v(hx+12)},${v(hy-6)} Z`;
 }
-
-function armD(s, e, w) { return `M ${v(s.x)},${v(s.y)} Q ${v(e.x)},${v(e.y)} ${v(w.x)},${v(w.y)}`; }
 
 function legD(knee, foot, hemY) {
   const tx = knee.x, ty = hemY + 2;
@@ -470,10 +472,6 @@ function animate() {
   $('shoeR').querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC));
 
   // Arms (thin strokes)
-  $('armL').setAttribute('d', armD(p.sL, p.eL, p.wL));
-  $('armL').setAttribute('stroke', `hsla(${v(C.skin.h)},${v(C.skin.s)}%,${v(C.skin.l-5)}%,${v(C.skin.a * 0.6)})`);
-  $('armR').setAttribute('d', armD(p.sR, p.eR, p.wR));
-  $('armR').setAttribute('stroke', `hsla(${v(C.skin.h)},${v(C.skin.s)}%,${v(C.skin.l-5)}%,${v(C.skin.a * 0.6)})`);
 
   // Dress details
   const sY = (p.sL.y + p.sR.y) / 2;

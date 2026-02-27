@@ -76,20 +76,27 @@ function bodyDressD(p, breath) {
   const bustY = sY + 20;
   const wY = p.torso.y;
   const hY = (p.hL.y + p.hR.y) / 2;
-  const shW = 18, buW = 16, waW = 9, hiW = 13, heW = 22;
+  // Half-widths: shoulder, cap (sleeve edge), bust, waist, hip, hem
+  const shW = 16, capW = 22, buW = 15, waW = 9, hiW = 14, heW = 24;
+  const capY = sY + 8; // where shoulder cap ends
   return [
     `M ${n(cx)},${n(neckVy)}`,
-    `C ${n(cx+3)},${n(neckVy-8)} ${n(cx+shW-5)},${n(sY-2)} ${n(cx+shW)},${n(sY+2)}`,
-    `C ${n(cx+shW+1)},${n(sY+10)} ${n(cxW+buW+2)},${n(bustY-4)} ${n(cxW+buW)},${n(bustY)}`,
-    `C ${n(cxW+buW-2)},${n(bustY+6)} ${n(cxW+waW+3)},${n(wY-6)} ${n(cxW+waW)},${n(wY)}`,
-    `C ${n(cxW+waW-1)},${n(wY+6)} ${n(cxH+hiW-2)},${n(hY-6)} ${n(cxH+hiW)},${n(hY)}`,
-    `C ${n(cxH+hiW+4)},${n((hY+hemY)/2)} ${n(cxH+heW+fl)},${n(hemY-12)} ${n(cxH+heW+fl)},${n(hemY)}`,
-    `Q ${n(cxH)},${n(hemY+6)} ${n(cxH-heW-fl)},${n(hemY)}`,
-    `C ${n(cxH-heW-fl)},${n(hemY-12)} ${n(cxH-hiW-4)},${n((hY+hemY)/2)} ${n(cxH-hiW)},${n(hY)}`,
-    `C ${n(cxH-hiW+2)},${n(hY-6)} ${n(cxW-waW+1)},${n(wY+6)} ${n(cxW-waW)},${n(wY)}`,
-    `C ${n(cxW-waW-3)},${n(wY-6)} ${n(cxW-buW+2)},${n(bustY+6)} ${n(cxW-buW)},${n(bustY)}`,
-    `C ${n(cxW-buW-2)},${n(bustY-4)} ${n(cx-shW-1)},${n(sY+10)} ${n(cx-shW)},${n(sY+2)}`,
-    `C ${n(cx-shW+5)},${n(sY-2)} ${n(cx-3)},${n(neckVy-8)} ${n(cx)},${n(neckVy)}`,
+    // Right side: neck → shoulder → cap sleeve → bust → waist → hip → hem
+    `C ${n(cx+4)},${n(neckVy-6)} ${n(cx+shW-4)},${n(sY-3)} ${n(cx+shW)},${n(sY)}`,
+    `C ${n(cx+shW+5)},${n(sY+2)} ${n(cx+capW+2)},${n(capY-3)} ${n(cx+capW)},${n(capY)}`,
+    `C ${n(cx+capW-3)},${n(capY+4)} ${n(cxW+buW+2)},${n(bustY-3)} ${n(cxW+buW)},${n(bustY)}`,
+    `C ${n(cxW+buW-2)},${n(bustY+8)} ${n(cxW+waW+3)},${n(wY-8)} ${n(cxW+waW)},${n(wY)}`,
+    `C ${n(cxW+waW-1)},${n(wY+8)} ${n(cxH+hiW-2)},${n(hY-6)} ${n(cxH+hiW)},${n(hY)}`,
+    `C ${n(cxH+hiW+5)},${n((hY+hemY)/2)} ${n(cxH+heW+fl)},${n(hemY-14)} ${n(cxH+heW+fl)},${n(hemY)}`,
+    // Bottom hem curve
+    `Q ${n(cxH)},${n(hemY+8)} ${n(cxH-heW-fl)},${n(hemY)}`,
+    // Left side: hem → hip → waist → bust → cap sleeve → shoulder → neck
+    `C ${n(cxH-heW-fl)},${n(hemY-14)} ${n(cxH-hiW-5)},${n((hY+hemY)/2)} ${n(cxH-hiW)},${n(hY)}`,
+    `C ${n(cxH-hiW+2)},${n(hY-6)} ${n(cxW-waW+1)},${n(wY+8)} ${n(cxW-waW)},${n(wY)}`,
+    `C ${n(cxW-waW-3)},${n(wY-8)} ${n(cxW-buW+2)},${n(bustY+8)} ${n(cxW-buW)},${n(bustY)}`,
+    `C ${n(cxW-buW-2)},${n(bustY-3)} ${n(cx-capW+3)},${n(capY+4)} ${n(cx-capW)},${n(capY)}`,
+    `C ${n(cx-capW-2)},${n(capY-3)} ${n(cx-shW-5)},${n(sY+2)} ${n(cx-shW)},${n(sY)}`,
+    `C ${n(cx-shW+4)},${n(sY-3)} ${n(cx-4)},${n(neckVy-6)} ${n(cx)},${n(neckVy)}`,
     'Z'
   ].join(' ');
 }
@@ -99,8 +106,6 @@ function neckD(p) {
   const sY = (p.sL.y + p.sR.y) / 2;
   return `M ${n(hx-5)},${n(hy+14)} C ${n(hx-4)},${n(hy+20)} ${n(p.sL.x+6)},${n(sY-2)} ${n(p.sL.x+10)},${n(sY+2)} L ${n(p.sR.x-10)},${n(sY+2)} C ${n(p.sR.x-6)},${n(sY-2)} ${n(hx+4)},${n(hy+20)} ${n(hx+5)},${n(hy+14)} Z`;
 }
-
-function armD(s, e, w) { return `M ${n(s.x)},${n(s.y)} Q ${n(e.x)},${n(e.y)} ${n(w.x)},${n(w.y)}`; }
 
 function legD(knee, foot, hemY) {
   const tx = knee.x, ty = hemY + 2;
@@ -393,12 +398,6 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
     if (sl) { sl.setAttribute('transform', `translate(${n(p.fL.x)},${n(p.fL.y)})`); sl.querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC)); }
     if (sr) { sr.setAttribute('transform', `translate(${n(p.fR.x)},${n(p.fR.y)})`); sr.querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC)); }
 
-    // Arms (thin strokes)
-    const armLEl = $('armL');
-    if (armLEl) { armLEl.setAttribute('d', armD(p.sL, p.eL, p.wL)); armLEl.setAttribute('stroke', `hsla(${n(s.colors.skin.h)},${n(s.colors.skin.s)}%,${n(s.colors.skin.l-5)}%,${n(s.colors.skin.a * 0.6)})`); }
-    const armREl = $('armR');
-    if (armREl) { armREl.setAttribute('d', armD(p.sR, p.eR, p.wR)); armREl.setAttribute('stroke', `hsla(${n(s.colors.skin.h)},${n(s.colors.skin.s)}%,${n(s.colors.skin.l-5)}%,${n(s.colors.skin.a * 0.6)})`); }
-
     // Dress details
     const sY = (p.sL.y + p.sR.y) / 2;
     const nv = $('necklineV');
@@ -524,8 +523,6 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
         <path id="legL" fill="transparent"/><path id="legR" fill="transparent"/>
         <g id="shoeL"><path d="M 3,-3 Q -6,-5 -14,-1 Q -9,2 2,1 Z"/><path d="M 1,0 L 4,11 6,12 2,12 0,1 Z"/></g>
         <g id="shoeR"><path d="M -3,-3 Q 6,-5 14,-1 Q 9,2 -2,1 Z"/><path d="M -1,0 L -4,11 -6,12 -2,12 0,1 Z"/></g>
-        <path id="armL" fill="none" stroke="transparent" strokeWidth="2.5" strokeLinecap="round"/>
-        <path id="armR" fill="none" stroke="transparent" strokeWidth="2.5" strokeLinecap="round"/>
         <path id="waistDetail" fill="none" stroke="transparent" strokeWidth="1.5" strokeLinecap="round" opacity="0.2"/>
         <path id="necklineV" fill="none" stroke="transparent" strokeWidth="1" strokeLinecap="round" opacity="0.15"/>
         <path id="fold1" fill="none" stroke="transparent" strokeWidth="0.7" opacity="0.08"/>
