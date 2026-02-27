@@ -55,6 +55,7 @@ import {
 } from './utils/personalizationService';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 import ActionsSidebar from './components/ActionsSidebar';
+import ImageToPromptModal from './components/ImageToPromptModal';
 import AuthModal from './components/AuthModal';
 import categories from './data/categories';
 import { categoryDisplayNames, categoryColors, categoryGroupDefinitions, comprehensiveAestheticOverrides } from './data/categoryRegistry';
@@ -210,6 +211,7 @@ const PhotoElementRandomizer = () => {
   const [favoritesSidebarOpen, setFavoritesSidebarOpen] = useState(false);
   const [installedPackagesModalOpen, setInstalledPackagesModalOpen] = useState(false);
   const [createSetModalOpen, setCreateSetModalOpen] = useState(false);
+  const [photoToPromptOpen, setPhotoToPromptOpen] = useState(false);
   const [selectedFavorites, setSelectedFavorites] = useState(new Set()); // Set of favorite IDs (category:optionId)
   const [unfavoritedInSession, setUnfavoritedInSession] = useState(new Set()); // Track items unfavorited in current session
   const favoritesSnapshotRef = useRef(null); // Snapshot of favorites when sidebar opens
@@ -1410,6 +1412,30 @@ const PhotoElementRandomizer = () => {
     }
   }, [requireAuth, user, newOptionText, newOptionTitle, userCustomOptions, saveUserData]);
 
+  // Save option from Photo-to-Prompt analysis
+  const savePhotoToPromptOption = useCallback(async (category, { title, prompt }) => {
+    if (!requireAuth('save analyzed prompt')) return;
+
+    const customId = `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const newOption = { id: customId, title, prompt };
+
+    const currentCustom = userCustomOptions[category] || [];
+    const updatedCustom = {
+      ...userCustomOptions,
+      [category]: [...currentCustom, newOption],
+    };
+
+    setUserCustomOptions(updatedCustom);
+
+    try {
+      await saveUserData({ customOptions: updatedCustom });
+    } catch (error) {
+      console.error('Error saving analyzed prompt:', error);
+      setUserCustomOptions(userCustomOptions);
+      alert('Failed to save. Please try again.');
+    }
+  }, [requireAuth, userCustomOptions, saveUserData]);
+
   // Save Create Set (custom prompt to category)
   const saveCreateSet = useCallback(async () => {
     if (!requireAuth('create set')) return;
@@ -2232,6 +2258,11 @@ const PhotoElementRandomizer = () => {
                     setCreateSetModalOpen(true);
                   }
                 }}
+                onPhotoToPrompt={() => {
+                  if (requireAuth('analyze photo')) {
+                    setPhotoToPromptOpen(true);
+                  }
+                }}
                 onOpenPackages={() => {
                   if (requireAuth('view packages')) {
                     setInstalledPackagesModalOpen(true);
@@ -2566,6 +2597,14 @@ const PhotoElementRandomizer = () => {
           onSkip={() => setShowFirstTimeExperience(false)}
         />
       )}
+
+      {/* Photo to Prompt Modal */}
+      <ImageToPromptModal
+        isOpen={photoToPromptOpen}
+        onClose={() => setPhotoToPromptOpen(false)}
+        onSaveOption={savePhotoToPromptOption}
+        categories={mergedCategories}
+      />
 
       {/* Add Custom Option Modal */}
       {addOptionModalOpen && (

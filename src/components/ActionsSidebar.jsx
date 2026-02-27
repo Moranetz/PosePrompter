@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotateCcw, Save, FolderOpen, Star, Clock, Undo2, Redo2, Plus, Package, TrendingUp } from 'lucide-react';
+import { RotateCcw, Save, FolderOpen, Star, Clock, Undo2, Redo2, Plus, Package, TrendingUp, Camera } from 'lucide-react';
 import { TOUCH_TARGETS, TYPOGRAPHY } from '../config/uxDesignSystem';
 
 const btnBase = {
@@ -42,6 +42,7 @@ const ActionsSidebar = ({
   canUndo,
   canRedo,
   onCreateSet,
+  onPhotoToPrompt,
   onOpenPackages,
   onOpenStats,
   showPackages,
@@ -159,6 +160,11 @@ const ActionsSidebar = ({
       <button onClick={onCreateSet} style={btnBase} onMouseEnter={hoverIn} onMouseLeave={hoverOut}
         aria-label="Create Set" title="Create Set - Add custom prompt to category">
         <Plus size={14} /> Create Set
+      </button>
+
+      <button onClick={onPhotoToPrompt} style={btnBase} onMouseEnter={hoverIn} onMouseLeave={hoverOut}
+        aria-label="Photo to Prompt" title="Upload a photo and generate a detailed prompt from it">
+        <Camera size={14} /> Photo to Prompt
       </button>
 
       {showPackages && (
