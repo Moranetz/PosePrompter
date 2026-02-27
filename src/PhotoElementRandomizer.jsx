@@ -396,6 +396,11 @@ const PhotoElementRandomizer = () => {
         title: "Ethereal Softness Curated Cool",
         prompt: "Generate an image that embodies a captivating \"ethereal softness meets curated cool\" aesthetic infused with a delicate sense of intimate connection and an almost dreamlike quality. This distinctive vibe is not merely observed but is meticulously constructed and amplified by the camera's precise rendering elevating the scene beyond ordinary visual experience.",
       },
+      {
+        id: "aesthetic_026",
+        title: "Kawaii-Core Dreamy Soft Girl",
+        prompt: "Generate an image that embodies a playful \"Kawaii-core\" meets \"Dreamy Soft Girl\" aesthetic infused with an alluring innocence and a vibrant almost hyperreal pop sensibility. This distinct vibe is not merely observed but actively constructed by the camera's precise rendering and a deliberate post-processing approach making the scene feel more vibrant and stylized than natural perception.",
+      },
     ],
 
     // ============================================================================
@@ -477,6 +482,11 @@ const PhotoElementRandomizer = () => {
         id: "bodypose_015",
         title: "Leaning Car Door Confident Gaze",
         prompt: "Leaning slightly out of the car door with gaze direct and confident yet with a hint of something unsaid - relaxed posture conveying effortless cool.",
+      },
+      {
+        id: "bodypose_016",
+        title: "Playful Over-Shoulder Coquettish Gashapon",
+        prompt: "Her pose should be engaging and slightly coquettish looking directly at the viewer over her shoulder with an alluring yet innocent expression one hand playfully interacting with a machine - leaning playfully against the wall of gashapon machines.",
       },
     ],
 
@@ -2256,6 +2266,11 @@ const PhotoElementRandomizer = () => {
         title: "Medium-Close Off-Center Cat Foreground",
         prompt: "Maintain a medium-close slightly off-center composition placing her gaze directly at the viewer while the cat provides a soft foreground element - her pose should be relaxed and intimate conveying a gentle connection with the viewer and her pet - the cat is held close its fur a soft blur in the foreground a visual technique that guides the eye directly to her face and reinforces the sense of intimate connection.",
       },
+      {
+        id: "framing_020",
+        title: "Dynamic Tilted Medium-Full Gashapon",
+        prompt: "Maintain a dynamic slightly tilted composition capturing her from a medium-full shot leaning playfully against the wall of gashapon machines.",
+      },
     ],
 
     'CameraAngle': [
@@ -2451,6 +2466,11 @@ const PhotoElementRandomizer = () => {
         title: "Sony A7R V Ethereal Bokeh Porcelain",
         prompt: "This image must simulate being captured on a high-end full-frame digital camera Sony Alpha A7R V or Canon EOS R3 paired with a fast wide-aperture prime lens 50mm f/1.2 or 85mm f/1.4. Ultra-shallow depth of field and ethereal bokeh intimate dreaminess - the depth of field should be exceptionally shallow creating an exquisite creamy almost painterly bokeh that completely melts the background into a soft indistinct wash of color and light - this extreme blur far more pronounced than human vision strategically isolates the subject drawing intense focus to their interaction and creating an intimate dreamlike envelope around them - the bokeh should exhibit smooth perfectly circular out-of-focus highlights that subtly glow contributing to the ethereal atmosphere and making the scene feel less like a snapshot and more like a cherished memory. Micro-contrast and skin tone luminosity porcelain perfection - the subject's face should exhibit subtle micro-contrast and exceptional resolution rendering her skin with a luminous almost porcelain-like quality rich in delicate cool undertones subtle pinks cool beiges - this high fidelity to her complexion a hallmark of professional sensors and lenses enhances her ethereal beauty making her skin appear flawlessly smooth yet natural a level of perfection often enhanced by the camera's ability to see and render light on skin with extreme precision. Lens character soft focus and gentle fall-off - the lens should exhibit a gentle flattering soft focus effect at wider apertures subtly softening sharp edges without losing crucial detail contributing to the overall dreamlike aesthetic - there should also be a slight natural vignetting around the edges gently darkening the corners to further draw focus inward.",
       },
+      {
+        id: "cameratype_029",
+        title: "Sony A7R V Kawaii Selective Focus",
+        prompt: "This image must simulate being captured on a high-end full-frame mirrorless camera Sony Alpha A7R V or Canon EOS R3 paired with a fast prime lens 35mm f/1.4 or 50mm f/1.2. Selective depth of field enchanted focus - the depth of field should be moderately shallow creating a creamy yet subtly textured bokeh that gently blurs the background of numerous gashapon machines - this effect more pronounced and aesthetically pleasing than natural human vision strategically isolates the subject making her the undeniable focal point while still allowing the vibrant background to contribute to the Kawaii-core theme without distraction - the background blur should exhibit soft pleasing out-of-focus highlights from the internal lights of the machines creating a subtle shimmering halo effect that enhances the dreamy atmosphere. Micro-contrast and skin tone fidelity luminous innocence - the subject's face should exhibit excellent micro-contrast and resolution rendering her skin with a natural luminous quality rich in subtle undertones peachy warmth rosy blush avoiding any plastic or overly smoothed appearance - this high fidelity to natural yet subtly enhanced skin texture contributes to her alluring innocence making her complexion glow with an almost ethereal quality that transcends typical real-life observation. Lens character subtle whimsy - the lens should offer minimal distortion ensuring the gashapon machines maintain their geometric integrity - a very subtle vignetting might be present gently darkening the corners to draw focus further inward enhancing intimacy and visual concentration on her.",
+      },
     ],
 
     'Lighting': [
@@ -2518,6 +2538,11 @@ const PhotoElementRandomizer = () => {
         id: "lighting_013",
         title: "Soft Diffused Ambient Enveloping Glow",
         prompt: "Utilize soft diffused ambient lighting likely from a nearby window or a large softbox creating a gentle enveloping glow. Flat even illumination unblemished serenity - the light should be soft and exceptionally even across her face minimizing harsh shadows and creating a sense of unblemished serenity - this flat but flattering light is carefully controlled to reduce imperfections making her features appear smoother and more angelic. Subtle catchlights and specular highlights spark of life - introduce delicate yet distinct catchlights in her eyes that sparkle with a photographic pop indicating precise light direction - subtle specular highlights should also be visible on her glossy hair and the cat's fur catching the light with a soft sheen that communicates texture and life often more noticeable in a high-quality capture than in real life. Luminous hair and fur tactile softness - the light should illuminate her long dark hair and the cat's fur creating a luminous sheen that highlights individual strands and hairs making them appear incredibly soft and tactile - this detailed rendering of texture is a testament to the camera's sensor resolution and light gathering capabilities.",
+      },
+      {
+        id: "lighting_014",
+        title: "Gashapon Glow Hyperreal Pop Rim",
+        prompt: "Utilize dynamic mixed lighting combining the vibrant internal illumination of the gashapon machines with subtle ambient overhead lighting. Gashapon glow hyperreal pop - the primary light source should emanate from the bright colorful internal lights of the gashapon machines casting a vibrant multi-hued glow onto the subject from behind and to her side - this creates dramatic rim lighting and colorful spill onto her white dress and hair an effect that is significantly amplified and stylized by the camera's sensor and post-processing making the colors feel more electric and saturated than they would appear to the naked eye - this pop of color is crucial for the Kawaii-core aesthetic. Soft frontal fill flattering illumination - a softer more diffused frontal fill light likely ambient overhead light should gently illuminate her face ensuring it remains well-exposed and flattering creating subtle highlights that sculpt her features without harshness - the camera's dynamic range ensures these bright and dark areas are rendered with detail preventing blown-out highlights or crushed shadows in the vibrant scene. Specular highlights playful sheen - introduce controlled specular highlights on her hair the plastic of the gashapon machines and any subtle jewelry - these highlights should have a crisp yet not overpowering photographic sparkle adding a playful sheen that enhances the overall vibrancy and perceived quality of the scene.",
       },
     ],
 
@@ -2612,6 +2637,11 @@ const PhotoElementRandomizer = () => {
         title: "Cool Desaturated Minimalist Curated",
         prompt: "Apply a cool-toned slightly desaturated color grade reminiscent of a modern minimalist aesthetic often seen in high-end lifestyle photography. Cool clean palette sophisticated calm - the overall color palette should lean towards cool blues and desaturated neutrals creating a sophisticated and calm atmosphere - the deep navy of her top combined with the muted tones of the background should feel harmonious and understated. Luminous skin tones ethereal glow - her skin tones while cool should maintain a luminous quality appearing fair and delicate against her dark hair and the muted background - this precise rendering of skin tones is crucial for the ethereal effect. Rich deep blacks depth and contrast - ensure rich deep blacks in her hair and top providing contrast and depth without being crushed - the camera's dynamic range preserves detail even in these dark areas.",
       },
+      {
+        id: "colorpalette_019",
+        title: "Vibrant Kawaii Saturated Pastels Dream",
+        prompt: "Apply a vibrant high-saturation color grade leaning towards a bright pastel-infused palette reminiscent of Japanese aesthetic trends while maintaining a sense of dreamy warmth. Saturated pastels lively innocence - the reds and pinks of the gashapon machines should be intensely saturated but maintain a pastel-like softness creating a vibrant backdrop that feels both energetic and whimsical - the subject's white dress should remain clean and bright with subtle texture acting as a luminous canvas for the colorful light - the camera's color processing ensures these hues are rendered with an almost painterly intensity that is beyond natural observation creating a truly Kawaii feel. Luminous skin tones enhanced youthfulness - her skin tones must be rendered with a natural luminous quality with a healthy subtle flush avoiding any overly desaturated or artificial appearance - this fidelity to natural skin while subtly enhanced contributes to her youthful and alluring innocence. Overall warmth with pop dreamy vibrancy - the overall image should possess a subtle warmth making it inviting while the vibrant background elements retain their pop - this balance creates a dreamy soft girl aesthetic with a lively energetic undertone.",
+      },
     ],
 
     'Texture': [
@@ -2665,6 +2695,11 @@ const PhotoElementRandomizer = () => {
         title: "Silky Hair Soft Fur Tangible Intimacy",
         prompt: "Heightened tactile sensation sensory richness - render all textures with exceptional almost tangible fidelity - the smooth delicate skin the long silky strands of her hair the soft blurred fur of the cat and the subtle details of the background objects like the model ship should all be viscerally tangible and highly detailed where in focus - this tactile richness is what truly elevates the image making it an experience rather than just a visual drawing the viewer into her serene and intimate world in a way the human eye without photographic enhancement would struggle to achieve.",
       },
+      {
+        id: "texture_011",
+        title: "Flowing Fabric Gashapon Plastic Playful",
+        prompt: "Heightened tactile sensation playful richness - render all textures with exceptional fidelity - the light flowing fabric of her dress the smooth plastic and intricate graphics of the gashapon machines the subtle sheen of her hair and the texture of her skin should all be viscerally tangible and highly detailed showcasing the transformative capabilities of a high-resolution sensor and sharp lens - this tactile richness makes the playful vibrant environment feel immersive and real a depth of detail often enhanced by the photographic process drawing the viewer into her charming world.",
+      },
     ],
 
     'Mood': [
@@ -2712,6 +2747,11 @@ const PhotoElementRandomizer = () => {
         id: "mood_009",
         title: "Ethereal Beauty Sophisticated Calm",
         prompt: "This image is perfectly suited for a high-end lifestyle blog a fashion editorial with an intimate mood or an artistic social media feed designed to evoke a sense of ethereal beauty sophisticated calm and a gentle personal connection all meticulously crafted and enhanced by the sophisticated eye of a professional camera system.",
+      },
+      {
+        id: "mood_010",
+        title: "Kawaii Culture Alluring Innocence Youthful",
+        prompt: "This image is perfectly suited for a fashion-forward social media feed a niche lifestyle blog focused on Japanese street style or Kawaii culture or a brand campaign targeting a youthful playful demographic designed to project an image of alluring innocence and vibrant stylized charm all meticulously crafted and enhanced by the sophisticated eye of a professional camera and artistic color grading.",
       },
     ],
 
