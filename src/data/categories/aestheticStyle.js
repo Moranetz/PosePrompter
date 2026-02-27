@@ -193,6 +193,201 @@ export const Aesthetic = [
     title: "Flow State Graceful Command",
     prompt: "Generate an intimate hyper-realistic photograph that captures the graceful flow of a woman's deep focus — a quiet powerful moment of connection between thought and action rendered with elegant clarity. The subject is captured in a state of flow her body forming a graceful engaged curve as she works at a whiteboard. Her posture is one of balanced intention — there is energy in her extended arm but also poise in her stance. It is the posture of a dancer not a soldier — a moment of serene command. The camera captures the subtle fluid energy in her movement — the gentle tension in her shoulder the confident grip on the marker the calm intensity of her expression. The final image should radiate calm power focused grace and a sense of seamless flow between idea and execution. The technical prowess of the camera is used not to dominate the scene but to serve the beauty and clarity of the moment.",
   },
+  {
+    id: "aesthetic_034",
+    title: "Whiteboard Biomechanical Engagement",
+    prompt: "A woman in an engaged dynamic pose leaning into a whiteboard arm extended mid-stroke. Convey musculoskeletal tension and balance — the extension of the arm the tilt of the torso the grounding of the feet. Capture the biomechanics of focused physicality. The image communicates focused clarity through physically accurate rendering of human posture optical properties and material interactions. Her top is a dark matte-finish fabric emphasizing the clean lines of her pose avoiding distracting reflections — bottoms are medium-toned trousers with subtle texture for visual separation.",
+  },
+  {
+    id: "aesthetic_035",
+    title: "Relatable Tech Dilemma Pondering",
+    prompt: "Generate an image that embodies a relatable tech dilemma and approachable intellectual struggle aesthetic achieved through the candid yet subtly refined rendering characteristic of modern social media photography where everyday moments are elevated by digital capture creating a connection that feels both immediate and enhanced. The subject sits on a couch or comfortable surface with a laptop conveying a moment of deep thought and genuine pondering — the viewer feels directly present in the room with her. The scene feels like a genuine moment of intellectual engagement where the dilemma is universal rather than dramatic.",
+  },
+  {
+    id: "aesthetic_036",
+    title: "Optimized Reality Computational",
+    prompt: "Generate an image embodying an optimized reality aesthetic — the clean hyper-detailed and perfectly balanced look of modern computational photography. The scene should feel authentically relatable yet subtly enhanced. The subject is actively working on a laptop on a bed — her focus entirely on the screen not posing for the camera. The framing feels candid not staged. Every detail is crisper than real life — individual laptop keys the weave of her cotton shirt the pattern of the bedsheets the texture of white curtains — flawless computational HDR ensures the window light is bright but retains full detail while the room's shadows are open and detailed not black. No blown-out highlights or crushed shadows anywhere.",
+  },
+  {
+    id: "aesthetic_037",
+    title: "Timeless European Elegance Contemplative",
+    prompt: "Generate an image that embodies a profound timeless European elegance and contemplative cultural immersion aesthetic achieved through hyper-realistic and artistically enhanced rendering characteristic of high-end professional photography meticulously designed to evoke nostalgic beauty that transcends everyday visual experience. The subject stands elegantly against an ancient stone wall with an illuminated mosaic behind her — a pristine attire creating dialogue between modern elegance and the historic setting. The scene evokes sophisticated travel and cherished cultural memory — perfectly suited for a high-end fashion editorial luxury travel blog or artistic social media feed.",
+  },
+  {
+    id: "aesthetic_038",
+    title: "Serene Contemplation Natural Elegance",
+    prompt: "Generate an image that embodies an exquisite serene contemplation and natural elegance aesthetic — a visual experience far richer than natural human perception. The subject is captured in side profile gazing downward in a private introspective moment surrounded by vibrant yellow flowers and lush green foliage. There is an intimate sense of harmony between her figure and the natural world — she is intrinsically connected to her surroundings. The scene radiates quiet dignity refined beauty and an almost spiritual calm.",
+  },
+  {
+    id: "aesthetic_039",
+    title: "Dreamy Naturalism Hammock Reverie",
+    prompt: "Generate an image that embodies a profound dreamy naturalism and serene contemplation aesthetic achieved through the organic and subtly enhanced rendering characteristic of analog film photography evoking a mood far richer and more introspective than direct real-life observation. The subject reclines languidly in a hammock looking upward with a pensive expression — the surrounding trees and dappled light creating a lush natural cocoon. The scene feels like a cherished memory of a warm afternoon suspended in time — intimate timeless and profoundly peaceful.",
+  },
+  {
+    id: "aesthetic_040",
+    title: "Mystical Nature Siren Forest Nymph",
+    prompt: "Generate an image that embodies an ethereal mystical nature siren or dreamlike forest nymph aesthetic — deeply artistic and almost surreal rendering that transcends natural observation imbuing the scene with magical realism that is purely photographic. The subject gracefully reclines on a large tree branch looking upwards and shielding her eyes from an unseen light — her flowing white dress contrasting against the dark ancient bark. The branch diagonally bisects the frame adding dynamic interest. The scene feels like stepping into an enchanted forest where she exists as a figure suspended between worlds — the environment alive with quiet ancient energy.",
+  },
+  {
+    id: "aesthetic_041",
+    title: "Ethereal Naturalism Dreamy Innocence",
+    prompt: "Generate an image that embodies profound ethereal naturalism and dreamy innocence aesthetic achieved through nuanced almost painterly rendering characteristic of high-end artistic film photography capturing and enhancing light and texture in ways that transcend ordinary perception. Presented as a diptych — top panel is a medium-close portrait with her hand gently cupping her cheek eyes gazing with a soft inviting yet subtly melancholic expression — bottom panel is a medium-full shot capturing her seated or crouching in rich textured grass contemplating gently. Both panels share the same dreamy grass-and-light environment creating a cohesive narrative of tender vulnerability and timeless innocence.",
+  },
+  {
+    id: "aesthetic_042",
+    title: "Ethereal Wildness Romantic Melancholy",
+    prompt: "Generate an image that embodies profound ethereal wildness and romantic melancholy aesthetic achieved through nuanced and artistically interpretive rendering characteristic of high-end analog-inspired photography. The subject stands centrally framed among tall swaying grasses in a vast open field — her gaze direct and intense yet her expression holds subtle vulnerability and quiet strength. Wind catches her hair and dress creating dynamic movement. The scene evokes untamed elegance a quiet strength and the poetry of standing alone in a wild landscape — romantic melancholy mixed with fierce independence.",
+  },
+  {
+    id: "aesthetic_043",
+    title: "Regencycore Neo-Classical Romance",
+    prompt: "Generate an image that embodies an ethereal Regencycore or Neo-Classical Romance aesthetic evoking wistful elegance and timeless beauty. The subject is captured in classical profile gazing softly into the distance — pearl earrings an ornate hair barrette a delicate antique fan and lace-ruffled white blouse establishing period authenticity. The composition feels like a historical painting come to life — aristocratic yet tender with an almost sculptural quality. The scene radiates romantic longing and gentle feminine grace suggesting a private moment of contemplation in an age of elegance.",
+  },
+  {
+    id: "aesthetic_044",
+    title: "Melancholic Muse Indie Film Noir",
+    prompt: "Generate an image that embodies a hauntingly ethereal melancholic muse or indie film noir aesthetic infused with raw vulnerable intimacy and a striking almost painterly quality. The subject leans against a cool-toned wall wearing a black dress with a large soft white flower on her chest — her expression intense and direct yet slightly averted conveying vulnerability introspection and perhaps a hint of sadness. A strong intentional blue color cast dominates the background creating an ethereal cold almost ghostly atmosphere. The scene feels like a frame from an early 2000s indie film — beautiful but heavy with unspoken emotion.",
+  },
+  {
+    id: "aesthetic_045",
+    title: "Cottagecore Celebrity Spring Enchantment",
+    prompt: "Generate an image that embodies a joyful whimsical cottagecore celebrity or effortless spring enchantment aesthetic radiating genuine happiness and charming approachable warmth. The subject sits joyfully on the grass in a charming outdoor enclosure — head tilted back in uninhibited laughter holding an adorable rabbit close — wearing a floral dress with jewelry catching the light. The scene radiates pure joy enchanting beauty and aspirational carefree elegance — a tender private interaction elevated by golden warmth and soft natural light into something magical.",
+  },
+  {
+    id: "aesthetic_046",
+    title: "90s Supermodel Editorial Cool",
+    prompt: "Generate an image that embodies a classic 90s supermodel aesthetic characterized by understated elegance subtle sensuality and a raw yet refined editorial mood. The subject holds a bouquet of roses wrapped in kraft paper against her chest — wearing a soft knit sweater and matching hat — her expression slightly detached and cool conveying effortless confidence. The scene evokes iconic fashion photography of the era — timeless glamour with that particular 90s mix of vulnerability and unattainable beauty.",
+  },
+  {
+    id: "aesthetic_047",
+    title: "Golden Hour Nostalgia Road Trip",
+    prompt: "Generate an image that embodies a Golden Hour Nostalgia or Dreamy Road Trip aesthetic radiating gentle warmth introspective beauty and spontaneous charm. The subject sits in the back seat of a car bathed in rich golden hour backlight — her hair glowing with an almost ethereal halo — holding a soft pink lily. The scene feels like a cherished memory of a road trip — romantic hazy and impossibly warm — the kind of moment that exists more beautifully in photographs than it did in real life.",
+  },
+  {
+    id: "aesthetic_048",
+    title: "Effortless Chic Naturalistic Edge",
+    prompt: "Generate an image that embodies a raw naturalistic effortless chic aesthetic infused with subtle classic fashion editorial edge and quiet contemplative intensity. The subject wears a luxurious fur coat — her gaze carrying raw elegance and natural beauty. The scene conveys that rare quality where high fashion meets authentic unposed reality — the subject is magnetic not because she is performing but because she simply is. A foreground element slightly out of focus frames her organically adding depth and intimacy.",
+  },
+  {
+    id: "aesthetic_049",
+    title: "Raw Editorial Windswept Vulnerability",
+    prompt: "Generate an image that embodies a powerful raw editorial windswept vulnerability aesthetic infused with untamed natural beauty and subtle melancholic glamour. The subject stands in the crashing ocean waves — white dress soaked and clinging — head tilted back hair flying — a dynamic mixture of vulnerability and liberation against the powerful sea. The scene feels like a high-fashion editorial that captures genuine wildness — the subject not merely posing in nature but being consumed and elevated by it.",
+  },
+  {
+    id: "aesthetic_050",
+    title: "Ethereal Wilderness Couture",
+    prompt: "Generate an image that embodies a breathtaking ethereal wilderness couture aesthetic blending high fashion with the raw majestic beauty of nature imbued with graceful resilience and sublime artistry. The subject stands against a vast mountain and lake landscape wearing elegant couture — intricate lace gloves a plush wool coat. The scene feels like where the runway meets the raw edge of the world — fashion and wilderness in perfect tension — sublime grandeur meets human elegance.",
+  },
+  {
+    id: "aesthetic_051",
+    title: "Dreamy Summer Nostalgia Bohemian",
+    prompt: "Generate an image that embodies a serene ethereal dreamy summer nostalgia or bohemian wanderlust aesthetic — timeless almost painterly quality that transcends real-life perception. Captured in a perfectly square aspect ratio for timeless artistic composition. The subject stands centered with the vast sky and clouds dominating the upper two-thirds of the frame — her gaze directed downward conveying quiet thought or gentle melancholy. The scene radiates contemplative freedom and idyllic summer beauty — as if she is a small serene figure against the infinite sky.",
+  },
+  {
+    id: "aesthetic_052",
+    title: "Late 90s Bohemian Chic Indie",
+    prompt: "Generate an image that embodies a captivating late 90s early 2000s bohemian chic or effortless indie fashion editorial aesthetic infused with warm sun-kissed nostalgia and relaxed confident beauty. The subject sits comfortably on the grass looking directly at the camera with confident yet relaxed gaze — wearing a patchwork top and striped scarf in rich jewel tones teals reds yellows indigos paired with earthy khaki pants. The composition feels candid and unposed — the kind of perfectly imperfect moment that defined the era's aesthetic.",
+  },
+  {
+    id: "aesthetic_053",
+    title: "Summer Wanderlust Bohemian Dream",
+    prompt: "Generate an image that embodies a captivating Summer Wanderlust or Bohemian Dream aesthetic infused with free-spirited allure and natural beauty. Shot from a low angle through a field of daisies looking upward — the subject is framed by wildflowers silhouetted against an expansive blue sky — looking back over her shoulder with an alluring direct gaze. The scene radiates freedom natural beauty and the magnetic energy of a perfect summer day — the kind of image that makes you ache for open fields and warm wind.",
+  },
+  {
+    id: "aesthetic_054",
+    title: "Forest Nymph Portra Warmth",
+    prompt: "Generate an image that embodies a serene ethereal forest nymph or natural beauty aesthetic infused with profound nostalgic warmth and subtle dreamy vulnerability. The subject reclines gently on a grassy hill looking upward and away conveying thoughtful introspection and deep connection with nature. The surrounding trees grass and natural light create an immersive cocoon of organic beauty — the scene radiates timeless grace and the profound peace of being wholly present in the natural world.",
+  },
+  {
+    id: "aesthetic_055",
+    title: "Escapist Intellectual Vintage Adventure",
+    prompt: "Generate an image that embodies a deeply introspective escapist intellectual aesthetic tinged with subtle almost vintage adventurous spirit. The subject sits in a compact boat cabin absorbed in reading — strong directional natural light streaming from a window creating dramatic contrast between bright pages and the cozy dark wood interior. A metallic fan a watch and a white mug ground the scene in tangible reality. The scene feels like a preserved moment from a past adventure — solitary intellectual escape in a floating sanctuary.",
+  },
+  {
+    id: "aesthetic_056",
+    title: "Urban Vulnerability Raw Introspection",
+    prompt: "Generate an image that embodies a gritty urban vulnerability or raw intense introspection aesthetic capturing a moment of startled authenticity that feels deeply cinematic and psychologically charged. The subject is caught in a tight medium-close-up — hood framing her face — looking directly into the lens almost caught off guard. The expression is a complex mix of vulnerability surprise and defiance. The scene feels like a frame pulled from a neo-noir thriller — urban harsh yet deeply human.",
+  },
+  {
+    id: "aesthetic_057",
+    title: "Thoughtful Casual Cool Magnetic",
+    prompt: "Generate an image that embodies a thoughtful casual cool or approachable intensity aesthetic infused with genuine vulnerability and understated magnetic presence. The subject wears a grey hoodie — her hand covering her mouth in a pensive gesture — her gaze direct intense and slightly searching. Shot against a pure white background — she appears to float in a space of pure thought. The scene distills personality to its essence — no environment no distraction just a human being caught in a moment of unguarded contemplation.",
+  },
+  {
+    id: "aesthetic_058",
+    title: "Late-Night Selfie Rebellious Confidence",
+    prompt: "Generate an image that embodies a sultry intimate and slightly rebellious late-night selfie aesthetic infused with raw unfiltered confidence and a captivating gaze. The subject takes a close selfie — full expressive lips dark hair framing her face — wearing a yellow camisole with lavender lace under a dark jacket. Harsh overhead artificial lighting creates dramatic shadows and glossy specular highlights. The scene projects confident raw beauty and magnetic allure — the intimacy of a selfie shared with chosen few — unfiltered unapologetic and magnetic.",
+  },
+  {
+    id: "aesthetic_059",
+    title: "Romantic Grunge 90s Runway",
+    prompt: "Generate an image that embodies a dreamy ethereal romantic grunge aesthetic reminiscent of a vintage 90s fashion show imbued with delicate vulnerability and understated allure. The subject walks a dimly lit runway in a flowing off-white slip dress with antique gold and cream lace trim — long brown hair subtly moving with her stride. The dark atmospheric background recedes into rich shadow making her the sole luminous figure. The scene evokes the peak of 90s fashion — when vulnerability was the ultimate luxury and imperfection was the highest form of beauty.",
+  },
+  {
+    id: "aesthetic_060",
+    title: "Golden Age Hollywood Mid-Century",
+    prompt: "Generate an image that encapsulates a timeless Golden Age of Hollywood or Mid-Century European Cinema aesthetic infused with nostalgic romance serene natural beauty and playful elegance. The subject is gracefully positioned on a hillside overlooking a sweeping coastal vista — turning back toward the viewer with a gentle inviting smile holding a small flower — wearing an elegant period-appropriate dress. A subtle atmospheric haze softens the distant coastline. The scene feels like a frame from a 1950s European film — impossibly romantic and timelessly elegant.",
+  },
+  {
+    id: "aesthetic_061",
+    title: "Sun-Drenched Garden Reverie",
+    prompt: "Generate an image that embodies a dreamy sun-drenched melancholia or ethereal garden reverie aesthetic — almost painterly nostalgic vision far richer and more evocative than real-life perception. The subject sits low in a garden among lush foliage — wet hair clinging to her skin — wearing a vibrant floral dress with pinks yellows and purples — her gaze directed downward and away in private introspection. Sun-dappled bokeh creates distinct soft circles of light in the background. A glass with condensation sits nearby. The scene captures that particular quality of a perfect summer afternoon where beauty and melancholy become indistinguishable.",
+  },
+  {
+    id: "aesthetic_062",
+    title: "Winter Spa Retreat Aspirational",
+    prompt: "Generate an image that embodies a serene winter spa retreat aesthetic imbued with warmth tranquility and aspirational relaxation. The subject is partially submerged in an outdoor hot tub holding a book — abundant steam rising creates tangible sensory immersion — a low winter sun provides dramatic golden backlighting. The surrounding snow-covered landscape and cabin create a cozy contrast with the warm water. The scene is the ultimate aspirational escape — intellectual relaxation in nature's luxury — the cold air meeting warm steam meeting golden light.",
+  },
+  {
+    id: "aesthetic_063",
+    title: "Dreamlike Pastoral Romance Horse",
+    prompt: "Generate an image embodying a profound dreamlike pastoral romance and ethereal nostalgia aesthetic — a cherished memory brought to vivid yet soft life. The subject gently rests on a white horse surrounded by soft golden-hour light and distant green foliage — wearing a delicate floral dress — her expression conveying profound peace and tender connection. A slightly off-center distant figure adds subtle narrative depth. The scene feels like a painting come to life — pastoral romantic and achingly beautiful.",
+  },
+  {
+    id: "aesthetic_064",
+    title: "Idyllic Sun-Drenched Escape",
+    prompt: "Generate an image that embodies a serene idyllic sun-drenched escape aesthetic imbued with nostalgic almost dreamlike warmth and undisturbed tranquility. The subject reclines languidly on a swing couch in an expansive idyllic backyard — wearing a pastel pink slip dress against plush white cushions with a patterned outdoor rug below. Morning or late afternoon sunlight transforms the scene into an ethereal golden glow. A distant house and trees establish the private secluded retreat. The scene radiates pure comfort — the visual equivalent of a warm breeze and nowhere to be.",
+  },
+  {
+    id: "aesthetic_065",
+    title: "Sun-Drenched Flower Dream Intimate",
+    prompt: "Generate an image embodying a sun-drenched dream of serene vulnerability and organic beauty. The subject lies among flowers and dry grass — intense golden-hour sunlight casting distinct shadow patterns of foliage across her face and body creating an artistic dappled effect. Highlights on her skin gently push toward being almost blown out creating an ethereal luminous glow. The scene captures that suspended moment where afternoon light turns a simple field into something sacred — intimate vulnerable and impossibly warm.",
+  },
+  {
+    id: "aesthetic_066",
+    title: "Folkloric Meadow Whimsical Nymph",
+    prompt: "Generate an image that embodies a dreamy ethereal folkloric meadow aesthetic deeply infused with serene natural beauty and a whisper of magical realism. The subject nestles deep among tall grass and wildflowers — white and blue blooms surrounding her — her blonde hair catching the light with an almost incandescent glow — her face gently turned toward the viewer in intimate contemplative connection. The perspective is low placing the viewer directly within the flora. The scene feels like discovering a fairy tale figure who has always been there hidden among the wildflowers.",
+  },
+  {
+    id: "aesthetic_067",
+    title: "Whimsical Summer Escape Forest Path",
+    prompt: "Generate an image that embodies a whimsical sun-drenched summer escape aesthetic reminiscent of a nostalgic indie film scene or carefree European holiday. The subject walks a tree-lined gravel path — wearing a white dress carrying a wicker basket — looking back over her shoulder to engage the viewer. Strong backlight filters through the dense canopy creating dramatic sun-drenched highlights and atmospheric haze. The path leads the eye deep into the frame creating a sense of journey and exploration. The scene radiates freedom joy and the magical essence of a perfect summer adventure.",
+  },
+  {
+    id: "aesthetic_068",
+    title: "Ethereal Melancholy Folkloric Spirit",
+    prompt: "Generate an image that embodies a profound ethereal melancholy and folkloric wistfulness aesthetic where the subject appears as a lost spirit amidst nature. The subject wears a delicate flower crown — her gaze downcast and wistful conveying profound introspection — long flowing hair framing her face — faint wisps of smoke adding to the otherworldly atmosphere. The surrounding foliage is soft and diffused with subtle yellow wildflowers in the distance. The scene feels like encountering a melancholic forest spirit — beautiful sorrowful and existing in a space between the real and the remembered.",
+  },
+  {
+    id: "aesthetic_069",
+    title: "Lavender Fields Natural Allure",
+    prompt: "Generate an image that embodies a serene ethereal natural beauty aesthetic infused with whimsical sun-kissed charm and slightly nostalgic dreamlike quality — an almost painterly editorial feel. The subject holds lavender blossoms close to her face — her soft direct gaze slightly alluring — subtle freckles and a healthy sun-kissed glow catching the golden light. A soft rim light creates an angelic halo around her hair. Distant trees and lavender fields provide a lush muted backdrop. The scene distills the essence of natural feminine beauty — effortless delicate and warmly luminous.",
+  },
+  {
+    id: "aesthetic_070",
+    title: "Gothic Vampire Romantic Tension",
+    prompt: "Generate an image embodying a gothic romantic aesthetic — sharp contrast between pale almost luminous figures and a dark deep background creating immense visual drama. The subjects appear to glow making them the undeniable center of attention enhancing their iconic status. The combination of pale skin dark eyes and intense red lips against a somber backdrop evokes gothic romance forbidden desire and underlying tension. The man wears a desaturated cool khaki or grey-green unbuttoned shirt — the woman wears an off-white or very pale cream dress leaning cool. These tones create etherealness and seriousness. The scene heightens romance and tension — fragile luminous beauty against consuming darkness.",
+  },
+  {
+    id: "aesthetic_071",
+    title: "Kawaii Winter Wonderland Hyper-Sweet",
+    prompt: "Generate an image that embodies a hyper-sweet Kawaii Winter Wonderland aesthetic infused with vibrant almost fantastical energy. The subject stands against snow-covered mountains and bright blue sky — arms thrown up in wild exuberance mouth open in a wide laugh hair flying — wearing a vibrant pink outfit. The scene is drenched in dazzling brightness — snow gleaming sky electric blue — everything pushed past natural saturation into an almost anime-like fantastical joy. Pure unadulterated exuberant happiness against pristine winter grandeur.",
+  },
+  {
+    id: "aesthetic_072",
+    title: "Regencycore Film Grain Ethereal",
+    prompt: "Generate an image blending Regencycore elegance with the fragile ethereal quality of pushed film grain. The image exhibits a delicate organic film grain like Portra 800 or Fuji Natura 1600 pushed one stop — subtly visible across all tones adding a skin-like texture to the entire frame. This inherent grain softens edges and creates a dreamy timeless quality directly contributing to an ethereal fragile aura — making the image feel like a cherished memory rather than a digital capture. Combined with harsh yet artfully controlled direct flash photography the scene has an otherworldly tension between period elegance and raw photographic immediacy.",
+  },
 ];
 
 export const Lighting = [
@@ -295,6 +490,151 @@ export const Lighting = [
     id: "lighting_020",
     title: "Even Diffused Workspace Luminous Clean",
     prompt: "Even directional yet diffused ambient illumination mimicking bright indirect daylight from a large window or professional workspace lighting — gently illuminating face and workspace without harsh shadows or blown-out highlights. This creates a clean bright atmosphere that visually communicates calm efficiency and clarity of thought — a brightness that feels more consistently flattering than real-life conditions. Soft enveloping light wraps around the subject creating luminous highlights on skin and work surfaces with open transparent shadows that define form without harshness — the flattering clean light reveals texture in the weave of clothing and the grain of whiteboard surfaces with clarity not harshness. Subtle cool reflection from laptop or monitor screens casts onto face and hands indicating digital engagement. Controlled specular highlights on laptop bezels whiteboard frames and polished surfaces communicate cleanliness and modernity — a subtle photographic sheen more pronounced and flattering than incidental office lighting. Preserved shadow detail in fabric folds and arm creases with no blown highlights despite bright background surfaces.",
+  },
+  {
+    id: "lighting_021",
+    title: "Even Ambient Computational Indoor",
+    prompt: "Soft diffused ambient lighting combining indirect natural light from a window with standard indoor room lighting. Even illumination across the scene characteristic of smartphone computational photography — eliminating harsh shadows and bright spots. This accessible authenticity makes the subject approachable and her situation feel universal rather than dramatic. Subtle cool reflection from laptop screen on face and hands indicating digital engagement. Balanced dynamic range through HDR processing ensuring neither bright wall nor darker clothes are overexposed or crushed — tonally balanced realism that feels authentically captured yet slightly more polished than the human eye would perceive.",
+  },
+  {
+    id: "lighting_022",
+    title: "Soft Luminous Overcast European Alley",
+    prompt: "Soft diffused ambient lighting mimicking gentle even illumination of an overcast day in a narrow European alley or large diffused studio light. Luminous even illumination gently wrapping around form and textures of stone wall — conveying timeless serenity and enhancing pristine quality. Gentle distinct specular highlights on hair subtle sheen of linen clothing and gilded mosaic elements — soft delicate glow indicating high dynamic range capture. Rich yet open shadows within crevices of stone wall and beneath objects retaining significant color and textural information — ancient environment feeling deeply textured and full of hidden stories.",
+  },
+  {
+    id: "lighting_023",
+    title: "Overcast Natural Three-Dimensional Sculpt",
+    prompt: "Soft diffused natural light mimicking an overcast day or gentle shade under a tree with subtle hints of directional light filtering through. Three-dimensional light fall-off sculpting profile with exquisite gradual transitions — drawing attention to delicate lines of neck and jaw and quiet dignity of expression. Gentle distinct specular highlights on skin cheekbone bridge of nose on waxy leaves and delicate petals — photographic gleam and soft sparkle reflecting light with subtle living quality conveying depth and freshness. Deep yet open shadows in foliage retaining significant color and textural information without being crushed to pure black — high dynamic range revealing subtle details in darker areas.",
+  },
+  {
+    id: "lighting_024",
+    title: "Dappled Natural Hammock Ambient",
+    prompt: "Soft dappled natural light filtering through a leafy canopy. Beautifully handled dynamic range characteristic of film — bright highlights on hair and hammock retaining detail and soft glow while shadows under chin and in foliage remain rich deep and open preserving subtle color and texture. Luminosity in highlights feeling more radiant and dreamlike than direct observation. Gentle natural specular highlights on skin and hammock fibers — subtle organic sheen reflecting light naturally yet elevated. Ambient light softly wrapping around subject sculpting features with gentle three-dimensionality and smooth transitions from light to shadow.",
+  },
+  {
+    id: "lighting_025",
+    title: "Dappled Canopy God Rays Enchanted",
+    prompt: "Soft diffused natural light filtering through a canopy of leaves creating dappled light effect or overcast muted daylight. Soft luminous glow on pale skin and creamy white fabric making the subject appear almost radiant against darker bark — delicate luminosity giving an otherworldly almost angelic presence. Soft ethereal god rays or gentle atmospheric haze filtering through trees in the background adding magical atmosphere and depth. Rich yet soft shadows within tree bark and deeper foliage — transparent retaining significant detail and subtle color variations adding mysterious depth without creating harshness.",
+  },
+  {
+    id: "lighting_026",
+    title: "Dappled Sun Film Bloom Natural",
+    prompt: "Natural dappled sunlight filtering through leaves creating a play of light and shadow that feels organic yet artistically controlled. Soft luminous highlights on skin and hair with distinctive filmic bloom or glow — brightest areas gently bleeding into surrounding tones characteristic of film emulsion. Rich open shadows in grass and foliage — deep yet retaining rich color information verdant greens earthy browns without being crushed to pure black. Delicate organic lens flares or light leaks subtly present adding dreamy nostalgic atmosphere. High dynamic range of film allowing smooth transition from bright sunlight to deep shadow.",
+  },
+  {
+    id: "lighting_027",
+    title: "Soft Ambient Overcast Romantic Melancholy",
+    prompt: "Soft diffused ambient natural light characteristic of an overcast day or the golden hour just before sunset. All-encompassing softness and gentle glow illuminating without harsh shadows or strong contrasts — making skin appear luminous and delicate enhancing ethereal aura. Gentle almost imperceptible highlights on hair and tops of tall grasses — delicate glints of light adding sparkle that feels organic and natural. Rich yet transparent shadows retaining significant color and textural information — particularly in darker greens and depths of dress folds — avoiding flat blackness conveying depth and mystery.",
+  },
+  {
+    id: "lighting_028",
+    title: "Dramatic Spot Runway Film Fall-off",
+    prompt: "Dramatic theatrical spotlighting typical of a fashion runway rendered with nuanced film characteristics. Focused spotlight from above and front creating strong contrast against dark background — shadows exhibiting soft gradual fall-off characteristic of film's excellent dynamic range preventing harsh clipping. Subtle artistic lens flare or glow in areas of high contrast — adding dreamlike slightly imperfect analog charm. Deep atmospheric shadows creating a void that emphasizes the subject as the sole luminous figure — film's nuanced dark tone rendering maintaining subtle detail even in low light.",
+  },
+  {
+    id: "lighting_029",
+    title: "Harsh Directional Blue Cast Noir",
+    prompt: "Harsh yet artistically controlled directional artificial light from a single undiffused source — bare bulb or small strobe combined with ambient room light. Hard direct light creating sharp defined shadows that dramatically sculpt face and body — cinematic film noir contrast exaggerating contours and deepening introspection. Strong intentional blue color cast dominating the background and subtly washing over the subject in shadows — deliberate artistic choice infusing ethereal cold almost ghostly atmosphere. Highlights with controlled fall-off — skin retaining delicate glow with rapid dramatic fall-off into deep shadows emphasizing fragility and tension.",
+  },
+  {
+    id: "lighting_030",
+    title: "Golden Hour Backlight Car Interior",
+    prompt: "Rich warm Golden Hour natural light — specifically backlighting and rim lighting complemented by ambient light within the car interior. Strong warm sunlight from behind and to the side creating pronounced luminous golden rim light around hair and shoulders — hair appearing to glow with ethereal quality. Gentle frontal illumination from ambient light or subtle fill preventing silhouette while keeping features soft and visible. Intense overall warmth with subtle increased saturation in golden tones creating comfort happiness and cherished memory. Camera's dynamic range preserving detail in both bright backlighting and gentle shadows.",
+  },
+  {
+    id: "lighting_031",
+    title: "Strong Directional Boat Cabin Dramatic",
+    prompt: "Strong directional natural light streaming from an unseen window or hatch creating dramatic contrasts. Pronounced highlights on skin book pages and metallic watch with slightly blown-out quality on brightest parts — intense sunlight creating visceral sense of bright escape within cozy darker cabin. Deep rich yet discernible shadows in background and unlit side of body — retaining just enough detail for depth and atmospheric immersion without being completely crushed. Sharp almost glinting specular highlights on metallic surfaces — bright points of interest grounding the image in tangible reality.",
+  },
+  {
+    id: "lighting_032",
+    title: "Harsh Overhead Fluorescent Urban",
+    prompt: "Harsh direct localized light mimicking overhead fluorescent tube or strong undiffused source within a confined utilitarian space — subway car back alley stark interior. Dramatic high-contrast shadows and highlights sculpting features with almost stark realism — light falling steeply from above carving cheekbones and jawline deepening shadows under brow and chin. Sharp pinpoint specular highlights in eyes and on damp or textured surfaces — intense highlights captured with precision by high-dynamic-range sensor. Deep yet highly textured shadows within hood and under chin retaining subtle nuances of fabric texture and skin tone — revealing hidden complexities and depths.",
+  },
+  {
+    id: "lighting_033",
+    title: "Controlled Studio Softbox Portrait",
+    prompt: "Controlled dramatic studio lighting — single large softbox or parabolic modifier positioned slightly off-axis and above with secondary fill light preventing harsh shadows. Soft yet clearly defined directional shadows sculpting facial features and hoodie folds with precise three-dimensionality — far more controlled and expressive than typical observation. Controlled specular highlights on watch subtle hair sheen and hoodie texture — photographic pop and zing reflecting texture and material quality. Deep rich yet open shadows beneath jawline and within hoodie folds retaining significant textural and color information.",
+  },
+  {
+    id: "lighting_034",
+    title: "Harsh Direct Selfie Overhead Artificial",
+    prompt: "Harsh direct slightly overhead artificial lighting typical of indoor environments — bathroom vanity lights or harsh overhead room lighting. Pronounced defined shadows sculpting cheekbones and jawline with sultry dramatic intensity. Strong slightly blown-out specular highlights on forehead nose and lips creating glossy almost ethereal sheen that feels both accidental and alluring. Subtle glow effect around brighter areas — visual artifact of phone photography under harsh light adding captivating luminous allure.",
+  },
+  {
+    id: "lighting_035",
+    title: "Soft Overcast Historical Portrait",
+    prompt: "Soft diffused natural light mimicking gentle ambient illumination of an overcast day or shaded portico reminiscent of historical paintings. Gentle sculpting of profile and delicate ruffles creating soft gradual transitions from light to shadow — defining form with classical elegance. Exquisitely delicate specular highlights on pearl earrings ornate hair barrette and slight skin sheen — soft pearlescent glow speaking to refinement and historical charm. Rich yet open shadows retaining significant detail in dress folds and background architecture — preventing harsh modern contrast and maintaining period feel.",
+  },
+  {
+    id: "lighting_036",
+    title: "Soft Directional Studio 90s Editorial",
+    prompt: "Soft directional studio lighting mimicking a large softbox or beauty dish placed slightly off-axis. Key light sculpting features with gentle yet defined highlights along cheekbones and forehead — creating refined three-dimensionality that makes skin appear luminous and soft. Subtle fill light ensuring shadows are deep but open retaining detail in darker areas of hair and textured surfaces — film latitude preventing harsh contrasts. Soft natural-looking catchlights in eyes adding spark of life and engagement.",
+  },
+  {
+    id: "lighting_037",
+    title: "Golden Backlight Rim Halo Winter",
+    prompt: "Strong dramatic backlighting from a low winter sun complemented by ambient glow of steam. Intense golden backlight creating beautiful rim light around head and steam edges — sculpting forms with luminous glow that feels almost angelic. Subtle sunburst effect around the sun adding vibrant energy communicating crispness of winter day. Reflective water surface exhibiting beautiful shimmering light interactions — tranquil and inviting. Despite harsh backlight foreground retains detail through computational dynamic range — no silhouetting.",
+  },
+  {
+    id: "lighting_038",
+    title: "Golden Hour Backlight Pastoral Halo",
+    prompt: "Soft warm golden hour natural light primarily coming from behind the subject creating a luminous halo effect around hair and fur — exaggerated rim light lending ethereal almost angelic quality. Gentle lens flare haze adding subtle soft glow across portions of the image enhancing dreamlike nostalgic feel. Exquisite gradual light fall-off sculpting form with profound three-dimensionality and graceful contour. Rich yet open shadows retaining significant color and textural information without being crushed to pure black. Film's dynamic range ensuring delicate highlights are rendered without being blown out.",
+  },
+  {
+    id: "lighting_039",
+    title: "Intense Midday Beach Editorial",
+    prompt: "Harsh direct midday sun expertly handled to create dramatic contrast and untamed energy. Brilliant almost blown-out highlights on sea foam and white dress with retained detail in skin mid-tones and darker sky — extreme contrast creating dramatic tension mirroring emotional intensity. Sharp sparkling catchlights in eyes and bright glints off wind-blown hair conveying movement and life. Subtle shadow details on body and in deeper wave parts retaining color information preventing complete crush — high dynamic range grounding the dramatic scene. Fine grain-like texture adding gritty film-like authenticity.",
+  },
+  {
+    id: "lighting_040",
+    title: "Mountain Atmospheric Clarity Natural",
+    prompt: "Soft natural enveloping light characteristic of a bright overcast mountain environment. Atmospheric clarity of mountain air allowing distant details to remain sharp yet subtly softened by sheer expanse creating boundless space and majestic scale. Water surface creating subtle shimmering reflections adding dynamic element to serene landscape. Gentle high-key illumination without harsh shadows — light evenly distributed across subject and vast landscape.",
+  },
+  {
+    id: "lighting_041",
+    title: "Bright High-Key Diffused Summer Sky",
+    prompt: "Bright natural high-key ambient lighting from wide-open outdoor space on slightly overcast or hazy sunny day. Soft highly diffused illumination enveloping subject in gentle even glow — minimal harsh shadows and delicate highlights making skin appear luminous and smooth. Subtle atmospheric haze especially toward horizon softening cloud edges and blending sky seamlessly — amplifying dreamlike ethereal quality. Natural backlight creating delicate halo effect around hair — glowing against bright sky contributing to angelic aura.",
+  },
+  {
+    id: "lighting_042",
+    title: "Bright Dappled Backlit Summer Meadow",
+    prompt: "Bright natural midday or late afternoon sunlight positioned to create both direct illumination and subtle backlighting effects. Radiant frontal light illuminating face and hair with luminous highlights and sun-kissed youthful vitality. Subtle rim lighting where light catches edges of hair or shoulders — ethereal separation adding depth. Vibrant shadow detail with clean yet vibrant shadows retaining excellent color and textural information — preventing crush in dark fabrics. High dynamic range handling bright highlights without blowing them out.",
+  },
+  {
+    id: "lighting_043",
+    title: "Dappled Golden Hour Portra Forest",
+    prompt: "Soft dappled natural light filtering through trees creating painterly play of light and shadow. Soft golden-hour warmth gently falling across subject making skin luminous and hair subtly highlighted — characteristic of Portra film's response to natural light. Gentle gradual light fall-off sculpting form with profound three-dimensionality — subtle transitions more nuanced than what the eye typically registers. Deep rich yet open shadows retaining significant color and textural information in foliage — organic richness and natural depth. Film's dynamic range ensuring delicate highlights are rendered without being blown out.",
+  },
+  {
+    id: "lighting_044",
+    title: "Sun-Drenched Idyllic Golden Glow",
+    prompt: "Strong direct morning or late afternoon sunlight transformed by advanced sensor dynamic range into flattering ethereal glow. Softened diffused highlights on skin and white cushions preventing harsh overexposure — open shadows retaining significant detail and warmth avoiding crushed blacks. Overall golden-hour warmth imbuing the scene with nostalgic dreamlike glow — sun's touch feeling gentle and inviting rather than harsh. Very subtle controlled warm lens flare or atmospheric haze in brightest areas adding to dreamlike ethereal quality.",
+  },
+  {
+    id: "lighting_045",
+    title: "Intense Golden Hour Dappled Shadow Play",
+    prompt: "Intense direct golden-hour sunlight filtered and sculpted by the camera's interaction with the scene. Distinct yet softened shadows of foliage cast across face and body — dappled effect aesthetically enhanced by dynamic range preserving detail in both bright highlights and deeper shadows. Gently blown-out highlights on skin and flowers — controlled soft clipping creating ethereal luminous glow rather than harsh overexposure. The interplay of shadow and golden light creates an artistic painterly texture across the subject.",
+  },
+  {
+    id: "lighting_046",
+    title: "Soft Diffused Meadow Folkloric Light",
+    prompt: "Soft diffused natural daylight mimicking an overcast day or golden hour filtering through foliage. Soft even illumination gently on face and hair without harsh shadows — creating luminous almost angelic glow. Subtle organic light flares or soft haze around brighter areas — whispers of magic from lens artifacts adding dreamlike slightly imperfect beauty. Dynamic range handling bright whites of flowers and lush greens with beautiful subtlety — vibrant freshness rendered with soft gentle quality.",
+  },
+  {
+    id: "lighting_047",
+    title: "Dappled Canopy Summer Escape Backlit",
+    prompt: "Bright natural daylight filtering through dense tree canopy creating dappled light on the path. Strong sun-drenched highlights on path and subject's back contrasted with deep yet detailed shadows from trees — dramatic contrast making the scene feel energetic and alive. Visible atmospheric haze or glow where light breaks through foliage — adding enchantment and depth making the forest feel mystical and inviting. Consumer film dynamic range allowing dramatic contrast between highlights and shadows.",
+  },
+  {
+    id: "lighting_048",
+    title: "Dappled Sun Garden Halation Reverie",
+    prompt: "Soft dappled natural light characteristic of late afternoon in a garden with sunlight filtering through leaves. Film glow highlights — soft luminous highlights on wet hair and skin exhibiting subtle halation effect with gentle blooming of light softening edges and lending ethereal almost dreamlike quality. Gentle sculpting of face and shoulders revealing delicate features with subtle curves — wide dynamic range of Portra film ensuring smooth light transitions preserving detail in brightest highlights and softest shadows. Sun-dappled bokeh in background creating distinct soft-edged circles of light contributing to magical ethereal garden atmosphere.",
+  },
+  {
+    id: "lighting_049",
+    title: "Intense Snow-Reflected High-Key Kawaii",
+    prompt: "Bright direct sunlight reflecting intensely off pristine snow. Intense almost blown-out highlights embraced by the camera processing contributing to overwhelming bright joyous energy. Minimal shadows and high-key lighting creating unadulterated optimistic feel stripping away gloom — pure unbridled happiness. Slight playful lens flare or chromatic aberration visible around high-contrast edges — charming imperfection adding to candid unpretentious aesthetic.",
   },
 ];
 
@@ -444,6 +784,176 @@ export const ColorPalette = [
     title: "Soft Neutral Creative Whiteboard",
     prompt: "Soft neutral color story with a whisper of warmth — whiteboard surfaces rendered as a bright clean white but not clinical or cold. Marker ink appears as vibrant intelligent blue or deep emerald green — colors that feel creative and focused against the neutral backdrop. Skin tones rendered with a natural healthy and luminous quality. Materials and clothing feel tactile and real with accurate color rendering. The overall palette creates a calm sophisticated workspace atmosphere where creative energy is expressed through selective pops of color against an otherwise restrained neutral foundation.",
   },
+  {
+    id: "colorpalette_030",
+    title: "Neutral D65 Technical Workspace",
+    prompt: "Neutral white balance at D65 illuminant. Blue ink rendered with precise chromaticity at sRGB #0078D7. Skin tones maintained within ITU-R BT.709 gamut — accurate and natural without warm or cool bias. Semi-gloss whiteboard surface showing legible text. Denim rendered with micro-contrast of warp and weft texture. Natural subsurface scattering on skin with tone retention. Marker plastic specularity with saturated pigment deposition. The color science is technically precise and calibrated — communicating professional clarity.",
+  },
+  {
+    id: "colorpalette_031",
+    title: "Natural True-to-Life Smartphone Warm",
+    prompt: "Modern slightly warm-neutral color grade typical of popular social media aesthetics optimized for clean presentation. Natural true-to-life palette with accurate representation of skin tones off-white surfaces and muted beige walls — making the scene highly relatable and grounded. Subtle boost in vibrancy and clarity making colors pop just enough to be engaging without appearing artificial — the slight enhancement that makes a good smartphone photo stand out providing appealing visual crispness beyond raw perception.",
+  },
+  {
+    id: "colorpalette_032",
+    title: "Analog Film Warm Desaturated European",
+    prompt: "Sophisticated slightly warm-neutral color grade evoking the color science of classic analog film such as Fuji Pro 400H or Portra 160 emulation. Subtly desaturated with gentle emphasis on greens and blues creating an expensive timeless aesthetic that feels more like a cherished memory than a raw photograph. Luminous skin tones rich in subtle undertones avoiding plastic or overly smoothed appearance. Excellent color separation where different hues — off-white clothes warm basket tones warm stone — remain distinct and harmonious within the muted palette.",
+  },
+  {
+    id: "colorpalette_033",
+    title: "Subtly Rich Warm Medium Format Natural",
+    prompt: "Sophisticated subtly warm-toned color grade evoking classic analog film balanced for natural saturation such as Fuji Velvia 50 or Portra 160 emulation. Harmonized palette with greens that feel organic and vibrant and yellows possessing delicate warmth — subtly elevated by the camera creating cohesive aesthetically pleasing visual that feels more artistic and alive. Subtle shifts in hue and luminosity within greens conveying realistic depth in foliage. Luminous skin tones rich in subtle undertones peaches creams soft reds — avoiding plastic flat or overly smoothed appearance.",
+  },
+  {
+    id: "colorpalette_034",
+    title: "Portra 800 Warm Organic Film",
+    prompt: "Warm-toned natural film emulation color grade characteristic of Portra 800 or Fuji 400H. Rich organic color palette with verdant greens warm browns and creamy whites rendered with film's characteristic warmth and subtle saturation shifts — inherently nostalgic and harmonious. Luminous skin tones rich in subtle healthy undertones — authentic rendering contributing to raw natural beauty and vulnerability. Subtle natural color shifts within greens and browns giving foliage and background organic depth and vibrancy that feels alive.",
+  },
+  {
+    id: "colorpalette_035",
+    title: "Soft Pastel Fuji Pro 400H Romantic",
+    prompt: "Sophisticated warm warm-neutral color grade evoking the color science of classic Fuji Pro 400H film. Soft pastel tones in dress combined with muted verdant greens in foliage and golden earthy browns in tall grass — deliberate desaturation and harmonious color blending creating timeless romantic quality more poetic and less literal than digital color. Skin tones rendered with natural creamy luminescence rich in subtle healthy undertones. Excellent color separation where different hues remain distinct and subtly vibrant even within a muted palette.",
+  },
+  {
+    id: "colorpalette_036",
+    title: "Muted Pastel Desaturated Regencycore",
+    prompt: "Muted slightly warm-toned color grade evoking classic fine art photography or historical portraiture. Subtly desaturated pastel palette leaning toward soft earth tones creating aged yet pristine aesthetic that feels deeply nostalgic and romantic. Creamy off-white of fan and crisp white of dress feeling rich and textured not stark. Luminous skin tones with delicate rosy undertones on cheek and ear contributing to gentle graceful appearance. Harmonious soft muted greens of distant foliage acting as unobtrusive backdrop supporting the subject without competing.",
+  },
+  {
+    id: "colorpalette_037",
+    title: "Cool Desaturated Indie Film Noir",
+    prompt: "Distinctive cool-toned color grade characteristic of experimental film photography or early 2000s indie cinema. Heavily desaturated with strong emphasis on blues greys and muted blacks — making the few warm tones like blush on cheeks or subtle cream of a flower stand out with symbolic focus. Vibrant isolated accents — a pale pink or cream flower retaining fragile warmth against the cool backdrop as symbolic focal point. Rich deep inky blacks retaining subtle textural detail — avoiding completely crushed shadows while adding dramatic depth and sophistication.",
+  },
+  {
+    id: "colorpalette_038",
+    title: "Warm Spring Pastel Cottagecore",
+    prompt: "Bright slightly desaturated warm-toned color grade reminiscent of sun-drenched slightly faded spring photograph. Soft pastel greens and yellows in grass and foliage allowing vibrant yellows of floral dress to truly pop — evoking freshness and gentle beauty of spring. Warm golden hues particularly in highlights giving entire image nostalgic sun-kissed glow — comforting and idyllic like a cherished memory. Excellent color separation between background greens and foreground dress colors maintaining visual harmony.",
+  },
+  {
+    id: "colorpalette_039",
+    title: "Soft Desaturated 90s Editorial Cool",
+    prompt: "Sophisticated slightly desaturated cool-neutral color grade with a touch of warmth in skin tones characteristic of high-fashion editorials from the 90s era. Rich vibrant reds and pinks of roses not oversaturated providing beautiful focal point against subdued palette — nuanced color contrast that feels intentional and artistic. Creamy off-white and warm beige tones of kraft paper and knit sweater. Deep rich blacks in background. Overall palette balances cool sophistication with warm organic elements.",
+  },
+  {
+    id: "colorpalette_040",
+    title: "Warm Vintage Film Golden Road Trip",
+    prompt: "Warm-toned slightly desaturated color grade reminiscent of classic analog film such as Fuji Pro 400H or Portra 160 emulation. Dominant warm golden and amber hues especially in highlights and mid-tones — muted greens of exterior allowing golden light to take precedence. Soft pink of a flower rendered vibrantly but gently standing out against muted browns and greys of car interior. Car upholstery having a rich slightly faded brown tone contributing to nostalgic lived-in feel. Overall palette feels sun-drenched and warmly preserved like a golden memory.",
+  },
+  {
+    id: "colorpalette_041",
+    title: "Portra 400 Warm Naturalistic Fur Coat",
+    prompt: "Sophisticated warm-neutral color grade evoking the color science of classic Kodak Portra 400 film aesthetic. Subtly desaturated yet rich and complex palette creating authentic timeless aesthetic that feels organic and artistic rather than direct digital capture. Luminous skin tones rich in subtle undertones warm peaches cool beiges avoiding plastic or flat appearance. Excellent color separation where different hues — browns of fur versus greens of background — remain distinct and vibrant even within a muted palette.",
+  },
+  {
+    id: "colorpalette_042",
+    title: "Bold Desaturated Late 90s Editorial",
+    prompt: "Bold high-contrast color grade with slightly cool desaturated undertone reminiscent of classic fashion editorials from late 90s and early 2000s. Desaturated blues and greys in sky and ocean conveying vastness and slightly bleak yet grand atmosphere. Brilliantly bright almost luminous whites of dress and sea foam creating stark pure contrast against turbulent ocean. Natural skin tones with subtle warmth maintained despite high contrast — preventing sickly or artificial appearance. Very fine subtle organic film-like grain adding gritty authentic timeless quality.",
+  },
+  {
+    id: "colorpalette_043",
+    title: "Portra 400 Wilderness Sublime Harmony",
+    prompt: "Kodak Portra 400 film color grade characterized by exquisite natural skin tones with subtle warmth and luminosity. Muted blues and greys of water and sky slightly desaturated but deeply rich conveying vast majestic calm. Creamy luminous whites of lace and plush coat fabrics. Cool tans and greys of ancient mountain rock. Overall harmonious desaturated richness feeling more profound than digital equivalent — film's characteristic ability to balance vibrant and subdued hues creating sublime color palette that is inherently artistic and emotionally resonant.",
+  },
+  {
+    id: "colorpalette_044",
+    title: "Warm Desaturated Portra Square Format",
+    prompt: "Warm slightly desaturated color grade reminiscent of classic medium format film stocks Kodak Portra 400 or Fuji Pro 400H. Soft expansive sky blues and brilliant fluffy cloud whites with subtle warmth — avoiding sterile tones. Natural sun-kissed skin tones with subtle healthy warmth avoiding overly processed appearance. Muted pastel tones of delicate dress with off-white and subtle floral patterns — soft elegance allowing texture and pattern to show through without being overly vibrant. Overall palette evoking vastness freedom and idyllic summer days.",
+  },
+  {
+    id: "colorpalette_045",
+    title: "Portra 400 Bohemian Earthy Jewel-Toned",
+    prompt: "Warm natural slightly analog color grade consistent with Kodak Portra 400 or Fuji Superia 400 film stock. Natural warm skin tones showing subtle variations and soft inviting glow. Harmonious blend of warm earthy browns and khakis with rich jewel-toned accents — teals reds yellows indigos — rendered with film's inherent color blending creating distinctly bohemian artfully assembled palette. Natural greens leaning toward warm olives rather than harsh artificial greens. Fine organic film grain subtly visible lending irreplaceable authenticity depth and nostalgic charm.",
+  },
+  {
+    id: "colorpalette_046",
+    title: "Punchy Natural Summer Vibrant Film",
+    prompt: "Vibrant yet natural and slightly warm color grade evoking classic analog film such as Fuji Pro 400H or Portra 400 for vibrant greens and blues with warm skin tones. Deep saturated almost cerulean blue sky contrasting beautifully with bright whites of daisies and vibrant natural greens. Luminous warm skin tones rich in golden and peach undertones — healthy sun-kissed aesthetic. Outstanding color separation where distinct hues of blue sky white flowers green foliage and dark clothing remain vibrant and clearly defined. Overall palette radiates summer energy and natural beauty.",
+  },
+  {
+    id: "colorpalette_047",
+    title: "Portra 400 Earthy Nostalgic Forest",
+    prompt: "Sophisticated warm-neutral color grade meticulously calibrated to Kodak Portra 400 film color science. Subtly saturated featuring Portra's signature rich greens warm browns and earthy tones balanced by clean luminous whites — earthy nostalgic vibrancy that is distinctly photographic. Skin tones with Portra's legendary natural luminosity rich in subtle warm undertones. Excellent color separation — various greens of grass brown of hair white of clothing remaining distinct and vibrant within harmonious palette. Fine natural film grain consistent with Portra 400 adding authentic tactile texture.",
+  },
+  {
+    id: "colorpalette_048",
+    title: "Desaturated High-Contrast Vintage Adventure",
+    prompt: "Slightly desaturated high-contrast color grade reminiscent of processed film stock — pushed Portra or cross-processed slide film emulation. Muted palette with warm undertones in wood contrasting with cooler whites and slight blue tint in shadows — creating nostalgic almost documentary-like feel. Enhanced sun-kissed warm skin tones showing subtle variations speaking to active outdoorsy lifestyle. Good color separation between warm wood and cooler tones maintaining visual clarity despite high contrast.",
+  },
+  {
+    id: "colorpalette_049",
+    title: "Desaturated Cool Urban Neo-Noir",
+    prompt: "Desaturated cool-toned color grade reminiscent of raw unglamorous urban documentary or neo-noir film. Muted palette emphasizing cool blues grays and deep blacks — stripping away vibrancy to focus on raw emotion and stark reality. Natural unvarnished skin tones showing subtle imperfections and realistic undertones without idealized smoothing. Dominant consuming rich blacks retaining subtle fabric texture — adding enveloping visual weight and intense almost claustrophobic mood.",
+  },
+  {
+    id: "colorpalette_050",
+    title: "Clean Desaturated Cool-Neutral Studio",
+    prompt: "Clean slightly desaturated cool-neutral color grade reminiscent of modern editorial aesthetic with precise white balance. Authentic rich grey mid-tones showcasing texture without appearing flat or dull. Crisp clean color separation on graphic elements standing out with clarity. Luminous natural skin tones rich in subtle undertones — avoiding plastic or overly smoothed appearance. Pure clean bright white background — never blown out — serving as perfect distraction-free canvas.",
+  },
+  {
+    id: "colorpalette_051",
+    title: "Vivid Warm Instagram Selfie",
+    prompt: "High-contrast slightly warm-toned color grade reminiscent of early Instagram filters emphasizing vibrancy. Vivid saturated yet natural tones in hair skin and clothing — youthful energetic feel with colors that pop. Rich deep blacks in hair and dark clothing providing strong dramatic frame. Luminous slightly bronzed skin quality avoiding pale or washed-out appearance. Overall palette projects youthful magnetic confidence.",
+  },
+  {
+    id: "colorpalette_052",
+    title: "Warm Portra 400 Runway Vintage Cream",
+    prompt: "Warm-neutral slightly desaturated color grade specifically emulating Kodak Portra 400 or Fuji Superia 400 film color science. Natural luminous skin tones rich in subtle undertones avoiding plastic digital smoothness. Creamy off-white and antique gold and cream of lace — soft quality not stark white — subtle color shift typical of warm-toned film imbuing with vintage elegance. Rich natural tones of long flowing brown hair — avoiding over-saturation allowing natural beauty through. Muted dark background with nuanced tonal rendering.",
+  },
+  {
+    id: "colorpalette_053",
+    title: "Warm Muted Ektachrome Mid-Century Coastal",
+    prompt: "Warm-toned slightly desaturated color grade evoking classic mid-century Ektachrome or Kodachrome slide film as seen in vintage prints. Warm muted palette with dominant golden-sepia cast permeating greens and browns — creating inherent nostalgia and romance. Rich but not overly vibrant blues in sky and ocean slightly leaning toward teal or dusty blue. Luminous skin tones with subtle golden warmth characteristic of period film stocks. Rich deep slightly desaturated olive-toned greens harmonizing with warm browns of earth. Subtle film grain authenticating the analog feel.",
+  },
+  {
+    id: "colorpalette_054",
+    title: "Portra 400 Pastel Vibrancy Garden",
+    prompt: "Sophisticated warm slightly desaturated color grade evoking Kodak Portra 400 film color science. Pastel vibrancy — rich and present yet softened colors of floral dress blending pinks yellows purples harmoniously as if seen through gentle haze. Lush deep slightly muted greens of foliage providing rich organic backdrop without overpowering. Luminous skin tones with natural glow subtly enhanced by film's emulsion. Deep muted greens complementing dress without competing. Overall palette feels both vibrant and dreamy — characteristic Portra quality where greens are lush but not overpowering.",
+  },
+  {
+    id: "colorpalette_055",
+    title: "Warm Golden Natural Spa Harmony",
+    prompt: "Natural yet slightly enhanced color grade emphasizing warm golden tones against cool blues while maintaining overall realism. Harmonious contrast between warm golden sunlight hues and cool inviting blues of hot tub tiles and water — colors rich and distinct. Vibrant yet natural greens of distant trees and browns of cabin. Subtle desaturation in deepest shadows hinting at crispness of winter air further contrasting with warmth of hot tub. Overall warm inviting spa atmosphere.",
+  },
+  {
+    id: "colorpalette_056",
+    title: "Portra 400 Pastoral Warm Romance",
+    prompt: "Sophisticated warm-toned color grade evoking Kodak Portra 400 film aesthetic. Subtly saturated with predominant warmth enhancing natural greens creamy whites of horse and delicate pinks and greens of floral dress — earthy nostalgic vibrancy feeling both vibrant and timeless. Creamy textured whites of horse fur — not stark white — blending seamlessly with rich slightly desaturated greens of distant foliage. Luminous skin tones with exceptional accuracy and natural warmth rich in subtle undertones. Overall palette creating pastoral harmony and romantic dreamlike quality.",
+  },
+  {
+    id: "colorpalette_057",
+    title: "Warm Vintage Soft Pastel Idyllic",
+    prompt: "Warm natural slightly vintage-inspired color grade reminiscent of Fuji Pro 400H or Portra 160 emulation. Soft slightly desaturated pastels — pastel pink slip dress and white cushions feeling gentle and comforting. Muted faded blues of outdoor rug contributing to nostalgic lived-in feel. Lush but slightly softened and desaturated greens of surrounding trees as harmonious backdrop. Overall palette exuding natural inviting warmth with harmonious visual flow that feels inherently peaceful and relaxing.",
+  },
+  {
+    id: "colorpalette_058",
+    title: "Cool Dreamlike Forest Nymph Fantasy",
+    prompt: "Cool slightly desaturated yet vibrant color grade reminiscent of stylized film stock or Cinematic Teal and Orange LUT with muted greens. Dreamlike palette leaning toward cool greens and muted browns contrasted by creamy white of dress and natural skin tones — creating almost fantastical quality where foliage greens are subtly shifted to feel more ancient or magical. Delicate porcelain-like skin tones slightly pale with subtle healthy undertones contributing to faerie-like appearance. Vibrant yet subdued greens with aged almost enchanted feel distinguishing them from standard bright green.",
+  },
+  {
+    id: "colorpalette_059",
+    title: "Warm Film-Like Green Folkloric",
+    prompt: "Warm slightly desaturated yet vibrant color grade calibrated to classic nature film photography aesthetic. Film-like greens and blues — rich varied greens leaning toward slightly muted earthy hues rather than overly saturated digital green. Soft pastel blues of small flowers harmonizing with natural tones. Luminous blonde hair with almost otherworldly glow appearing soft and incandescent. Soft delicate natural skin tones with subtle warmth. Overall color balance feeling organic and harmonious like a painting.",
+  },
+  {
+    id: "colorpalette_060",
+    title: "Lush Bright Summer Nature Film",
+    prompt: "Bright natural slightly warm color grade characteristic of consumer film. Lush vibrant greens of foliage slightly desaturated to keep them natural rather than artificial. Golden inviting yellows of sunlight contributing to warm summery feeling. Clean bright whites with subtle hints of texture and dimension reflecting abundant light without being blown out. Natural warm healthy skin tone glow. Overall palette vibrant summery and fresh.",
+  },
+  {
+    id: "colorpalette_061",
+    title: "Portra 400 Muted Melancholic Forest",
+    prompt: "Sophisticated warm-neutral color grade evoking Kodak Portra 400 film aesthetic. Muted yet rich greens of background foliage — slightly desaturated retaining organic quality avoiding aggressive vibrancy. Soft yellow wildflower accents adding warmth without competing with subject. Overall inherent gentle warmth making the image feel inviting familiar and deeply nostalgic — signature warmth of Portra film profoundly shaping emotional experience.",
+  },
+  {
+    id: "colorpalette_062",
+    title: "Soft Lavender Natural Warm-Cool Balance",
+    prompt: "Soft slightly desaturated color grade with warm-cool balance emphasizing natural greens blues and delicate purple of lavender. Vibrant yet soft natural purple hues of lavender — rich accurate floral tones making them feel almost fragrant. Lush muted greens of distant trees and field as natural harmonious backdrop. Clear natural sky blues contributing to overall outdoor freshness. Warm natural sun-kissed skin tones perfectly complementing soft lighting and natural setting. Overall palette clean fresh and naturally luminous.",
+  },
+  {
+    id: "colorpalette_063",
+    title: "Kawaii Hyper-Vibrant Electric Winter",
+    prompt: "Aggressively vibrant high-key color grade characteristic of popular Asian photo-editing apps or filters. Electric almost artificial blues in sky. Dazzling almost glowing whites of snow with just enough subtle texture. Hot vibrant pinks of outfit intensely saturated. Luminous slightly porcelain-like skin tones often a bit lighter than natural enhancing youthful radiance. Overall palette pushes past natural saturation into almost anime-like fantastical dreamlike quality — hyper-sweet and energetic.",
+  },
 ];
 
 export const Texture = [
@@ -532,6 +1042,161 @@ export const Texture = [
     title: "Professional Workspace Materials Tactile",
     prompt: "Heightened tactile sensation with professional sensory richness — render all textures with tangible precise fidelity — subtle wrinkles in a linen-like shirt the smooth finish of a laptop the delicate texture of notebook paper the precise lines of a fountain pen the crisp lines of handwriting on paper the grain of a whiteboard surface and rattan elements should all be viscerally tangible and highly detailed. Hair strands rendered with high acutance and individual clarity. Fabric weave and clothing folds captured with precise micro-contrast — every strand of hair subtle folds of clothing and crisp lines of writing rendered with a fidelity that elevates the scene beyond a simple snapshot communicating intelligence and diligence. The micro-detail on workspace objects — keyboard keys pen barrels paper edges whiteboard marker tips — communicates the tactile reality of focused work. This textural richness grounds the image in relatable reality while elevating its visual quality inviting a closer more appreciative gaze into her productive world — a captured moment of intelligent creation.",
   },
+  {
+    id: "texture_018",
+    title: "Whiteboard Denim Skin Material Physics",
+    prompt: "Heightened material physics rendering — whiteboard semi-gloss surface showing legible text despite viewing angle. Denim rendered with micro-contrast of warp and weft texture. Skin showing subsurface scattering with natural tone retention. Marker with plastic specularity and saturated pigment deposition. Dark matte-finish fabric top emphasizing clean lines avoiding distracting reflections. Medium-toned trouser texture providing visual separation. All surfaces communicating focused clarity through physically accurate material interaction rendering.",
+  },
+  {
+    id: "texture_019",
+    title: "Smartphone Computational Uniform Sharpness",
+    prompt: "Heightened computational texture clarity — every detail rendered crisper than real life with extreme uniform sharpness. Individual laptop keys visible. Weave of cotton shirt captured with thread-level detail. Pattern of bedsheets rendered with precise geometry. White curtain texture fully preserved despite bright window behind. Soft inviting weave of couch fabric the comfortable slightly worn texture of sweatshirt and sweatpants the subtle texture of throw pillows and sleek laptop surface all captured with clarity that invites comfort and presence. The sharpness on laptop screen interface adds authenticity of engagement.",
+  },
+  {
+    id: "texture_020",
+    title: "Ancient Stone Mosaic Linen Heritage",
+    prompt: "Heightened tactile sensation with historical richness — render all textures with exceptional almost tangible fidelity. Crisp yet soft linen of outfit. Rough weathered surface of ancient stone wall with deep textural detail. Intricate shimmering tiles of mosaic. Woven straw of basket. Phenomenal micro-contrast and rich tonal gradation revealing palpable texture and depth in stone and mosaic — light playing across varied surfaces making them feel more tactile and historically resonant than direct observation. This tactile richness makes the image an experience drawing the viewer into the luxurious historic environment.",
+  },
+  {
+    id: "texture_021",
+    title: "Natural Foliage Garment Petal Organic",
+    prompt: "Heightened tactile sensation with organic fidelity — soft weave of elegant garment smooth sheen of neatly tied hair delicate texture of skin individual petals and veins of flowers and varied textures of lush green foliage all viscerally tangible and highly detailed. Medium format sensor capturing nuanced textures that contribute to sensory richness. The tactile detail invites the viewer into the moment of natural elegance — surfaces feel palpably rich and refined.",
+  },
+  {
+    id: "texture_022",
+    title: "Hammock Woven Fiber Skin Leaf Detail",
+    prompt: "Heightened tactile sensation creating visceral connection — rough woven fibers of hammock rendered with intricate weave detail. Smooth delicate texture of skin. Individual leaves of surrounding trees. Film's unique ability to render fine details with aesthetic quality — the intricate detail of hammock weave is heightened by film grain creating organic textural fusion. This makes the image feel incredibly present and real yet imbued with a dreamy quality that transcends mere observation.",
+  },
+  {
+    id: "texture_023",
+    title: "Tree Bark Flowing Dress Ancient Natural",
+    prompt: "Heightened tactile sensation with ancient nature richness — rough ancient bark of tree rendered with deep crevice detail. Delicate flowing fabric of white dress. Individual strands of hair. Subtle ripples on distant water. All surfaces viscerally tangible showcasing the transformative capabilities of high-resolution sensor and characterful vintage lens. The ancient tree feels alive and the delicate human presence profoundly real within it.",
+  },
+  {
+    id: "texture_024",
+    title: "Film Grass Skin Hair Dreamy Organic",
+    prompt: "Heightened tactile sensation with organic film fidelity infused with subtle film grain — soft strands of flowing hair delicate texture of skin gentle creases of white dress and individual blades of grass all viscerally tangible yet rendered with the unique character of medium format film grain. This tactile richness combined with ethereal light and color creates an immersive experience drawing the viewer into a serene beautiful world that feels deeply personal and exquisitely photographic.",
+  },
+  {
+    id: "texture_025",
+    title: "Vintage Dress Wind Hair Dry Grass",
+    prompt: "Enhanced tactile sensation with visceral detail — intricate floral pattern and delicate lace details of vintage-style dress. Wild wind-swept waves of long blonde hair with individual strands discernible. Varied rustic textures of tall dried grasses. All rendered with exceptional almost tangible fidelity — making the viewer almost feel the fabric and smell the dry grass — sensory details amplified by the photographic medium.",
+  },
+  {
+    id: "texture_026",
+    title: "Lace Fan Pearl Period Garment",
+    prompt: "Heightened tactile sensation with historical richness — intricate lace and delicate ruffles of white blouse. Delicate weave of antique fan. Smooth pearls. Subtle texture of skin and hair. All viscerally tangible and highly detailed — historical garments and accessories feeling incredibly real and luxurious — a depth of textural capture significantly surpassing natural observation.",
+  },
+  {
+    id: "texture_027",
+    title: "Rose Kraft Paper Knit Sweater Hat",
+    prompt: "Heightened tactile sensation with sensory richness — soft fine knit of sweater and hat. Delicate petals of roses. Rough natural texture of kraft paper wrapping. Smooth strands of hair. All viscerally tangible and highly detailed — making the fashion feel real and accessible drawing the viewer into the luxurious world of high fashion with enhanced clarity that transcends casual observation.",
+  },
+  {
+    id: "texture_028",
+    title: "Fur Coat Skin Hair Organic Depth",
+    prompt: "Heightened tactile sensation with naturalistic depth — soft luxurious texture of fur coat with individual fibers discernible. Natural radiant skin with subtle specular highlights on cheekbones. Strands of hair and individual fiber details of fur. All textures rendered with organic fidelity characteristic of medium format film — inviting the viewer to almost feel the luxury of the fabrics and the warmth of the scene.",
+  },
+  {
+    id: "texture_029",
+    title: "Soaked Dress Sea Foam Windswept Hair",
+    prompt: "Hyper-realistic texture and visceral immersion — crashing waves with frothy sea foam rendered with intricate patterns. Windswept hair with individual strands rendered with photographic precision. Soaked clinging white dress fabric. Subtle skin contours. All textures captured with medium format fidelity far beyond casual human vision creating visceral sense of immersion making elements feel almost tangible.",
+  },
+  {
+    id: "texture_030",
+    title: "Lace Gloves Wool Coat Mountain Rock Water",
+    prompt: "Heightened sensory richness — soft intricate lace of gloves. Plush wool of coat. Smooth fabric of dress. Rough ancient rock of mountains. Subtle ripples on water surface. Film emulsion capturing nuanced textures contributing to immersive sensory richness — making the viewer feel almost present in the crisp mountain air.",
+  },
+  {
+    id: "texture_031",
+    title: "Delicate Dress Hair Cloud Square Format",
+    prompt: "Heightened tactile sensation with softly defined fidelity — delicate flowing fabric of dress. Subtle strands of blonde hair. Fluffy voluminous texture of clouds. All rendered with exceptional yet softly defined detail characteristic of medium format film — showcasing nuanced textures that contribute to sensory richness and nostalgic feel.",
+  },
+  {
+    id: "texture_032",
+    title: "Patchwork Scarf Grass Bohemian Layers",
+    prompt: "Heightened tactile sensation with tangible fashion richness — intricate patchwork and crochet of top. Rich woven texture of striped scarf. Individual blades of grass. All viscerally tangible and highly detailed — film emulsion and sharp lens capturing textures with unique organic feel. Fine visible film grain further enhancing tactile quality — immersing the viewer in the sensory experience.",
+  },
+  {
+    id: "texture_033",
+    title: "Daisy Petals Clothing Hair Summer",
+    prompt: "Heightened tactile sensation with sensory delight — delicate petals of daisies. Soft fabric of clothing. Subtle movement in hair from breeze. Bright blue sky rendered with depth and clarity. All viscerally tangible and highly detailed — high-resolution film scan and sharp lens making the image an experience drawing the viewer into sensory richness of a summer field.",
+  },
+  {
+    id: "texture_034",
+    title: "Forest Grass Hair Tree Bark Portra",
+    prompt: "Heightened sensory immersion — soft dry blades of grass rendered with individual detail. Subtle textures of tree bark in background. Flowing hair with strand-level resolution. All viscerally tangible and highly detailed — medium format film and critically sharp lens making the natural environment feel immersive and deeply real. Portra film grain adding organic textural layer.",
+  },
+  {
+    id: "texture_035",
+    title: "Book Pages Watch Metal Fan Wood Cabin",
+    prompt: "Heightened sensory richness with remarkable fidelity — crinkle of book pages. Subtle sheen of watch. Smooth wood of table. Plastic of fan. Subtle texture of skin. All viscerally tangible and highly detailed — making the act of reading feel almost palpable and the compact environment incredibly real. Camera lens enhancing sensory depth beyond casual observation.",
+  },
+  {
+    id: "texture_036",
+    title: "Hoodie Worn Fabric Watch Urban Intimate",
+    prompt: "Heightened tactile sensation with tangible comfort — soft worn cotton of hoodie. Intricate details of watch face and strap. Texture of hair. Subtle lines on hands. All viscerally palpable and highly detailed — high-resolution sensor and critically sharp lens making the image feel incredibly real and intimate drawing the viewer to appreciate attire quality and emotional depth.",
+  },
+  {
+    id: "texture_037",
+    title: "Hair Lace Camisole Glossy Selfie",
+    prompt: "Heightened tactile sensation with raw authenticity — smooth sheen of long dark hair. Delicate lace of camisole. Subtle texture of skin preserved with micro-imperfections. Lustrous material of yellow top. All viscerally tangible and highly detailed — raw textural detail unsoftened by heavy beauty filters crucial for the unfiltered authentic aesthetic.",
+  },
+  {
+    id: "texture_038",
+    title: "Slip Dress Lace Trim Flowing Hair Runway",
+    prompt: "Heightened tactile sensation with fabric and hair richness — delicate flowing fabric of slip dress. Intricate patterns of lace trim. Soft voluminous strands of hair. All viscerally tangible and highly detailed — film capturing subtle textures with unique organic quality. The softness of fabric and movement in hair making the image an experience beyond casual observation — delicate details of ensemble and natural beauty feeling almost palpable.",
+  },
+  {
+    id: "texture_039",
+    title: "Floral Dress Wet Hair Glass Garden",
+    prompt: "Heightened sensory immersion — intricate embroidery and delicate fabric of floral dress. Wet strands of hair. Individual blades of grass. Condensation on glass. All viscerally palpable and highly detailed — medium format film resolution making the image an immersive sensory experience. Tactile richness drawing the viewer into the scene with depth of perception transcending real-life casual observation.",
+  },
+  {
+    id: "texture_040",
+    title: "Steam Water Tiles Cabin Spa Tangible",
+    prompt: "Tangible steam and water rendered with sensory richness — delicate steam tendrils rising to thicker clouds with incredible ethereal detail. Water showing subtle ripples and reflections feeling physically tangible. Hot tub tile textures. Cabin stone facade. Snow on distant trees. All rendered with crisp natural detail grounding the scene in its natural luxurious setting.",
+  },
+  {
+    id: "texture_041",
+    title: "Horse Fur Floral Dress Dark Hair Pastoral",
+    prompt: "Heightened tactile sensation beyond sight — silky strands of dark hair. Delicate flowing fabric of floral dress. Soft textured fur of horse's back. Subtle variations in distant foliage. All viscerally palpable and highly detailed — making the image an experience drawing the viewer into the scene's delicate beauty in ways the human eye without photographic enhancement would struggle to achieve.",
+  },
+  {
+    id: "texture_042",
+    title: "Slip Dress Cushion Rug Swing Couch",
+    prompt: "Heightened tactile sensation with comfort and softness — soft light fabric of slip dress. Plush white cushions. Slightly weathered wood of swing couch. Intricate pattern of outdoor rug. All viscerally tangible and highly detailed — making the scene feel incredibly inviting and comfortable drawing the viewer into a moment of peaceful repose.",
+  },
+  {
+    id: "texture_043",
+    title: "Flower Petals Dry Grass Skin Hair Sun",
+    prompt: "Heightened sensory immersion — delicate flower petals. Rough texture of dry grass. Smooth softness of skin. Subtle strands of hair. All viscerally tangible and highly detailed — high-resolution sensor and critically sharp lens making the image an immersive experience drawing the viewer into the moment of natural repose.",
+  },
+  {
+    id: "texture_044",
+    title: "Wildflower Petals Grass Hair Folkloric",
+    prompt: "Heightened sensory immersion with softly rendered fidelity — delicate petals of white and blue wildflowers. Individual blades of grass. Flowing strands of hair. All viscerally tangible yet softly rendered by the lens creating tactile sensation that draws the viewer into the sensory experience of the meadow — micro-detail combined with soft focus creating immersive realism that feels both present and dreamlike.",
+  },
+  {
+    id: "texture_045",
+    title: "Gravel Path Dress Basket Leaves Forest",
+    prompt: "Heightened sensory richness — rough gravel of path. Soft fabric of dress. Wicker of basket. Varied leaves of trees. All viscerally tangible and richly detailed — film capturing texture with unique organic feel. Subtle film grain imperfections further enhancing tactile quality inviting the viewer into the sensory experience of the moment.",
+  },
+  {
+    id: "texture_046",
+    title: "Flower Crown Hair Skin Smoke Ethereal",
+    prompt: "Heightened tactile sensation beyond sight — delicate petals of flower crown. Subtle texture of long flowing hair. Smooth appearance of skin. Faint wisps of smoke. All viscerally tangible and highly detailed — drawing the viewer into an intimate contemplative world. The softness of hair and delicacy of petals making the image an experience rather than just a visual.",
+  },
+  {
+    id: "texture_047",
+    title: "Lavender Blossom Wavy Hair Freckle Skin",
+    prompt: "Heightened delicate beauty — intricate details of lavender blossoms. Soft strands of wavy hair. Subtle texture of skin with visible freckles. Distant foliage rendered with gentle softness. All viscerally tangible yet gently softened by lens and light — making the image feel incredibly intimate and beautiful.",
+  },
+  {
+    id: "texture_048",
+    title: "Snow Outfit Hair Kawaii Crisp Detail",
+    prompt: "Heightened tactile energy — crisp texture of snow with subtle depth detail. Vibrant fabric of pink outfit. Flying strands of hair caught mid-motion. All rendered with energetic crisp clarity — noticeable digital sharpening giving elements a defined pop. Despite high-key brightness textures remain discernible adding to the joyful immersive quality.",
+  },
 ];
 
 export const Mood = [
@@ -589,6 +1254,171 @@ export const Mood = [
     id: "mood_011",
     title: "Luxury Fashion Magazine Aspirational",
     prompt: "This image is perfectly suited for a high-end fashion magazine cover a luxury brand campaign or an exclusive event's social media designed to evoke a sense of sophisticated glamour serene confidence and aspirational beauty all meticulously crafted and enhanced by the powerful transformative lens of a master photographer and advanced camera system.",
+  },
+  {
+    id: "mood_012",
+    title: "Timeless European Cultural Immersion",
+    prompt: "This image is perfectly suited for a high-end fashion editorial a luxury travel blog or an artistic social media feed designed to evoke a sense of timeless European elegance contemplative beauty and aspirational cultural immersion all through the powerful transformative lens of a master photographer and sophisticated camera system.",
+  },
+  {
+    id: "mood_013",
+    title: "Serene Natural Elegance Wellness",
+    prompt: "This image is perfectly suited for a high-end fashion editorial a luxury lifestyle campaign focusing on wellness or an artistic social media feed designed to evoke a sense of profound serenity natural elegance and aspirational yet relatable beauty all meticulously crafted and amplified through the powerful transformative lens of a master photographer and sophisticated camera system.",
+  },
+  {
+    id: "mood_014",
+    title: "Contemplative Artistic Film Introspection",
+    prompt: "This image is perfectly suited for an artistic photography portfolio a contemplative lifestyle blog or a high-end editorial feature designed to evoke a sense of serene natural beauty intimate introspection and timeless photographic artistry all powerfully shaped and amplified by the specific characteristics of film photography.",
+  },
+  {
+    id: "mood_015",
+    title: "Ethereal Fantasy Nature Connection",
+    prompt: "This image is perfectly suited for an artistic photography portfolio an ethereal fashion editorial a fantasy-inspired blog or a mood-driven social media feed designed to evoke a sense of deep connection to nature mystical beauty and dreamlike introspection all meticulously crafted and enhanced by the specific photographic choices to create a scene that feels truly magical and otherworldly.",
+  },
+  {
+    id: "mood_016",
+    title: "Romantic Vulnerability Timeless Film",
+    prompt: "This image is perfectly suited for a high-end fashion editorial an artistic photography series or a mood-driven personal blog designed to evoke a sense of timeless beauty ethereal naturalism and profound yet gentle emotional depth all through the unparalleled aesthetic power of authentic film photography.",
+  },
+  {
+    id: "mood_017",
+    title: "Untamed Romantic Melancholy Elegance",
+    prompt: "This image is perfectly suited for a high-fashion editorial an artistic album cover or a curated lifestyle blog focusing on vintage aesthetics and natural beauty designed to evoke a sense of quiet strength romantic melancholy and untamed elegance all meticulously sculpted and enhanced by the unique properties of classic film photography.",
+  },
+  {
+    id: "mood_018",
+    title: "Gothic Forbidden Romance Tension",
+    prompt: "This image evokes gothic romance forbidden desire and underlying tension through sharp contrast between pale luminous figures and deep dark backgrounds. The heightened romance and dramatic visual tension make the scene feel like a moment from a dark fairy tale or romantic thriller — the palette designed to feel intense and impactful.",
+  },
+  {
+    id: "mood_019",
+    title: "Alternative Artistic Haunting Vulnerability",
+    prompt: "This image is perfectly suited for an alternative fashion editorial an indie film poster an art photography series or a mood-driven personal blog designed to evoke a sense of profound beauty artistic vulnerability and a haunting ethereal presence all masterfully created and intensified by the unique characteristics of the photographic medium.",
+  },
+  {
+    id: "mood_020",
+    title: "Joyful Whimsical Cottagecore Spring",
+    prompt: "This image is perfectly suited for a whimsical lifestyle blog a joyful social media feed or an editorial piece on nature and happiness designed to evoke pure joy enchanting beauty and an aspirational sense of carefree elegance all meticulously crafted and enhanced by the evocative lens of the camera.",
+  },
+  {
+    id: "mood_021",
+    title: "90s Fashion Timeless Subtle Sensuality",
+    prompt: "This image is perfectly suited for a high-fashion editorial a luxury brand campaign or a nostalgic beauty feature designed to evoke a sense of timeless elegance subtle sensuality and iconic 90s supermodel cool all meticulously crafted and enhanced by the specific properties of film photography and professional studio techniques.",
+  },
+  {
+    id: "mood_022",
+    title: "Road Trip Cherished Memory Spontaneous",
+    prompt: "This image is perfectly suited for a personal travel blog an artistic social media feed or a lifestyle campaign designed to evoke a sense of cherished memories spontaneous beauty and the gentle allure of a moment captured in time all through the powerful transformative lens of a master photographer and sophisticated camera system.",
+  },
+  {
+    id: "mood_023",
+    title: "Raw Elegance Naturalistic Contemplative",
+    prompt: "This image is perfectly suited for a high-end fashion editorial a luxury lifestyle campaign or an artistic portrait series designed to evoke a sense of raw elegance natural beauty and contemplative allure all meticulously crafted and enhanced by the authentic timeless rendering of medium format film photography.",
+  },
+  {
+    id: "mood_024",
+    title: "Windswept Drama Raw Glamour",
+    prompt: "This image is perfectly suited for a high-fashion editorial spread an art photography portfolio or a curated social media feed designed to evoke a powerful sense of untamed beauty windswept drama and raw yet glamorous vulnerability all meticulously crafted and enhanced by the sophisticated eye of a professional camera and distinct post-production aesthetic.",
+  },
+  {
+    id: "mood_025",
+    title: "Sublime Wilderness Fashion Resilience",
+    prompt: "This image is perfectly suited for a high-fashion editorial an artistic travel journal or a fine art photography collection designed to evoke a sense of sublime beauty elegant strength and the harmonious integration of human artistry with the grandeur of the natural world all rendered with the timeless evocative magic of film photography.",
+  },
+  {
+    id: "mood_026",
+    title: "Bohemian Freedom Summer Contemplation",
+    prompt: "This image is perfectly suited for a bohemian fashion editorial a lifestyle blog focused on travel and introspection or an artistic social media feed designed to evoke a sense of serene beauty contemplative freedom and timeless summer nostalgia all meticulously crafted and enhanced by the unique properties of medium format film photography.",
+  },
+  {
+    id: "mood_027",
+    title: "Indie Bohemian Sun-Kissed Confidence",
+    prompt: "This image is perfectly suited for a fashion editorial targeting retro or indie markets a lifestyle blog focused on vintage aesthetics or a personal portfolio designed to evoke a sense of timeless bohemian beauty relaxed confidence and sun-drenched nostalgia all powerfully articulated and enhanced by the unique visual language of analog film photography.",
+  },
+  {
+    id: "mood_028",
+    title: "Summer Dream Freedom Natural Splendor",
+    prompt: "This image is perfectly suited for a bohemian fashion editorial a travel blog or an artistic social media feed designed to evoke a sense of freedom natural beauty and a nostalgic summer dream all meticulously crafted and enhanced by the sophisticated optical and tonal characteristics of classic film photography.",
+  },
+  {
+    id: "mood_029",
+    title: "Serene Forest Grace Portra Warmth",
+    prompt: "This image is perfectly suited for an artistic portrait series an outdoor lifestyle brand campaign or a personal blog designed to evoke a sense of serene natural beauty nostalgic contemplation and timeless grace all profoundly shaped and enhanced by the distinctive aesthetic of Kodak Portra 400 medium format film.",
+  },
+  {
+    id: "mood_030",
+    title: "Escapist Intellectual Quiet Adventure",
+    prompt: "This image is perfectly suited for an artistic travel blog a niche literary social media feed or a personal diary-style publication designed to evoke a sense of thoughtful escape authentic adventure and quiet intellectualism all powerfully constructed and stylized through the unique capabilities of the photographic medium.",
+  },
+  {
+    id: "mood_031",
+    title: "Urban Cinematic Psychological Depth",
+    prompt: "This image is perfectly suited for a gritty independent film poster a character study in a drama series or an artistic social commentary piece designed to evoke a powerful sense of urban vulnerability raw emotion and psychological depth all masterfully enhanced and distilled by the unique visual language of professional cinematography.",
+  },
+  {
+    id: "mood_032",
+    title: "Approachable Cool Magnetic Presence",
+    prompt: "This image is perfectly suited for a lifestyle brand campaign a personal branding profile or a high-end editorial feature designed to evoke a sense of thoughtful approachable coolness and magnetic intensity all meticulously crafted and enhanced by the sophisticated eye of a professional photographer and top-tier camera system.",
+  },
+  {
+    id: "mood_033",
+    title: "Rebellious Raw Beauty Magnetic Allure",
+    prompt: "This image is perfectly suited for a personal social media feed a fashion-forward blog with an edgy twist or an online zine designed to project an image of confident raw beauty and magnetic allure all amplified by the intimate and unfiltered lens of a modern smartphone camera.",
+  },
+  {
+    id: "mood_034",
+    title: "Romantic Grunge 90s Vulnerable Allure",
+    prompt: "This image is perfectly suited for a high-fashion archival collection a vintage-inspired editorial or an artistic social media feed designed to evoke a sense of delicate beauty romantic vulnerability and the timeless allure of 90s fashion all elevated and transformed by the evocative power of analog film photography.",
+  },
+  {
+    id: "mood_035",
+    title: "Golden Age Cinema Nostalgic Romance",
+    prompt: "This image is perfectly suited for a vintage fashion editorial a classic travel blog or an artistic social media feed designed to evoke a profound sense of nostalgic romance serene natural beauty and a timeless graceful femininity all through the powerful transformative lens and unique color science of a mid-century film camera.",
+  },
+  {
+    id: "mood_036",
+    title: "Summer Reverie Garden Introspection",
+    prompt: "This image is perfectly suited for a high-end fashion editorial an artistic portrait series or a nostalgic lifestyle blog designed to evoke a sense of dreamy introspection natural beauty and a poignant moment of summer reverie all elevated and transformed by the unique inimitable qualities of film photography.",
+  },
+  {
+    id: "mood_037",
+    title: "Winter Escape Warm Comfort Intellectual",
+    prompt: "This image is perfectly suited for a luxury travel blog a wellness retreat advertisement or an aspirational lifestyle social media post designed to evoke a sense of peaceful escape warm comfort in a cold environment and intellectual relaxation all meticulously crafted and enhanced by the sophisticated visual language of modern computational photography.",
+  },
+  {
+    id: "mood_038",
+    title: "Pastoral Romance Ethereal Nostalgia",
+    prompt: "This image is perfectly suited for a high-end fashion editorial an artistic social media feed or a fine art photography portfolio designed to evoke a sense of dreamlike elegance pastoral romance and ethereal beauty all through the powerful transformative lens of a master photographer and sophisticated film system.",
+  },
+  {
+    id: "mood_039",
+    title: "Idyllic Comfort Sun-Drenched Tranquility",
+    prompt: "This image is perfectly suited for a lifestyle blog a wellness retreat advertisement or an aspirational social media feed designed to evoke a sense of serene comfort idyllic escape and sun-drenched tranquility all meticulously crafted and enhanced by the sophisticated eye of a professional camera system to create a truly evocative visual experience.",
+  },
+  {
+    id: "mood_040",
+    title: "Folkloric Whimsical Nature Magical",
+    prompt: "This image is perfectly suited for an artistic nature photography series a whimsical fashion editorial or a personal blog focused on natural beauty and introspection all meticulously crafted and transformed by the unique qualities of analog film photography and a discerning lens.",
+  },
+  {
+    id: "mood_041",
+    title: "Summer Adventure Nostalgic Forest Magic",
+    prompt: "This image is perfectly suited for a personal travel blog an indie music album cover or a nostalgic social media feed designed to evoke a sense of freedom joy and the magical essence of a summer adventure all beautifully enhanced and given character by the chosen photographic medium.",
+  },
+  {
+    id: "mood_042",
+    title: "Ethereal Melancholy Folkloric Timeless",
+    prompt: "This image is perfectly suited for an artistic portrait series an indie film aesthetic a personal blog focused on mood and introspection or an alternative fashion editorial designed to evoke a sense of profound ethereal melancholy and timeless beauty all meticulously crafted and enhanced by the transformative power of analog film photography.",
+  },
+  {
+    id: "mood_043",
+    title: "Lavender Natural Beauty Serene Allure",
+    prompt: "This image is perfectly suited for a high-end beauty campaign a lifestyle magazine spread or an artistic social media feed designed to evoke a sense of serene natural beauty delicate allure and sun-drenched tranquility all meticulously crafted and enhanced by the sophisticated eye of a professional camera.",
+  },
+  {
+    id: "mood_044",
+    title: "Kawaii Whimsical Joyful Winter Adventure",
+    prompt: "This image is perfectly suited for a personal travel blog a Kawaii fashion influencer's social media or a cheerful lifestyle campaign designed to evoke a sense of pure joy whimsical adventure and an idealized vibrant winter experience all heightened and stylized by the camera's specific filters and processing beyond the realm of simple reality.",
   },
 ];
 

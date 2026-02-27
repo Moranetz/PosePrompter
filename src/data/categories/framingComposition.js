@@ -132,6 +132,151 @@ export const Framing = [
     title: "Side-Profile Whiteboard Dynamic Flow",
     prompt: "Side-profile eye-level composition with the subject slightly off-center creating a dynamic yet balanced frame — leaning into a whiteboard arm extended mid-stroke in an engaged dynamic pose conveying musculoskeletal tension and balance. The camera captures the subtle fluid energy in her movement — the gentle tension in her shoulder the confident grip on the marker the calm intensity of her expression. Layered focus with an artfully shallow depth of field — the plane of critical focus woven through the tip of the marker the text being written and the eyes if visible creating a visual pathway of thought. Foreground and background dissolve into creamy gentle bokeh making the subject and her work the undeniable heart of the image without harsh isolation.",
   },
+  {
+    id: "framing_027",
+    title: "Medium-Full Coastal Hillside Upward",
+    prompt: "Medium-full shot composition capturing subject from head to just above feet with slight upward gaze — elegantly positioned on a hillside or elevated natural setting overlooking a sweeping vista. The composition places her gracefully against the landscape creating dialogue between her figure and the expansive backdrop. Slightly low-angle perspective from the audience viewpoint emphasizing her presence against the vastness of nature.",
+  },
+  {
+    id: "framing_028",
+    title: "Medium-Full Tree Branch Diagonal",
+    prompt: "Medium-full shot composition with subject gracefully reclining on a large tree branch — the branch diagonally bisecting the frame adding dynamic visual interest. Looking upwards and shielding eyes from unseen light. The diagonal composition enhances connection to nature and ethereal quality while creating visual energy through the strong leading line.",
+  },
+  {
+    id: "framing_029",
+    title: "Diptych Close-Up Plus Fuller Body",
+    prompt: "Diptych composition presented as two connected panels. Top panel is a medium-close portrait focusing on face and upper body — hand gently cupping cheek with eyes gazing directly or slightly off-camera with soft inviting expression. Bottom panel is a medium-full shot capturing the subject seated or crouching in grass with contemplative slightly vulnerable pose. Both panels share the same environment creating cohesive narrative across the two frames.",
+  },
+  {
+    id: "framing_030",
+    title: "Central Standing Tall Grass Field",
+    prompt: "Medium-full shot with subject centrally framed standing among tall swaying grasses in a vast open field. Direct gaze engaging the viewer with intensity and quiet strength. The central placement against the expansive natural environment emphasizes both the human presence and the vastness surrounding it.",
+  },
+  {
+    id: "framing_031",
+    title: "Classical Profile Contemplative Gaze",
+    prompt: "Classic portrait composition capturing subject in profile gazing softly into the distance — emphasizing contemplative and wistful expression. Negative space around the subject feels balanced and serene. The profile framing allows for elegant display of accessories and period details while creating a sense of quiet dignity and introspection.",
+  },
+  {
+    id: "framing_032",
+    title: "Medium-Close Blue Noir Wall Lean",
+    prompt: "Medium-close portrait framing subject from chest up — leaning against a wall with intense direct yet slightly averted gaze. Close framing emphasizes the emotional complexity of the expression while allowing the cool-toned environment to frame the subject. The intimate distance creates unsettling closeness as if the subject is looking through or past the viewer.",
+  },
+  {
+    id: "framing_033",
+    title: "Medium Outdoor Seated Joyful Low-Angle",
+    prompt: "Medium shot slightly low angle capturing subject seated joyfully on the ground in an outdoor enclosure. Uninhibited expressive pose — head tilted back in laughter holding an animal or object close. The low angle and medium distance create a sense of looking up at genuine happiness — allowing enough of the charming outdoor setting to establish context.",
+  },
+  {
+    id: "framing_034",
+    title: "Medium-Close Car Interior Backlit",
+    prompt: "Medium-close composition within a car interior — subject framed by the vehicle's architecture with golden hour backlight streaming through windows. Tight enough to capture emotional nuance of the face while showing enough of the interior to establish the road trip context. Warm backlighting creates rim-light silhouette edges while maintaining facial detail.",
+  },
+  {
+    id: "framing_035",
+    title: "Medium Foreground Blur Organic Frame",
+    prompt: "Medium composition with a foreground element slightly out of focus — wall railing or natural element — organically framing the subject and adding depth. The out-of-focus foreground creates another layer of visual depth and frames the subject within the scene naturally adding intimacy and dimensional complexity.",
+  },
+  {
+    id: "framing_036",
+    title: "Full-Body Ocean Waves Low-Angle Dynamic",
+    prompt: "Full-body shot with slightly low-angle perspective — subject standing in crashing ocean waves. Dynamic and expressive pose with head tilted back and hair flying conveying mixture of vulnerability and liberation. The low angle emphasizes the subject's presence against the powerful ocean and dramatic sky.",
+  },
+  {
+    id: "framing_037",
+    title: "Medium-Full Mountain Lake Couture",
+    prompt: "Medium-full composition capturing subject against vast mountain and lake landscape — wearing couture against raw wilderness. The framing balances the human figure against the majestic natural backdrop creating tension between fashion elegance and untamed nature.",
+  },
+  {
+    id: "framing_038",
+    title: "Centered Square Format Sky Dominant",
+    prompt: "Centered slightly low-angle composition within a perfectly square aspect ratio. The vast sky and clouds dominate the upper two-thirds of the frame — the subject positioned in the lower third appearing contemplatively small against the expansive environment. The square format inherently brings balance and focus creating timeless artistic composition.",
+  },
+  {
+    id: "framing_039",
+    title: "Medium-Full Seated Grass Candid Relaxed",
+    prompt: "Medium-full shot slightly low-angle perspective with subject seated comfortably on the grass looking directly at camera with confident relaxed gaze. The composition feels candid and unposed — capturing a perfectly imperfect moment. Enough of the natural setting is visible to provide lush organic context.",
+  },
+  {
+    id: "framing_040",
+    title: "Low-Angle Through Wildflowers Upward",
+    prompt: "Low-angle perspective shooting upward through a field of wildflowers — subject framed by blooms and silhouetted against expansive blue sky. Looking back over shoulder with alluring direct gaze creating powerful viewer connection. The low angle through flowers creates a dramatic immersive composition as if the viewer is lying in the field looking up.",
+  },
+  {
+    id: "framing_041",
+    title: "Medium-Angle Reclining Grassy Hill",
+    prompt: "Medium-angle composition with subject reclining gently on a grassy hill — looking upward and away conveying thoughtful introspection. The framing captures enough of the natural hillside to create an immersive organic environment while keeping the subject as the emotional focal point.",
+  },
+  {
+    id: "framing_042",
+    title: "Central Cabin Reading Dramatic Light",
+    prompt: "Straight-on slightly low-angle composition framing subject centrally within a compact cabin interior — absorbed in reading. The tight space emphasizes the dramatic light-and-shadow interplay from a window source. The compact framing creates a sense of cozy confinement and intimate intellectual escape.",
+  },
+  {
+    id: "framing_043",
+    title: "Tight Medium-Close Hood Frame Urban",
+    prompt: "Tight medium-close-up composition with hood framing the subject's face — looking directly into the lens almost caught off guard. The hood creates a natural frame intensifying focus on eyes and mouth. The tight crop and direct gaze create powerful psychological intensity and raw emotional immediacy.",
+  },
+  {
+    id: "framing_044",
+    title: "Medium-Close Studio White Background",
+    prompt: "Medium-close slightly off-center composition focusing on upper body against a pure white background — hand covering mouth in pensive gesture with direct intense gaze. The clean white void eliminates all environmental context distilling the composition to pure human expression and gesture. The off-center placement creates subtle dynamic tension.",
+  },
+  {
+    id: "framing_045",
+    title: "Tight Selfie Head-and-Shoulders",
+    prompt: "Tight head-and-shoulders selfie crop filling the frame to maximize intimacy and directness. Wide-angle smartphone perspective combined with close distance creating intensely direct composition. The frame-filling approach eliminates distance between subject and viewer creating immediate raw emotional connection.",
+  },
+  {
+    id: "framing_046",
+    title: "Medium-Full Runway Slight Upward",
+    prompt: "Medium-full shot slightly angled upward placing the viewer in the audience — observing graceful stride on a dimly lit runway. Natural flowing pose with hair subtly moving conveying effortless movement and youthful energy. The upward angle and runway context create a sense of elevated fashion presentation.",
+  },
+  {
+    id: "framing_047",
+    title: "Close-Up Garden Low-Angle Intimate",
+    prompt: "Medium-close shot low to the ground placing the viewer intimately within the subject's space in a garden setting. The low angle nestled among foliage creates a private viewpoint — as if discovering someone in their secret garden. Gaze directed downward and away adding to sense of introspection and private thought.",
+  },
+  {
+    id: "framing_048",
+    title: "Medium-Wide Hot Tub Low-Angle Immersed",
+    prompt: "Medium-wide slightly low-angle composition placing the viewer intimately within the hot tub — sharing the subject's perspective. Subject partially submerged holding a book expression calm and absorbed. The low angle emphasizes the rising steam and dramatic backlighting while creating a sense of shared relaxation.",
+  },
+  {
+    id: "framing_049",
+    title: "Close-Up Intimate Horse Connection",
+    prompt: "Close-up intimate composition with subject gently resting on a horse — drawing the viewer into a private serene moment. The framing emphasizes the tender physical connection between subject and animal. Slightly off-center placement of a distant figure adds subtle narrative layer without distracting from the main emotional focus.",
+  },
+  {
+    id: "framing_050",
+    title: "Wide Swing Couch Low-Angle Backyard",
+    prompt: "Wide slightly low-angle composition fully capturing the relaxed pose on a swing couch within an expansive idyllic backyard setting. The wide framing establishes the private secluded retreat context — distant house and trees visible — while the low angle enhances the sense of lazy afternoon luxury.",
+  },
+  {
+    id: "framing_051",
+    title: "Low-Angle Nestled Among Flora",
+    prompt: "Low-angle perspective placing the viewer directly within tall grass and wildflowers looking down slightly at the subject nestled deep among the flora. Face gently turned toward the viewer in intimate contemplative connection. The immersive low angle makes the viewer feel part of the natural scene — as if both viewer and subject exist within the meadow together.",
+  },
+  {
+    id: "framing_052",
+    title: "Dynamic Forest Path Behind-Over-Shoulder",
+    prompt: "Dynamic slightly off-center composition shot from behind the subject — who turns back to engage the viewer. A tree-lined path leads the eye deep into the frame creating a strong sense of journey and exploration. The behind-and-turning composition creates a sense of invitation — the subject beckoning the viewer to follow.",
+  },
+  {
+    id: "framing_053",
+    title: "Medium-Close Downcast Flower Crown",
+    prompt: "Medium-close slightly off-center composition focusing intently on the expressive face and symbolic elements like a flower crown. Gaze downcast and wistful conveying profound introspection. The intimate framing draws the viewer into the subject's emotional world while the off-center placement creates space for contemplation.",
+  },
+  {
+    id: "framing_054",
+    title: "Close-Up Portrait Lavender Soft Direct",
+    prompt: "Close-up portrait composition focusing on face shoulders and the flowers held close. Soft direct and slightly alluring gaze inviting the viewer into a serene moment. The close framing emphasizes natural beauty details — freckles sun-kissed glow — while interaction with flowers adds delicate organic context.",
+  },
+  {
+    id: "framing_055",
+    title: "Dynamic Low-Angle Snow Mountain Exuberant",
+    prompt: "Dynamic slightly low-angle perspective looking up at the subject against vast snowy mountains and bright sky. Wildly exuberant pose with arms thrown up mouth open in laughter and hair flying. The low angle against the mountain grandeur emphasizes both the human joy and the epic natural scale.",
+  },
 ];
 
 export const Perspective = [
@@ -406,4 +551,200 @@ export const CameraType = [
     title: "Vintage Optical Flaws Character",
     prompt: "Deliberate vintage optical character serving as Camera DNA markers — subtle lateral chromatic aberration creating colored fringing at high-contrast edges. Complex field curvature where the plane of focus gently curves rather than remaining flat. Spherical aberration renders bokeh highlights with soft glowing edges rather than hard circles. Anisotropic bokeh from a cat's eye aperture effect causes out-of-focus highlights to stretch into elongated ovals toward the frame edges. Zeiss Planar-like contrast and color rendering with rich midtone separation. Characteristic Sonnar-style lens flare producing warm streaks and gentle veiling when light sources enter the frame. Foveon-like color separation where each color channel is captured with distinct spatial resolution creating unusually crisp color transitions without moiré.",
   },
+  {
+    id: "cameratype_037",
+    title: "X-T5 APS-C Technical Spec f/2.8",
+    prompt: "Simulated capture on a Fujifilm X-T5 APS-C sensor with standard zoom at 35mm equivalent and f/2.8 aperture. Focal plane razor-sharp on whiteboard text and writing hand. Focus falloff gradual transition to softness across the shoulder and back. Background dissolves into smooth defocused shapes. High acutance on hair strands and fabric texture. Zero geometric distortion with rectilinear projection. Minimal chromatic aberration. Depth of field creates critical focus plane on whiteboard text and marker tip with gradual focus falloff across back and arm and subtle background bokeh with smooth highlight rendering.",
+  },
+  {
+    id: "cameratype_038",
+    title: "iPhone 15 Pro Computational Depth",
+    prompt: "Simulated capture on a high-quality smartphone camera iPhone 15 Pro or Google Pixel 8 utilizing advanced computational photography features. Computational depth mapping creates a subtle pleasing background separation simulated bokeh that gently blurs the wall and ceiling — focusing attention intently on the subject. HDR tonal mapping balances potentially harsh indoor lighting ensuring neither bright wall nor darker clothes are overexposed or crushed — resulting in tonally balanced realism that feels authentically captured yet slightly more polished and evenly exposed than the human eye might perceive. Clean wide-angle perspective typical of a smartphone main lens creates a direct unpretentious view — no dramatic lens compression reinforcing relatability and immediacy.",
+  },
+  {
+    id: "cameratype_039",
+    title: "Smartphone Computational Portrait Mode",
+    prompt: "Simulated capture on a high-quality smartphone iPhone 15 Pro or Google Pixel 8 emphasizing computational clarity. Every texture rendered with extreme uniform sharpness — crisper than real life. Flawless computational HDR with bright window light retaining full detail in curtains while room shadows remain open and detailed. Subtle depth of field from Portrait Mode achieved through computational depth mapping not simple Gaussian blur — natural-looking background separation. Clean cool-neutral color grade with vibrant but natural colors and natural skin tones. The image feels like the idealized version of reality that only a phone's neural engine can produce.",
+  },
+  {
+    id: "cameratype_040",
+    title: "Hasselblad 500C/M Medium Format Planar",
+    prompt: "Simulated capture on a classic medium format film camera Hasselblad 500C/M or Mamiya RZ67 paired with a renowned prime lens Carl Zeiss Planar 80mm f/2.8 or Mamiya-Sekor 110mm f/2.8. Moderately shallow depth of field with the distinct planar quality of medium format lenses — smooth creamy fall-off into bokeh that feels organic and luxurious. The background retains enough detail to establish the setting while being softly blurred. Phenomenal micro-contrast and rich subtle tonal gradation across highlights and shadows revealing palpable texture and depth. Subtle lens compression from the medium telephoto prime gently compresses the scene making architecture feel grand yet intimately close.",
+  },
+  {
+    id: "cameratype_041",
+    title: "GFX 100S Medium Format Digital Prime",
+    prompt: "Simulated capture on a high-end medium format digital camera Fujifilm GFX 100S or Hasselblad H6D paired with a fast sharp prime lens GF 110mm f/2 or HC 100mm f/2.2. Exceptionally shallow depth of field creating incredibly smooth ethereal painterly bokeh that transforms background foliage into a dreamlike wash of greens and subtle light. Large perfectly rounded out-of-focus highlights gently glow adding magical atmosphere. Phenomenal micro-contrast and acutance — every subtle curve of cheek every fine detail of hair rendered with tangible almost hyper-real fidelity. Subtle lens compression from a medium telephoto brings background elements closer creating intimate harmony between subject and surroundings.",
+  },
+  {
+    id: "cameratype_042",
+    title: "Contax T2 35mm Analog Character",
+    prompt: "Simulated capture on a 35mm analog film camera Contax T2 or Leica M6 paired with a classic fast prime lens Zeiss Planar 45mm f/2 or Summicron 50mm f/2. Moderately shallow depth of field creating soft organic bokeh with the distinctive slightly imperfect quality of vintage glass — out-of-focus highlights shimmer with an almost liquid quality. Fine natural film grain throughout the image adding visceral tactile authenticity and subtle melancholic beauty that is purely photographic. Gentle almost imperceptible vignetting around edges drawing the viewer's eye inward. Soft ambient light wrap sculpts features with gentle three-dimensionality and smooth light-to-shadow transitions.",
+  },
+  {
+    id: "cameratype_043",
+    title: "Helios 44-2 Swirly Bokeh on Medium Format",
+    prompt: "Simulated capture on a medium format digital camera Hasselblad X2D or Fujifilm GFX 100S paired with a vintage-inspired Helios 44-2 58mm f/2 adapted for its characteristic swirly bokeh or a modern characterful 50mm f/1.2. Exceptionally shallow depth of field creating distinctive dreamlike potentially swirly bokeh that melts the background into abstract painterly washes. Exquisite yet subtly softened sharpness on the face — sharpness where it matters for emotional connection softness everywhere else. Natural gentle vignetting and light fall-off creating a soft tunnel vision effect enhancing isolation and mystique. Subtle god rays or gentle atmospheric haze filtering through trees in the background adding magical enchanted forest atmosphere.",
+  },
+  {
+    id: "cameratype_044",
+    title: "Contax 645 Portra 400 Ethereal Film",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast classic prime lens Zeiss Planar 80mm f/2 or Takumar 105mm f/2.4 utilizing Kodak Portra 400 or Fuji Pro 400H film stock. Subtle organic film grain present across both panels particularly noticeable in shadows and mid-tones — fine luminous grain lending undeniable softness and timeless dreamy quality. Exceptionally shallow depth of field creating exquisite creamy almost liquid bokeh with gentle painterly quality free from harsh edges — light sources blurring into soft glowing orbs. The classic prime lens subtly introduces gentle flattering softness around the edges of sharpness particularly in hair and the transition to background creating romantic rendering that idealizes form. Delicate organic lens flares or light leaks characteristic of older film lenses subtly present adding dreamy nostalgic atmosphere.",
+  },
+  {
+    id: "cameratype_045",
+    title: "Contax 645 Fuji Pro 400H Romantic Film",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a classic portrait prime lens Zeiss Planar 80mm f/2 or 105mm f/2.4 utilizing fine-grain color negative film Fuji Pro 400H or Kodak Portra 800. Subtle organic aesthetically pleasing film grain particularly visible in mid-tones and shadows imparting timeless nostalgic authentic quality. Exceptionally shallow depth of field from the large sensor and fast prime creating breathtakingly smooth almost painterly background blur — dreamlike separation far more pronounced than human vision. Subtle organic lens imperfections — gentle vignetting around edges a soft almost painterly fall-off of sharpness toward periphery adding depth and classic photographic charm.",
+  },
+  {
+    id: "cameratype_046",
+    title: "GFX 100S Neo-Classical Portrait",
+    prompt: "Simulated capture on a high-resolution medium format digital camera Fujifilm GFX 100S or Hasselblad H6D-100c paired with a classic portrait prime lens 110mm f/2 or 80mm f/1.9. Ultra-shallow depth of field creating exquisite ethereal bokeh — perfectly smooth large out-of-focus highlights that bloom softly adding romantic otherworldly atmosphere. Micro-contrast renders complexion with almost porcelain-like luminosity and smoothness yet retaining subtle natural texture. Impeccable optical clarity in the plane of focus with razor-sharp detail on delicate lace and facial features. Very subtle artistic vignetting gently framing the subject adding to classic almost painted feel characteristic of fine art photography.",
+  },
+  {
+    id: "cameratype_047",
+    title: "Contax 645 Portra 800 Pushed Film Grain",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Mamiya RZ67 with a fast slightly vintage prime lens Zeiss Planar 80mm f/2 or Mamiya Sekor 110mm f/2.8. Delicate organic film grain of Portra 800 or Fuji Natura 1600 pushed one stop — subtly visible across all tones adding tactile almost skin-like texture to the entire frame. This inherent grain softens edges and creates dreamy timeless quality — the image feels less like a digital capture and more like a cherished memory. Combined with harsh yet artfully controlled direct flash photography or deliberate off-camera flash creating striking interplay between period elegance and raw photographic immediacy.",
+  },
+  {
+    id: "cameratype_048",
+    title: "Vintage Film Indie Noir Cool-Toned",
+    prompt: "Simulated capture on a vintage analog film camera Contax T2 or Leica M6 loaded with daylight-balanced professional film Fuji Superia 400 or Kodak Portra 400 slightly pushed in development paired with a fast prime lens 35mm f/2 or 50mm f/1.4. Pronounced yet organic aesthetically pleasing film grain especially visible in mid-tones and shadows — adding gritty authenticity and timeless nostalgic texture. Moderately shallow depth of field creating soft slightly dreamy bokeh with the distinctive slightly nervous or painterly quality of vintage lenses. Subtle lens imperfections — very gentle vignetting and perhaps faint chromatic aberration on high-contrast edges becoming artistic elements contributing to raw unfiltered vulnerable aesthetic.",
+  },
+  {
+    id: "cameratype_049",
+    title: "Vintage Digital Warm Filter Soft Focus",
+    prompt: "Simulated capture on a vintage-inspired digital camera or high-end smartphone with a golden hour or film warm filter applied utilizing a standard focal length around 35-50mm equivalent. Deliberate slightly soft focus lending dreamy ethereal quality — the moment feels more like a cherished memory than a sharp clinical snapshot. Gentle vignetting subtly darkening the corners drawing the viewer's eye inward enhancing intimacy. Warm flattering skin tone rendition with exceptionally luminous warmth rich in subtle healthy undertones amplifying radiant happiness.",
+  },
+  {
+    id: "cameratype_050",
+    title: "Mamiya RB67 Medium Format Studio Film",
+    prompt: "Simulated capture on a medium format film camera Mamiya RB67 or Contax 645 paired with a fast prime lens 80mm f/2.8 or 110mm f/2.0. Film stock emulation of Fuji Velvia 50 or Portra 160 — subtly saturated yet natural colors with fine almost imperceptible grain structure lending organic timeless quality. Excellent acutance on subject features rendering eyes and lips with crisp yet not harsh detail suggesting high-quality optics. Slight lens compression from the medium format prime gently flattens perspective making features appear subtly more refined and statuesque — a common characteristic in high-fashion portraiture.",
+  },
+  {
+    id: "cameratype_051",
+    title: "Sony A7III Golden Hour Prime",
+    prompt: "Simulated capture on a high-end full-frame mirrorless camera Sony Alpha A7III or Canon EOS R6 paired with a fast prime lens 50mm f/1.4 or 85mm f/1.8. Exceptionally shallow depth of field creating creamy ethereal bokeh with soft round out-of-focus highlights from sunlight filtering through windows adding magical quality. Intentional soft lens flare and gentle halation or glow around highlights — particularly where golden hour sun catches hair — infusing the scene with romantic hazy nostalgic atmosphere. Excellent micro-contrast and resolution rendering skin with natural luminous quality rich in subtle undertones warm peaches cool beiges.",
+  },
+  {
+    id: "cameratype_052",
+    title: "Contax 645 Portra 400 Painterly Bokeh",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast prime lens 80mm f/2.0 or 110mm f/2.0. Exceptionally shallow depth of field creating exquisite creamy painterly bokeh that melts the background into soft ethereal washes of color. Superb micro-contrast and acutance in the focal plane rendering details with tangible almost painterly fidelity. Subtle lens compression gently flattening perspective making the background feel closer and more intimately connected. Fine organic luminous film grain of Kodak Portra 400 subtly visible lending raw authentic timeless quality. Gentle natural vignetting framing the subject and subtle organic softness around frame edges enhancing the dreamy quality.",
+  },
+  {
+    id: "cameratype_053",
+    title: "ARRI Alexa Mini LF Cinema Prime",
+    prompt: "Simulated capture on a high-quality digital cinema camera ARRI Alexa Mini LF or RED Komodo paired with a fast prime lens vintage Cooke S4/i 50mm T2.0 or modern Sigma Art 35mm f/1.4. Exceptionally shallow depth of field creating creamy cinematic bokeh that dramatically isolates the subject's face. Phenomenal micro-contrast and sharpness in the eyes — incredibly piercing and full of complex emotion. Subtle organic lens imperfections — faint soft vignetting and minute chromatic aberration in high-contrast areas deliberately uncorrected adding gritty cinematic authenticity rather than sterile perfection.",
+  },
+  {
+    id: "cameratype_054",
+    title: "Nikon D850 Portrait Prime Studio",
+    prompt: "Simulated capture on a high-resolution professional DSLR Nikon D850 or Canon EOS 5D Mark IV paired with a fast portrait prime lens 85mm f/1.4 or 105mm f/2 DC. Exceptionally shallow depth of field creating exquisite creamy painterly bokeh that completely dissolves background into a pure soft white void — perfectly smooth devoid of harsh edges. Phenomenal micro-contrast and razor-sharp focus on the eyes establishing intense direct emotional connection. Natural lens compression from portrait prime subtly compressing features making face appear slightly more elongated and refined — a flattering characteristic.",
+  },
+  {
+    id: "cameratype_055",
+    title: "iPhone Selfie Computational Intimate",
+    prompt: "Simulated capture on a high-quality smartphone front-facing camera iPhone 13 Pro or Google Pixel 6 with minimal digital smoothing preserving authentic detail. Wide-angle selfie perspective combined with close distance creates intensely direct and intimate gaze. Naturalistic depth of field with subtle background softening without aggressive blur — maintaining unfiltered reality. Micro-textures on skin and hair preserved with subtle imperfections and natural variations — authentic rendering rather than over-smoothing crucial for unfiltered rebellious aesthetic.",
+  },
+  {
+    id: "cameratype_056",
+    title: "Canon AE-1 35mm Film Portrait",
+    prompt: "Simulated capture on a 35mm film SLR camera Canon AE-1 Program or Nikon FM2 paired with a fast prime portrait lens 85mm f/1.8 or 50mm f/1.4. Fine organic beautifully rendered 35mm film grain characteristic of Kodak Portra 400 or Fuji Superia 400 — a tactile texture lending nostalgic almost tangible quality like a cherished memory. Moderately shallow depth of field creating creamy painterly bokeh that softly blurs the background. Subtle softness or glow to highlights particularly around hair and skin characteristic of vintage optics — romantic diffusion adding to dreamlike vulnerable quality.",
+  },
+  {
+    id: "cameratype_057",
+    title: "Rolleiflex Square Format 6x6 Film",
+    prompt: "Simulated capture on a medium format film camera Hasselblad 500CM or Rolleiflex 2.8F using square format 6x6cm film paired with a classic slightly soft prime lens Carl Zeiss Planar 80mm f/2.8. Perfectly square aspect ratio contributing to timeless artistic deliberate composition with inherent sense of balance and focus. Fine organic luminous film grain of Kodak Portra 400 or Fuji Pro 400H evenly distributed — not merely noise but a tactile texture imbuing warmth authenticity and palpable nostalgia. Classic medium format lens produces subtle natural softness around frame edges and gentle halation around highlights giving the image a dreamy slightly ethereal quality characteristic of vintage optics.",
+  },
+  {
+    id: "cameratype_058",
+    title: "Contax G2 35mm Portra 400 Bohemian",
+    prompt: "Simulated capture on a high-quality 35mm film camera Contax G2 or high-end Nikon F series paired with a fast prime lens 50mm f/1.4 or 85mm f/1.8. Film stock emulation of Kodak Portra 400 or Fuji Superia 400 — beautiful slightly muted yet rich skin tones vibrant greens that lean warm and gentle natural saturation. Moderately shallow depth of field creating creamy pleasing bokeh with soft slightly irregular out-of-focus highlights contributing to organic filmic texture. Very subtle pleasing optical characteristics — minute chromatic aberration in high-contrast areas or gentle natural vignetting adding character and authenticity.",
+  },
+  {
+    id: "cameratype_059",
+    title: "Contax 645 Ultra-Shallow Wildflower",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast prime lens 80mm f/2.0 or 110mm f/2.0. Ultra-shallow depth of field creating ethereal creamy distinctively swirly bokeh rendering foreground and background wildflowers into dreamlike abstract washes of white and green — large soft glowing out-of-focus highlights from daisies creating beautiful painterly haziness. Subtle pleasing softness at wider apertures contributing to romantic dreamy aesthetic. Gentle warm lens flare from bright sunlight adding to ethereal nostalgic quality. Fine organic pleasing film grain characteristic of ISO 400 film adding authentic nostalgic timeless feel.",
+  },
+  {
+    id: "cameratype_060",
+    title: "Canon 7D APS-C Older Prime Character",
+    prompt: "Simulated capture on a classic APS-C DSLR Canon 7D Mark II or Nikon D7200 paired with a versatile slightly older prime lens 35mm f/1.8 or 50mm f/1.4. Moderately shallow depth of field creating soft slightly textured bokeh with a distinctive charming quality of older fast lenses. Good acutance and sharpness with a subtle fine film-like grain or digital noise visible in mid-tones and shadows — characteristic of older digital sensors pushed slightly adding raw authenticity and nostalgic unpolished character. Very subtle chromatic aberration or mild vignetting common in older lenses adding to raw unrefined charm.",
+  },
+  {
+    id: "cameratype_061",
+    title: "Smartphone Winter Computational HDR",
+    prompt: "Simulated capture on a consumer-grade digital camera or mid-range smartphone with a built-in Vivid or Pop Art filter aggressively pushing colors and contrast beyond natural perception. Exaggerated color saturation making blues electric whites dazzlingly bright and pinks intensely vibrant — creating almost artificial dreamlike fantastical quality. High contrast with noticeable digital sharpening giving elements a crisp almost cartoonish definition. Slight wide-angle lens distortion gently curving frame edges adding whimsical funhouse perspective. Intense reflected light from snow creating blown-out highlights embraced rather than corrected. Slight playful lens flare or subtle chromatic aberration around high-contrast edges characteristic of consumer-grade optics.",
+  },
+  {
+    id: "cameratype_062",
+    title: "Contax G2 35mm Portra 400 Wilderness",
+    prompt: "Simulated capture on a 35mm film camera Contax G2 or Nikon F3 paired with a fast prime lens 50mm f/1.4 or 35mm f/2 utilizing Kodak Portra 400 film stock. Fine organic beautifully integrated film grain adding tangible texture and raw authenticity. Kodak Portra 400 color science rendering exquisite natural skin tones with subtle warmth and luminosity while capturing cool blues of water and sky and muted earthy mountain tones with harmonious desaturated richness. Wide dynamic range ensuring glowing ethereal highlights retaining detail without being blown out and rich yet open shadows holding subtle color information. Fast prime lens producing pleasing creamy bokeh creating dreamlike separation between subject and vast landscape.",
+  },
+  {
+    id: "cameratype_063",
+    title: "Contax T2 Point-and-Shoot Summer Film",
+    prompt: "Simulated capture on a vintage 35mm point-and-shoot camera Contax T2 or Yashica T4 with its characteristic fixed prime lens 38mm f/2.8. Film stock grain of Kodak Gold 200 or Fuji Superia 400 lending undeniable nostalgia and authentic unpolished charm. Pronounced yet soft ethereal lens flare and light bloom where direct sunlight hits the front element creating streaks of light and gentle haziness — halation across the frame adding dreamy whimsical quality. Inherent warm color shift from the film stock boosting greens and yellows while maintaining natural skin tones. Consumer film dynamic range allowing dramatic contrast between sun-drenched highlights and detailed shadows.",
+  },
+  {
+    id: "cameratype_064",
+    title: "Contax 645 Portra 400 Folkloric Soft",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast slightly soft prime lens 80mm f/2.0 or 105mm f/2.4. Exceptionally shallow depth of field creating exquisite creamy ethereal bokeh that melts the background into dreamlike painterly washes. Subtle pleasing softness around the edges while maintaining sharpness on the subject's face creating a romantic hazy quality. Gentle natural vignetting framing the subject subtly darkening corners to draw focus inward enhancing introspection. Fine organic film grain throughout — fundamental component of film aesthetic lending raw authentic timeless quality reinforcing melancholic nostalgic aura.",
+  },
+  {
+    id: "cameratype_065",
+    title: "Sony A7R V Portrait Lavender Sharp",
+    prompt: "Simulated capture on a high-end full-frame digital camera Sony Alpha A7R V or Canon EOS R5 paired with a fast portrait prime lens 85mm f/1.4 or 135mm f/1.8. Extremely shallow depth of field creating exquisite creamy ethereal painterly bokeh that completely melts the background — perfectly smooth without harsh edges. Subtle micro-contrast and resolution rendering skin with natural luminous quality rich in freckles and healthy sun-kissed glow — high fidelity to natural texture making her appear genuinely beautiful and untouched. Gentle lens compression from telephoto prime subtly flattening perspective making distant elements feel closer and more intimate. Very subtle artistic lens flare gently diffusing a small portion of the image adding dreamlike whimsical quality.",
+  },
+  {
+    id: "cameratype_066",
+    title: "GFX 100S Medium Format Windswept",
+    prompt: "Simulated capture on a high-end medium format digital camera Fujifilm GFX 100S or Hasselblad X2D utilizing large sensor for exceptional detail and dynamic range paired with a fast sharp prime lens 80mm f/1.9 or 110mm f/2.0 equivalent. Hyper-realistic texture and micro-detail in crashing waves frothy sea foam and windswept hair — individual strands of hair intricate patterns of foam all rendered with photographic precision far beyond casual human vision. Distinctive medium format depth of field rendering — exquisite sharpness on subject with subtle naturalistic softening in background that gently separates figure from vastness. Minimal distortion maintaining integrity of the natural scene with very subtle natural vignetting gently darkening the periphery.",
+  },
+  {
+    id: "cameratype_067",
+    title: "Smartphone Winter Spa Computational",
+    prompt: "Simulated capture on a high-end smartphone camera iPhone 15 Pro Max or Google Pixel 8 Pro utilizing advanced computational photography for optimal dynamic range. Atmospheric haze and steam rendered with soft ethereal translucence allowing hints of background to show through creating tangible warmth and sensory immersion. Dramatic prominent yet aesthetically pleasing lens flare emanating from bright sun — adding warmth radiance and dreamy quality. Computational dynamic range preventing foreground from being silhouetted while preserving detail in bright sky and sun — balancing extreme light and shadow far superior to human vision. Subtle sunburst or starburst effect around the sun adding vibrant energy. Reflective water surface exhibiting beautiful light interactions adding depth and shimmering tranquility.",
+  },
+  {
+    id: "cameratype_068",
+    title: "Medium Format Digital Sun-Drenched Idyll",
+    prompt: "Simulated capture on a medium format digital camera Fujifilm GFX 100S or Hasselblad X2D paired with a classic portrait prime lens 110mm f/2.0 or 80mm f/1.9. Moderately shallow to shallow depth of field creating exquisite creamy painterly bokeh — smooth pleasing out-of-focus highlights from dappled sunlight. Phenomenal micro-contrast and resolution rendering skin with luminous natural warmth and subtle texture avoiding harshness or digital flatness. Subtle lens compression from medium telephoto bringing distant elements slightly closer creating sense of expansive yet contained private setting. Very subtle controlled warm lens flare or atmospheric haze in brightest areas adding to dreamlike ethereal quality.",
+  },
+  {
+    id: "cameratype_069",
+    title: "Canon R5 Vintage Helios Flower Dream",
+    prompt: "Simulated capture on a high-end full-frame digital camera Canon EOS R5 or Sony Alpha A7R V paired with a vintage-inspired fast prime lens — adapted Helios 44-2 58mm f/2 for subtle swirly bokeh or Carl Zeiss Planar 50mm f/1.4 for creamy smoothness. Ultra-shallow depth of field creating exquisite creamy almost liquid bokeh with incredibly smooth transition from sharp to blur — hallmark of fast prime lenses. Subtle pleasing optical imperfections — gentle light fall-off vignetting or hint of spherical aberration adding organic nostalgic film-like character. Beautiful micro-contrast and resolution rendering skin with natural luminous glow rich in subtle undertones of warmth and flush.",
+  },
+  {
+    id: "cameratype_070",
+    title: "Vintage 35mm Folkloric Meadow Character",
+    prompt: "Simulated capture on a vintage 35mm film camera Contax T2 or classic SLR Nikon FM2 paired with a fast slightly older prime lens 50mm f/1.8 or 35mm f/2. Film stock of slightly expired or intentionally pushed consumer film Fuji Superia 400 or Kodak Gold 200 — gentle almost imperceptible grain lending tactile nostalgic quality. Exceptionally shallow depth of field creating soft slightly swirly or painterly bokeh with distinctive character — perhaps subtle softness at frame edges or gentle chromatic aberration. Very subtle light flares or soft haze around brighter areas — organic lens artifacts adding dreamlike slightly imperfect beauty of film. Subtle natural vignetting at corners characteristic of older lenses and film guiding the eye inward.",
+  },
+  {
+    id: "cameratype_071",
+    title: "Contax 645 Portra 400 Garden Reverie",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast classic prime lens Zeiss Planar 80mm f/2.0 or SMC Pentax 105mm f/2.4. Exceptionally shallow depth of field creating exquisite creamy almost swirling bokeh that melts background foliage into dreamlike shimmering washes of indistinct circles of light. Fine organic luminous film grain specifically mimicking Kodak Portra 400 subtly visible across the entire frame lending tangible texture and profound nostalgia. Classic prime lens introducing subtle organic softness around the edges and gentle fall-off in sharpness or mild vignetting further drawing focus to the subject and enhancing dreamy quality.",
+  },
+  {
+    id: "cameratype_072",
+    title: "Contax 645 Portra 400 Pastoral Horse",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast prime lens 80mm f/2.0 or 110mm f/2.0. Incredibly shallow depth of field producing exquisite creamy painterly bokeh — large perfectly smooth out-of-focus highlights that subtly glow adding romantic atmosphere. Superb micro-contrast and acutance in focal plane with gentle flattering softness characteristic of medium format film. Subtle lens compression from medium telephoto gently flattening perspective making subject and horse feel intimately connected in their own world. Kodak Portra 400 film aesthetic with fine organic grain and legendary natural luminosity in skin tones. Soft golden hour backlight creating luminous halo effect with gentle lens flare haze.",
+  },
+  {
+    id: "cameratype_073",
+    title: "Medium Format Portra Contemplative Forest",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast prime lens 80mm f/2.0 or 110mm f/2.0. Exceptionally shallow depth of field creating exquisite creamy painterly bokeh with smooth perfectly circular out-of-focus highlights where sunlight filters through trees. Beautiful micro-contrast and acutance rendering delicate strands of grass subtle undulations of hair and soft contours of skin with tangible organic fidelity. Subtle lens compression making the background feel closer and more intimately connected. Kodak Portra 400 film stock with fine organic pleasing grain — legendary natural luminosity in skin tones with subtle warm undertones. Gentle golden-hour warmth characteristic of Portra's response to natural light.",
+  },
+  {
+    id: "cameratype_074",
+    title: "Medium Format Portra Ethereal Melancholy",
+    prompt: "Simulated capture on a medium format film camera Contax 645 or Pentax 67 paired with a fast slightly soft prime lens 80mm f/2.0 or 105mm f/2.4. Exceptionally shallow depth of field creating exquisite creamy ethereal bokeh melting background foliage and distant wildflowers into dreamlike painterly washes of soft greens and diffused yellows. Subtle pleasing softness around edges while maintaining sharpness on the subject's face — a romantic hazy quality. Gentle natural vignetting framing the subject darkening corners to draw focus inward. Fine organic film grain throughout — raw authentic timeless quality reinforcing melancholic nostalgic aura. Subtle atmospheric haze in the background blurring lines between reality and dream.",
+  },
+  {
+    id: "cameratype_075",
+    title: "GFX 100S Gothic Porcelain Rendering",
+    prompt: "Simulated capture reproducing the look of a high-end medium format digital system rendering subjects with porcelain-like micro-contrast and luminosity. Subtle effective hair or rim light from behind gently separating figures from the background creating a delicate luminous outline around hair and shoulders. Sharp contrast between pale almost luminous figures and deep dark background — the subjects appear to glow. Cool slightly desaturated luminosity key to supernatural aesthetic making subjects appear almost translucent and ethereal.",
+  },
 ];
+
