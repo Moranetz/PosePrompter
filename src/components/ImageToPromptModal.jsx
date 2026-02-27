@@ -134,7 +134,7 @@ const ImageToPromptModal = ({ isOpen, onClose, onSaveOption, categories }) => {
   if (!isOpen) return null;
 
   const availableCategories = Object.keys(categoryDisplayNames).filter(
-    (key) => categories[key] && categories[key].length >= 0
+    (key) => categories[key] && categories[key].length > 0
   );
 
   return (

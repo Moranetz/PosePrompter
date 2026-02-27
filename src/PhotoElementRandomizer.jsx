@@ -2599,12 +2599,14 @@ const PhotoElementRandomizer = () => {
       )}
 
       {/* Photo to Prompt Modal */}
-      <ImageToPromptModal
-        isOpen={photoToPromptOpen}
-        onClose={() => setPhotoToPromptOpen(false)}
-        onSaveOption={savePhotoToPromptOption}
-        categories={mergedCategories}
-      />
+      {photoToPromptOpen && (
+        <ImageToPromptModal
+          isOpen={photoToPromptOpen}
+          onClose={() => setPhotoToPromptOpen(false)}
+          onSaveOption={savePhotoToPromptOption}
+          categories={mergedCategories}
+        />
+      )}
 
       {/* Add Custom Option Modal */}
       {addOptionModalOpen && (
