@@ -1,5 +1,8 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { RotateCcw, Settings, Save, FolderOpen, X, Share2, Edit2, Trash2, Loader2, Download, Package, Plus, TrendingUp, Star, Heart } from 'lucide-react';
+import { X, Share2, Edit2, Trash2, Loader2, Download, Plus, Star, Heart } from 'lucide-react';
+import useUndoRedo from './hooks/useUndoRedo';
+import usePromptHistory from './hooks/usePromptHistory';
+import PromptHistory from './components/PromptHistory';
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from './firebase-config';
 import { useAuth } from './contexts/UserContext';
@@ -51,6 +54,7 @@ import {
   updateEnabledBodyPoseCategories
 } from './utils/personalizationService';
 import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
+import ActionsSidebar from './components/ActionsSidebar';
 import AuthModal from './components/AuthModal';
 
 const ONBOARDING_STORAGE_KEY = 'poseprompt_onboarding_complete';
@@ -3069,10 +3073,9 @@ const PhotoElementRandomizer = () => {
     return defaults;
   };
 
-  const [selections, setSelections] = useState(() => {
-    // Start with empty selections - no default prompt
-    return {};
-  });
+  const [selections, setSelections, { undo: undoSelection, redo: redoSelection, canUndo, canRedo }] = useUndoRedo({});
+  const promptHistory = usePromptHistory();
+  const [historyPanelOpen, setHistoryPanelOpen] = useState(false);
 
   // Clear any old prompt from localStorage on mount
   useEffect(() => {
@@ -3772,7 +3775,17 @@ const PhotoElementRandomizer = () => {
         intensity: 'strong',
         message: 'Prompt copied!',
       });
-      
+
+      // Record to prompt history
+      const selSummary = {};
+      Object.entries(selections).forEach(([cat, idx]) => {
+        if (includedCategories[cat]) {
+          const item = mergedCategories[cat]?.[idx];
+          if (item) selSummary[cat] = item.title || item.name || `Option ${idx + 1}`;
+        }
+      });
+      promptHistory.addEntry(generatedPrompt, selSummary);
+
       // Track engagement - prompt copied
       if (user?.uid) {
         const categoryCount = Object.keys(mergedCategories).filter(cat => 
@@ -4983,6 +4996,8 @@ const PhotoElementRandomizer = () => {
             });
           }
         }}
+        onUndo={undoSelection}
+        onRedo={redoSelection}
         onEscape={() => {
           setManageMenuOpen(null);
           setAddOptionModalOpen(null);
@@ -5108,301 +5123,51 @@ const PhotoElementRandomizer = () => {
                 <ClosetFrame isVisible={shouldShowCloset} />
               </div>
 
-              {/* Actions Sidebar - Clean & Minimal */}
-              <div className="actions-sidebar">
-            {/* Primary Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {/* I'm Feeling Lucky - The main action */}
-              <button
-                onClick={randomizeAll}
-                style={{
-                  width: '100%',
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  color: '#f4f4f5',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '6px',
-                  padding: '10px 12px',
-                  minHeight: '44px',
-                  fontSize: '13px',
-                  fontWeight: '500',
-                  letterSpacing: '-0.01em',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxSizing: 'border-box'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                }}
-                aria-label="I'm Feeling Lucky"
-                title="I'm Feeling Lucky"
-              >
-                <RotateCcw size={14} />
-                I'm Feeling Lucky
-              </button>
-            </div>
-
-            {/* Divider */}
-            <div style={{ 
-              height: '1px', 
-              background: 'rgba(255, 255, 255, 0.04)', 
-              margin: '6px 0' 
-            }} />
-
-            {/* Secondary Actions - Visible to all, auth required to use */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button
-                onClick={() => {
+              <ActionsSidebar
+                onRandomizeAll={randomizeAll}
+                onSaveSetup={() => {
                   if (requireAuth('save')) {
                     setEditingSet(null);
                     setSaveFormData({ name: '', description: '', tags: '', isPublic: false });
                     setSaveModalOpen(true);
                   }
                 }}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    color: '#a1a1aa',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '6px',
-                    padding: '10px 12px',
-                    minHeight: '44px',
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    letterSpacing: '-0.01em',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                    e.currentTarget.style.color = '#f4f4f5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#a1a1aa';
-                  }}
-                  aria-label="Save current setup"
-                  title="Save current setup"
-                >
-                  <Save size={14} />
-                  Save Setup
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (requireAuth('view saved sets')) {
-                      setSavedSetsSidebarOpen(true);
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    color: '#a1a1aa',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '6px',
-                    padding: '10px 12px',
-                    minHeight: '44px',
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    letterSpacing: '-0.01em',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                    e.currentTarget.style.color = '#f4f4f5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#a1a1aa';
-                  }}
-                  aria-label="My saved sets"
-                  title="My saved sets"
-                >
-                  <FolderOpen size={14} />
-                  My Sets
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (requireAuth('view favorites')) {
-                      setSelectedFavorites(new Set());
-                      setUnfavoritedInSession(new Set());
-                      // Capture snapshot of current favorites
-                      favoritesSnapshotRef.current = getAllFavoritePrompts();
-                      setFavoritesSidebarOpen(true);
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    color: '#a1a1aa',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '6px',
-                    padding: '10px 12px',
-                    minHeight: '44px',
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    letterSpacing: '-0.01em',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                    e.currentTarget.style.color = '#f4f4f5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#a1a1aa';
-                  }}
-                  aria-label="My favorite prompts"
-                  title="View all favorite prompts and create sets from them"
-                >
-                  <Star size={14} />
-                  My Favorites
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (requireAuth('create set')) {
-                      setCreateSetFormData({ name: '', promptText: '', category: '' });
-                      setCreateSetModalOpen(true);
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    color: '#a1a1aa',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '6px',
-                    padding: '10px 12px',
-                    minHeight: '44px',
-                    fontSize: '13px',
-                    fontWeight: '400',
-                    letterSpacing: '-0.01em',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                    e.currentTarget.style.color = '#f4f4f5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#a1a1aa';
-                  }}
-                  aria-label="Create Set"
-                  title="Create Set - Add custom prompt to category"
-                >
-                  <Plus size={14} />
-                  Create Set
-                </button>
-
-                {/* Packages button */}
-                {__ENABLE_PACKAGES__ && (
-                  <button
-                    data-packages-button
-                    onClick={() => {
-                      if (requireAuth('view packages')) {
-                        setInstalledPackagesModalOpen(true);
-                      }
-                    }}
-                    style={{
-                      width: '100%',
-                      background: 'transparent',
-                      color: 'rgba(255, 255, 255, 0.7)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '8px',
-                      padding: '10px 12px',
-                      minHeight: `${TOUCH_TARGETS.MEDIUM}px`,
-                      fontSize: TYPOGRAPHY.BASE,
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '6px',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    }}
-                    aria-label="Installed packages"
-                    title="Installed packages"
-                  >
-                    <Package size={14} />
-                    Packages
-                  </button>
-                )}
-
-                <button
-                  onClick={() => {
-                    if (requireAuth('view stats')) {
-                      setStatsModalOpen(true);
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    minHeight: '44px',
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                  }}
-                  aria-label="View your progress"
-                  title="View your progress and achievements"
-                >
-                  <TrendingUp size={14} />
-                  Stats
-                </button>
-              </div>
-          </div>
+                onOpenSavedSets={() => {
+                  if (requireAuth('view saved sets')) {
+                    setSavedSetsSidebarOpen(true);
+                  }
+                }}
+                onOpenFavorites={() => {
+                  if (requireAuth('view favorites')) {
+                    setSelectedFavorites(new Set());
+                    setUnfavoritedInSession(new Set());
+                    favoritesSnapshotRef.current = getAllFavoritePrompts();
+                    setFavoritesSidebarOpen(true);
+                  }
+                }}
+                onOpenHistory={() => setHistoryPanelOpen(true)}
+                onUndo={undoSelection}
+                onRedo={redoSelection}
+                canUndo={canUndo}
+                canRedo={canRedo}
+                onCreateSet={() => {
+                  if (requireAuth('create set')) {
+                    setCreateSetFormData({ name: '', promptText: '', category: '' });
+                    setCreateSetModalOpen(true);
+                  }
+                }}
+                onOpenPackages={() => {
+                  if (requireAuth('view packages')) {
+                    setInstalledPackagesModalOpen(true);
+                  }
+                }}
+                onOpenStats={() => {
+                  if (requireAuth('view stats')) {
+                    setStatsModalOpen(true);
+                  }
+                }}
+                showPackages={!!__ENABLE_PACKAGES__}
+              />
         </div>
           </div>
         </div>
@@ -7415,6 +7180,26 @@ const PhotoElementRandomizer = () => {
           onComplete={() => setTrashAnimation(null)}
         />
       )}
+
+      {/* Prompt History Panel */}
+      <PromptHistory
+        history={promptHistory.history}
+        onSelect={(entry) => {
+          // Copy the prompt text from the history entry
+          if (entry.prompt) {
+            navigator.clipboard.writeText(entry.prompt).catch(() => {});
+            triggerFeedback(FEEDBACK_TYPES.COPY, {
+              intensity: 'standard',
+              message: 'Prompt copied from history!',
+            });
+          }
+          setHistoryPanelOpen(false);
+        }}
+        onRemove={promptHistory.removeEntry}
+        onClear={promptHistory.clearHistory}
+        isOpen={historyPanelOpen}
+        onClose={() => setHistoryPanelOpen(false)}
+      />
 
       {/* Auth Modal - shown when guest users try to use premium features */}
       <AuthModal
