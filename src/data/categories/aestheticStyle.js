@@ -163,6 +163,16 @@ export const Aesthetic = [
     title: "Red Carpet Glamour Regal Serenity",
     prompt: "Generate an image that embodies an ethereal \"Red Carpet Glamour\" meets \"Regal Serenity\" aesthetic imbued with a sophisticated elegance and a captivating almost otherworldly allure. This profound vibe is not merely captured but is masterfully constructed by the camera's precise technical choices and exquisite post-processing elevating the scene far beyond natural human perception.",
   },
+  {
+    id: "aesthetic_028",
+    title: "Early 2000s Indie Melancholy",
+    prompt: "Generate an image that embodies an Early 2000s Indie aesthetic with fragile beauty and melancholic introspection evoking a powerful sense of nostalgic otherworldliness. The scene should feel like a still from an independent film — introspective and slightly distant inviting empathy. The stark contrast between dark attire and a single oversized white flower creates visual tension between delicacy and boldness. This image is perfectly suited for an independent film poster an alternative fashion editorial or an art photography series — designed to evoke fragile beauty melancholic introspection and nostalgic otherworldliness all intrinsically linked to the evocative and transformative magic of film photography.",
+  },
+  {
+    id: "aesthetic_029",
+    title: "Cozy Intimate Cat Bond",
+    prompt: "Generate an image that embodies a warm sophisticated and intimately wholesome cozy chic aesthetic exuding genuine affection and aspirational home comfort with a beloved pet. This delightful vibe is not merely captured but meticulously crafted by the camera's thoughtful rendering which elevates the scene beyond ordinary visual experience — an intimate cozy authenticity imbued with a soft dreamlike melancholia and the comforting presence of a cherished companion. The subject's pose should be natural and affectionate conveying a deep bond and quiet intimacy — the kind of cherished memory that feels both aspirational and deeply relatable. Perfectly suited for a high-end lifestyle social media feed a pet-lover's blog or a personal profile designed to project genuine affection sophisticated comfort and aspirational yet approachable elegance.",
+  },
 ];
 
 export const Lighting = [
@@ -255,6 +265,11 @@ export const Lighting = [
     id: "lighting_018",
     title: "Angelic Softbox Ethereal Glow",
     prompt: "Soft diffused and highly controlled studio lighting mimicking a large softbox or parabolic reflector placed slightly off-axis. Light is luminous and exceptionally even across subject's face creating a subtle almost internal glow that softens features and eliminates harsh shadows — this gentle enveloping illumination contributes heavily to an ethereal and innocent quality making subject appear almost angelic. Despite the evenness there should be subtle light fall-off that gently sculpts facial features creating a delicate sense of three-dimensionality without any harshness — this precise control of light and shadow is a hallmark of high-end studio photography allowing for a refined portrayal of form that enhances the subject's delicate presence. Soft yet distinct catchlights in the eyes giving them a lifelike sparkle that draws the viewer in and adds an element of sentience to the gaze even in such a stylized scene.",
+  },
+  {
+    id: "lighting_019",
+    title: "Soft Indoor Ambient Specular Warmth",
+    prompt: "Soft diffused ambient lighting mimicking a well-lit modern home interior with indirect light sources or natural window light complemented by subtle warm fill. Light falls gently and evenly across subjects creating flattering highlights that sculpt features with delicate three-dimensionality — this gentle illumination makes skin appear luminous and healthy and fur soft and inviting contributing to overall radiant warmth. Dynamic range ensures highlights are rendered without being blown out preserving detail and preventing a harsh look. Controlled soft specular highlights on jewelry earrings reflective surfaces and eyes should have a gentle yet distinct photographic sparkle — subtly communicating understated elegance. Open well-balanced shadows provide depth and form without becoming overly dark or crushed — the ability to retain detail and subtle color information in mid-tones and darker areas adds richness to fabrics textured surfaces and the overall cozy atmosphere. Soft diffused luminous highlights on cheekbones and the sheen of fur possess a gentle almost glowing quality indicating high dynamic range capture without harshness.",
   },
 ];
 
@@ -374,6 +389,21 @@ export const ColorPalette = [
     title: "Cool Fine Art Teal Dreamscape",
     prompt: "Clean slightly cool-toned color grade with subtle warmth in skin tones reminiscent of classic fine art portraiture or high-key film stocks. Background should be a deep rich desaturated teal or muted blue-grey providing a sophisticated cool counterpoint to warm skin and hair — this specific hue rendered with photographic precision creates an almost infinite dreamlike stage for the subject — the depth of color feels deliberately chosen and enhanced.",
   },
+  {
+    id: "colorpalette_024",
+    title: "Cross-Processed Indie Blue-Grey",
+    prompt: "Distinctive film-emulated color grade specifically mimicking the cross-processed aesthetic of pushed Portra or Fuji film stock. The entire image bathed in a dominant slightly desaturated blue-grey hue affecting skin tones shadows and highlights — this specific blue is not natural but a chemical reaction of the film process creating an instantly recognizable nostalgic atmospheric coolness that defines the indie film vibe. Within this blue cast allow for very subtle almost accidental pushes of red or magenta in cheeks and lips — a characteristic artifact of cross-processing that adds organic slightly imperfect beauty feeling deeply authentic and emotionally resonant. Overall contrast should be soft and gentle preventing any harshness and contributing to a dreamlike ethereal quality — this low-contrast rendering is a hallmark of certain film stocks allowing for subtle tonal shifts that enhance melancholic mood.",
+  },
+  {
+    id: "colorpalette_025",
+    title: "Nostalgic Warmth Soft Pastels",
+    prompt: "Warm slightly desaturated and luminous color grade reminiscent of vintage film stock Portra 800 or Fuji Superia 400 emulation. Overall color palette leans towards soft pastels — pinks creams muted greens and golden browns. These colors gently desaturated and warmed by the camera's processing evoke a sense of sweet nostalgia and innocent beauty making the scene feel like a cherished memory.",
+  },
+  {
+    id: "colorpalette_026",
+    title: "Cozy Chic Rich Neutrals",
+    prompt: "Warm inviting and slightly desaturated color grade reminiscent of a curated lifestyle blog or high-end interior design aesthetic. Rich neutrals dominate — charcoal grey warm off-whites and soft earth tones rendered with deep yet soft sophistication that feels luxurious not dull. Subtle warm tint with a gentle golden undertone enhances the feeling of comfort and invitation making the home environment feel welcoming and aspirational. Skin tones rendered with a natural healthy luminous glow rich in subtle undertones — warm peaches soft roses — appearing authentic and approachable. Sophisticated neutrals in fabrics and fur rendered with rich nuanced tones avoiding any flatness — the camera's color science accurately captures subtle variations creating understated luxury. Overall color harmony should be inviting and calming with muted background tones complementing subjects creating a cohesive curated visual experience.",
+  },
 ];
 
 export const Texture = [
@@ -446,6 +476,16 @@ export const Texture = [
     id: "texture_014",
     title: "Gothic Architecture Wet Cobblestone",
     prompt: "Textures rendered with exceptional fidelity emphasizing nighttime architectural grandeur — intricate stone carvings and soaring spires rendered with dramatic sharpness and tangible detail — rough wet cobblestones of the pavement with visible grain and reflective wet surfaces creating mirror-like pools of light — subtle details of the subject's clothing viscerally tangible against the monumental backdrop — this heightened textural richness far beyond what the eye might quickly process at night immerses the viewer in the scene's grandeur and the tactile reality of the environment",
+  },
+  {
+    id: "texture_015",
+    title: "Translucent Petals Dress Weave Film",
+    prompt: "Heightened tactile sensation with sensory richness — render all textures with exceptional almost tactile fidelity — the subtle weave of a black dress the delicate almost translucent petals of an oversized white flower with its vibrant yellow center the soft strands of hair and the gentle blush on cheeks should all be viscerally tangible and highly detailed. The film's ability to capture minute textures especially the softness of flower petals and subtle imperfections of skin creates a sensory richness that makes the image profoundly immersive and emotionally engaging — a depth of feeling that goes beyond mere visual representation.",
+  },
+  {
+    id: "texture_016",
+    title: "Cozy Knit Fur Fireplace Tactile",
+    prompt: "Heightened tactile sensation with engaging softness — render all textures with exceptional almost tangible fidelity — soft chunky knit of a sweater delicate fluffy cat fur with individual strands and hairs discernible smooth skin with natural luminous quality rough stacked stone of a fireplace soft rumpled linen bedding flowing sun-kissed hair strands and polished decor surfaces should all be viscerally tangible and highly detailed. Each individual hair on a cat's face and body should be discernible creating a visceral sense of touch and enhancing the feeling of warmth and comfort. This tactile richness showcasing the transformative capabilities of a high-resolution sensor and sharp lens makes the scene feel incredibly immersive and engaging — inviting the viewer to almost feel the softness and warmth — a depth of detail often enhanced by the photographic process.",
   },
 ];
 
