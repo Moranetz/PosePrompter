@@ -51,6 +51,26 @@ Each section of a raw prompt maps to exactly one category array:
    (e.g., if the last lighting entry is `lighting_017`, the new one is
    `lighting_018`).
 
+### Camera DNA Marker pattern
+
+Some prompts use a "Camera DNA Marker" structure where technical camera
+artifacts are embedded directly into the shot description. When you see this
+pattern, extract each DNA marker into the appropriate category:
+
+```
+[Shot Description] [Camera DNA Marker 1], [Camera DNA Marker 2],
+[Camera DNA Marker 3]. [Mood/Aura description tied to the technical choices]
+```
+
+DNA markers map to categories as follows:
+- Optical Flaws (chromatic aberration, field curvature, vignetting, bokeh
+  shape) → `CameraType`
+- Sensor Artifacts (noise, grain, dynamic range, color separation) → `CameraType`
+- Lens Character (specific lens rendering, flare, contrast) → `CameraType`
+- Processing Artifacts (film profiles, compression, light leaks) →
+  `CameraType` or `ColorPalette` depending on whether it's a color treatment
+  or a camera-level effect
+
 ### How to verify
 
 After extraction, confirm:
