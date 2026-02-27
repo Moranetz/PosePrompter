@@ -1,11 +1,14 @@
-// Auto-extracted from PhotoElementRandomizer.jsx
-// Category prompts for aesthetic Style
+// Category prompts for aesthetic style, lighting, color palette, texture, mood,
+// and photo style.
 //
-// Aesthetic prompts marked with `comprehensive: true` contain detailed
-// lighting, color palette, and texture descriptions baked in.
-// When a comprehensive aesthetic is selected, the prompt assembly logic
-// auto-excludes the standalone Lighting, ColorPalette, and Texture
-// categories to avoid redundant or conflicting instructions.
+// IMPORTANT: Aesthetic entries should contain ONLY the core creative concept,
+// mood, and narrative tone. Camera specs go in CameraType (framingComposition.js),
+// lighting setups go in Lighting, color grades go in ColorPalette, and surface
+// details go in Texture. Never create new `comprehensive: true` entries.
+//
+// Legacy `comprehensive: true` entries still exist and cause the prompt assembly
+// logic to auto-exclude standalone Lighting, ColorPalette, and Texture
+// categories. These should be decomposed into proper entries when touched.
 
 export const Aesthetic = [
   {
