@@ -58,6 +58,7 @@ import ActionsSidebar from './components/ActionsSidebar';
 import ImageToPromptModal from './components/ImageToPromptModal';
 import AuthModal from './components/AuthModal';
 import categories from './data/categories';
+import presets from './data/presets';
 import { categoryDisplayNames, categoryColors, categoryGroupDefinitions, comprehensiveAestheticOverrides } from './data/categoryRegistry';
 
 const ONBOARDING_STORAGE_KEY = 'poseprompt_onboarding_complete';
@@ -169,6 +170,7 @@ const PhotoElementRandomizer = () => {
   const [selections, setSelections, { undo: undoSelection, redo: redoSelection, canUndo, canRedo }] = useUndoRedo({});
   const promptHistory = usePromptHistory();
   const [historyPanelOpen, setHistoryPanelOpen] = useState(false);
+  const [activePresetIndex, setActivePresetIndex] = useState(-1);
 
   // Clear any old prompt from localStorage on mount
   useEffect(() => {
@@ -1690,6 +1692,32 @@ const PhotoElementRandomizer = () => {
     setSavedSetsSidebarOpen(false);
   }, []);
 
+  // Load a preset combination by resolving entry IDs to array indices
+  const loadPreset = useCallback((presetIndex) => {
+    const preset = presets[presetIndex];
+    if (!preset) return;
+
+    const newSelections = {};
+    for (const [category, entryId] of Object.entries(preset.entries)) {
+      const options = mergedCategories[category];
+      if (!options) continue;
+      const idx = options.findIndex(opt => opt.id === entryId);
+      if (idx !== -1) {
+        newSelections[category] = idx;
+      }
+    }
+    setSelections(prev => ({ ...prev, ...newSelections }));
+    setActivePresetIndex(presetIndex);
+  }, [mergedCategories, setSelections]);
+
+  // Cycle to next/previous preset
+  const cyclePreset = useCallback((direction = 1) => {
+    const nextIndex = activePresetIndex < 0
+      ? 0
+      : (activePresetIndex + direction + presets.length) % presets.length;
+    loadPreset(nextIndex);
+  }, [activePresetIndex, loadPreset]);
+
   // Edit a saved set
   const handleEditSet = useCallback((savedSet) => {
     setEditingSet(savedSet);
@@ -2107,7 +2135,13 @@ const PhotoElementRandomizer = () => {
         enabled={!loadingUserData}
       />
       <div className="layout-container">
-        <Header onOpenVisibilitySettings={() => setVisibilitySettingsModalOpen(true)} />
+        <Header
+          onOpenVisibilitySettings={() => setVisibilitySettingsModalOpen(true)}
+          onCyclePreset={cyclePreset}
+          activePresetIndex={activePresetIndex}
+          presetCount={presets.length}
+          activePresetTitle={activePresetIndex >= 0 ? presets[activePresetIndex]?.title : null}
+        />
 
         {/* Main app area – replicates three-column generator layout:
             - Left: vertical navigation rail

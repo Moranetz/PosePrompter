@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, X, Gem, Settings } from 'lucide-react';
+import { Menu, X, Gem, Settings, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
 import { resetUserAccountData, getUserProfile } from '../firestoreService';
 import AuthModal from './AuthModal';
 import CreditBalance from './CreditBalance';
 
-const Header = ({ onOpenVisibilitySettings }) => {
+const Header = ({ onOpenVisibilitySettings, onCyclePreset, activePresetIndex, presetCount, activePresetTitle }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
@@ -261,6 +261,103 @@ const Header = ({ onOpenVisibilitySettings }) => {
             Pose Prompter
           </span>
         </div>
+
+        {/* Preset Cycle Controls */}
+        {onCyclePreset && (
+          <div
+            className="preset-controls"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '8px',
+              padding: '4px 8px',
+            }}
+          >
+            <button
+              onClick={() => onCyclePreset(-1)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '4px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#ffffff';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                e.currentTarget.style.background = 'none';
+              }}
+              title="Previous preset"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '0 4px',
+                minWidth: '120px',
+                justifyContent: 'center',
+              }}
+            >
+              <BookOpen size={13} style={{ color: 'rgba(255, 255, 255, 0.4)', flexShrink: 0 }} />
+              <span
+                style={{
+                  fontSize: '12px',
+                  color: activePresetIndex >= 0 ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.4)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '180px',
+                  fontWeight: activePresetIndex >= 0 ? '500' : '400',
+                }}
+                title={activePresetTitle || 'Click arrows to cycle presets'}
+              >
+                {activePresetIndex >= 0
+                  ? `${activePresetIndex + 1}/${presetCount} ${activePresetTitle}`
+                  : 'Presets'}
+              </span>
+            </div>
+            <button
+              onClick={() => onCyclePreset(1)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '4px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#ffffff';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)';
+                e.currentTarget.style.background = 'none';
+              }}
+              title="Next preset"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
 
         {/* Desktop Navigation */}
         <nav 
