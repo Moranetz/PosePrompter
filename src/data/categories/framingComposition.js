@@ -112,6 +112,16 @@ export const Framing = [
     title: "Centered Symmetrical Monumental Backdrop",
     prompt: "Centered symmetrical composition with a majestic architectural structure filling the background emphasizing its overwhelming presence — subject positioned centrally in the lower third appearing small against the monumental backdrop enhancing the sense of solitude and purpose — the wide-angle perspective creates a sense of immense scale drawing the viewer into the scene and making them feel small in comparison",
   },
+  {
+    id: "framing_023",
+    title: "Medium-Close Off-Center Introspective",
+    prompt: "Medium-close slightly off-center composition focusing intently on the subject's delicate expression — the gaze is introspective and slightly distant inviting empathy. The off-center placement creates visual tension and a sense of quiet narrative as if the viewer has stumbled upon a private moment of reflection.",
+  },
+  {
+    id: "framing_024",
+    title: "Intimate Cat Bond Multi-Framing",
+    prompt: "Close-up to mid-frame intimate composition capturing the tender bond between subject and cat. Profile framing as subject gazes tenderly at the cat creates a powerful emotional triangle between subject cat and viewer — the viewer becomes a silent witness to a private moment of genuine connection. Alternatively a slightly candid mid-frame composition with subject holding the cat gently and offering a direct gentle smile creates an immediate warm connection with the viewer. The framing should feel natural and affectionate — slightly off-center at eye-level allowing enough of the modern stylish interior to establish the sophisticated context while keeping the shared vulnerability and quiet affection as the undeniable emotional core.",
+  },
 ];
 
 export const Perspective = [
@@ -359,11 +369,11 @@ export const CameraType = [
   {
     id: "cameratype_031",
     title: "A7R V Helios Vintage Character",
-    prompt: "Captured on a high-end full-frame mirrorless camera Sony Alpha A7R V or Fujifilm GFX 100S paired with a fast classic vintage prime lens Helios 44-2 58mm f/2 or Canon FD 50mm f/1.4. Subject's skin and any animal fur should exhibit exquisite micro-contrast and fine detail yet with an overall softness and luminosity that feels tender and delicate — skin tones rendered with a natural warm and radiant quality rich in subtle undertones avoiding any harshness. Animal fur should show individual strands enhancing its softness. This combination of sharpness in detail and overall luminous softness is a hallmark of high-quality sensors paired with vintage glass making the tenderness of the interaction visually palpable. The vintage lens character imparts a distinctive organic rendering with subtle imperfections that feel deeply authentic.",
+    prompt: "Captured on a high-end full-frame mirrorless camera Sony Alpha A7R V or Fujifilm GFX 100S paired with a fast classic vintage prime lens Helios 44-2 58mm f/2 or Canon FD 50mm f/1.4. Depth of field should be shallow creating the Helios 44-2's distinctive swirly bokeh — out-of-focus areas rendered with a characteristic circular swirl pattern that draws the eye inward toward the subject while the Canon FD produces a softer creamier bokeh with gentle fall-off. Subject's skin and any animal fur should exhibit exquisite micro-contrast and fine detail yet with an overall softness and luminosity that feels tender and delicate — skin tones rendered with a natural warm and radiant quality rich in subtle undertones avoiding any harshness. Animal fur should show individual strands enhancing its softness. This combination of sharpness in detail and overall luminous softness is a hallmark of high-quality sensors paired with vintage glass making the tenderness of the interaction visually palpable. The vintage lens character imparts a distinctive organic rendering with subtle imperfections that feel deeply authentic.",
   },
   {
     id: "cameratype_032",
     title: "Full-Frame Fast Prime Cozy Intimate",
-    prompt: "Captured on a premium full-frame mirrorless camera Sony a7 IV or a7C or Fujifilm X-T5 or X-T4 paired with a fast prime lens 35mm f/1.4 or 50mm f/1.8. Depth of field moderately shallow to exceptionally shallow creating a soft creamy velvety bokeh that gently blurs or melts the background into an indistinct wash of light and color — this effect strategically isolates the subjects emphasizing their bond and making them the undeniable emotional core of the image. Bokeh should be smooth and free of harsh edges contributing to overall warmth and intimacy — diffused light sources gently glow within the bokeh enhancing the dreamlike quality. Micro-detail and texture rendition renders skin with natural luminous quality and fine fur with phenomenal tactile precision — individual strands discernible. Subtle lens compression from the prime lens gently brings background elements closer creating an approachable intimacy that makes the viewer feel like a welcome guest.",
+    prompt: "Captured on a premium full-frame mirrorless camera Sony a7 IV or a7 III or a7C or Fujifilm X-T5 or X-T4 paired with a fast prime lens 35mm f/1.4 or 50mm f/1.8. Depth of field moderately shallow to exceptionally shallow creating a soft creamy velvety bokeh that gently blurs or melts the background into an indistinct wash of light and color — this effect strategically isolates the subjects emphasizing their bond and making them the undeniable emotional core of the image. Bokeh should be smooth and free of harsh edges contributing to overall warmth and intimacy — diffused light sources gently glow within the bokeh enhancing the dreamlike quality. Micro-detail and texture rendition renders skin with natural luminous quality and fine fur with phenomenal tactile precision — individual strands discernible even fine hairs of eyebrows rendered with phenomenal clarity. Subtle lens compression from the prime lens gently brings background elements closer creating an almost claustrophobic yet comforting closeness — an approachable intimacy that makes the viewer feel like a welcome guest drawn deeply into the subjects' shared space.",
   },
 ];
