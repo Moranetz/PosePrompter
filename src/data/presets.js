@@ -1309,6 +1309,76 @@ const presets = [
       Mood: "mood_085",
     },
   },
+  // ---- Batch 7 presets (6 sets from 11 raw prompt groups) ----
+  {
+    id: "preset_b7_001",
+    title: "Manga Doll Vulnerability Flash",
+    entries: {
+      Aesthetic: "aesthetic_117",
+      CameraType: "cameratype_110",
+      Framing: "framing_085",
+      Lighting: "lighting_082",
+      ColorPalette: "colorpalette_096",
+      Texture: "texture_076",
+      Mood: "mood_086",
+    },
+  },
+  {
+    id: "preset_b7_002",
+    title: "Seated Floor Subtle Submission Tender",
+    entries: {
+      Aesthetic: "aesthetic_118",
+      CameraType: "cameratype_111",
+      Framing: "framing_086",
+      Lighting: "lighting_083",
+      ColorPalette: "colorpalette_097",
+      Texture: "texture_077",
+      Mood: "mood_087",
+    },
+  },
+  {
+    id: "preset_b7_003",
+    title: "Rebellious Luxury Doll Bathroom Mirror",
+    entries: {
+      Aesthetic: "aesthetic_119",
+      Texture: "texture_078",
+      Mood: "mood_088",
+    },
+  },
+  {
+    id: "preset_b7_004",
+    title: "Unbothered Rich Girl Street Old Money",
+    entries: {
+      Aesthetic: "aesthetic_120",
+      ColorPalette: "colorpalette_098",
+      Mood: "mood_089",
+    },
+  },
+  {
+    id: "preset_b7_005",
+    title: "Morning Tea Kitchen Dreamy",
+    entries: {
+      Aesthetic: "aesthetic_121",
+      CameraType: "cameratype_112",
+      Framing: "framing_087",
+      Lighting: "lighting_084",
+      ColorPalette: "colorpalette_099",
+      Texture: "texture_079",
+      Mood: "mood_090",
+    },
+  },
+  {
+    id: "preset_b7_006",
+    title: "Soft Morning Routine Couture",
+    entries: {
+      Aesthetic: "aesthetic_122",
+      CameraType: "cameratype_113",
+      Lighting: "lighting_085",
+      ColorPalette: "colorpalette_100",
+      Texture: "texture_080",
+      Mood: "mood_091",
+    },
+  },
 ];
 
 export default presets;

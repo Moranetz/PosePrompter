@@ -371,4 +371,234 @@ preset_b6_005: Raw Editorial Flash Deliberate Dissonance (from prompt fragments 
 preset_b6_006: Fashion Runway High-Fashion Spotlight (from prompt fragments 13-15)
 
 
+
+================================================================================
+BATCH 7 — Prompt Extractions (6 sets from 11 raw prompt groups)
+================================================================================
+Date: 2026-02-27
+Presets: preset_b7_001 through preset_b7_006
+Merges: Groups 1+2 (Manga Doll + Doorframe), Groups 3+4 (Seated Floor variants),
+        Groups 5+6+7 (Luxury Doll Hair styling), Groups 10+11 (Couture Morning)
+
+--- RAW PROMPTS (verbatim) ---
+
+* ✂️ Hair:
+* Styled in blended butterfly-jellyfish layers, now cut shorter and sharper:
+* Face-framing pieces just below the cheekbones, flipped softly outward like a manga panel in motion.
+* Glossy finish, but not too sleek — you want movement and a hint of chaos, like you fidgeted while waiting to be seen.
+* Back layers fan out into a delicate curtain, brushing the collarbone and whispering "fragile."
+* 🎭 Makeup:
+* Doll-like eyeliner with manga-level exaggeration:
+* Upper lashline winged out and slightly downturned at the end for a submissive, teary-eyed vibe.
+* Lower lashes drawn individually with precision, fanning outward like delicate lashes on a porcelain figure.
+* Waterline highlight with pale pink shimmer to evoke watery innocence.
+* Glossy lips in muted peach or soft baby pink.
+* Optional: one small heart or star drawn beneath one eye, subtly distressed.
+* 🕯️ Light:
+* Direct flash photography, possibly overexposed.
+* Bathroom mirror, dorm light, or club dressing room — unnatural light that makes skin pop and shadows vanish.
+* Background nearly blown out — just the suggestion of a mirror, tiles, or curtain.
+* 🎀 Outfit:
+* micro-top, paired with lace-trimmed bloomers, visible garters, or oversized arm warmers.
+* Layers of visual contrast: synthetic shine meets baby-girl softness.
+* Small plush toy or Hello Kitty charm clipped somewhere unexpected — a nod to childhood with adult implications.
+* 🧍Pose:
+* Slightly hunched or pigeon-toed stance for vulnerable energy.
+* One hand tugging at pigtail or sleeve, the other holding a phone or mirror.
+* Eyes wide, gazing directly at viewer or slightly off, lips parted like she's about to confess something soft.
+* Torso twisted unnaturally cute — puppet-like rather than sexy.
+* 🎧 Psychological Atmosphere:
+* She looks like she just finished crying — or never started.
+* You want to protect her but also question how much of this is performative.
+* 📷 Camera Settings (for phone or DSLR):
+* Lens: 35mm or iPhone wide angle
+* Flash: On-camera flash or phone flash in dim room
+* ISO: 400
+* F-stop: f/2.8 for slight blur
+* Shutter speed: 1/60 for handheld movement, capturing some softness
+* Color temp: Cool (around 4600K) for desaturated realism
+
+* Vibe: rich girl off her leash; manga character mid-vulnerability arc; caught in emotional suspension.
+* Very visible between top and bottom tiers, but cut in a softened arc — no hard lines.
+* Meant to show in motion and flash: shifting lengths, like manga motion lines when turning quickly.
+* dumb little bunny energy.
+* Blow-dried with volume at the crown, feathered ends, and high shine from finishing serum.
+* Hair should swing like satin fringe when the head turns — exaggerated, expensive movement.
+
+"Bedroom Doorframe Pose — Dramatic Jellyfish Cut"
+* 🎥 CAMERA SETTINGS:
+* Focal Length: 28mm wide-angle
+* ISO: 400
+* Flash: Harsh built-in flash, straight-on
+* Aperture: f/3.5
+* Shutter Speed: 1/60s
+* 💄 EMOTIONAL ENERGY:
+* Intimate but unreadable — you caught her in the moment before she closed the door
+* Feels like a screenshot from a private Tumblr blog in 2011
+* Stillness charged with noise
+*
+* "Seated on Floor, Hands Clasped — Subtle Submission"
+* 🎥 CAMERA SETTINGS:
+* Lens: 50mm
+* ISO: 640
+* Aperture: f/2.5
+* Shutter Speed: 1/125s, slight blur if hands twitch
+* Lighting: Overhead light + lamp beside her for warm glow
+* 📸 COMPOSITION:
+* She's seated on the bedroom floor, knees bent, feet tucked to one side
+* Back slightly curved forward, head dipped in thought
+* Hands clasped gently around one shin, fingers loosely locked
+* Hair (subtle hush cut) rests softly against the side of her face, obscuring part of her eye
+* The photo is taken slightly from above, making her look smaller, more contained
+* 👕 TEXTURE & STYLING:
+* Oversized tee, maybe vintage or college-logo, worn like a dress
+* Bare legs, plush socks, soft throw blanket barely in frame
+* Hair slightly rumpled like she just got up
+* 💄 EMOTIONAL ENERGY:
+* Feels like she's waiting for someone, but not desperately
+* She's chosen stillness
+* Quiet, real submission — not performative
+*
+* 🎥 CAMERA SETTINGS:
+* Lens: 35mm to exaggerate closeness and emotional scale
+* ISO: 400
+* Aperture: f/1.6 — dream blur around the edges
+* Lighting: Natural diffused light from a sheer-curtained window or fairy lights behind
+* 📸 COMPOSITION:
+* Seated on the floor, knees pulled in, arms loosely around legs
+* Shot from above or waist-height — her chin tucked, gaze tilted slightly up
+* The pigtails are visible from the side or back, slightly uneven
+* Hands absently playing with the hem of a sock or sleeve
+* 👕 TEXTURE & WARDROBE:
+* Oversized vintage nightgown, babydoll dress, or ruffled thermal top
+* Soft terry or lace socks, one slightly falling down
+* Pastel shades: cloud blue, warm cream, antique rose
+* Props: plush toy, satin pillow, a half-read book or hairbrush nearby
+* Passive, trusting, and just a bit too tender for the room
+* Aesthetic of emotional undressing, not performance
+*
+* ✨ STYLING FINISH:
+* A subtle shine serum or light wax applied to the ends, enhancing texture under flash.
+* No heavy gel or hairspray — ends should look like they'd move if you blew on them.
+* Layers reflect light like a stack of glass sheets, catching highlights differently depending on length and bend.
+* 🪞VISUAL IMPACT GOAL:
+* Hair should look piecey, floaty, and deliberately cut, like the strands have been styled to suggest a rebellious luxury doll — someone styled in a bathroom mirror before sneaking out into the night.
+*
+* Top layers are gentle and rounded, cut with a slight inward scoop, giving a flowing structure.
+* The effect should feel like ribbons of silk softly overlapping, not stepped or jagged.
+* There's still variation in length, but all pieces are designed to connect, like water spilling over edges.
+* Face-framing sections:
+* Layers near the temples start around upper cheekbone, curving into the jaw.
+* A few soft tendrils near the ears remain slightly separated for delicacy.
+* Ends:
+* Feathered and softened, lightly razored but not wispy.
+* Under flash lighting, the ends reflect in a diffuse shimmer, not sharp.
+* They look like they were air-dried and finger-styled — effortless but intentional.
+* ✨ STYLING FINISH:
+* Finished with a light glossing oil or cream, emphasizing natural sheen.
+* Subtle inner flicks at the jawline add visual bounce.
+* Hair should look like it moves in slow waves, not in jagged shifts.
+* 💭 EMOTIONAL REGISTER:
+* The viewer should feel like they're seeing someone soft and private — caught in a bathroom mirror at 2 a.m., skin dewy, eyes smudged, hair tied up as if unsure whether she's getting ready or winding down. There's a vulnerable elegance here: luxury without posing, femininity without sharpness.
+
+Soft layered haircut for a woman with an oval face and straight, fine-textured hair. Overall length is slightly past the shoulders. Layers frame the face starting at the cheeks and flow in soft curves downward. Mid-lengths include long disconnected layers for subtle volume. Ends are tapered and wispy. Styled with natural softness and a gentle wave at the bottom. Center part. Texture is dry silk, not glossy. Style evokes softness, luxury, and emotional openness. Lighting is natural daylight with gentle shadows. No frizz.
+* Face-framing layers:
+   * Begin at the middle of the cheeks, curving gently in an "S" shape toward the jawline, then continue blending down toward the ends.
+   * These layers are feathered — meaning the outer strands are shorter than the inner ones, giving a soft taper that mimics windblown silk.
+* Long disconnected layers through the mid-lengths, slightly shorter than the ends (about 2–3 inches of difference), creating bounce and movement without visible steps.
+* Volume is concentrated near the cheekbone area, with layers curling away from the face in soft C-shapes.
+* Overall shape should look slightly wind-swept, but refined — like a soft, expensive cashmere scarf caught in a breeze.
+* Color tone: Uniform medium brown, very slightly ash-toned, with faint natural highlights catching light at crown and ends.
+*
+* Image: Girl in cream half-zip and white trousers (street, leaning against wall)
+* Visual Mood:
+* Unbothered rich girl late to class — relaxed, expensive, unreadable expression.
+* Soft old money meets street practicality: she's not dressing to be seen, but her aura commands attention.
+* Grish Indicators:
+* Creamy textures and tonal palette: clean whites and warm neutrals speak to quiet wealth — a nod to Toteme, Filippa K, or vintage Joseph.
+
+She Makes Tea Like She's Being Dreamed About"
+* 🕯️Scene
+* She's standing barefoot in the kitchen in early morning light. The kettle is whistling or just finished. Her hand gently cradles the teacup as if it's something she was given — not something she made. She's looking down, brushing hair from her cheek, the steam rising between her and the camera like a veil.
+* Setting: kitchen in soft chaos — toast crumbs, a spoon on the edge of the sink, maybe a half-eaten peach
+* Emotional Energy: She's not performing; she's allowing. There's no pose — only presence.
+* Foreground Interference: a trailing plant, blurred lace curtain, or the reflection of light off the kettle — like the viewer is watching through something private
+* 💇‍♀️Hair (Couture-Soft)
+* Softly brushed, tucked loosely behind one ear
+* Slightly damp at the ends, like she just woke up
+* Framing strands fall forward gently — nothing perfect, all tender
+* Natural texture enhanced — it feels brushed by someone else's hand
+* 🎞️Camera Settings
+* Device: iPhone or DSLR with 35mm lens
+* Aperture: f/2.0 for shallow depth, dreamy background falloff
+* ISO: 320–500 depending on natural light
+* Shutter: 1/60 — let warmth and motion softly blur the steam
+* Angle: Taken from slightly below chest level, as if the viewer were sitting at her table
+* Composition: negative space above her head, subtle symmetry from kitchen elements
+* 👘Wardrobe
+* Top: ivory camisole with lace trim, slipping slightly off one shoulder
+* Bottom: cotton boxer shorts or a long soft skirt — nothing tight, everything breathable
+* Textiles: ribbed cotton, linen, or worn-in silk with a washed finish
+* Accessories: a single ring or vintage bracelet — hinting at someone else's gift
+* 🎨Color Palette
+* Base: warm oat milk beige, antique white, blush ivory
+* Accents: muted pistachio from the tea box, deep honey, sheer steam
+* Textures: warm ceramic, soft skin, vapor, tousled fabric
+* 🩰Posing (Soft Submission Energy)
+* Shoulders dropped inward, posture slightly curled in intimacy
+* Eyes down or half-lidded, face softly lit from one side
+* One hand cradling cup, the other hovering near her collarbone or brushing hair
+* Slight lean toward the kettle or counter — no awareness of being watched
+* Feet turned slightly inward, grounding the body in quiet vulnerability
+
+A look that embodies wealth, restraint, and rare femininity. It doesn't beg for attention — it assumes it.
+* Think soft structure: not stiff, but every bend is intentional. Inspired by Valentino fittings, Dior backstage, or Carolyn Bessette-Kennedy stepping into a gallery.
+* Light: soft, diffuse (window light or backlit glow); catches movement and texture
+* Camera angle: slightly above the eye line or profile shot where hair falls into frame
+* Color palette: cool neutrals (bone, soft gold, smoke), or soft contrast (velvet black with creamy white)
+* 💡 Examples of Couture Hair in Action (For Prompt Cards):
+* 1. "Morning-After on the Stairwell"
+* Visual: barefoot in a velvet hallway, heels in hand, one pearl earring still on
+*
+*
+📸 Instagram Prompt Card: "Soft Morning Routine"
+* 🪞Scene
+* She's not rushing. The light is honeyed. She's caught mid-movement — brushing a ringed finger across her cheek, gazing downward, like she's in a trance of her own making. The room is softly blurred. You don't need to see the marble to know it's there.
+* Environment: by a tall window with sheer curtains / edge of a linen-draped bed / seated at an antique vanity
+* Time of Day: 7:30–8:00AM; soft gold diffused sunlight (north-facing light ideal)
+* Foreground: silk robe sleeve, compact mirror in hand, perfume bottle blurred in front
+* Mood: warm haze, emotionally still, intimate — the viewer feels like they've just woken up next to her
+* 💇‍♀️Hair
+* Couture hair moment: brushed out soft bends with a clean center part
+* One front section tucked behind the ear to show necklines or jewelry
+* Light catches the mid-lengths, emphasizing health and polish
+* Slight halo of softness or flyaways = soul
+* 🎞️Camera Settings
+* Camera: DSLR or iPhone 14–15 Pro
+* Lens: 50mm or 85mm equivalent (portrait lens)
+* Aperture: f/1.8 – f/2.5 for painterly depth
+* Shutter: 1/125 to capture motion without blur
+* ISO: 250–400 (keep warm tone; use natural light only)
+* White Balance: set to "Cloudy" for warmth
+* Editing: soft grain, low clarity on background, warm highlights, subtle vignette
+* 👘Wardrobe
+* Silk or satin robe (champagne / antique rose / dusty lilac) slightly off-shoulder
+* Delicate lace or eyelet camisole underneath
+* Jewelry: thin gold necklace, one ring on index finger, subtle ear stud
+* Barefoot, legs curled slightly under or side-profile cross-legged
+* 🎨Color Palette
+* Warm neutrals: candlelight cream, dusty blush, faded peach, antique gold
+* Pops: pink-toned lip balm, white mug, or a vintage blue detail in the background
+* Textures: linen, silk, brushed hair, sheer curtain glow
+
+--- PRESET MAPPING ---
+
+preset_b7_001: Manga Doll Vulnerability Flash
+preset_b7_002: Seated Floor Subtle Submission Tender
+preset_b7_003: Rebellious Luxury Doll Bathroom Mirror
+preset_b7_004: Unbothered Rich Girl Street Old Money
+preset_b7_005: Morning Tea Kitchen Dreamy
+preset_b7_006: Soft Morning Routine Couture
+
+
 --- END ---

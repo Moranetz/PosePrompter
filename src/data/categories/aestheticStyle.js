@@ -608,6 +608,36 @@ export const Aesthetic = [
     title: "Fashion Runway High-Fashion Spotlight",
     prompt: "Generate an image embodying high fashion and glamour — a fashion runway scene with attention to detail and styling emphasizing a sophisticated modern aesthetic — focused and contemplative expression adjusting clothing — sleek styling with pinstriped blazer crisp dress shirt and bold striped tie — the overall atmosphere is one of elevated fashion with impeccable presentation and confident poise.",
   },
+  {
+    id: "aesthetic_117",
+    title: "Manga Doll Vulnerability Flash",
+    prompt: "Generate an image embodying a manga doll vulnerability aesthetic — rich girl off her leash caught in emotional suspension — doll-like eyeliner with manga-level exaggeration and butterfly-jellyfish layered hair — synthetic shine meets baby-girl softness — performative vulnerability with watery innocence and deliberate chaos — she looks like she just finished crying or never started — you want to protect her but also question how much of this is performative — Tumblr 2011 intimate but unreadable screenshot energy — stillness charged with noise — dumb little bunny energy.",
+  },
+  {
+    id: "aesthetic_118",
+    title: "Seated Floor Subtle Submission Tender",
+    prompt: "Generate an image embodying quiet real submission — not performative — aesthetic of emotional undressing not performance — passive trusting and just a bit too tender for the room — chosen stillness that feels like she's waiting for someone but not desperately — vulnerability through stillness and gentle body language — seated on the floor with back slightly curved forward head dipped in thought — hair resting softly against the side of her face obscuring part of her eye.",
+  },
+  {
+    id: "aesthetic_119",
+    title: "Rebellious Luxury Doll Bathroom Mirror",
+    prompt: "Generate an image embodying a rebellious luxury doll aesthetic — someone styled in a bathroom mirror before sneaking out into the night — piecey floaty deliberately cut hair with layers that suggest ribbons of silk softly overlapping — vulnerable elegance with luxury without posing and femininity without sharpness — the feeling of seeing someone soft and private caught at 2 a.m. skin dewy eyes smudged — softness luxury and emotional openness — wind-swept but refined like soft expensive cashmere caught in a breeze.",
+  },
+  {
+    id: "aesthetic_120",
+    title: "Unbothered Rich Girl Street Old Money",
+    prompt: "Generate an image embodying an unbothered rich girl aesthetic — late to class with a relaxed expensive unreadable expression — soft old money meets street practicality — not dressing to be seen but her aura commands attention — creamy textures and tonal palette speaking to quiet wealth — clean whites and warm neutrals — inspired by Toteme Filippa K or vintage Joseph — restrained confident effortless.",
+  },
+  {
+    id: "aesthetic_121",
+    title: "Morning Tea Kitchen Dreamed About",
+    prompt: "Generate an image embodying a dreamy morning kitchen aesthetic — she makes tea like she's being dreamed about — barefoot in early morning light with a kettle and teacup — not performing but allowing with no pose only presence — hand gently cradling the teacup as if it was given not made — looking down brushing hair from her cheek steam rising like a veil — kitchen in soft chaos with toast crumbs and a spoon on the edge — the viewer is watching through something private — soft submission energy with shoulders dropped inward and quiet vulnerability.",
+  },
+  {
+    id: "aesthetic_122",
+    title: "Soft Morning Routine Couture",
+    prompt: "Generate an image embodying wealth restraint and rare femininity that doesn't beg for attention but assumes it — soft structure where every bend is intentional — inspired by Valentino fittings Dior backstage or Carolyn Bessette-Kennedy — caught mid-movement brushing a ringed finger across her cheek gazing downward in a trance of her own making — the room softly blurred you don't need to see the marble to know it's there — warm haze emotionally still intimate — the viewer feels like they've just woken up next to her.",
+  },
 ];
 
 export const Lighting = [
@@ -1015,6 +1045,26 @@ export const Lighting = [
     id: "lighting_081",
     title: "Dramatic Spotlight Indoor Runway Contrast",
     prompt: "Indoor spotlight focused on the central figure creating dramatic contrast between the brightly lit subject and the dim surroundings — theatrical illumination that separates subject from dark background — the kind of directional concentrated light typical of fashion runway or stage photography.",
+  },
+  {
+    id: "lighting_082",
+    title: "Direct Flash Overexposed Bathroom Dorm",
+    prompt: "Direct flash photography possibly overexposed — bathroom mirror dorm light or club dressing room — unnatural light that makes skin pop and shadows vanish — background nearly blown out with just the suggestion of a mirror tiles or curtain — harsh flash straight-on erasing natural depth and flattening the scene.",
+  },
+  {
+    id: "lighting_083",
+    title: "Overhead Light Plus Lamp Warm Diffused",
+    prompt: "Overhead light combined with a lamp beside the subject for a warm glow — or natural diffused light from a sheer-curtained window or fairy lights behind — creating gentle warm illumination that softens the scene — the overhead angle making the subject look smaller and more contained.",
+  },
+  {
+    id: "lighting_084",
+    title: "Early Morning Natural Kitchen Window Warm",
+    prompt: "Early morning light through a kitchen window — natural warm illumination creating a honeyed glow — soft enough to blur steam and create a gentle atmosphere — light from one side softly illuminating the face — warm and enveloping rather than harsh or directional — the quality of dawn light that makes everything feel tender.",
+  },
+  {
+    id: "lighting_085",
+    title: "Soft Gold Diffused Sunlight North-Facing Window",
+    prompt: "Soft gold diffused sunlight from a north-facing window — warm backlit glow that catches movement and texture — 7:30 to 8:00AM quality morning light — soft diffuse illumination from a tall window with sheer curtains — honeyed luminosity creating a painterly warmth — natural light only with white balance set warm for golden tone.",
   },
 ];
 
@@ -1494,6 +1544,31 @@ export const ColorPalette = [
     title: "Stark Contrasts Glowing White Deep Black Metallic",
     prompt: "Stark contrasts of glowing whites deep blacks and muted green-browns against washed-out beige — sharp metallic accents sparking on glasses and hardware — the palette sharpens under flash erasing warm tones and replacing them with cold gritty contrasts — electric and aggressive tonal range.",
   },
+  {
+    id: "colorpalette_096",
+    title: "Cool Desaturated Pastel Synthetic Baby-Girl",
+    prompt: "Cool desaturated realism around 4600K — pastel shades with synthetic shine — muted peach or soft baby pink tones — glossy finish contrasted with soft vulnerable textures — blown-out whites with minimal color variation in the background — cool cast creating an eerie doll-like palette.",
+  },
+  {
+    id: "colorpalette_097",
+    title: "Pastel Cloud Blue Warm Cream Antique Rose",
+    prompt: "Pastel shades of cloud blue warm cream and antique rose — soft muted tones that feel tender and intimate — warm golden glow from a lamp adding honey warmth — nothing harsh or vivid — all colors whisper rather than speak — the palette of a bedroom at dusk.",
+  },
+  {
+    id: "colorpalette_098",
+    title: "Clean White Warm Neutral Cream Quiet Wealth",
+    prompt: "Clean whites and warm neutrals speaking to quiet wealth — creamy textures and tonal palette of bone cream and warm neutral tones — old money restraint in color choices — nothing loud or attention-seeking — the palette of understated luxury that assumes rather than announces.",
+  },
+  {
+    id: "colorpalette_099",
+    title: "Warm Oat Milk Beige Antique White Blush Ivory",
+    prompt: "Warm oat milk beige antique white and blush ivory as base — muted pistachio from tea elements and deep honey accents — sheer steam adding ethereal quality — warm ceramic tones — everything in the warm neutral spectrum with subtle natural accents of green and gold.",
+  },
+  {
+    id: "colorpalette_100",
+    title: "Warm Neutrals Candlelight Cream Dusty Blush Antique Gold",
+    prompt: "Warm neutrals of candlelight cream dusty blush faded peach and antique gold — cool accents of bone soft gold and smoke — pops of pink-toned lip balm white mug or vintage blue detail — soft contrast of velvet black with creamy white — everything warm burnished and golden with morning intimacy.",
+  },
 ];
 
 export const Texture = [
@@ -1871,6 +1946,31 @@ export const Texture = [
     id: "texture_075",
     title: "Wool Metallic Under Flash Glossy Starburst",
     prompt: "Rich wool of sweater and rough tweed look almost metallic under harsh flash — glossy glasses throw starbursts — polished desk surface reflects stark light — hair strands blaze into golden streaks — every texture pops with electric aggressive intensity under the confrontational illumination.",
+  },
+  {
+    id: "texture_076",
+    title: "Glossy Hair Synthetic Lace Plush Childhood",
+    prompt: "Glossy hair finish with movement and a hint of chaos — synthetic shine meets baby-girl softness — lace trim and bloomers with visible garters — plush toy or charm details adding childhood nostalgia — layers of visual contrast between hard shine and delicate fabric — satin fringe hair that swings with exaggerated expensive movement under flash.",
+  },
+  {
+    id: "texture_077",
+    title: "Oversized Tee Plush Socks Throw Blanket Rumpled",
+    prompt: "Oversized tee maybe vintage or college-logo worn like a dress — plush socks and soft throw blanket barely in frame — hair slightly rumpled like just woke up — babydoll dress or ruffled thermal — satin pillow and plush toy nearby — terry or lace socks one slightly falling down — worn-in softness throughout with every textile inviting touch.",
+  },
+  {
+    id: "texture_078",
+    title: "Piecey Silk Hair Feathered Glossing Oil Shimmer",
+    prompt: "Piecey floaty hair with layers reflecting light like a stack of glass sheets — ribbons of silk softly overlapping — feathered and softened ends lightly razored — under flash the ends reflect in a diffuse shimmer not sharp — styled with light glossing oil or cream emphasizing natural sheen — dry silk texture not glossy — tapered wispy ends with natural softness — effortless but intentional.",
+  },
+  {
+    id: "texture_079",
+    title: "Warm Ceramic Soft Skin Vapor Tousled Fabric",
+    prompt: "Warm ceramic of a teacup — soft skin — rising steam vapor — tousled fabric of a camisole and soft skirt — ribbed cotton linen or worn-in silk with washed finish — lace trim details — slightly damp hair ends — everything touchable and lived-in — the textures of a morning still unfolding.",
+  },
+  {
+    id: "texture_080",
+    title: "Silk Satin Robe Linen Brushed Hair Sheer Glow",
+    prompt: "Silk or satin robe in champagne antique rose or dusty lilac — delicate lace or eyelet camisole underneath — linen sheets and sheer curtain glow — brushed hair with soft bends and gentle flyaways — thin gold necklace catching light — compact mirror surface — all textures suggest morning intimacy and quiet luxury.",
   },
 ];
 
@@ -2299,6 +2399,36 @@ export const Mood = [
     id: "mood_085",
     title: "High Fashion Glamour Sophisticated Runway",
     prompt: "The overall mood is one of high fashion and glamour — sophisticated modern aesthetic with attention to detail and impeccable styling — focused contemplative confidence — dramatic theatrical presence suited for runway coverage or fashion editorial.",
+  },
+  {
+    id: "mood_086",
+    title: "Performative Vulnerability Emotional Suspension",
+    prompt: "The overall mood is performative vulnerability and emotional suspension — she looks like she just finished crying or never started — you want to protect her but also question how much of this is deliberate — intimate but unreadable caught in the moment before she closed the door — stillness charged with noise — rich girl off her leash caught mid-vulnerability arc.",
+  },
+  {
+    id: "mood_087",
+    title: "Quiet Chosen Stillness Tender Vulnerability",
+    prompt: "The overall mood is quiet chosen stillness and tender vulnerability — feels like she's waiting for someone but not desperately — quiet real submission not performative — passive trusting and just a bit too tender for the room — aesthetic of emotional undressing not performance.",
+  },
+  {
+    id: "mood_088",
+    title: "Soft Private Vulnerable Elegance 2AM Mirror",
+    prompt: "The overall mood is seeing someone soft and private — caught in a bathroom mirror at 2 a.m. with dewy skin and smudged eyes — vulnerable elegance with luxury without posing and femininity without sharpness — emotional openness and wind-swept softness — unsure whether getting ready or winding down.",
+  },
+  {
+    id: "mood_089",
+    title: "Unbothered Relaxed Expensive Unreadable",
+    prompt: "The overall mood is unbothered and relaxed with an expensive unreadable quality — not dressing to be seen but aura commands attention — quiet wealth that doesn't perform — restrained confidence that assumes rather than announces — old money ease meeting street nonchalance.",
+  },
+  {
+    id: "mood_090",
+    title: "Dreamed About Allowing Not Performing Kitchen",
+    prompt: "The overall mood is being dreamed about — she's not performing she's allowing with no pose only presence — emotionally still and intimate — the viewer feels like they're watching through something private — soft submission energy with shoulders dropped inward — quiet vulnerability and morning tenderness — no awareness of being watched.",
+  },
+  {
+    id: "mood_091",
+    title: "Warm Haze Emotionally Still Intimate Morning",
+    prompt: "The overall mood is warm haze emotionally still and intimate — the viewer feels like they've just woken up next to her — you don't need to see the marble to know it's there — wealth that whispers — couture softness with emotional depth — morning-after elegance with an untouchable tenderness.",
   },
 ];
 

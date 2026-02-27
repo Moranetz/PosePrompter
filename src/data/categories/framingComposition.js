@@ -422,6 +422,21 @@ export const Framing = [
     title: "Low-Angle Wide-Lens Desk-Edge Vertical",
     prompt: "Low-angle portrait from desk edge or floor level — wide lens exaggerating elongated limbs and angular pose so the subject dominates the frame like a towering figure — vertical portrait format tailored for magazine cover energy — the confrontational gaze as focal point — compressed depth of field keeping subject razor-sharp while the background recedes into grainy blur.",
   },
+  {
+    id: "framing_085",
+    title: "Bedroom Doorframe Vulnerable Pigeon-Toed Vertical",
+    prompt: "Slightly hunched or pigeon-toed stance for vulnerable energy — framed in a doorframe or intimate interior threshold — torso twisted unnaturally cute puppet-like — one hand tugging at hair or sleeve — eyes wide gazing directly at viewer or slightly off with lips parted — vertical portrait format emphasizing vulnerability and performative innocence.",
+  },
+  {
+    id: "framing_086",
+    title: "Slightly Above Seated Floor Contained",
+    prompt: "Shot slightly from above making the subject look smaller and more contained — seated on the floor with knees bent and feet tucked to one side — back slightly curved forward head dipped — chin tucked with gaze tilted slightly up — the overhead perspective creating a sense of tender vulnerability and solitude.",
+  },
+  {
+    id: "framing_087",
+    title: "Below Chest-Level Kitchen Negative Space Voyeuristic",
+    prompt: "Taken from slightly below chest level as if the viewer were sitting at a table — negative space above the head with subtle symmetry from surrounding elements — foreground interference from trailing plants blurred curtains or reflected light — the composition suggesting voyeuristic intimacy as if watching through something private.",
+  },
 ];
 
 export const Perspective = [
@@ -1060,6 +1075,26 @@ export const CameraType = [
     id: "cameratype_109",
     title: "Wide Lens Low-Angle Harsh Flash Editorial",
     prompt: "Wide lens exaggerating proportions and commanding posture allowing the subject to dominate the frame — low-angle perspective from desk edge or floor level — harsh direct flash that blows out whites into glowing slabs of light making fabric glisten with unexpected highlights — depth of field compresses the scene so the subject is razor-sharp while the background recedes into grainy blur — raw editorial capture quality that feels both accidental and impossibly styled.",
+  },
+  {
+    id: "cameratype_110",
+    title: "Wide-Angle Flash Handheld Cool Desaturated",
+    prompt: "28 to 35mm wide-angle lens or iPhone wide angle — harsh built-in on-camera flash or phone flash in a dim room — ISO 400 — f/2.8 to f/3.5 for slight blur — 1/60s shutter speed for handheld movement capturing some softness — cool color temperature around 4600K for desaturated realism — slightly overexposed with background nearly blown out.",
+  },
+  {
+    id: "cameratype_111",
+    title: "Portrait Lens Shallow Dream Blur Warm",
+    prompt: "35 to 50mm portrait lens — f/1.6 to f/2.5 creating dream blur around the edges — ISO 400 to 640 — 1/125s with slight blur if hands twitch — shallow depth of field producing painterly softness — warmth from mixed overhead and lamp lighting sources — exaggerating closeness and emotional scale.",
+  },
+  {
+    id: "cameratype_112",
+    title: "iPhone DSLR 35mm Shallow Warm Morning",
+    prompt: "iPhone or DSLR with 35mm lens — f/2.0 for shallow depth with dreamy background falloff — ISO 320 to 500 depending on natural light — 1/60 shutter speed letting warmth and motion softly blur rising steam — warm natural morning light rendering — the intimacy of a handheld capture in domestic space.",
+  },
+  {
+    id: "cameratype_113",
+    title: "Portrait Lens DSLR Painterly Warm Grain",
+    prompt: "DSLR or iPhone 14 to 15 Pro with 50mm or 85mm equivalent portrait lens — f/1.8 to f/2.5 for painterly depth — 1/125 to capture motion without blur — ISO 250 to 400 keeping warm tone using natural light only — white balance set to Cloudy for warmth — edited with soft grain low clarity on background warm highlights and subtle vignette.",
   },
 ];
 
