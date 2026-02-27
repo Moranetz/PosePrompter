@@ -638,6 +638,11 @@ export const Aesthetic = [
     title: "Soft Morning Routine Couture",
     prompt: "Generate an image embodying wealth restraint and rare femininity that doesn't beg for attention but assumes it — soft structure where every bend is intentional — inspired by Valentino fittings Dior backstage or Carolyn Bessette-Kennedy — caught mid-movement brushing a ringed finger across her cheek gazing downward in a trance of her own making — the room softly blurred you don't need to see the marble to know it's there — warm haze emotionally still intimate — the viewer feels like they've just woken up next to her.",
   },
+  {
+    id: "aesthetic_123",
+    title: "Mystery Elegance Intellectual Intimacy Feminine Gaze",
+    prompt: "Generate an image embodying mystery and intellectual intimacy through a partially obscured face — the viewer invited to engage deeply and project their own feelings fostering a deeper connection — delicate elegance with silk eyelet and sequins used subtly where richness of materials is felt rather than announced — no loud branding or overt showiness just texture and fine details that reward closer inspection — movement and emotion with a hand brushing back hair or the flow of fabric adding dynamic grace and spontaneity — quiet storytelling transcending clothing to become an invitation to experience something profound — feminine gaze sensuality celebrating femininity through softness mystery and quiet confidence that invites admiration without demanding it — empowering and refreshing — creating an atmosphere that feels like an escape into a world both serene and rich with details.",
+  },
 ];
 
 export const Lighting = [
@@ -1065,6 +1070,11 @@ export const Lighting = [
     id: "lighting_085",
     title: "Soft Gold Diffused Sunlight North-Facing Window",
     prompt: "Soft gold diffused sunlight from a north-facing window — warm backlit glow that catches movement and texture — 7:30 to 8:00AM quality morning light — soft diffuse illumination from a tall window with sheer curtains — honeyed luminosity creating a painterly warmth — natural light only with white balance set warm for golden tone.",
+  },
+  {
+    id: "lighting_086",
+    title: "Soft Diffused Warm Dream-Like Ghibli Caress",
+    prompt: "Soft diffused lighting creating a warm intimate atmosphere — gently caressing the subject rather than harshly illuminating — emphasizing the fluidity of fabrics and the contours of form — a dream-like quality reminiscent of Studio Ghibli enchanting environments where light and shadow tell as much story as the characters themselves — the soft glow enhancing mood making everything feel serene elegant and inviting — the viewer feels they are witnessing something beautiful and fleeting.",
   },
 ];
 
@@ -1972,6 +1982,11 @@ export const Texture = [
     title: "Silk Satin Robe Linen Brushed Hair Sheer Glow",
     prompt: "Silk or satin robe in champagne antique rose or dusty lilac — delicate lace or eyelet camisole underneath — linen sheets and sheer curtain glow — brushed hair with soft bends and gentle flyaways — thin gold necklace catching light — compact mirror surface — all textures suggest morning intimacy and quiet luxury.",
   },
+  {
+    id: "texture_081",
+    title: "Silk Eyelet Sequins Flowing Subtle Luxury",
+    prompt: "Silk eyelet and sequins inherently luxurious but used subtly — evoking refinement and beauty through understated application creating effortless luxury — flowing skirt with dynamic movement — delicate fabrics that reward closer inspection where each detail can only be truly appreciated upon careful viewing — fine details and textures felt rather than announced — artistically crafted with a discerning eye for beauty and design.",
+  },
 ];
 
 export const Mood = [
@@ -2429,6 +2444,11 @@ export const Mood = [
     id: "mood_091",
     title: "Warm Haze Emotionally Still Intimate Morning",
     prompt: "The overall mood is warm haze emotionally still and intimate — the viewer feels like they've just woken up next to her — you don't need to see the marble to know it's there — wealth that whispers — couture softness with emotional depth — morning-after elegance with an untouchable tenderness.",
+  },
+  {
+    id: "mood_092",
+    title: "Serene Rich Quiet Sensuality Feminine Escape",
+    prompt: "The overall mood is serene and rich with details creating an atmosphere that feels like an escape — quiet sensuality from softness mystery and quiet confidence — a celebration of femininity that invites admiration without demanding it empowering and refreshing — deeper storytelling that resonates on an emotional level transcending visual to create experience feeling and connection — the combination of mystery luxury artistry and quiet emotion makes the viewer want to explore the image further.",
   },
 ];
 

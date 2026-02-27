@@ -1379,6 +1379,18 @@ const presets = [
       Mood: "mood_091",
     },
   },
+  // ---- Batch 8 preset (1 set from 1 analytical prompt) ----
+  {
+    id: "preset_b8_001",
+    title: "Mystery Elegance Feminine Gaze Intellectual Intimacy",
+    entries: {
+      Aesthetic: "aesthetic_123",
+      Framing: "framing_088",
+      Lighting: "lighting_086",
+      Texture: "texture_081",
+      Mood: "mood_092",
+    },
+  },
 ];
 
 export default presets;

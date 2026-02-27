@@ -437,6 +437,11 @@ export const Framing = [
     title: "Below Chest-Level Kitchen Negative Space Voyeuristic",
     prompt: "Taken from slightly below chest level as if the viewer were sitting at a table — negative space above the head with subtle symmetry from surrounding elements — foreground interference from trailing plants blurred curtains or reflected light — the composition suggesting voyeuristic intimacy as if watching through something private.",
   },
+  {
+    id: "framing_088",
+    title: "Partially Obscured Face Movement Grace Captured",
+    prompt: "Partially obscured face creating mystery and intellectual intimacy — hair hand movements and body positioning serving as an invitation to explore rather than static viewing — a moment of movement captured like a snapshot of grace and spontaneity — the subject alive and engaged in her world — dynamic quality that feels like something you could step into.",
+  },
 ];
 
 export const Perspective = [
