@@ -401,6 +401,11 @@ const PhotoElementRandomizer = () => {
         title: "Kawaii-Core Dreamy Soft Girl",
         prompt: "Generate an image that embodies a playful \"Kawaii-core\" meets \"Dreamy Soft Girl\" aesthetic infused with an alluring innocence and a vibrant almost hyperreal pop sensibility. This distinct vibe is not merely observed but actively constructed by the camera's precise rendering and a deliberate post-processing approach making the scene feel more vibrant and stylized than natural perception.",
       },
+      {
+        id: "aesthetic_027",
+        title: "Red Carpet Glamour Regal Serenity",
+        prompt: "Generate an image that embodies an ethereal \"Red Carpet Glamour\" meets \"Regal Serenity\" aesthetic imbued with a sophisticated elegance and a captivating almost otherworldly allure. This profound vibe is not merely captured but is masterfully constructed by the camera's precise technical choices and exquisite post-processing elevating the scene far beyond natural human perception.",
+      },
     ],
 
     // ============================================================================
@@ -487,6 +492,11 @@ const PhotoElementRandomizer = () => {
         id: "bodypose_016",
         title: "Playful Over-Shoulder Coquettish Gashapon",
         prompt: "Her pose should be engaging and slightly coquettish looking directly at the viewer over her shoulder with an alluring yet innocent expression one hand playfully interacting with a machine - leaning playfully against the wall of gashapon machines.",
+      },
+      {
+        id: "bodypose_017",
+        title: "Composed Elegant Arm Knee Serene",
+        prompt: "Her pose is composed and elegant with one arm resting on her knee conveying a sense of serene confidence and thoughtful grace.",
       },
     ],
 
@@ -2271,6 +2281,11 @@ const PhotoElementRandomizer = () => {
         title: "Dynamic Tilted Medium-Full Gashapon",
         prompt: "Maintain a dynamic slightly tilted composition capturing her from a medium-full shot leaning playfully against the wall of gashapon machines.",
       },
+      {
+        id: "framing_021",
+        title: "Medium-Close Low-Angle Grand Staircase",
+        prompt: "Maintain a medium-close slightly low-angle composition allowing the grand staircase to rise behind her emphasizing her presence within a luxurious setting.",
+      },
     ],
 
     'CameraAngle': [
@@ -2471,6 +2486,11 @@ const PhotoElementRandomizer = () => {
         title: "Sony A7R V Kawaii Selective Focus",
         prompt: "This image must simulate being captured on a high-end full-frame mirrorless camera Sony Alpha A7R V or Canon EOS R3 paired with a fast prime lens 35mm f/1.4 or 50mm f/1.2. Selective depth of field enchanted focus - the depth of field should be moderately shallow creating a creamy yet subtly textured bokeh that gently blurs the background of numerous gashapon machines - this effect more pronounced and aesthetically pleasing than natural human vision strategically isolates the subject making her the undeniable focal point while still allowing the vibrant background to contribute to the Kawaii-core theme without distraction - the background blur should exhibit soft pleasing out-of-focus highlights from the internal lights of the machines creating a subtle shimmering halo effect that enhances the dreamy atmosphere. Micro-contrast and skin tone fidelity luminous innocence - the subject's face should exhibit excellent micro-contrast and resolution rendering her skin with a natural luminous quality rich in subtle undertones peachy warmth rosy blush avoiding any plastic or overly smoothed appearance - this high fidelity to natural yet subtly enhanced skin texture contributes to her alluring innocence making her complexion glow with an almost ethereal quality that transcends typical real-life observation. Lens character subtle whimsy - the lens should offer minimal distortion ensuring the gashapon machines maintain their geometric integrity - a very subtle vignetting might be present gently darkening the corners to draw focus further inward enhancing intimacy and visual concentration on her.",
       },
+      {
+        id: "cameratype_030",
+        title: "Sony A7R V Portrait Lens Compression",
+        prompt: "This image must simulate being captured on a high-end full-frame professional mirrorless camera Sony Alpha A7R V or Nikon Z9 paired with a fast portrait prime lens 85mm f/1.2 or 105mm f/1.4. Exceptional bokeh quality dreamlike isolation - the depth of field should be supremely shallow creating an exquisite creamy painterly bokeh that melts the background of the grand staircase into a soft dreamlike wash of diffused light and subtle texture - this intense visual isolation of the subject far more pronounced than human vision directly amplifies her regal serenity and captivating allure making her the undeniable focal point of emotional and aesthetic power - the bokeh should exhibit perfectly circular soft-edged out-of-focus highlights from the staircase lighting subtly glowing to enhance the luxurious ethereal atmosphere. Micro-contrast and skin tone fidelity luminous perfection - the subject's face decolletage and the intricate beadwork of her gown should exhibit phenomenal micro-contrast and acutance rendering every delicate feature every shimmering bead and every strand of hair with an almost hyper-real yet beautifully smoothed fidelity - this level of detail especially the fine separation of tones within subtle highlights and shadows is a hallmark of top-tier optics and sensors communicating a pristine luminous beauty that feels both aspirational and intimately close - her skin tones should be rendered with a porcelain-like luminosity rich in subtle healthy undertones avoiding any plastic or overly smoothed appearance while still achieving a flawless finish. Lens compression elegant intimacy - the subtle lens compression inherent to a prime portrait lens should gently flatten the perspective making the grand staircase feel intimately close around her rather than vast - this creates an elegant sense of intimacy and grandeur as if she is the sole luminous presence within a magnificent setting.",
+      },
     ],
 
     'Lighting': [
@@ -2543,6 +2563,11 @@ const PhotoElementRandomizer = () => {
         id: "lighting_014",
         title: "Gashapon Glow Hyperreal Pop Rim",
         prompt: "Utilize dynamic mixed lighting combining the vibrant internal illumination of the gashapon machines with subtle ambient overhead lighting. Gashapon glow hyperreal pop - the primary light source should emanate from the bright colorful internal lights of the gashapon machines casting a vibrant multi-hued glow onto the subject from behind and to her side - this creates dramatic rim lighting and colorful spill onto her white dress and hair an effect that is significantly amplified and stylized by the camera's sensor and post-processing making the colors feel more electric and saturated than they would appear to the naked eye - this pop of color is crucial for the Kawaii-core aesthetic. Soft frontal fill flattering illumination - a softer more diffused frontal fill light likely ambient overhead light should gently illuminate her face ensuring it remains well-exposed and flattering creating subtle highlights that sculpt her features without harshness - the camera's dynamic range ensures these bright and dark areas are rendered with detail preventing blown-out highlights or crushed shadows in the vibrant scene. Specular highlights playful sheen - introduce controlled specular highlights on her hair the plastic of the gashapon machines and any subtle jewelry - these highlights should have a crisp yet not overpowering photographic sparkle adding a playful sheen that enhances the overall vibrancy and perceived quality of the scene.",
+      },
+      {
+        id: "lighting_015",
+        title: "Sculpted Directional Regal Opulence",
+        prompt: "Utilize soft directional ambient lighting mimicking elegant diffused event lighting or a large soft studio light. Sculpted light fall-off regal form - the light should sculpt her features and the contours of her gown with exquisite gradual light fall-off creating a profound sense of three-dimensionality and form that makes her appear almost statuesque - this subtle transition from light to shadow is far more nuanced than what the eye typically registers drawing attention to her composed expression and the graceful lines of her pose amplifying her regal presence and the luxurious texture of her dress. Specular highlights shimmering opulence - introduce controlled yet dazzling specular highlights on her jewelry earrings the delicate beadwork of her gown and the polished surfaces of the staircase - these highlights should have a photographic sparkle and gleam reflecting light with a subtle shimmering quality that conveys exquisite craftsmanship and high-end materials a visual cue of luxury significantly enhanced by the camera's ability to capture intense light points. Deep yet open shadows dramatic elegance - ensure deep rich yet open shadows that retain significant color and textural information particularly in the folds of her gown and the darker areas of the staircase - this high dynamic range rendering is a hallmark of professional sensors allowing the darker areas of the image to still reveal subtle details contributing to a dramatic yet refined elegance.",
       },
     ],
 
@@ -2642,6 +2667,11 @@ const PhotoElementRandomizer = () => {
         title: "Vibrant Kawaii Saturated Pastels Dream",
         prompt: "Apply a vibrant high-saturation color grade leaning towards a bright pastel-infused palette reminiscent of Japanese aesthetic trends while maintaining a sense of dreamy warmth. Saturated pastels lively innocence - the reds and pinks of the gashapon machines should be intensely saturated but maintain a pastel-like softness creating a vibrant backdrop that feels both energetic and whimsical - the subject's white dress should remain clean and bright with subtle texture acting as a luminous canvas for the colorful light - the camera's color processing ensures these hues are rendered with an almost painterly intensity that is beyond natural observation creating a truly Kawaii feel. Luminous skin tones enhanced youthfulness - her skin tones must be rendered with a natural luminous quality with a healthy subtle flush avoiding any overly desaturated or artificial appearance - this fidelity to natural skin while subtly enhanced contributes to her youthful and alluring innocence. Overall warmth with pop dreamy vibrancy - the overall image should possess a subtle warmth making it inviting while the vibrant background elements retain their pop - this balance creates a dreamy soft girl aesthetic with a lively energetic undertone.",
       },
+      {
+        id: "colorpalette_020",
+        title: "Desaturated Elegance Porcelain Red Lip",
+        prompt: "Apply a sophisticated cool-toned yet luminous color grade meticulously calibrated to evoke a high-fashion editorial aesthetic. Subtly desaturated elegance aspirational timelessness - the overall color palette should be subtly desaturated allowing the pale gold of her dress to truly sing against the muted tones of the staircase - this creates an expensive and timeless aesthetic that feels more curated and artistic than a direct unedited capture enhancing the ethereal and glamorous aura - the cool tones in the background provide a sophisticated contrast to the warmth of her skin and dress. Porcelain skin tones flawless beauty - her skin tones must be rendered with a porcelain-like luminosity rich in subtle healthy undertones cool pinks warm peaches avoiding any plastic overly smoothed or digitally flat appearance - this fidelity to natural skin while subtly enhanced for flawlessness contributes to her captivating beauty. Vibrant lip and eye contrast focal intensity - the deep red of her lipstick and the precise definition of her eyes should provide a striking yet harmonious contrast against her pale skin and the soft gold of her dress - this selective vibrancy draws the viewer directly to her captivating gaze a deliberate photographic choice to intensify her presence.",
+      },
     ],
 
     'Texture': [
@@ -2700,6 +2730,11 @@ const PhotoElementRandomizer = () => {
         title: "Flowing Fabric Gashapon Plastic Playful",
         prompt: "Heightened tactile sensation playful richness - render all textures with exceptional fidelity - the light flowing fabric of her dress the smooth plastic and intricate graphics of the gashapon machines the subtle sheen of her hair and the texture of her skin should all be viscerally tangible and highly detailed showcasing the transformative capabilities of a high-resolution sensor and sharp lens - this tactile richness makes the playful vibrant environment feel immersive and real a depth of detail often enhanced by the photographic process drawing the viewer into her charming world.",
       },
+      {
+        id: "texture_012",
+        title: "Beadwork Tulle Marble Pearl Grandeur",
+        prompt: "Heightened tactile sensation tangible grandeur - render all textures with exceptional almost tangible fidelity - the delicate shimmering beadwork and tulle of her gown the smooth dark sheen of her hair the polished cool surface of the marble staircase and the subtle gleam of her pearl earrings should all be viscerally tangible and highly detailed showcasing the transformative capabilities of a high-resolution sensor and a critically sharp lens - this tactile richness is what truly elevates the image making it an experience rather than just a visual drawing the viewer into the luxurious environment and the exquisite details of her attire in a way the human eye without photographic enhancement would struggle to achieve.",
+      },
     ],
 
     'Mood': [
@@ -2752,6 +2787,11 @@ const PhotoElementRandomizer = () => {
         id: "mood_010",
         title: "Kawaii Culture Alluring Innocence Youthful",
         prompt: "This image is perfectly suited for a fashion-forward social media feed a niche lifestyle blog focused on Japanese street style or Kawaii culture or a brand campaign targeting a youthful playful demographic designed to project an image of alluring innocence and vibrant stylized charm all meticulously crafted and enhanced by the sophisticated eye of a professional camera and artistic color grading.",
+      },
+      {
+        id: "mood_011",
+        title: "Luxury Fashion Magazine Aspirational",
+        prompt: "This image is perfectly suited for a high-end fashion magazine cover a luxury brand campaign or an exclusive event's social media designed to evoke a sense of sophisticated glamour serene confidence and aspirational beauty all meticulously crafted and enhanced by the powerful transformative lens of a master photographer and advanced camera system.",
       },
     ],
 
