@@ -293,100 +293,162 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Draw shadow/reflection
-    ctx.save();
-    ctx.globalAlpha = 0.06;
-    ctx.fillStyle = figureCol;
+    // Tapered stroke helper (thick→thin)
+    const tapered = (a, b, wStart, wEnd, segments = 8) => {
+      for (let i = 0; i < segments; i++) {
+        const t0 = i / segments, t1 = (i + 1) / segments;
+        const x0 = a.x + (b.x - a.x) * t0, y0 = a.y + (b.y - a.y) * t0;
+        const x1 = a.x + (b.x - a.x) * t1, y1 = a.y + (b.y - a.y) * t1;
+        ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = wStart + (wEnd - wStart) * t0;
+        ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      }
+    };
+    const taperedCurve = (a, cp, b, wStart, wEnd, segments = 12) => {
+      for (let i = 0; i < segments; i++) {
+        const t0 = i / segments, t1 = (i + 1) / segments;
+        const x0 = (1-t0)*(1-t0)*a.x + 2*(1-t0)*t0*cp.x + t0*t0*b.x;
+        const y0 = (1-t0)*(1-t0)*a.y + 2*(1-t0)*t0*cp.y + t0*t0*b.y;
+        const x1 = (1-t1)*(1-t1)*a.x + 2*(1-t1)*t1*cp.x + t1*t1*b.x;
+        const y1 = (1-t1)*(1-t1)*a.y + 2*(1-t1)*t1*cp.y + t1*t1*b.y;
+        ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = wStart + (wEnd - wStart) * t0;
+        ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      }
+    };
+
+    const hipMid = { x: (p.hipL.x + p.hipR.x) / 2, y: (p.hipL.y + p.hipR.y) / 2 };
+    const hr = p.head.radius || 22;
+
+    // Body silhouette fill
+    ctx.save(); ctx.globalAlpha = 0.04; ctx.fillStyle = figureCol;
     ctx.beginPath();
-    ctx.ellipse(p.torso.x, 355, 50, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    ctx.moveTo(p.shoulderL.x, p.shoulderL.y);
+    ctx.quadraticCurveTo(p.shoulderL.x - 4, (p.shoulderL.y + p.torso.y) / 2, p.torso.x - 14, p.torso.y);
+    ctx.quadraticCurveTo(p.hipL.x - 6, p.torso.y + 8, p.hipL.x, p.hipL.y);
+    ctx.lineTo(p.hipR.x, p.hipR.y);
+    ctx.quadraticCurveTo(p.hipR.x + 6, p.torso.y + 8, p.torso.x + 14, p.torso.y);
+    ctx.quadraticCurveTo(p.shoulderR.x + 4, (p.shoulderR.y + p.torso.y) / 2, p.shoulderR.x, p.shoulderR.y);
+    ctx.closePath(); ctx.fill(); ctx.restore();
 
-    // --- Draw body lines ---
-    const drawLimb = (from, to, lineWidth = 2.2) => {
-      ctx.beginPath();
-      ctx.strokeStyle = figureCol;
-      ctx.lineWidth = lineWidth;
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x, to.y);
-      ctx.stroke();
-    };
-
-    const drawCurvedLimb = (from, cp, to, lineWidth = 2.2) => {
-      ctx.beginPath();
-      ctx.strokeStyle = figureCol;
-      ctx.lineWidth = lineWidth;
-      ctx.moveTo(from.x, from.y);
-      ctx.quadraticCurveTo(cp.x, cp.y, to.x, to.y);
-      ctx.stroke();
-    };
-
-    // Torso (curved for elegance)
-    const torsoMid = {
-      x: (p.shoulderL.x + p.shoulderR.x) / 2,
-      y: (p.neck.y + p.torso.y) / 2
-    };
-    drawCurvedLimb(p.neck, { x: torsoMid.x - 2, y: torsoMid.y }, p.torso, 2.5);
-
-    // Shoulders
-    drawCurvedLimb(p.shoulderL, { x: p.neck.x, y: p.shoulderL.y - 4 }, p.shoulderR, 2.2);
-
-    // Hip line
-    drawCurvedLimb(p.hipL, { x: p.torso.x, y: p.hipL.y + 2 }, p.hipR, 2.2);
-
-    // Torso to hips
-    drawLimb(p.torso, { x: (p.hipL.x + p.hipR.x) / 2, y: (p.hipL.y + p.hipR.y) / 2 }, 2.2);
-
-    // Arms
-    drawLimb(p.shoulderL, p.elbowL, 2);
-    drawLimb(p.elbowL, p.handL, 1.8);
-    drawLimb(p.shoulderR, p.elbowR, 2);
-    drawLimb(p.elbowR, p.handR, 1.8);
-
-    // Legs
-    drawLimb(p.hipL, p.kneeL, 2.2);
-    drawLimb(p.kneeL, p.footL, 2);
-    drawLimb(p.hipR, p.kneeR, 2.2);
-    drawLimb(p.kneeR, p.footR, 2);
-
-    // Joints as small circles
-    const drawJoint = (point, r = 3) => {
-      ctx.beginPath();
-      ctx.fillStyle = figureCol;
-      ctx.arc(point.x, point.y, r, 0, Math.PI * 2);
-      ctx.fill();
-    };
-
-    [p.shoulderL, p.shoulderR, p.elbowL, p.elbowR, p.hipL, p.hipR, p.kneeL, p.kneeR].forEach(
-      pt => drawJoint(pt, 2.5)
-    );
-    [p.handL, p.handR, p.footL, p.footR].forEach(pt => drawJoint(pt, 2));
-
-    // Head
-    ctx.beginPath();
-    ctx.strokeStyle = figureCol;
-    ctx.lineWidth = 2.2;
-    ctx.arc(p.head.x, p.head.y, p.head.radius, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Subtle face line (tilt indicator)
-    const faceTilt = (p.head.x - 200) * 0.04;
-    ctx.beginPath();
-    ctx.strokeStyle = figureCol;
-    ctx.lineWidth = 1.2;
-    ctx.globalAlpha = 0.4;
-    // Eye line
-    ctx.moveTo(p.head.x - 8, p.head.y - 3 + faceTilt);
-    ctx.lineTo(p.head.x + 8, p.head.y - 3 - faceTilt);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
+    // Ground shadow
+    ctx.save(); ctx.globalAlpha = 0.05; ctx.fillStyle = figureCol;
+    ctx.beginPath(); ctx.ellipse(p.torso.x, 358, 44, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
 
     // Neck
-    drawLimb(
-      { x: p.head.x, y: p.head.y + p.head.radius },
-      p.neck,
-      2
-    );
+    const neckBase = { x: p.head.x, y: p.head.y + hr };
+    taperedCurve(neckBase, { x: (neckBase.x + p.neck.x)/2 - 1, y: (neckBase.y + p.neck.y)/2 }, p.neck, 2.0, 2.8);
+
+    // Shoulders
+    taperedCurve(p.neck, { x: (p.shoulderL.x + p.neck.x)/2, y: p.shoulderL.y - 6 }, p.shoulderL, 2.6, 1.8);
+    taperedCurve(p.neck, { x: (p.shoulderR.x + p.neck.x)/2, y: p.shoulderR.y - 6 }, p.shoulderR, 2.6, 1.8);
+
+    // Torso contours
+    ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.6;
+    ctx.moveTo(p.shoulderL.x, p.shoulderL.y);
+    ctx.bezierCurveTo(p.shoulderL.x - 3, p.shoulderL.y + 20, p.torso.x - 16, p.torso.y - 10, p.torso.x - 14, p.torso.y);
+    ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.6;
+    ctx.moveTo(p.torso.x - 14, p.torso.y);
+    ctx.bezierCurveTo(p.torso.x - 16, p.torso.y + 8, p.hipL.x - 4, p.hipL.y - 6, p.hipL.x, p.hipL.y);
+    ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.6;
+    ctx.moveTo(p.shoulderR.x, p.shoulderR.y);
+    ctx.bezierCurveTo(p.shoulderR.x + 3, p.shoulderR.y + 20, p.torso.x + 16, p.torso.y - 10, p.torso.x + 14, p.torso.y);
+    ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.6;
+    ctx.moveTo(p.torso.x + 14, p.torso.y);
+    ctx.bezierCurveTo(p.torso.x + 16, p.torso.y + 8, p.hipR.x + 4, p.hipR.y - 6, p.hipR.x, p.hipR.y);
+    ctx.stroke();
+
+    // Arms (tapered)
+    tapered(p.shoulderL, p.elbowL, 2.4, 1.8);
+    tapered(p.elbowL, p.handL, 1.8, 1.2);
+    tapered(p.shoulderR, p.elbowR, 2.4, 1.8);
+    tapered(p.elbowR, p.handR, 1.8, 1.2);
+
+    // Hands
+    const drawHand = (wrist, elbow) => {
+      const dx = wrist.x - elbow.x, dy = wrist.y - elbow.y;
+      const len = Math.sqrt(dx*dx + dy*dy) || 1;
+      const nx = dx/len, ny = dy/len;
+      ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.0;
+      ctx.ellipse(wrist.x + nx*5, wrist.y + ny*5, 4, 3, Math.atan2(ny, nx), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.save(); ctx.globalAlpha = 0.5;
+      for (let f = -1; f <= 1; f++) {
+        const angle = Math.atan2(ny, nx) + f * 0.3;
+        ctx.beginPath(); ctx.lineWidth = 0.7;
+        ctx.moveTo(wrist.x + nx*8, wrist.y + ny*8);
+        ctx.lineTo(wrist.x + nx*8 + Math.cos(angle)*7, wrist.y + ny*8 + Math.sin(angle)*7);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+    drawHand(p.handL, p.elbowL);
+    drawHand(p.handR, p.elbowR);
+
+    // Legs (tapered)
+    tapered(p.hipL, p.kneeL, 2.8, 2.2);
+    tapered(p.kneeL, p.footL, 2.2, 1.4);
+    tapered(p.hipR, p.kneeR, 2.8, 2.2);
+    tapered(p.kneeR, p.footR, 2.2, 1.4);
+
+    // Feet
+    const drawFootShape = (ankle, knee) => {
+      const outward = ankle.x < 200 ? -1 : 1;
+      ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.2;
+      ctx.moveTo(ankle.x, ankle.y);
+      ctx.quadraticCurveTo(ankle.x + outward * 6, ankle.y + 4, ankle.x + outward * 12, ankle.y + 2);
+      ctx.stroke();
+      ctx.beginPath(); ctx.lineWidth = 1.0;
+      ctx.moveTo(ankle.x, ankle.y); ctx.lineTo(ankle.x - outward * 3, ankle.y + 3); ctx.stroke();
+    };
+    drawFootShape(p.footL, p.kneeL);
+    drawFootShape(p.footR, p.kneeR);
+
+    // Head
+    ctx.beginPath(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.8;
+    ctx.arc(p.head.x, p.head.y, hr, 0, Math.PI * 2); ctx.stroke();
+    ctx.save(); ctx.globalAlpha = 0.03; ctx.fillStyle = figureCol;
+    ctx.beginPath(); ctx.arc(p.head.x, p.head.y, hr, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+
+    // Face features
+    const faceTilt = (p.head.x - 200) * 0.04;
+    ctx.save(); ctx.strokeStyle = figureCol; ctx.fillStyle = figureCol;
+    ctx.globalAlpha = 0.5; ctx.lineWidth = 1.0;
+    ctx.beginPath(); ctx.ellipse(p.head.x - 6, p.head.y - 3 + faceTilt * 0.5, 3, 1.5, faceTilt * 0.1, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(p.head.x + 6, p.head.y - 3 - faceTilt * 0.5, 3, 1.5, -faceTilt * 0.1, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = 0.3; ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.moveTo(p.head.x, p.head.y + 1);
+    ctx.quadraticCurveTo(p.head.x + 2, p.head.y + 5, p.head.x, p.head.y + 6); ctx.stroke();
+    ctx.globalAlpha = 0.35; ctx.lineWidth = 1.0;
+    ctx.beginPath(); ctx.moveTo(p.head.x - 4, p.head.y + 9);
+    ctx.quadraticCurveTo(p.head.x, p.head.y + 7.5, p.head.x + 4, p.head.y + 9); ctx.stroke();
+    ctx.globalAlpha = 0.2; ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.moveTo(p.head.x - 3.5, p.head.y + 9.5);
+    ctx.quadraticCurveTo(p.head.x, p.head.y + 12, p.head.x + 3.5, p.head.y + 9.5); ctx.stroke();
+    ctx.restore();
+
+    // Hair
+    ctx.save(); ctx.strokeStyle = figureCol; ctx.lineWidth = 1.3; ctx.globalAlpha = 0.6;
+    const headDir = (p.head.x - 200) * 0.15;
+    ctx.beginPath(); ctx.arc(p.head.x, p.head.y - 2, hr + 4, -Math.PI * 0.85, -Math.PI * 0.15); ctx.stroke();
+    for (let i = 0; i < 4; i++) {
+      ctx.globalAlpha = 0.3 - i * 0.05; ctx.lineWidth = 1.2 - i * 0.15;
+      const sa = -Math.PI * 0.75 + i * 0.12;
+      const sx = p.head.x + Math.cos(sa) * (hr + 3), sy = p.head.y + Math.sin(sa) * (hr + 3);
+      ctx.beginPath(); ctx.moveTo(sx, sy);
+      ctx.bezierCurveTo(sx - 10 + headDir - i*2, sy + 20 + i*8, sx - 6 + headDir + Math.sin(breath*0.3+i)*3, sy + 40 + i*12, sx - 8 + headDir + Math.sin(breath*0.4+i)*4, sy + 55 + i*14);
+      ctx.stroke();
+    }
+    for (let i = 0; i < 4; i++) {
+      ctx.globalAlpha = 0.3 - i * 0.05; ctx.lineWidth = 1.2 - i * 0.15;
+      const sa = -Math.PI * 0.25 - i * 0.12;
+      const sx = p.head.x + Math.cos(sa) * (hr + 3), sy = p.head.y + Math.sin(sa) * (hr + 3);
+      ctx.beginPath(); ctx.moveTo(sx, sy);
+      ctx.bezierCurveTo(sx + 10 + headDir + i*2, sy + 20 + i*8, sx + 6 + headDir + Math.sin(breath*0.3+i+2)*3, sy + 40 + i*12, sx + 8 + headDir + Math.sin(breath*0.4+i+2)*4, sy + 55 + i*14);
+      ctx.stroke();
+    }
+    ctx.restore();
 
   }, [accentColor, glowColor, lightingStyle, aestheticStyle, backgroundStyle]);
 
