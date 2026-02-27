@@ -4,8 +4,9 @@ import { ArrowRight, Copy, Check, X } from 'lucide-react';
 
 const ONBOARDING_KEY = 'poseprompt_onboarding_complete';
 
-// ─── Pose Figure Canvas ────────────────────────────────────────────────────────
-// A luminous filled-silhouette fashionista figure with flowing dress, scarf,
+// ─── Pose Figure SVG ─────────────────────────────────────────────────────────
+// An SVG-based fashion illustration with face features, watercolor filter,
+// multi-color palette (skin/dress/hair/scarf/shoes), flowing animations,
 // cat-eye sunglasses, and stiletto heels. Responds to pose/lighting/aesthetic/
 // background selections with smooth transitions and particle effects.
 
@@ -62,543 +63,504 @@ function lerpPose(current, target, t) {
   return result;
 }
 
-const PoseFigureCanvas = ({ pose = 'default', lightingStyle = null, aestheticStyle = null, backgroundStyle = null, selectionCount = 0 }) => {
-  const canvasRef = useRef(null);
+// ─── SVG Path Builders ───────────────────────────────────────────────────────
+
+function n(v) { return Math.round(v * 10) / 10; }
+function hsla(c) { return `hsla(${n(c.h)}, ${n(c.s)}%, ${n(c.l)}%, ${n(c.a)})`; }
+function hslaMod(c, dl, da) { return `hsla(${n(c.h)}, ${n(c.s)}%, ${n(c.l + (dl||0))}%, ${n(c.a + (da||0))})`; }
+function lerpColor(c, t, sp) { const s = sp || 0.025; c.h += (t.h - c.h) * s; c.s += (t.s - c.s) * s; c.l += (t.l - c.l) * s; c.a += (t.a - c.a) * s; }
+
+function limbPath(start, end, startW, endW) {
+  const dx = end.x - start.x, dy = end.y - start.y;
+  const len = Math.sqrt(dx*dx + dy*dy) || 1;
+  const nx = -dy / len, ny = dx / len;
+  const mx = (start.x + end.x) / 2, my = (start.y + end.y) / 2;
+  const aw = (startW + endW) / 2;
+  return `M ${n(start.x+nx*startW/2)},${n(start.y+ny*startW/2)} Q ${n(mx+nx*aw*0.55)},${n(my+ny*aw*0.55)} ${n(end.x+nx*endW/2)},${n(end.y+ny*endW/2)} Q ${n(end.x+nx*endW*0.1)},${n(end.y+ny*endW*0.1+1)} ${n(end.x-nx*endW/2)},${n(end.y-ny*endW/2)} Q ${n(mx-nx*aw*0.45)},${n(my-ny*aw*0.45)} ${n(start.x-nx*startW/2)},${n(start.y-ny*startW/2)} Z`;
+}
+
+function torsoPathD(p) {
+  return `M ${n(p.sL.x)},${n(p.sL.y)} Q ${n(p.head.x-6)},${n(p.sL.y-6)} ${n(p.head.x-6)},${n(p.head.y+18)} L ${n(p.head.x+6)},${n(p.head.y+18)} Q ${n(p.head.x+6)},${n(p.sR.y-6)} ${n(p.sR.x)},${n(p.sR.y)} C ${n(p.sR.x+3)},${n(p.sR.y+22)} ${n(p.torso.x+15)},${n(p.torso.y-12)} ${n(p.torso.x+12)},${n(p.torso.y)} C ${n(p.torso.x+14)},${n(p.torso.y+10)} ${n(p.hR.x+6)},${n(p.hR.y-6)} ${n(p.hR.x)},${n(p.hR.y)} Q ${n((p.hL.x+p.hR.x)/2)},${n(Math.max(p.hL.y,p.hR.y)+6)} ${n(p.hL.x)},${n(p.hL.y)} C ${n(p.hL.x-6)},${n(p.hL.y-6)} ${n(p.torso.x-14)},${n(p.torso.y+10)} ${n(p.torso.x-12)},${n(p.torso.y)} C ${n(p.torso.x-15)},${n(p.torso.y-12)} ${n(p.sL.x-3)},${n(p.sL.y+22)} ${n(p.sL.x)},${n(p.sL.y)} Z`;
+}
+
+function dressPathD(p, breath) {
+  const hemY = Math.max(p.kL.y, p.kR.y) + 18;
+  const flare = 24, fl = Math.sin(breath * 0.5) * 3, fl2 = Math.sin(breath * 0.4 + 1.2) * 2;
+  const mx = (p.hL.x + p.hR.x) / 2;
+  return `M ${n(p.hL.x-4)},${n(p.hL.y-3)} C ${n(p.hL.x-10)},${n((p.hL.y+hemY)/2)} ${n(p.kL.x-flare+fl)},${n(hemY-14)} ${n(p.kL.x-flare+fl)},${n(hemY)} Q ${n(mx-12)},${n(hemY+6+fl2)} ${n(mx)},${n(hemY+5+fl2)} Q ${n(mx+12)},${n(hemY+6+fl2)} ${n(p.kR.x+flare-fl)},${n(hemY)} C ${n(p.kR.x+flare-fl)},${n(hemY-14)} ${n(p.hR.x+10)},${n((p.hR.y+hemY)/2)} ${n(p.hR.x+4)},${n(p.hR.y-3)} Z`;
+}
+
+function hairBackD(p) {
+  const hx = p.head.x, hy = p.head.y, dir = (hx - 200) * 0.08;
+  return `M ${n(hx-12)},${n(hy-8)} C ${n(hx-20)},${n(hy-5)} ${n(hx-22+dir)},${n(hy+15)} ${n(hx-18+dir)},${n(hy+45)} C ${n(hx-16+dir)},${n(hy+60)} ${n(hx-14+dir)},${n(hy+65)} ${n(hx-10+dir)},${n(hy+55)} C ${n(hx-6)},${n(hy+40)} ${n(hx-4)},${n(hy+20)} ${n(hx)},${n(hy+10)} C ${n(hx+4)},${n(hy+20)} ${n(hx+6)},${n(hy+35)} ${n(hx+10+dir)},${n(hy+48)} C ${n(hx+14+dir)},${n(hy+58)} ${n(hx+16+dir)},${n(hy+55)} ${n(hx+18+dir)},${n(hy+42)} C ${n(hx+22+dir)},${n(hy+15)} ${n(hx+20)},${n(hy-5)} ${n(hx+12)},${n(hy-8)} Z`;
+}
+
+function scarfPathsD(p, breath) {
+  const sw1 = Math.sin(breath * 0.35) * 5, sw2 = Math.sin(breath * 0.28 + 0.8) * 4, sw3 = Math.sin(breath * 0.4 + 1.5) * 3;
+  const ny = (p.sL.y + p.sR.y) / 2 - 2;
+  const wrap = `M ${n(p.sL.x+8)},${n(ny-3)} Q ${n(p.head.x)},${n(ny+6)} ${n(p.sR.x-6)},${n(ny-2)} Q ${n(p.head.x)},${n(ny+11)} ${n(p.sL.x+8)},${n(ny+3)} Z`;
+  const sx = p.sR.x - 8, sy = ny;
+  const tail1 = `M ${n(sx)},${n(sy)} C ${n(sx+10+sw1)},${n(sy+28)} ${n(sx+3+sw2)},${n(sy+58)} ${n(sx+8+sw1+sw3)},${n(sy+88)} L ${n(sx+5+sw1+sw3)},${n(sy+92)} C ${n(sx-1+sw2)},${n(sy+60)} ${n(sx+5+sw1)},${n(sy+30)} ${n(sx-4)},${n(sy+4)} Z`;
+  const tail2 = `M ${n(sx-2)},${n(sy+2)} C ${n(sx+5+sw1*0.6)},${n(sy+20)} ${n(sx-1+sw2*0.7)},${n(sy+42)} ${n(sx+3+sw3)},${n(sy+60)} L ${n(sx+1+sw3)},${n(sy+63)} C ${n(sx-4+sw2*0.5)},${n(sy+42)} ${n(sx+1+sw1*0.4)},${n(sy+22)} ${n(sx-5)},${n(sy+5)} Z`;
+  return { wrap, tail1, tail2 };
+}
+
+// Strand configs
+const STRAND_CONFIGS = [
+  { side: -1, startAngle: -0.78, len: 65, width: 3.5, alphaBase: 0.5, offset: 0 },
+  { side: -1, startAngle: -0.65, len: 55, width: 2.5, alphaBase: 0.35, offset: 1.2 },
+  { side: -1, startAngle: -0.88, len: 48, width: 2, alphaBase: 0.25, offset: 2.5 },
+  { side: 1, startAngle: -0.22, len: 62, width: 3.5, alphaBase: 0.5, offset: 0.5 },
+  { side: 1, startAngle: -0.35, len: 52, width: 2.5, alphaBase: 0.35, offset: 1.8 },
+  { side: 1, startAngle: -0.12, len: 45, width: 2, alphaBase: 0.25, offset: 3 },
+];
+
+// ─── Background SVG Builders ─────────────────────────────────────────────────
+
+function buildBgSvg(bg) {
+  if (bg === 'garden') {
+    const vs = 'fill="none" stroke="rgba(34,197,94,0.06)" stroke-width="1.5" stroke-linecap="round"';
+    const lf = 'fill="none" stroke="rgba(34,197,94,0.05)" stroke-width="1.2"';
+    let wist = '';
+    for (let i = 0; i < 6; i++) { const wx = 50 + i * 62; wist += `<path d="M ${wx},0 C ${wx+8},20 ${wx-4},40 ${wx+4},55" fill="none" stroke="rgba(168,85,247,0.04)" stroke-width="1.2"/>`; }
+    return `<circle cx="60" cy="200" r="120" fill="rgba(34,197,94,0.05)"/><circle cx="340" cy="180" r="100" fill="rgba(34,197,94,0.035)"/><path d="M 25,400 C 35,300 45,220 55,150 C 50,100 60,60 65,20" ${vs}/><path d="M 375,400 C 365,280 350,200 345,130 C 350,80 340,40 335,0" ${vs}/><ellipse cx="48" cy="180" rx="14" ry="5" transform="rotate(-23 48 180)" ${lf}/><ellipse cx="58" cy="130" rx="14" ry="5" transform="rotate(-34 58 130)" ${lf}/><ellipse cx="352" cy="190" rx="14" ry="5" transform="rotate(23 352 190)" ${lf}/>${wist}`;
+  }
+  if (bg === 'coastal') {
+    let waves = '';
+    for (let w = 0; w < 5; w++) { const wy = 140 + w * 22; let d = ''; for (let x = 0; x <= 400; x += 8) { const y = wy + Math.sin(x * 0.025 + w * 1.8) * (2.5 + w * 0.8); d += (x === 0 ? 'M' : 'L') + ` ${n(x)},${n(y)} `; } waves += `<path d="${d}" fill="none" stroke="rgba(6,182,212,0.04)" stroke-width="0.8"/>`; }
+    return `<rect x="0" y="0" width="400" height="140" fill="rgba(6,100,150,0.04)"/><line x1="0" y1="125" x2="400" y2="123" stroke="rgba(6,182,212,0.07)" stroke-width="0.8"/>${waves}<rect x="0" y="330" width="400" height="70" fill="rgba(245,158,11,0.025)"/>`;
+  }
+  if (bg === 'studio') {
+    const fs = 'fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"';
+    return `<polygon points="30,30 85,30 200,380 100,380" fill="rgba(255,255,255,0.025)"/><polygon points="315,30 370,30 300,380 200,380" fill="rgba(255,255,255,0.025)"/><rect x="25" y="25" width="65" height="105" ${fs}/><line x1="57" y1="25" x2="57" y2="130" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><line x1="25" y1="77" x2="90" y2="77" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><rect x="310" y="25" width="65" height="105" ${fs}/><line x1="342" y1="25" x2="342" y2="130" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><line x1="310" y1="77" x2="375" y2="77" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/><line x1="0" y1="365" x2="400" y2="365" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/>`;
+  }
+  return '';
+}
+
+function buildAestheticSvg(aes) {
+  if (aes === 'timeless') return '<circle cx="200" cy="160" r="200" fill="rgba(245,180,80,0.04)"/>';
+  if (aes === 'indie') return '<circle cx="200" cy="200" r="220" fill="rgba(100,50,10,0.04)"/>';
+  if (aes === 'ethereal') return '<circle cx="130" cy="110" r="140" fill="rgba(168,85,247,0.04)"/><circle cx="280" cy="200" r="120" fill="rgba(236,72,153,0.03)"/><circle cx="170" cy="300" r="130" fill="rgba(6,182,212,0.025)"/>';
+  return '';
+}
+
+function buildLightingSvg(lt) {
+  if (lt === 'golden') return '<rect x="0" y="0" width="400" height="400" fill="rgba(245,180,60,0.05)"/>';
+  if (lt === 'dramatic') return '<rect x="0" y="0" width="200" height="400" fill="rgba(255,255,255,0.03)"/><rect x="200" y="0" width="200" height="400" fill="rgba(0,0,0,0.06)"/>';
+  if (lt === 'soft') return '<circle cx="200" cy="80" r="200" fill="rgba(255,255,255,0.04)"/>';
+  return '';
+}
+
+// ─── Pose Figure SVG Component ───────────────────────────────────────────────
+
+const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle = null, backgroundStyle = null, selectionCount = 0 }) => {
+  const svgRef = useRef(null);
   const animRef = useRef(null);
   const stateRef = useRef({
     currentPose: JSON.parse(JSON.stringify(FIGURE_POSES.default)),
     targetPose: FIGURE_POSES.default,
     morphProgress: 1,
     breath: 0,
-    figHue: 225, figSat: 15, figLight: 78, figAlpha: 0.35,
-    tgtHue: 225, tgtSat: 15, tgtLight: 78, tgtAlpha: 0.35,
-    glowHue: 225, glowSat: 30, glowAlpha: 0.25,
-    tgtGlowHue: 225, tgtGlowSat: 30, tgtGlowAlpha: 0.25,
+    colors: {
+      skin:  { h:25, s:35, l:80, a:0.85 },
+      dress: { h:280, s:22, l:72, a:0.55 },
+      hair:  { h:28, s:40, l:28, a:0.75 },
+      scarf: { h:310, s:28, l:72, a:0.5 },
+      shoe:  { h:280, s:18, l:35, a:0.65 },
+      glow:  { h:280, s:35, l:60, a:0.12 },
+    },
+    targets: {
+      skin:  { h:25, s:35, l:80, a:0.85 },
+      dress: { h:280, s:22, l:72, a:0.55 },
+      hair:  { h:28, s:40, l:28, a:0.75 },
+      scarf: { h:310, s:28, l:72, a:0.5 },
+      shoe:  { h:280, s:18, l:35, a:0.65 },
+      glow:  { h:280, s:35, l:60, a:0.12 },
+    },
     particles: [],
     burstParticles: [],
+    particleEls: [],
   });
 
   // Init particles
   useEffect(() => {
     const s = stateRef.current;
-    if (s.particles.length === 0) {
-      for (let i = 0; i < 50; i++) {
-        s.particles.push({
-          x: 60 + Math.random() * 280,
-          y: 30 + Math.random() * 340,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: -0.05 - Math.random() * 0.1,
-          size: 0.4 + Math.random() * 2.2,
-          alpha: 0.03 + Math.random() * 0.1,
-          phase: Math.random() * Math.PI * 2,
-          drift: 0.3 + Math.random() * 0.7,
-        });
-      }
+    if (s.particles.length > 0) return;
+    const layer = svgRef.current?.querySelector('#particleLayer');
+    if (!layer) return;
+    for (let i = 0; i < 50; i++) {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      const pt = {
+        el: c,
+        x: 60 + Math.random() * 280, y: 30 + Math.random() * 340,
+        vx: (Math.random() - 0.5) * 0.15, vy: -0.05 - Math.random() * 0.1,
+        size: 0.4 + Math.random() * 2.2, alpha: 0.03 + Math.random() * 0.1,
+        phase: Math.random() * Math.PI * 2, drift: 0.3 + Math.random() * 0.7,
+      };
+      c.setAttribute('r', pt.size);
+      c.setAttribute('cx', pt.x);
+      c.setAttribute('cy', pt.y);
+      c.setAttribute('fill', 'white');
+      c.setAttribute('opacity', pt.alpha);
+      layer.appendChild(c);
+      s.particles.push(pt);
     }
   }, []);
 
-  // Update targets when props change
+  // Init strand elements
+  const strandElsRef = useRef([]);
+  useEffect(() => {
+    const g = svgRef.current?.querySelector('#hairStrands');
+    if (!g || strandElsRef.current.length > 0) return;
+    STRAND_CONFIGS.forEach(sc => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-width', sc.width);
+      g.appendChild(path);
+      strandElsRef.current.push(path);
+    });
+  }, []);
+
+  // Update targets on prop change
   useEffect(() => {
     const s = stateRef.current;
     s.targetPose = FIGURE_POSES[pose] || FIGURE_POSES.default;
     s.morphProgress = 0;
 
-    // Color targets
-    s.tgtAlpha = 0.3 + selectionCount * 0.1;
-    if (aestheticStyle === 'timeless') { s.tgtHue = 40; s.tgtSat = 35; s.tgtLight = 78; }
-    else if (aestheticStyle === 'indie') { s.tgtHue = 30; s.tgtSat = 30; s.tgtLight = 72; }
-    else if (aestheticStyle === 'ethereal') { s.tgtHue = 270; s.tgtSat = 40; s.tgtLight = 80; }
-    else { s.tgtHue = 225; s.tgtSat = 15; s.tgtLight = 78; }
+    const count = selectionCount;
+    s.targets.skin = { h:25, s:35, l:80, a: 0.8 + count * 0.04 };
 
-    if (lightingStyle === 'golden') { s.tgtGlowHue = 40; s.tgtGlowSat = 60; s.tgtGlowAlpha = 0.35; }
-    else if (lightingStyle === 'dramatic') { s.tgtGlowHue = 0; s.tgtGlowSat = 0; s.tgtGlowAlpha = 0.4; }
-    else if (lightingStyle === 'soft') { s.tgtGlowHue = 210; s.tgtGlowSat = 25; s.tgtGlowAlpha = 0.3; }
-    else { s.tgtGlowHue = 225; s.tgtGlowSat = 30; s.tgtGlowAlpha = 0.2 + selectionCount * 0.04; }
+    if (aestheticStyle === 'timeless') {
+      s.targets.dress = { h:38, s:45, l:76, a:0.6 };
+      s.targets.scarf = { h:15, s:38, l:68, a:0.55 };
+      s.targets.shoe = { h:30, s:25, l:32, a:0.7 };
+    } else if (aestheticStyle === 'indie') {
+      s.targets.dress = { h:18, s:42, l:58, a:0.6 };
+      s.targets.scarf = { h:45, s:48, l:72, a:0.55 };
+      s.targets.shoe = { h:15, s:30, l:28, a:0.7 };
+    } else if (aestheticStyle === 'ethereal') {
+      s.targets.dress = { h:270, s:42, l:78, a:0.55 };
+      s.targets.scarf = { h:195, s:42, l:75, a:0.5 };
+      s.targets.shoe = { h:260, s:25, l:40, a:0.65 };
+    } else {
+      s.targets.dress = { h:280, s:22, l:72, a:0.5 + count * 0.05 };
+      s.targets.scarf = { h:310, s:28, l:72, a:0.45 + count * 0.04 };
+      s.targets.shoe = { h:280, s:18, l:35, a:0.6 + count * 0.03 };
+    }
+
+    s.targets.hair = { h:28, s:35 + count * 4, l:26 + count * 2, a:0.7 + count * 0.05 };
+
+    if (lightingStyle === 'golden') {
+      s.targets.glow = { h:40, s:60, l:60, a:0.22 };
+      s.targets.skin.h = 28; s.targets.skin.s = 42;
+    } else if (lightingStyle === 'dramatic') {
+      s.targets.glow = { h:0, s:0, l:50, a:0.25 };
+    } else if (lightingStyle === 'soft') {
+      s.targets.glow = { h:210, s:25, l:70, a:0.18 };
+    } else {
+      s.targets.glow = { h:280, s:35, l:60, a:0.1 + count * 0.04 };
+    }
 
     // Spawn burst
-    for (let i = 0; i < 20; i++) {
-      const angle = (i / 20) * Math.PI * 2 + Math.random() * 0.3;
-      const speed = 1 + Math.random() * 3;
-      s.burstParticles.push({
-        x: 200, y: 180,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1,
-        size: 1 + Math.random() * 3,
-        life: 0.7 + Math.random() * 0.3,
-        color: `hsla(${s.tgtHue}, 50%, 70%, 1)`,
-      });
+    const bl = svgRef.current?.querySelector('#burstLayer');
+    if (bl) {
+      for (let i = 0; i < 20; i++) {
+        const angle = (i / 20) * Math.PI * 2 + Math.random() * 0.3;
+        const speed = 1 + Math.random() * 3;
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('fill', `hsla(${s.targets.glow.h}, 50%, 70%, 1)`);
+        bl.appendChild(c);
+        s.burstParticles.push({
+          el: c, x: 200, y: 180,
+          vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
+          size: 1 + Math.random() * 3, life: 0.7 + Math.random() * 0.3,
+        });
+      }
     }
   }, [pose, lightingStyle, aestheticStyle, backgroundStyle, selectionCount]);
 
-  const drawFrame = useCallback((ctx) => {
-    const W = 400, H = 400;
+  // Update bg/aesthetic/lighting SVG content
+  useEffect(() => {
+    const el = svgRef.current?.querySelector('#bgLayer');
+    if (el) el.innerHTML = buildBgSvg(backgroundStyle);
+  }, [backgroundStyle]);
+
+  useEffect(() => {
+    const el = svgRef.current?.querySelector('#aestheticLayer');
+    if (el) el.innerHTML = buildAestheticSvg(aestheticStyle);
+  }, [aestheticStyle]);
+
+  useEffect(() => {
+    const el = svgRef.current?.querySelector('#lightingLayer');
+    if (el) el.innerHTML = buildLightingSvg(lightingStyle);
+  }, [lightingStyle]);
+
+  // Main animation loop
+  const animate = useCallback(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
     const s = stateRef.current;
-    ctx.clearRect(0, 0, W, H);
+    const $ = id => svg.querySelector('#' + id);
     s.breath += 0.018;
 
     // Interpolate colors
-    s.figHue += (s.tgtHue - s.figHue) * 0.02;
-    s.figSat += (s.tgtSat - s.figSat) * 0.02;
-    s.figLight += (s.tgtLight - s.figLight) * 0.02;
-    s.figAlpha += (s.tgtAlpha - s.figAlpha) * 0.02;
-    s.glowHue += (s.tgtGlowHue - s.glowHue) * 0.02;
-    s.glowSat += (s.tgtGlowSat - s.glowSat) * 0.02;
-    s.glowAlpha += (s.tgtGlowAlpha - s.glowAlpha) * 0.02;
+    for (const key in s.colors) lerpColor(s.colors[key], s.targets[key]);
 
-    // Pose interpolation
+    // Pose
     if (s.morphProgress < 1) {
       s.morphProgress = Math.min(1, s.morphProgress + 0.022);
       s.currentPose = lerpPose(s.currentPose, s.targetPose, easeInOutCubic(s.morphProgress));
     }
 
-    // Apply breathing
+    // Breathing
     const bOff = Math.sin(s.breath) * 1.8;
     const p = {};
     for (const key in s.currentPose) p[key] = { ...s.currentPose[key] };
     const breathMap = { head:0.3, neck:0.25, sL:0.15, sR:0.15, eL:0.08, eR:0.08, wL:0.04, wR:0.04 };
     Object.keys(breathMap).forEach(k => { if (p[k]) p[k].y += bOff * breathMap[k]; });
 
-    // ─── Environment ───
-    drawEnvironment(ctx, backgroundStyle, s.breath, W, H);
-    drawAesthetic(ctx, aestheticStyle, s.breath, W, H);
-    drawLighting(ctx, lightingStyle, W, H);
+    const skinC = hsla(s.colors.skin);
+    const dressC = hsla(s.colors.dress);
+    const hairC = hsla(s.colors.hair);
+    const scarfC = hsla(s.colors.scarf);
+    const shoeC = hsla(s.colors.shoe);
+    const glowC = hsla(s.colors.glow);
+    const detailC = hslaMod(s.colors.dress, 15, 0);
+    const dressWashC = hslaMod(s.colors.dress, 5, -0.25);
+    const foldC = hslaMod(s.colors.dress, 10, 0);
 
-    // ─── Ground shadow ───
-    ctx.save();
-    const heelBottomY = Math.max(p.fL.y, p.fR.y) + 18;
-    const shadowGrad = ctx.createRadialGradient(p.torso.x, heelBottomY, 5, p.torso.x, heelBottomY, 55);
-    shadowGrad.addColorStop(0, `hsla(${s.figHue}, ${s.figSat}%, 50%, 0.1)`);
-    shadowGrad.addColorStop(1, 'transparent');
-    ctx.fillStyle = shadowGrad;
-    ctx.beginPath();
-    ctx.ellipse(p.torso.x, heelBottomY, 55, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    // Ground shadow
+    const heelY = Math.max(p.fL.y, p.fR.y) + 18;
+    const gs = $('groundShadow');
+    if (gs) { gs.setAttribute('cx', n(p.torso.x)); gs.setAttribute('cy', n(heelY)); gs.setAttribute('fill', `hsla(${n(s.colors.glow.h)}, ${n(s.colors.glow.s)}%, 30%, 0.1)`); }
 
-    // ─── Figure gradient ───
-    const bodyGrad = ctx.createLinearGradient(200, p.head.y - 20, 200, 340);
-    bodyGrad.addColorStop(0, `hsla(${s.figHue}, ${s.figSat}%, ${s.figLight + 5}%, ${s.figAlpha + 0.08})`);
-    bodyGrad.addColorStop(0.4, `hsla(${s.figHue}, ${s.figSat + 5}%, ${s.figLight}%, ${s.figAlpha})`);
-    bodyGrad.addColorStop(1, `hsla(${s.figHue}, ${s.figSat}%, ${s.figLight - 8}%, ${s.figAlpha - 0.05})`);
+    // Figure glow
+    const fg = $('figGlow');
+    if (fg) { fg.setAttribute('cx', n(p.torso.x)); fg.setAttribute('cy', n((p.head.y + p.torso.y) / 2 + 20)); fg.setAttribute('fill', glowC); }
 
-    const glowPulse = 0.85 + Math.sin(s.breath * 0.6) * 0.15;
-    ctx.shadowBlur = 22;
-    ctx.shadowColor = `hsla(${s.glowHue}, ${s.glowSat}%, 60%, ${s.glowAlpha * glowPulse})`;
-    ctx.fillStyle = bodyGrad;
+    // Hair back
+    const hb = $('hairBack');
+    if (hb) { hb.setAttribute('d', hairBackD(p)); hb.setAttribute('fill', hairC); }
 
-    // Lower legs
-    drawFilledLimb(ctx, p.kL, p.fL, 10, 6);
-    drawFilledLimb(ctx, p.kR, p.fR, 10, 6);
-    // Heels
-    drawHeel(ctx, p.fL, -1);
-    drawHeel(ctx, p.fR, 1);
+    // Legs
+    const ll = $('legL'), lr = $('legR');
+    if (ll) { ll.setAttribute('d', limbPath(p.kL, p.fL, 10, 6)); ll.setAttribute('fill', skinC); }
+    if (lr) { lr.setAttribute('d', limbPath(p.kR, p.fR, 10, 6)); lr.setAttribute('fill', skinC); }
+
+    // Shoes
+    const sl = $('shoeL'), sr = $('shoeR');
+    if (sl) { sl.setAttribute('transform', `translate(${n(p.fL.x)},${n(p.fL.y)})`); sl.querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC)); }
+    if (sr) { sr.setAttribute('transform', `translate(${n(p.fR.x)},${n(p.fR.y)})`); sr.querySelectorAll('path').forEach(e => e.setAttribute('fill', shoeC)); }
+
     // Torso
-    drawTorso(ctx, p);
-    // Dress skirt
-    drawDressSkirt(ctx, p, s);
-    // Neckline
-    drawNeckline(ctx, p, s);
+    const tp = $('torsoPath');
+    if (tp) { tp.setAttribute('d', torsoPathD(p)); tp.setAttribute('fill', skinC); }
+
+    // Dress
+    const dp = dressPathD(p, s.breath);
+    const dw = $('dressWash'), dr = $('dressPath');
+    if (dw) { dw.setAttribute('d', dp); dw.setAttribute('fill', dressWashC); }
+    if (dr) { dr.setAttribute('d', dp); dr.setAttribute('fill', dressC); }
+
+    // Dress details
+    const neckY = (p.sL.y + p.sR.y) / 2;
+    const nd = $('necklineDetail');
+    if (nd) { nd.setAttribute('d', `M ${n(p.sL.x+7)},${n(neckY+2)} L ${n(p.head.x)},${n(neckY+16)} L ${n(p.sR.x-7)},${n(neckY+2)}`); nd.setAttribute('stroke', detailC); }
+    const bl = $('beltLine');
+    if (bl) { bl.setAttribute('d', `M ${n(p.torso.x-13)},${n(p.torso.y+1)} Q ${n(p.torso.x)},${n(p.torso.y+3)} ${n(p.torso.x+13)},${n(p.torso.y+1)}`); bl.setAttribute('stroke', detailC); }
+    const bk = $('buckle');
+    if (bk) { bk.setAttribute('x', n(p.torso.x-2)); bk.setAttribute('y', n(p.torso.y-1)); bk.setAttribute('width', '4'); bk.setAttribute('height', '4'); bk.setAttribute('fill', detailC); }
+
+    const hemY2 = Math.max(p.kL.y, p.kR.y) + 18;
+    const mx = (p.hL.x + p.hR.x) / 2;
+    const ft = p.hL.y + 8, fb = hemY2 - 6;
+    const fl = Math.sin(s.breath * 0.5) * 3;
+    ['fold1','fold2','fold3'].forEach((id, i) => {
+      const el = $(id);
+      if (!el) return;
+      el.setAttribute('stroke', foldC);
+      if (i === 0) el.setAttribute('d', `M ${n(mx-8)},${n(ft)} Q ${n(mx-12)},${n((ft+fb)/2)} ${n(mx-14+fl*0.3)},${n(fb)}`);
+      else if (i === 1) el.setAttribute('d', `M ${n(mx+6)},${n(ft)} Q ${n(mx+10)},${n((ft+fb)/2)} ${n(mx+12-fl*0.3)},${n(fb)}`);
+      else el.setAttribute('d', `M ${n(mx-1)},${n(ft-3)} Q ${n(mx)},${n((ft+fb)/2)} ${n(mx+1)},${n(fb)}`);
+    });
+
     // Arms
-    drawFilledLimb(ctx, p.sL, p.eL, 10, 7);
-    drawFilledLimb(ctx, p.eL, p.wL, 7, 4.5);
-    drawFilledLimb(ctx, p.sR, p.eR, 10, 7);
-    drawFilledLimb(ctx, p.eR, p.wR, 7, 4.5);
+    const aul = $('armUL'), all = $('armLL'), aur = $('armUR'), alr = $('armLR');
+    if (aul) { aul.setAttribute('d', limbPath(p.sL, p.eL, 10, 7)); aul.setAttribute('fill', skinC); }
+    if (all) { all.setAttribute('d', limbPath(p.eL, p.wL, 7, 4.5)); all.setAttribute('fill', skinC); }
+    if (aur) { aur.setAttribute('d', limbPath(p.sR, p.eR, 10, 7)); aur.setAttribute('fill', skinC); }
+    if (alr) { alr.setAttribute('d', limbPath(p.eR, p.wR, 7, 4.5)); alr.setAttribute('fill', skinC); }
+
     // Hands
-    ctx.beginPath(); ctx.ellipse(p.wL.x, p.wL.y + 2, 3.5, 4, 0.2, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(p.wR.x, p.wR.y + 2, 3.5, 4, -0.2, 0, Math.PI * 2); ctx.fill();
+    const hl = $('handL'), hr2 = $('handR');
+    if (hl) { hl.setAttribute('cx', n(p.wL.x)); hl.setAttribute('cy', n(p.wL.y+2)); hl.setAttribute('rx','3.5'); hl.setAttribute('ry','4'); hl.setAttribute('fill', skinC); }
+    if (hr2) { hr2.setAttribute('cx', n(p.wR.x)); hr2.setAttribute('cy', n(p.wR.y+2)); hr2.setAttribute('rx','3.5'); hr2.setAttribute('ry','4'); hr2.setAttribute('fill', skinC); }
+
     // Head
-    ctx.beginPath(); ctx.ellipse(p.head.x, p.head.y, 13, 16, 0, 0, Math.PI * 2); ctx.fill();
-    // Glasses
-    drawGlasses(ctx, p, s);
-    // Hair
-    ctx.shadowBlur = 12;
-    drawHair(ctx, p, s);
+    const hs = $('headShape');
+    if (hs) { hs.setAttribute('cx', n(p.head.x)); hs.setAttribute('cy', n(p.head.y)); hs.setAttribute('rx','14'); hs.setAttribute('ry','17'); hs.setAttribute('fill', skinC); }
+
+    // Face & glasses positions
+    const faceG = $('faceGroup');
+    if (faceG) faceG.setAttribute('transform', `translate(${n(p.head.x)}, ${n(p.head.y)})`);
+    const glassG = $('glassesGroup');
+    if (glassG) {
+      glassG.setAttribute('transform', `translate(${n(p.head.x)}, ${n(p.head.y)})`);
+      const gf = `hsla(${n(s.colors.dress.h)}, ${n(s.colors.dress.s+10)}%, ${n(s.colors.dress.l-5)}%, 0.08)`;
+      const gst = `hsla(${n(s.colors.dress.h)}, ${n(s.colors.dress.s)}%, ${n(s.colors.dress.l-20)}%, 0.35)`;
+      glassG.querySelectorAll('path').forEach((el, i) => { if (i < 2) { el.setAttribute('fill', gf); el.setAttribute('stroke', gst); } else el.setAttribute('stroke', gst); });
+      glassG.querySelectorAll('line').forEach(el => el.setAttribute('stroke', gst));
+    }
+
+    // Hair cap
+    const hc = $('hairCap');
+    if (hc) { hc.setAttribute('cx', n(p.head.x)); hc.setAttribute('cy', n(p.head.y-4)); hc.setAttribute('rx','16'); hc.setAttribute('ry','20'); hc.setAttribute('fill', hairC); }
+
+    // Hair strands
+    const headDir = (p.head.x - 200) * 0.12;
+    STRAND_CONFIGS.forEach((sc, i) => {
+      const el = strandElsRef.current[i];
+      if (!el) return;
+      const angle = Math.PI * sc.startAngle;
+      const sx = p.head.x + Math.cos(angle) * 18;
+      const sy = p.head.y + Math.sin(angle) * 18;
+      const sway = Math.sin(s.breath * 0.35 + sc.offset) * 3;
+      const sway2 = Math.sin(s.breath * 0.25 + sc.offset + 1) * 4;
+      el.setAttribute('d', `M ${n(sx)},${n(sy)} C ${n(sx+sc.side*8+headDir+sway)},${n(sy+sc.len*0.35)} ${n(sx+sc.side*4+headDir+sway2)},${n(sy+sc.len*0.65)} ${n(sx+sc.side*6+headDir+sway+sway2*0.5)},${n(sy+sc.len)}`);
+      el.setAttribute('stroke', hairC);
+      el.setAttribute('opacity', sc.alphaBase);
+    });
+
     // Scarf
-    drawScarf(ctx, p, s);
-    // Shadow off
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = 'transparent';
+    const sc = scarfPathsD(p, s.breath);
+    const sw = $('scarfWrap'), st1 = $('scarfTail1'), st2 = $('scarfTail2');
+    if (sw) { sw.setAttribute('d', sc.wrap); sw.setAttribute('fill', scarfC); }
+    if (st1) { st1.setAttribute('d', sc.tail1); st1.setAttribute('fill', scarfC); }
+    if (st2) { st2.setAttribute('d', sc.tail2); st2.setAttribute('fill', scarfC); }
 
     // Edge highlight
-    ctx.save();
-    ctx.globalAlpha = 0.08;
-    ctx.strokeStyle = `hsla(${s.figHue}, ${s.figSat + 20}%, 90%, 1)`;
-    ctx.lineWidth = 0.8;
-    ctx.beginPath();
-    ctx.ellipse(p.head.x, p.head.y, 13.5, 16.5, 0, -Math.PI * 0.7, Math.PI * 0.1);
-    ctx.stroke();
-    ctx.restore();
+    const eh = $('edgeHighlight');
+    if (eh) { eh.setAttribute('d', `M ${n(p.head.x-13.5)},${n(p.head.y)} A 13.5 16.5 0 0 1 ${n(p.head.x+5)},${n(p.head.y-16)}`); eh.setAttribute('stroke', `hsla(${n(s.colors.skin.h)}, ${n(s.colors.skin.s+20)}%, 92%, 0.12)`); }
 
-    // ─── Particles ───
-    drawParticles(ctx, s);
-  }, [lightingStyle, aestheticStyle, backgroundStyle]);
+    // Particles
+    const pHue = s.colors.glow.h;
+    s.particles.forEach(pt => {
+      pt.x += pt.vx + Math.sin(s.breath * 0.4 + pt.phase) * pt.drift * 0.15;
+      pt.y += pt.vy + Math.cos(s.breath * 0.25 + pt.phase) * 0.08;
+      pt.vx += (200 - pt.x) * 0.00003;
+      pt.vy += (190 - pt.y) * 0.00003;
+      if (pt.y < -10) { pt.y = 410; pt.x = 60 + Math.random() * 280; }
+      if (pt.y > 410) { pt.y = -10; pt.x = 60 + Math.random() * 280; }
+      if (pt.x < -10) pt.x = 410;
+      if (pt.x > 410) pt.x = -10;
+      const flicker = 0.5 + 0.5 * Math.sin(s.breath * 0.8 + pt.phase);
+      pt.el.setAttribute('cx', n(pt.x));
+      pt.el.setAttribute('cy', n(pt.y));
+      pt.el.setAttribute('opacity', n(pt.alpha * flicker));
+      pt.el.setAttribute('fill', `hsl(${n(pHue + (pt.phase*20)%40 - 20)}, 40%, 75%)`);
+    });
+
+    // Burst particles
+    s.burstParticles = s.burstParticles.filter(bp => {
+      bp.life -= 0.015;
+      if (bp.life <= 0) { bp.el?.parentNode?.removeChild(bp.el); return false; }
+      bp.x += bp.vx; bp.y += bp.vy; bp.vy += 0.02; bp.vx *= 0.99;
+      bp.el.setAttribute('cx', n(bp.x));
+      bp.el.setAttribute('cy', n(bp.y));
+      bp.el.setAttribute('r', n(bp.size * bp.life));
+      bp.el.setAttribute('opacity', n(bp.life * 0.6));
+      return true;
+    });
+
+    animRef.current = requestAnimationFrame(animate);
+  }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = 400 * dpr;
-    canvas.height = 400 * dpr;
-    ctx.scale(dpr, dpr);
-
-    let running = true;
-    const animate = () => {
-      if (!running) return;
-      drawFrame(ctx);
-      animRef.current = requestAnimationFrame(animate);
-    };
-    animate();
-    return () => {
-      running = false;
-      if (animRef.current) cancelAnimationFrame(animRef.current);
-    };
-  }, [drawFrame]);
+    animRef.current = requestAnimationFrame(animate);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, [animate]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: '100%', maxWidth: '420px', height: 'auto', aspectRatio: '400/400' }}
-    />
+    <svg ref={svgRef} viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '420px', height: 'auto', aspectRatio: '400/400' }}>
+      <defs>
+        <filter id="wcFilter" x="-8%" y="-8%" width="116%" height="116%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="3" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="softFilter">
+          <feGaussianBlur stdDeviation="0.6"/>
+        </filter>
+      </defs>
+
+      <g id="bgLayer"/>
+      <g id="aestheticLayer"/>
+      <g id="lightingLayer"/>
+
+      <ellipse id="groundShadow" cx="200" cy="366" rx="55" ry="6" fill="rgba(0,0,0,0.12)"/>
+
+      <g filter="url(#softFilter)">
+        <ellipse id="figGlow" cx="200" cy="190" rx="65" ry="120" fill="transparent"/>
+      </g>
+
+      <g id="figureLayer" filter="url(#wcFilter)">
+        <path id="hairBack" fill="transparent"/>
+        <path id="legL" fill="transparent"/>
+        <path id="legR" fill="transparent"/>
+        <g id="shoeL"><path d="M 3,-3 Q -8,-6 -18,-2 Q -12,2 2,1 Z"/><path d="M 1,0 L 5,13 7,14 3,14 0,1 Z"/></g>
+        <g id="shoeR"><path d="M -3,-3 Q 8,-6 18,-2 Q 12,2 -2,1 Z"/><path d="M -1,0 L -5,13 -7,14 -3,14 0,1 Z"/></g>
+        <path id="torsoPath" fill="transparent"/>
+        <path id="dressWash" fill="transparent" opacity="0.2" filter="url(#softFilter)"/>
+        <path id="dressPath" fill="transparent"/>
+        <path id="necklineDetail" fill="none" stroke="transparent" strokeWidth="1.2" strokeLinecap="round" opacity="0.15"/>
+        <path id="beltLine" fill="none" stroke="transparent" strokeWidth="1.8" strokeLinecap="round" opacity="0.18"/>
+        <rect id="buckle" fill="transparent" opacity="0.22"/>
+        <path id="fold1" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.06"/>
+        <path id="fold2" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.06"/>
+        <path id="fold3" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.06"/>
+        <path id="armUL" fill="transparent"/>
+        <path id="armLL" fill="transparent"/>
+        <path id="armUR" fill="transparent"/>
+        <path id="armLR" fill="transparent"/>
+        <ellipse id="handL" fill="transparent"/>
+        <ellipse id="handR" fill="transparent"/>
+        <ellipse id="headShape" fill="transparent"/>
+        <g id="faceGroup">
+          <path d="M -7.5,-1.5 Q -5.5,-4.5 -3,-1.5 Q -5.5,0.5 -7.5,-1.5 Z" fill="rgba(40,30,30,0.6)"/>
+          <path d="M 3,-1.5 Q 5.5,-4.5 7.5,-1.5 Q 5.5,0.5 3,-1.5 Z" fill="rgba(40,30,30,0.6)"/>
+          <path d="M -8.5,-1.8 Q -5.5,-5.2 -2.5,-2" fill="none" stroke="rgba(30,20,20,0.55)" strokeWidth="1.3" strokeLinecap="round"/>
+          <path d="M 2.5,-2 Q 5.5,-5.2 8.5,-1.8" fill="none" stroke="rgba(30,20,20,0.55)" strokeWidth="1.3" strokeLinecap="round"/>
+          <path d="M -8.8,-2 L -10,-3.5" fill="none" stroke="rgba(30,20,20,0.35)" strokeWidth="0.8" strokeLinecap="round"/>
+          <path d="M 8.8,-2 L 10,-3.5" fill="none" stroke="rgba(30,20,20,0.35)" strokeWidth="0.8" strokeLinecap="round"/>
+          <path d="M -9,-5.5 Q -5.5,-8.5 -2,-6" fill="none" stroke="rgba(50,35,25,0.4)" strokeWidth="1" strokeLinecap="round"/>
+          <path d="M 2,-6 Q 5.5,-8.5 9,-5.5" fill="none" stroke="rgba(50,35,25,0.4)" strokeWidth="1" strokeLinecap="round"/>
+          <path d="M -0.3,0 C -0.5,2.5 -1.5,4.5 -1,5.5 Q 0,6.2 1,5.5 C 1.5,4.5 0.5,2.5 0.3,0" fill="none" stroke="rgba(60,40,30,0.18)" strokeWidth="0.7" strokeLinecap="round"/>
+          <path d="M -3.5,7 Q -1.8,5.8 0,6.5 Q 1.8,5.8 3.5,7" fill="rgba(180,80,80,0.35)" stroke="rgba(160,60,60,0.3)" strokeWidth="0.6"/>
+          <path d="M -3.5,7 Q -1.5,9.5 0,10 Q 1.5,9.5 3.5,7" fill="rgba(180,80,80,0.28)" stroke="rgba(160,60,60,0.2)" strokeWidth="0.5"/>
+          <circle cx="-9" cy="3" r="4" fill="rgba(220,120,120,0.08)"/>
+          <circle cx="9" cy="3" r="4" fill="rgba(220,120,120,0.08)"/>
+        </g>
+        <g id="glassesGroup">
+          <path d="M -2,-3 C -3,-6.5 -9.5,-7.5 -12.5,-5 C -14.5,-3 -13.5,2.5 -10.5,3.5 C -7.5,4.5 -3,1 -2,-1 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.3)" strokeWidth="1.3"/>
+          <path d="M 2,-3 C 3,-6.5 9.5,-7.5 12.5,-5 C 14.5,-3 13.5,2.5 10.5,3.5 C 7.5,4.5 3,1 2,-1 Z" fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.3)" strokeWidth="1.3"/>
+          <path d="M -2,-2.5 Q 0,-4.5 2,-2.5" fill="none" stroke="rgba(0,0,0,0.3)" strokeWidth="1.1"/>
+          <line x1="-13" y1="-4.5" x2="-15" y2="-3" stroke="rgba(0,0,0,0.25)" strokeWidth="1"/>
+          <line x1="13" y1="-4.5" x2="15" y2="-3" stroke="rgba(0,0,0,0.25)" strokeWidth="1"/>
+        </g>
+        <ellipse id="hairCap" fill="transparent"/>
+        <g id="hairStrands"/>
+        <path id="scarfWrap" fill="transparent"/>
+        <path id="scarfTail1" fill="transparent"/>
+        <path id="scarfTail2" fill="transparent" opacity="0.6"/>
+      </g>
+
+      <path id="edgeHighlight" fill="none" stroke="transparent" strokeWidth="0.8" opacity="0.1"/>
+
+      <g id="particleLayer"/>
+      <g id="burstLayer"/>
+    </svg>
   );
 };
-
-// ─── Drawing Helpers ──────────────────────────────────────────────────────────
-
-function drawFilledLimb(ctx, start, end, startW, endW) {
-  const dx = end.x - start.x, dy = end.y - start.y;
-  const len = Math.sqrt(dx*dx + dy*dy) || 1;
-  const nx = -dy / len, ny = dx / len;
-  const midX = (start.x + end.x) / 2, midY = (start.y + end.y) / 2;
-  const avgW = (startW + endW) / 2;
-  ctx.beginPath();
-  ctx.moveTo(start.x + nx * startW/2, start.y + ny * startW/2);
-  ctx.quadraticCurveTo(midX + nx * avgW * 0.55, midY + ny * avgW * 0.55, end.x + nx * endW/2, end.y + ny * endW/2);
-  ctx.quadraticCurveTo(end.x + nx * endW * 0.1, end.y + ny * endW * 0.1 + 1, end.x - nx * endW/2, end.y - ny * endW/2);
-  ctx.quadraticCurveTo(midX - nx * avgW * 0.45, midY - ny * avgW * 0.45, start.x - nx * startW/2, start.y - ny * startW/2);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawTorso(ctx, p) {
-  ctx.beginPath();
-  ctx.moveTo(p.sL.x, p.sL.y);
-  ctx.quadraticCurveTo(p.head.x - 6, p.sL.y - 6, p.head.x - 6, p.head.y + 18);
-  ctx.lineTo(p.head.x + 6, p.head.y + 18);
-  ctx.quadraticCurveTo(p.head.x + 6, p.sR.y - 6, p.sR.x, p.sR.y);
-  ctx.bezierCurveTo(p.sR.x + 3, p.sR.y + 22, p.torso.x + 15, p.torso.y - 12, p.torso.x + 12, p.torso.y);
-  ctx.bezierCurveTo(p.torso.x + 14, p.torso.y + 10, p.hR.x + 6, p.hR.y - 6, p.hR.x, p.hR.y);
-  ctx.quadraticCurveTo((p.hL.x + p.hR.x) / 2, Math.max(p.hL.y, p.hR.y) + 6, p.hL.x, p.hL.y);
-  ctx.bezierCurveTo(p.hL.x - 6, p.hL.y - 6, p.torso.x - 14, p.torso.y + 10, p.torso.x - 12, p.torso.y);
-  ctx.bezierCurveTo(p.torso.x - 15, p.torso.y - 12, p.sL.x - 3, p.sL.y + 22, p.sL.x, p.sL.y);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawHeel(ctx, ankle, side) {
-  const dir = side;
-  ctx.beginPath();
-  ctx.moveTo(ankle.x - dir * 3, ankle.y - 3);
-  ctx.quadraticCurveTo(ankle.x + dir * 8, ankle.y - 6, ankle.x + dir * 18, ankle.y - 2);
-  ctx.quadraticCurveTo(ankle.x + dir * 12, ankle.y + 2, ankle.x - dir * 2, ankle.y + 1);
-  ctx.closePath();
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(ankle.x - dir * 1, ankle.y);
-  ctx.lineTo(ankle.x - dir * 5, ankle.y + 13);
-  ctx.lineTo(ankle.x - dir * 7, ankle.y + 14);
-  ctx.lineTo(ankle.x - dir * 3, ankle.y + 14);
-  ctx.lineTo(ankle.x - dir * 0, ankle.y + 1);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawDressSkirt(ctx, p, s) {
-  const hemY = Math.max(p.kL.y, p.kR.y) + 18;
-  const flare = 24;
-  const flutter = Math.sin(s.breath * 0.5) * 3;
-  const flutter2 = Math.sin(s.breath * 0.4 + 1.2) * 2;
-  const midX = (p.hL.x + p.hR.x) / 2;
-  ctx.beginPath();
-  ctx.moveTo(p.hL.x - 4, p.hL.y - 3);
-  ctx.bezierCurveTo(p.hL.x - 10, (p.hL.y + hemY) / 2, p.kL.x - flare + flutter, hemY - 14, p.kL.x - flare + flutter, hemY);
-  ctx.quadraticCurveTo(midX - 12, hemY + 6 + flutter2, midX, hemY + 5 + flutter2);
-  ctx.quadraticCurveTo(midX + 12, hemY + 6 + flutter2, p.kR.x + flare - flutter, hemY);
-  ctx.bezierCurveTo(p.kR.x + flare - flutter, hemY - 14, p.hR.x + 10, (p.hR.y + hemY) / 2, p.hR.x + 4, p.hR.y - 3);
-  ctx.closePath();
-  ctx.fill();
-  // Waist belt
-  ctx.save();
-  ctx.globalAlpha = 0.14;
-  ctx.strokeStyle = `hsla(${s.figHue}, ${s.figSat + 10}%, ${s.figLight + 15}%, 1)`;
-  ctx.lineWidth = 1.8;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(p.torso.x - 13, p.torso.y + 1);
-  ctx.quadraticCurveTo(p.torso.x, p.torso.y + 3, p.torso.x + 13, p.torso.y + 1);
-  ctx.stroke();
-  ctx.globalAlpha = 0.18;
-  ctx.fillStyle = `hsla(${s.figHue}, ${s.figSat + 10}%, ${s.figLight + 15}%, 1)`;
-  ctx.fillRect(p.torso.x - 2, p.torso.y - 1, 4, 4);
-  // Fold lines
-  ctx.globalAlpha = 0.05;
-  ctx.strokeStyle = `hsla(${s.figHue}, ${s.figSat}%, ${s.figLight + 10}%, 1)`;
-  ctx.lineWidth = 0.8;
-  const fT = p.hL.y + 8, fB = hemY - 6;
-  ctx.beginPath(); ctx.moveTo(midX - 8, fT); ctx.quadraticCurveTo(midX - 12, (fT + fB) / 2, midX - 14 + flutter * 0.3, fB); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(midX + 6, fT); ctx.quadraticCurveTo(midX + 10, (fT + fB) / 2, midX + 12 - flutter * 0.3, fB); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(midX - 1, fT - 3); ctx.quadraticCurveTo(midX, (fT + fB) / 2, midX + 1, fB); ctx.stroke();
-  ctx.restore();
-}
-
-function drawNeckline(ctx, p, s) {
-  ctx.save();
-  ctx.globalAlpha = 0.12;
-  ctx.strokeStyle = `hsla(${s.figHue}, ${s.figSat + 10}%, ${s.figLight + 15}%, 1)`;
-  ctx.lineWidth = 1.2;
-  ctx.lineCap = 'round';
-  const neckY = (p.sL.y + p.sR.y) / 2;
-  ctx.beginPath();
-  ctx.moveTo(p.sL.x + 7, neckY + 2);
-  ctx.lineTo(p.head.x, neckY + 16);
-  ctx.lineTo(p.sR.x - 7, neckY + 2);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawGlasses(ctx, p, s) {
-  ctx.save();
-  const hx = p.head.x, hy = p.head.y;
-  const glassAlpha = s.figAlpha + 0.15;
-  ctx.strokeStyle = `hsla(${s.figHue}, ${s.figSat + 10}%, ${s.figLight - 15}%, ${glassAlpha})`;
-  ctx.fillStyle = `hsla(${s.figHue}, ${s.figSat + 15}%, ${s.figLight - 5}%, ${s.figAlpha * 0.25})`;
-  ctx.lineWidth = 1.4;
-  // Left cat-eye lens
-  ctx.beginPath();
-  ctx.moveTo(hx - 2, hy - 3);
-  ctx.bezierCurveTo(hx - 3, hy - 6, hx - 9, hy - 7, hx - 12, hy - 5);
-  ctx.bezierCurveTo(hx - 14, hy - 3, hx - 13, hy + 2, hx - 10, hy + 3);
-  ctx.bezierCurveTo(hx - 7, hy + 4, hx - 3, hy + 1, hx - 2, hy - 1);
-  ctx.closePath(); ctx.fill(); ctx.stroke();
-  // Right cat-eye lens
-  ctx.beginPath();
-  ctx.moveTo(hx + 2, hy - 3);
-  ctx.bezierCurveTo(hx + 3, hy - 6, hx + 9, hy - 7, hx + 12, hy - 5);
-  ctx.bezierCurveTo(hx + 14, hy - 3, hx + 13, hy + 2, hx + 10, hy + 3);
-  ctx.bezierCurveTo(hx + 7, hy + 4, hx + 3, hy + 1, hx + 2, hy - 1);
-  ctx.closePath(); ctx.fill(); ctx.stroke();
-  // Bridge
-  ctx.lineWidth = 1.2;
-  ctx.beginPath(); ctx.moveTo(hx - 2, hy - 2.5); ctx.quadraticCurveTo(hx, hy - 4, hx + 2, hy - 2.5); ctx.stroke();
-  // Temple arms
-  ctx.lineWidth = 1; ctx.globalAlpha = 0.7;
-  ctx.beginPath(); ctx.moveTo(hx - 12.5, hy - 4.5); ctx.lineTo(hx - 14, hy - 3); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(hx + 12.5, hy - 4.5); ctx.lineTo(hx + 14, hy - 3); ctx.stroke();
-  ctx.restore();
-}
-
-function drawHair(ctx, p, s) {
-  const hx = p.head.x, hy = p.head.y;
-  const headDir = (hx - 200) * 0.12;
-  // Hair cap
-  ctx.beginPath();
-  ctx.ellipse(hx, hy - 4, 16, 20, 0, -Math.PI * 0.95, -Math.PI * 0.05);
-  ctx.fill();
-  // Flowing strands
-  ctx.save();
-  ctx.lineCap = 'round';
-  const strands = [
-    { side: -1, startAngle: -0.78, len: 65, width: 3.5, alphaBase: 0.5, offset: 0 },
-    { side: -1, startAngle: -0.65, len: 55, width: 2.5, alphaBase: 0.35, offset: 1.2 },
-    { side: -1, startAngle: -0.88, len: 48, width: 2, alphaBase: 0.25, offset: 2.5 },
-    { side: 1, startAngle: -0.22, len: 62, width: 3.5, alphaBase: 0.5, offset: 0.5 },
-    { side: 1, startAngle: -0.35, len: 52, width: 2.5, alphaBase: 0.35, offset: 1.8 },
-    { side: 1, startAngle: -0.12, len: 45, width: 2, alphaBase: 0.25, offset: 3 },
-  ];
-  strands.forEach(st => {
-    const angle = Math.PI * st.startAngle;
-    const sx = hx + Math.cos(angle) * 18;
-    const sy = hy + Math.sin(angle) * 18;
-    const sway = Math.sin(s.breath * 0.35 + st.offset) * 3;
-    const sway2 = Math.sin(s.breath * 0.25 + st.offset + 1) * 4;
-    ctx.globalAlpha = st.alphaBase;
-    ctx.lineWidth = st.width;
-    ctx.strokeStyle = ctx.fillStyle;
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.bezierCurveTo(
-      sx + st.side * 8 + headDir + sway, sy + st.len * 0.35,
-      sx + st.side * 4 + headDir + sway2, sy + st.len * 0.65,
-      sx + st.side * 6 + headDir + sway + sway2 * 0.5, sy + st.len
-    );
-    ctx.stroke();
-  });
-  ctx.restore();
-}
-
-function drawScarf(ctx, p, s) {
-  ctx.save();
-  const sway1 = Math.sin(s.breath * 0.35) * 5;
-  const sway2 = Math.sin(s.breath * 0.28 + 0.8) * 4;
-  const sway3 = Math.sin(s.breath * 0.4 + 1.5) * 3;
-  const scarfFill = `hsla(${s.figHue + 30}, ${s.figSat + 18}%, ${s.figLight + 2}%, ${s.figAlpha * 0.75})`;
-  ctx.fillStyle = scarfFill;
-  ctx.shadowBlur = 10;
-  ctx.shadowColor = `hsla(${s.figHue + 30}, ${s.figSat + 18}%, 60%, ${s.glowAlpha * 0.4})`;
-  const neckY = (p.sL.y + p.sR.y) / 2 - 2;
-  ctx.beginPath();
-  ctx.moveTo(p.sL.x + 8, neckY - 3);
-  ctx.quadraticCurveTo(p.head.x, neckY + 6, p.sR.x - 6, neckY - 2);
-  ctx.quadraticCurveTo(p.head.x, neckY + 11, p.sL.x + 8, neckY + 3);
-  ctx.closePath(); ctx.fill();
-  const sx = p.sR.x - 8, sy = neckY;
-  ctx.beginPath();
-  ctx.moveTo(sx, sy);
-  ctx.bezierCurveTo(sx + 10 + sway1, sy + 28, sx + 3 + sway2, sy + 58, sx + 8 + sway1 + sway3, sy + 88);
-  ctx.lineTo(sx + 5 + sway1 + sway3, sy + 92);
-  ctx.bezierCurveTo(sx - 1 + sway2, sy + 60, sx + 5 + sway1, sy + 30, sx - 4, sy + 4);
-  ctx.closePath(); ctx.fill();
-  ctx.globalAlpha = 0.6;
-  ctx.beginPath();
-  ctx.moveTo(sx - 2, sy + 2);
-  ctx.bezierCurveTo(sx + 5 + sway1 * 0.6, sy + 20, sx - 1 + sway2 * 0.7, sy + 42, sx + 3 + sway3, sy + 60);
-  ctx.lineTo(sx + 1 + sway3, sy + 63);
-  ctx.bezierCurveTo(sx - 4 + sway2 * 0.5, sy + 42, sx + 1 + sway1 * 0.4, sy + 22, sx - 5, sy + 5);
-  ctx.closePath(); ctx.fill();
-  ctx.restore();
-}
-
-// ─── Environment / Aesthetic / Lighting ─────────────────────────────────────
-
-function drawEnvironment(ctx, bg, breath, W, H) {
-  if (bg === 'garden') {
-    ctx.save();
-    const g1 = ctx.createRadialGradient(60, 200, 10, 60, 200, 120);
-    g1.addColorStop(0, 'rgba(34, 197, 94, 0.06)'); g1.addColorStop(1, 'transparent');
-    ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
-    ctx.globalAlpha = 0.06; ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(25, H); ctx.bezierCurveTo(35, 300, 45, 220, 55, 150); ctx.bezierCurveTo(50, 100, 60, 60, 65, 20); ctx.stroke();
-    [[48,180,-0.4],[58,130,-0.6],[42,240,-0.3]].forEach(([lx,ly,rot]) => {
-      ctx.beginPath(); ctx.ellipse(lx, ly, 14, 5, rot + Math.sin(breath * 0.4) * 0.08, 0, Math.PI * 2); ctx.stroke();
-    });
-    ctx.beginPath(); ctx.moveTo(375, H); ctx.bezierCurveTo(365, 280, 350, 200, 345, 130); ctx.bezierCurveTo(350, 80, 340, 40, 335, 0); ctx.stroke();
-    [[352,190,0.4],[342,140,0.5],[358,260,0.3]].forEach(([lx,ly,rot]) => {
-      ctx.beginPath(); ctx.ellipse(lx, ly, 14, 5, rot - Math.sin(breath * 0.4) * 0.08, 0, Math.PI * 2); ctx.stroke();
-    });
-    ctx.globalAlpha = 0.045; ctx.strokeStyle = '#a855f7';
-    for (let i = 0; i < 6; i++) {
-      const wx = 50 + i * 62;
-      ctx.beginPath(); ctx.moveTo(wx, 0); ctx.bezierCurveTo(wx + 8, 20 + Math.sin(breath + i) * 2, wx - 4, 40 + Math.sin(breath * 0.7 + i) * 3, wx + 4, 55 + Math.sin(breath * 0.5 + i) * 4); ctx.stroke();
-    }
-    ctx.restore();
-  } else if (bg === 'coastal') {
-    ctx.save();
-    const sky = ctx.createLinearGradient(0, 0, 0, 140);
-    sky.addColorStop(0, 'rgba(6, 100, 150, 0.04)'); sky.addColorStop(1, 'transparent');
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, 140);
-    ctx.globalAlpha = 0.07; ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 0.8;
-    ctx.beginPath(); ctx.moveTo(0, 125); ctx.lineTo(W, 123); ctx.stroke();
-    ctx.globalAlpha = 0.04;
-    for (let w = 0; w < 5; w++) {
-      ctx.beginPath();
-      const wy = 140 + w * 22;
-      for (let x = 0; x <= W; x += 4) {
-        const y = wy + Math.sin(x * 0.025 + breath * 0.6 + w * 1.8) * (2.5 + w * 0.8);
-        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-    const haze = ctx.createLinearGradient(0, 110, 0, 170);
-    haze.addColorStop(0, 'rgba(200, 220, 240, 0.035)'); haze.addColorStop(1, 'transparent');
-    ctx.fillStyle = haze; ctx.fillRect(0, 110, W, 60);
-    ctx.restore();
-  } else if (bg === 'studio') {
-    ctx.save();
-    ctx.globalAlpha = 0.03; ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.moveTo(30, 30); ctx.lineTo(85, 30); ctx.lineTo(200, H - 20); ctx.lineTo(100, H - 20); ctx.closePath(); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(315, 30); ctx.lineTo(370, 30); ctx.lineTo(300, H - 20); ctx.lineTo(200, H - 20); ctx.closePath(); ctx.fill();
-    ctx.globalAlpha = 0.06; ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8;
-    ctx.strokeRect(25, 25, 65, 105);
-    ctx.beginPath(); ctx.moveTo(57, 25); ctx.lineTo(57, 130); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(25, 77); ctx.lineTo(90, 77); ctx.stroke();
-    ctx.strokeRect(310, 25, 65, 105);
-    ctx.beginPath(); ctx.moveTo(342, 25); ctx.lineTo(342, 130); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(310, 77); ctx.lineTo(375, 77); ctx.stroke();
-    ctx.globalAlpha = 0.04;
-    ctx.beginPath(); ctx.moveTo(0, 365); ctx.lineTo(W, 365); ctx.stroke();
-    ctx.restore();
-  }
-}
-
-function drawAesthetic(ctx, aesthetic, breath, W, H) {
-  if (aesthetic === 'timeless') {
-    const g = ctx.createRadialGradient(200, 160, 30, 200, 180, 240);
-    g.addColorStop(0, 'rgba(245, 180, 80, 0.06)'); g.addColorStop(0.5, 'rgba(245, 158, 11, 0.03)'); g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  } else if (aesthetic === 'indie') {
-    ctx.save(); ctx.globalAlpha = 0.03;
-    for (let i = 0; i < 100; i++) {
-      ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
-      ctx.fillRect(Math.random()*W, Math.random()*H, 0.5+Math.random()*1.5, 0.5+Math.random()*1.5);
-    }
-    ctx.restore();
-    const v = ctx.createRadialGradient(200, 200, 60, 200, 200, 260);
-    v.addColorStop(0, 'transparent'); v.addColorStop(1, 'rgba(100, 50, 10, 0.06)');
-    ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
-  } else if (aesthetic === 'ethereal') {
-    [{ x:130,y:110,r:140,c:'rgba(168,85,247,0.05)' },{ x:280,y:200,r:120,c:'rgba(236,72,153,0.04)' },{ x:170,y:300,r:130,c:'rgba(6,182,212,0.035)' }].forEach(w => {
-      const g = ctx.createRadialGradient(w.x, w.y, 10, w.x, w.y, w.r);
-      g.addColorStop(0, w.c); g.addColorStop(1, 'transparent');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    });
-  }
-}
-
-function drawLighting(ctx, lighting, W, H) {
-  if (lighting === 'golden') {
-    const g = ctx.createLinearGradient(0, 0, W, H);
-    g.addColorStop(0, 'rgba(245, 180, 60, 0.08)'); g.addColorStop(0.4, 'rgba(245, 158, 11, 0.03)'); g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  } else if (lighting === 'dramatic') {
-    const g = ctx.createLinearGradient(380, 0, 20, H);
-    g.addColorStop(0, 'rgba(255,255,255,0.07)'); g.addColorStop(0.25, 'transparent'); g.addColorStop(0.6, 'rgba(0,0,0,0.08)'); g.addColorStop(1, 'rgba(0,0,0,0.14)');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  } else if (lighting === 'soft') {
-    const g = ctx.createRadialGradient(200, 80, 30, 200, 200, 220);
-    g.addColorStop(0, 'rgba(255,255,255,0.07)'); g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  }
-}
-
-function drawParticles(ctx, s) {
-  ctx.save();
-  s.particles.forEach(pt => {
-    pt.x += pt.vx + Math.sin(s.breath * 0.4 + pt.phase) * pt.drift * 0.15;
-    pt.y += pt.vy + Math.cos(s.breath * 0.25 + pt.phase) * 0.08;
-    pt.vx += (200 - pt.x) * 0.00003;
-    pt.vy += (190 - pt.y) * 0.00003;
-    if (pt.y < -10) { pt.y = 410; pt.x = 60 + Math.random() * 280; }
-    if (pt.y > 410) { pt.y = -10; pt.x = 60 + Math.random() * 280; }
-    if (pt.x < -10) pt.x = 410;
-    if (pt.x > 410) pt.x = -10;
-    const flicker = 0.5 + 0.5 * Math.sin(s.breath * 0.8 + pt.phase);
-    ctx.globalAlpha = pt.alpha * flicker;
-    ctx.fillStyle = `hsla(${s.figHue + (pt.phase * 20) % 40 - 20}, 40%, 75%, 1)`;
-    ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); ctx.fill();
-  });
-  ctx.restore();
-  ctx.save();
-  s.burstParticles = s.burstParticles.filter(bp => {
-    bp.life -= 0.015;
-    if (bp.life <= 0) return false;
-    bp.x += bp.vx; bp.y += bp.vy; bp.vy += 0.02; bp.vx *= 0.99;
-    ctx.globalAlpha = bp.life * 0.6;
-    ctx.fillStyle = bp.color;
-    ctx.beginPath(); ctx.arc(bp.x, bp.y, bp.size * bp.life, 0, Math.PI * 2); ctx.fill();
-    return true;
-  });
-  ctx.restore();
-}
 
 
 // ─── Mini Demo Data ─────────────────────────────────────────────────────────────
@@ -787,7 +749,7 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
             </button>
 
             <div style={{ display: 'flex', flexDirection: 'row', minHeight: '520px' }} className="fte-layout">
-              {/* ─── Left: Canvas Figure ─── */}
+              {/* ─── Left: SVG Figure ─── */}
               <div style={{
                 flex: '0 0 46%',
                 display: 'flex',
@@ -817,7 +779,7 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                   />
                 )}
 
-                <PoseFigureCanvas
+                <PoseFigureSVG
                   pose={currentFigurePose}
                   lightingStyle={currentLighting}
                   aestheticStyle={selections.aesthetic?.id || null}
