@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PosePrompter - Onboarding Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: rgba(0, 0, 0, 0.92);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .modal {
+    background: linear-gradient(160deg, #0a0a10 0%, #111118 50%, #0d0d14 100%);
+    border-radius: 20px;
+    max-width: 860px;
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: modalIn 0.5s ease-out;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .skip-btn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.3);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: color 0.2s;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .skip-btn:hover { color: rgba(255,255,255,0.6); }
+
+  .layout {
+    display: flex;
+    flex-direction: row;
+    min-height: 480px;
+  }
+
+  .left-panel {
+    flex: 0 0 44%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    border-right: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .ambient-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 1s;
+    opacity: 0;
+  }
+
+  canvas {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    aspect-ratio: 400/380;
+  }
+
+  .prompt-preview {
+    width: 100%;
+    max-width: 340px;
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.4s ease;
+  }
+  .prompt-preview.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .prompt-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .prompt-label span {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .copy-btn {
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 5px;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.1); }
+  .copy-btn.copied {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34,197,94,0.3);
+    color: #22c55e;
+  }
+
+  .prompt-text {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.65;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    max-height: 80px;
+    overflow-y: auto;
+  }
+
+  .right-panel {
+    flex: 1;
+    padding: clamp(24px, 4vw, 40px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .right-panel h2 {
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight: 600;
+    color: #f4f4f5;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+    animation: fadeSlide 0.5s ease-out 0.15s both;
+  }
+  .right-panel > p {
+    font-size: clamp(13px, 2.5vw, 14.5px);
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 28px;
+    line-height: 1.55;
+    animation: fadeSlide 0.5s ease-out 0.2s both;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideX {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .category-group {
+    margin-bottom: 18px;
+    animation: fadeSlideX 0.4s ease-out both;
+  }
+  .category-group:nth-child(1) { animation-delay: 0.2s; }
+  .category-group:nth-child(2) { animation-delay: 0.28s; }
+  .category-group:nth-child(3) { animation-delay: 0.36s; }
+  .category-group:nth-child(4) { animation-delay: 0.44s; }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .category-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    transition: all 0.3s;
+  }
+  .category-dot.active { box-shadow: 0 0 8px var(--cat-color); }
+  .category-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: color 0.3s;
+  }
+
+  .option-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .option-btn {
+    padding: 9px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 9px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.25s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .option-btn:hover { transform: scale(1.03) translateY(-1px); }
+  .option-btn:active { transform: scale(0.97); }
+  .option-btn.selected { font-weight: 600; }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    margin-top: 28px;
+    animation: fadeSlide 0.5s ease-out 0.6s both;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 2px;
+    border-radius: 1px;
+    background: rgba(255,255,255,0.08);
+    transition: all 0.4s;
+  }
+  .progress-bar.filled { box-shadow: 0 0 6px var(--bar-color); }
+  .progress-count {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+
+  .info-text {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    animation: fadeSlide 0.5s ease-out 0.6s both;
+  }
+
+  .cta-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.5);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.35s;
+    font-family: inherit;
+    animation: fadeSlide 0.5s ease-out 0.6s both;
+  }
+  .cta-btn:hover { transform: scale(1.015) translateY(-1px); }
+  .cta-btn.active {
+    background: rgba(255,255,255,0.95);
+    color: #0a0a0f;
+    border: none;
+  }
+
+  @media (max-width: 680px) {
+    .layout { flex-direction: column; min-height: auto; }
+    .left-panel {
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 24px 16px 16px;
+      flex: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="modal">
+  <button class="skip-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    Skip
+  </button>
+
+  <div class="layout">
+    <!-- Left: Canvas Figure -->
+    <div class="left-panel">
+      <div class="ambient-glow" id="ambientGlow"></div>
+      <canvas id="figureCanvas" width="800" height="760"></canvas>
+
+      <div class="prompt-preview" id="promptPreview">
+        <div class="prompt-label">
+          <span>Your prompt</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy</button>
+        </div>
+        <div class="prompt-text" id="promptText"></div>
+      </div>
+    </div>
+
+    <!-- Right: Category Selectors -->
+    <div class="right-panel">
+      <h2>Shape your scene</h2>
+      <p>Pick from each category — watch the prompt build itself.</p>
+
+      <div id="categories"></div>
+
+      <div class="progress-row" id="progressRow"></div>
+      <div class="info-text" id="infoText">Each category adds a layer to the final prompt.</div>
+      <button class="cta-btn" id="ctaBtn" onclick="handleComplete()">
+        Skip to the studio
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Data ───────────────────────────────────────────────────────────────────
+
+const POSES = {
+  default: {
+    head:{x:200,y:60,r:22}, neck:{x:200,y:82},
+    sL:{x:168,y:105}, sR:{x:232,y:105},
+    torso:{x:200,y:170}, hL:{x:182,y:195}, hR:{x:218,y:195},
+    eL:{x:148,y:152}, eR:{x:252,y:152},
+    wL:{x:140,y:200}, wR:{x:260,y:200},
+    kL:{x:178,y:268}, kR:{x:222,y:268},
+    fL:{x:170,y:340}, fR:{x:230,y:340},
+  },
+  confident: {
+    head:{x:200,y:55,r:22}, neck:{x:200,y:77},
+    sL:{x:162,y:100}, sR:{x:238,y:100},
+    torso:{x:200,y:165}, hL:{x:178,y:192}, hR:{x:222,y:192},
+    eL:{x:142,y:150}, eR:{x:258,y:150},
+    wL:{x:145,y:195}, wR:{x:255,y:195},
+    kL:{x:172,y:265}, kR:{x:228,y:265},
+    fL:{x:160,y:340}, fR:{x:240,y:340},
+  },
+  relaxed: {
+    head:{x:195,y:62,r:22}, neck:{x:197,y:84},
+    sL:{x:166,y:108}, sR:{x:230,y:104},
+    torso:{x:198,y:172}, hL:{x:184,y:198}, hR:{x:216,y:195},
+    eL:{x:144,y:158}, eR:{x:256,y:142},
+    wL:{x:135,y:208}, wR:{x:265,y:180},
+    kL:{x:178,y:272}, kR:{x:224,y:264},
+    fL:{x:168,y:340}, fR:{x:238,y:340},
+  },
+  dramatic: {
+    head:{x:190,y:58,r:22}, neck:{x:193,y:80},
+    sL:{x:160,y:104}, sR:{x:234,y:100},
+    torso:{x:202,y:168}, hL:{x:190,y:196}, hR:{x:220,y:190},
+    eL:{x:132,y:140}, eR:{x:270,y:130},
+    wL:{x:110,y:170}, wR:{x:290,y:108},
+    kL:{x:182,y:270}, kR:{x:230,y:258},
+    fL:{x:174,y:340}, fR:{x:248,y:340},
+  },
+};
+
+const CATEGORIES = [
+  {
+    key: 'pose', label: 'Pose', color: '#10b981',
+    options: [
+      { id:'confident', label:'Confident Stance', pose:'confident', prompt:'shoulders back, commanding presence, subtle power stance, one foot slightly forward' },
+      { id:'relaxed', label:'Relaxed Lean', pose:'relaxed', prompt:'leaning against surface, one leg slightly bent, hip shifted, elegant S-curve' },
+      { id:'dramatic', label:'Dramatic Gesture', pose:'dramatic', prompt:'back half-turned, looking over shoulder, one hand raised, dynamic tension' },
+    ]
+  },
+  {
+    key: 'lighting', label: 'Lighting', color: '#f59e0b',
+    options: [
+      { id:'golden', label:'Golden Hour', lighting:'golden', prompt:'warm directional golden hour light, soft glow, elongated shadows, romantic ethereal radiance' },
+      { id:'dramatic', label:'Hard Light', lighting:'dramatic', prompt:'dramatic directional hard light, high-contrast, sharp shadows, theatrical' },
+      { id:'soft', label:'Soft Diffused', lighting:'soft', prompt:'soft diffused natural window light, gentle luminous glow, minimal shadows, dreamlike quality' },
+    ]
+  },
+  {
+    key: 'aesthetic', label: 'Aesthetic', color: '#a855f7',
+    options: [
+      { id:'timeless', label:'Timeless Elegance', prompt:'sophisticated timeless elegance, classic Hollywood portrait, serene understated luxury' },
+      { id:'indie', label:'Indie Film', prompt:'raw indie film warmth, candid documentary feel, analog grain, authentic moment' },
+      { id:'ethereal', label:'Ethereal Dream', prompt:'ethereal softness, dreamy pastels, curated cool, gentle otherworldly glow' },
+    ]
+  },
+  {
+    key: 'background', label: 'Background', color: '#06b6d4',
+    options: [
+      { id:'garden', label:'Estate Garden', prompt:'lush estate garden, cascading wisteria, romantic stone terraces, theatrical topiary' },
+      { id:'coastal', label:'Coastal', prompt:'private beach, weathered grey fence, sand dunes, soft mist over water' },
+      { id:'studio', label:'Minimalist Interior', prompt:'minimalist interior, high ceilings, large windows, sheer curtains, polished floors' },
+    ]
+  },
+];
+
+// ─── State ──────────────────────────────────────────────────────────────────
+
+let selections = {};
+let currentPose = {...POSES.default};
+let targetPose = POSES.default;
+let progress = 1;
+let breath = 0;
+let accentAlpha = 0.25;
+let lightingStyle = null;
+let glowColor = null;
+
+// ─── Canvas Drawing ─────────────────────────────────────────────────────────
+
+const canvas = document.getElementById('figureCanvas');
+const ctx = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+canvas.width = 400 * dpr;
+canvas.height = 380 * dpr;
+ctx.scale(dpr, dpr);
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+function easeInOut(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+function lerpPose(current, target, t) {
+  const result = {};
+  for (const key in target) {
+    result[key] = {};
+    for (const sub in target[key]) {
+      result[key][sub] = lerp(current[key]?.[sub] ?? target[key][sub], target[key][sub], t);
+    }
+  }
+  return result;
+}
+
+function drawFigure() {
+  ctx.clearRect(0, 0, 400, 380);
+  breath += 0.02;
+
+  if (progress < 1) {
+    progress = Math.min(1, progress + 0.025);
+    const t = easeInOut(progress);
+    currentPose = lerpPose(currentPose, targetPose, t);
+  }
+
+  const bOff = Math.sin(breath) * 2;
+  const p = {};
+  for (const key in currentPose) {
+    p[key] = { ...currentPose[key] };
+  }
+  // Breathing
+  const breathKeys = ['head','neck','sL','sR','eL','eR','wL','wR'];
+  const breathAmts = [0.3, 0.25, 0.15, 0.15, 0.08, 0.08, 0.04, 0.04];
+  breathKeys.forEach((k,i) => { if(p[k]) p[k].y += bOff * breathAmts[i]; });
+
+  // Background glow
+  if (glowColor) {
+    const grd = ctx.createRadialGradient(200,180,20,200,180,180);
+    grd.addColorStop(0, glowColor);
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0,0,400,380);
+  }
+
+  // Lighting overlays
+  if (lightingStyle === 'golden') {
+    const grd = ctx.createLinearGradient(0,0,400,380);
+    grd.addColorStop(0,'rgba(245,158,11,0.08)');
+    grd.addColorStop(0.5,'rgba(245,158,11,0.03)');
+    grd.addColorStop(1,'transparent');
+    ctx.fillStyle = grd; ctx.fillRect(0,0,400,380);
+  } else if (lightingStyle === 'dramatic') {
+    const grd = ctx.createLinearGradient(400,0,0,380);
+    grd.addColorStop(0,'rgba(255,255,255,0.06)');
+    grd.addColorStop(0.3,'transparent');
+    grd.addColorStop(0.7,'rgba(0,0,0,0.1)');
+    grd.addColorStop(1,'rgba(0,0,0,0.15)');
+    ctx.fillStyle = grd; ctx.fillRect(0,0,400,380);
+  } else if (lightingStyle === 'soft') {
+    const grd = ctx.createRadialGradient(200,100,40,200,200,200);
+    grd.addColorStop(0,'rgba(255,255,255,0.06)');
+    grd.addColorStop(1,'transparent');
+    ctx.fillStyle = grd; ctx.fillRect(0,0,400,380);
+  }
+
+  const col = `rgba(255,255,255,${accentAlpha})`;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  // Shadow
+  ctx.save();
+  ctx.globalAlpha = 0.06;
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.ellipse(p.torso.x, 355, 50, 6, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  function line(a, b, w=2.2) {
+    ctx.beginPath(); ctx.strokeStyle=col; ctx.lineWidth=w;
+    ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+  function curve(a, cp, b, w=2.2) {
+    ctx.beginPath(); ctx.strokeStyle=col; ctx.lineWidth=w;
+    ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(cp.x,cp.y,b.x,b.y); ctx.stroke();
+  }
+  function dot(pt, r=2.5) {
+    ctx.beginPath(); ctx.fillStyle=col; ctx.arc(pt.x,pt.y,r,0,Math.PI*2); ctx.fill();
+  }
+
+  const hipMid = { x:(p.hL.x+p.hR.x)/2, y:(p.hL.y+p.hR.y)/2 };
+
+  // Torso
+  curve(p.neck, {x:p.neck.x-2, y:(p.neck.y+p.torso.y)/2}, p.torso, 2.5);
+  // Shoulders
+  curve(p.sL, {x:p.neck.x, y:p.sL.y-4}, p.sR, 2.2);
+  // Hips
+  curve(p.hL, {x:p.torso.x, y:p.hL.y+2}, p.hR, 2.2);
+  line(p.torso, hipMid, 2.2);
+  // Arms
+  line(p.sL, p.eL, 2); line(p.eL, p.wL, 1.8);
+  line(p.sR, p.eR, 2); line(p.eR, p.wR, 1.8);
+  // Legs
+  line(p.hL, p.kL, 2.2); line(p.kL, p.fL, 2);
+  line(p.hR, p.kR, 2.2); line(p.kR, p.fR, 2);
+  // Joints
+  [p.sL,p.sR,p.eL,p.eR,p.hL,p.hR,p.kL,p.kR].forEach(pt => dot(pt,2.5));
+  [p.wL,p.wR,p.fL,p.fR].forEach(pt => dot(pt,2));
+  // Head
+  ctx.beginPath(); ctx.strokeStyle=col; ctx.lineWidth=2.2;
+  ctx.arc(p.head.x, p.head.y, p.head.r||22, 0, Math.PI*2); ctx.stroke();
+  // Eye line
+  const tilt = (p.head.x-200)*0.04;
+  ctx.beginPath(); ctx.strokeStyle=col; ctx.lineWidth=1.2; ctx.globalAlpha=0.4;
+  ctx.moveTo(p.head.x-8, p.head.y-3+tilt); ctx.lineTo(p.head.x+8, p.head.y-3-tilt);
+  ctx.stroke(); ctx.globalAlpha=1;
+  // Neck
+  line({x:p.head.x, y:p.head.y+(p.head.r||22)}, p.neck, 2);
+
+  requestAnimationFrame(drawFigure);
+}
+drawFigure();
+
+// ─── UI Rendering ───────────────────────────────────────────────────────────
+
+function render() {
+  const catContainer = document.getElementById('categories');
+  catContainer.innerHTML = '';
+
+  CATEGORIES.forEach((cat, catIdx) => {
+    const group = document.createElement('div');
+    group.className = 'category-group';
+    group.style.animationDelay = `${0.2 + catIdx * 0.08}s`;
+
+    const selected = selections[cat.key];
+    const dotColor = selected ? cat.color : 'rgba(255,255,255,0.15)';
+    const nameColor = selected ? cat.color : 'rgba(255,255,255,0.4)';
+
+    group.innerHTML = `
+      <div class="category-header">
+        <div class="category-dot ${selected ? 'active' : ''}" style="background:${dotColor}; --cat-color:${cat.color}"></div>
+        <span class="category-name" style="color:${nameColor}">${cat.label}</span>
+      </div>
+      <div class="option-row">
+        ${cat.options.map(opt => {
+          const isSel = selected?.id === opt.id;
+          const bg = isSel ? `${cat.color}18` : 'rgba(255,255,255,0.03)';
+          const border = isSel ? `${cat.color}50` : 'rgba(255,255,255,0.07)';
+          const color = isSel ? cat.color : 'rgba(255,255,255,0.55)';
+          return `<button class="option-btn ${isSel?'selected':''}"
+            style="background:${bg};border-color:${border};color:${color}"
+            onclick="selectOption('${cat.key}','${opt.id}')">${opt.label}</button>`;
+        }).join('')}
+      </div>
+    `;
+    catContainer.appendChild(group);
+  });
+
+  // Progress bars
+  const progressRow = document.getElementById('progressRow');
+  const count = Object.keys(selections).length;
+  progressRow.innerHTML = CATEGORIES.map(cat => {
+    const filled = !!selections[cat.key];
+    return `<div class="progress-bar ${filled?'filled':''}" style="background:${filled?cat.color:'rgba(255,255,255,0.08)'}; --bar-color:${cat.color}"></div>`;
+  }).join('') + `<span class="progress-count">${count}/${CATEGORIES.length}</span>`;
+
+  // Info text
+  const info = document.getElementById('infoText');
+  if (count === 0) info.textContent = 'Each category adds a layer to the final prompt.';
+  else if (count < CATEGORIES.length) info.textContent = `${CATEGORIES.length - count} more to explore \u2014 or dive in now.`;
+  else info.textContent = 'The full tool has 33 categories across pose, styling, camera, and more.';
+
+  // CTA
+  const cta = document.getElementById('ctaBtn');
+  cta.className = 'cta-btn' + (count > 0 ? ' active' : '');
+  cta.innerHTML = (count > 0 ? 'Open the full studio' : 'Skip to the studio') +
+    ' <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+
+  // Prompt preview
+  const preview = document.getElementById('promptPreview');
+  const promptText = document.getElementById('promptText');
+  if (count > 0) {
+    preview.classList.add('visible');
+    promptText.textContent = Object.values(selections).map(o => o.prompt).join('. ') + '.';
+  } else {
+    preview.classList.remove('visible');
+  }
+
+  // Ambient glow
+  const glow = document.getElementById('ambientGlow');
+  if (count > 0) {
+    const keys = Object.keys(selections);
+    const lastCat = CATEGORIES.find(c => c.key === keys[keys.length-1]);
+    const col = lastCat?.color || '#8b5cf6';
+    glow.style.background = `radial-gradient(ellipse at 50% 60%, ${col}08 0%, transparent 70%)`;
+    glow.style.opacity = '1';
+  } else {
+    glow.style.opacity = '0';
+  }
+}
+
+function selectOption(catKey, optId) {
+  const cat = CATEGORIES.find(c => c.key === catKey);
+  const opt = cat.options.find(o => o.id === optId);
+  selections[catKey] = opt;
+
+  // Update figure
+  if (opt.pose) { targetPose = POSES[opt.pose]; progress = 0; }
+  if (opt.lighting !== undefined) { lightingStyle = opt.lighting || null; }
+
+  // Update accent
+  const count = Object.keys(selections).length;
+  accentAlpha = Math.min(0.35 + count * 0.12, 0.75);
+
+  // Update glow
+  if (selections.aesthetic?.id === 'ethereal') glowColor = 'rgba(168,85,247,0.06)';
+  else if (selections.aesthetic?.id === 'timeless') glowColor = 'rgba(245,158,11,0.04)';
+  else if (selections.lighting?.id === 'golden') glowColor = 'rgba(245,158,11,0.05)';
+  else glowColor = null;
+
+  render();
+}
+
+function copyPrompt() {
+  const text = Object.values(selections).map(o => o.prompt).join('. ') + '.';
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function handleComplete() {
+  alert('This is a preview \u2014 in the real app, this opens the full studio with 33 categories.');
+}
+
+render();
+</script>
+</body>
+</html>
