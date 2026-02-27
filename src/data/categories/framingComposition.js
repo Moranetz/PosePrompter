@@ -417,6 +417,11 @@ export const Framing = [
     title: "Direct Selfie Deep-DOF Background Vertical",
     prompt: "Direct-to-camera selfie composition with a deep depth of field keeping the face sharply in focus while an organized background display is clearly visible but slightly softened — vertical portrait orientation emphasizing the face and expressive gaze as primary focal points — providing an aspirational context of curated taste behind the subject.",
   },
+  {
+    id: "framing_084",
+    title: "Low-Angle Wide-Lens Desk-Edge Vertical",
+    prompt: "Low-angle portrait from desk edge or floor level — wide lens exaggerating elongated limbs and angular pose so the subject dominates the frame like a towering figure — vertical portrait format tailored for magazine cover energy — the confrontational gaze as focal point — compressed depth of field keeping subject razor-sharp while the background recedes into grainy blur.",
+  },
 ];
 
 export const Perspective = [
@@ -1050,6 +1055,11 @@ export const CameraType = [
     id: "cameratype_108",
     title: "Smartphone Slightly Below Eye-Level Sharp Balanced",
     prompt: "Simulated capture on a high-quality smartphone from slightly below eye-level — producing a sharp well-lit image with balanced colors and a sophisticated light sensitivity — moderate depth of field keeping subject sharply in focus while the background of a minimalist stylish room is discernible but softly blurred providing an aspirational lifestyle context.",
+  },
+  {
+    id: "cameratype_109",
+    title: "Wide Lens Low-Angle Harsh Flash Editorial",
+    prompt: "Wide lens exaggerating proportions and commanding posture allowing the subject to dominate the frame — low-angle perspective from desk edge or floor level — harsh direct flash that blows out whites into glowing slabs of light making fabric glisten with unexpected highlights — depth of field compresses the scene so the subject is razor-sharp while the background recedes into grainy blur — raw editorial capture quality that feels both accidental and impossibly styled.",
   },
 ];
 

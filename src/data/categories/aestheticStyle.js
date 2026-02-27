@@ -578,6 +578,36 @@ export const Aesthetic = [
     title: "Selfie Ring Light Approachable Glamour",
     prompt: "Generate an image embodying a confident inviting aspirational selfie aesthetic — a personal social media selfie style designed for intimate connection and showcasing a luxurious lifestyle — relaxed and engaging body language typical of a direct-to-camera selfie — an organized luxurious display visible in the background providing aspirational context of success and curated taste — projecting approachable glamour and success fostering a sense of connection.",
   },
+  {
+    id: "aesthetic_111",
+    title: "Serene Floral Ethereal Intimate",
+    prompt: "Generate an image embodying a serene almost ethereal quality — calm and tranquil with a touch of romanticism — soft intimate pose with fingers gently touching lips and a subtle almost coy gaze — the subject surrounded by vibrant flowers in full bloom creating a lush natural backdrop — neutral background with minimal decoration allowing the focus to remain on subject and floral elements — the overall feel exudes gentle intimacy and natural beauty.",
+  },
+  {
+    id: "aesthetic_112",
+    title: "Moody Urban Mystery Dreamy",
+    prompt: "Generate an image embodying a dreamy slightly out-of-focus quality that adds a sense of mystery and depth — neutral expression with a slight hint of a smile — elegant accessories like pearls and silver creating understated sophistication — blurred city street context suggesting urban life while maintaining intimate focus on the subject — the overall feel is moody atmospheric and elegantly mysterious.",
+  },
+  {
+    id: "aesthetic_113",
+    title: "Intimate Minimalist Sensual Reclining",
+    prompt: "Generate an image embodying an intimate and sensual aesthetic — relaxed yet alluring reclining pose with hand raised to face creating vulnerability and mystery — plain muted gray or neutral wall providing minimalist somewhat moody atmosphere — emphasis on contours of the body and texture of sheets — the overall feel is intimate sensual and quietly provocative with a focus on the subject's relaxed pose.",
+  },
+  {
+    id: "aesthetic_114",
+    title: "Studious Tweed Mid-Century Casual",
+    prompt: "Generate an image embodying a casual and intimate atmosphere with a mix of modern and rustic elements — a moment of personal reflection and self-expression — formal yet stylish attire in a tailored tweed suit with plaid pattern — intently focused on work or study — sleek mid-century modern interior with decorative sphere golden glow adding cozy ambiance — the photograph captures a calm organized and intellectually engaged presence.",
+  },
+  {
+    id: "aesthetic_115",
+    title: "Raw Editorial Flash Deliberate Dissonance",
+    prompt: "Generate an image embodying deliberate dissonance — a formal archetype distorted into a rebellious almost predatory icon — formal business attire or studious dress staged in a pose more associated with album covers than professional settings — raw editorial anti-polished voyeuristic — a flash-lit shot that feels both accidental and impossibly styled — transforming traditional tailoring into something electric and aggressive — designed to unsettle and fascinate at the same time — pushing formal glamour to its provocative extreme.",
+  },
+  {
+    id: "aesthetic_116",
+    title: "Fashion Runway High-Fashion Spotlight",
+    prompt: "Generate an image embodying high fashion and glamour — a fashion runway scene with attention to detail and styling emphasizing a sophisticated modern aesthetic — focused and contemplative expression adjusting clothing — sleek styling with pinstriped blazer crisp dress shirt and bold striped tie — the overall atmosphere is one of elevated fashion with impeccable presentation and confident poise.",
+  },
 ];
 
 export const Lighting = [
@@ -960,6 +990,31 @@ export const Lighting = [
     id: "lighting_076",
     title: "Ring Light Diffused Indoor Flattering Selfie",
     prompt: "Soft even lighting likely from a ring light or diffused indoor source — creating flattering highlights on skin and a bright inviting glow without harsh shadows — giving the complexion an almost flawless airbrushed quality that is often sought after in selfie photography — warm inviting luminosity suited for intimate direct-to-camera compositions.",
+  },
+  {
+    id: "lighting_077",
+    title: "Soft Highlighting Floral Texture Serene",
+    prompt: "Soft lighting that highlights the textures of flowers and the smoothness of skin — gentle even illumination creating a serene almost ethereal quality — delicate light that enhances organic surfaces and complexion without harsh shadows or strong directionality.",
+  },
+  {
+    id: "lighting_078",
+    title: "Dim Moody Side-Lit Soft Glow",
+    prompt: "Dim lighting creating a moody atmosphere — light source coming from one side casting a soft glow on the face — contributing to a dreamy slightly out-of-focus quality — adding a sense of mystery and depth to the scene.",
+  },
+  {
+    id: "lighting_079",
+    title: "Soft Subtle Shadows Contour Sculpting",
+    prompt: "Soft lighting creating subtle shadows that emphasize the contours of the body and the texture of sheets and fabric — intimate and sculpting without harsh directional quality — a gentle illumination that defines form through nuanced shadow gradations.",
+  },
+  {
+    id: "lighting_080",
+    title: "Soft Warm Glow Indoor Cozy Ambient",
+    prompt: "Soft lighting casting a warm glow over the scene — contributing to a calm organized atmosphere with cozy ambiance — warm indoor illumination from ambient sources creating gentle highlights and a sense of domestic comfort.",
+  },
+  {
+    id: "lighting_081",
+    title: "Dramatic Spotlight Indoor Runway Contrast",
+    prompt: "Indoor spotlight focused on the central figure creating dramatic contrast between the brightly lit subject and the dim surroundings — theatrical illumination that separates subject from dark background — the kind of directional concentrated light typical of fashion runway or stage photography.",
   },
 ];
 
@@ -1419,6 +1474,26 @@ export const ColorPalette = [
     title: "Classic Black White Tweed Patent Light Wood",
     prompt: "Classic elegant color palette featuring timeless black and white tweed — crisp white of skirt and accessories — patent black of shoes and handbag — set against a clean modern interior with neutral walls and light wood flooring — sophisticated and refined.",
   },
+  {
+    id: "colorpalette_092",
+    title: "Light Pink White Green Beige Maroon Floral",
+    prompt: "Light pink of clothing contrasting with vibrant pink and white flower petals — green stems creating lush natural tones — neutral beige background — deep maroon nail accents — a delicate romantic palette dominated by soft florals and warm neutrals.",
+  },
+  {
+    id: "colorpalette_093",
+    title: "Black Dress Silver Pearl City Muted",
+    prompt: "Black dress as dominant tone — silver necklace and matching earrings — metallic blue nail polish accent — white building and dark metallic surfaces in background — muted urban palette with precious metal highlights adding understated sophistication.",
+  },
+  {
+    id: "colorpalette_094",
+    title: "Neutral Beige White Light Wood Gold Tweed",
+    prompt: "Neutral tones of beige white and light wood — brown tweed with dark green and black plaid hues — olive-green tote bag accent — golden glow from decorative elements — a calm organized palette that blends warm wood tones with earthy plaid and metallic warmth.",
+  },
+  {
+    id: "colorpalette_095",
+    title: "Stark Contrasts Glowing White Deep Black Metallic",
+    prompt: "Stark contrasts of glowing whites deep blacks and muted green-browns against washed-out beige — sharp metallic accents sparking on glasses and hardware — the palette sharpens under flash erasing warm tones and replacing them with cold gritty contrasts — electric and aggressive tonal range.",
+  },
 ];
 
 export const Texture = [
@@ -1781,6 +1856,21 @@ export const Texture = [
     id: "texture_072",
     title: "Smooth Skin Delicate Gold Necklace Varied Display",
     prompt: "Smooth texture of skin — delicate gold of a necklace catching light — and varied textures of accessories and display items in the background adding subtle visual interest and depth.",
+  },
+  {
+    id: "texture_073",
+    title: "Delicate Flower Petals Smooth Skin Green Stems",
+    prompt: "Large delicate petals of flowers in full bloom — green stems creating a lush natural backdrop — smoothness of skin — contrast between organic floral textures and smooth complexion — tactile richness of botanical elements rendered with serene clarity.",
+  },
+  {
+    id: "texture_074",
+    title: "Tweed Plaid White Shirt Structured Tote",
+    prompt: "Tailored brown tweed suit with plaid pattern of dark green brown and black hues — crisp white dress shirt underneath — structured olive-green tote bag with sharp lines — silver laptop surface — the mix of woven wool formal cotton and stiff canvas creating layered tactile interest.",
+  },
+  {
+    id: "texture_075",
+    title: "Wool Metallic Under Flash Glossy Starburst",
+    prompt: "Rich wool of sweater and rough tweed look almost metallic under harsh flash — glossy glasses throw starbursts — polished desk surface reflects stark light — hair strands blaze into golden streaks — every texture pops with electric aggressive intensity under the confrontational illumination.",
   },
 ];
 
@@ -2179,6 +2269,36 @@ export const Mood = [
     id: "mood_079",
     title: "Confident Inviting Aspirational Intimate Connection",
     prompt: "The overall mood is confident inviting and aspirational — embodying a personal social media selfie style designed for intimate connection — projecting approachable glamour and success fostering a sense of warm engagement.",
+  },
+  {
+    id: "mood_080",
+    title: "Calm Tranquil Serene Romantic Floral",
+    prompt: "The overall mood is calm and tranquil with a touch of romanticism — a serene almost ethereal quality — intimate and gently coy — suited for beauty editorials or personal brand imagery emphasizing natural grace and gentle femininity.",
+  },
+  {
+    id: "mood_081",
+    title: "Dreamy Mysterious Elegant Urban",
+    prompt: "The overall mood is dreamy and mysterious with elegant urban sophistication — the slightly out-of-focus quality adds a sense of depth and enigma — suited for moody fashion editorials or atmospheric personal portraiture.",
+  },
+  {
+    id: "mood_082",
+    title: "Intimate Sensual Relaxed Alluring",
+    prompt: "The overall mood is intimate and sensual with a focus on the subject's relaxed yet alluring presence — minimalist somewhat moody atmosphere — quietly provocative with emphasis on vulnerability and physical ease.",
+  },
+  {
+    id: "mood_083",
+    title: "Casual Intimate Studious Reflective",
+    prompt: "The overall mood is casual and intimate with personal reflection and self-expression — calm organized cozy — a moment of quiet concentration and intellectual engagement in a comfortable domestic setting.",
+  },
+  {
+    id: "mood_084",
+    title: "Deliberate Dissonance Rebellious Provocative Editorial",
+    prompt: "The overall mood is one of deliberate dissonance — a formal archetype distorted into a rebellious icon — raw editorial anti-polished voyeuristic — a flash-lit aesthetic that feels both accidental and impossibly styled — commanding and aloof confrontational presence — designed to unsettle and fascinate at the same time.",
+  },
+  {
+    id: "mood_085",
+    title: "High Fashion Glamour Sophisticated Runway",
+    prompt: "The overall mood is one of high fashion and glamour — sophisticated modern aesthetic with attention to detail and impeccable styling — focused contemplative confidence — dramatic theatrical presence suited for runway coverage or fashion editorial.",
   },
 ];
 

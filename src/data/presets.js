@@ -1245,6 +1245,70 @@ const presets = [
       Mood: "mood_079",
     },
   },
+  // ---- Batch 6 presets (6 sets from 13 raw prompt fragments) ----
+  {
+    id: "preset_b6_001",
+    title: "Serene Lily Floral Ethereal",
+    entries: {
+      Aesthetic: "aesthetic_111",
+      Lighting: "lighting_077",
+      ColorPalette: "colorpalette_092",
+      Texture: "texture_073",
+      Mood: "mood_080",
+    },
+  },
+  {
+    id: "preset_b6_002",
+    title: "Moody Urban Black Dress Pearls",
+    entries: {
+      Aesthetic: "aesthetic_112",
+      Lighting: "lighting_078",
+      ColorPalette: "colorpalette_093",
+      Mood: "mood_081",
+    },
+  },
+  {
+    id: "preset_b6_003",
+    title: "Intimate Minimalist Bed Sensual",
+    entries: {
+      Aesthetic: "aesthetic_113",
+      Lighting: "lighting_079",
+      Mood: "mood_082",
+    },
+  },
+  {
+    id: "preset_b6_004",
+    title: "Studious Tweed Mid-Century Casual",
+    entries: {
+      Aesthetic: "aesthetic_114",
+      Lighting: "lighting_080",
+      ColorPalette: "colorpalette_094",
+      Texture: "texture_074",
+      Mood: "mood_083",
+    },
+  },
+  {
+    id: "preset_b6_005",
+    title: "Raw Editorial Flash Deliberate Dissonance",
+    entries: {
+      Aesthetic: "aesthetic_115",
+      CameraType: "cameratype_109",
+      Framing: "framing_084",
+      Lighting: "lighting_074",
+      ColorPalette: "colorpalette_095",
+      Texture: "texture_075",
+      Mood: "mood_084",
+    },
+  },
+  {
+    id: "preset_b6_006",
+    title: "Fashion Runway High-Fashion Spotlight",
+    entries: {
+      Aesthetic: "aesthetic_116",
+      Lighting: "lighting_081",
+      Mood: "mood_085",
+    },
+  },
 ];
 
 export default presets;
