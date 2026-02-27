@@ -1540,6 +1540,31 @@ const PhotoElementRandomizer = () => {
         title: "Pearl-Tinged Athletic",
         prompt: "Oversized cream cashmere sweater tucked into high-waisted pleated white tennis shorts with vintage Adidas Sambas grey with pearl-tinged laces creating effortless athletic elegance",
       },
+      {
+        id: "outfit_040",
+        title: "Suede Jacket Ribbed Tank Denim",
+        prompt: "Soft suede jacket in warm brown layered over a fine ribbed tank top in creamy white with subtle denim visible below - the combination of textures from buttery suede to fine ribbing creates layered tactile richness with a grounded classic Americana feel",
+      },
+      {
+        id: "outfit_041",
+        title: "Plaid Shirt Teal Golden Warm",
+        prompt: "Plaid shirt with teal-blue and golden warm accents - the pattern provides vibrant harmonious color contrast with cooler teal tones making the warmer golden and brown elements pop - the fabric retains its pattern with a slightly desaturated muted feel that reads as effortlessly authentic",
+      },
+      {
+        id: "outfit_042",
+        title: "Light Flowing White Dress Kawaii",
+        prompt: "Light flowing white dress with subtle texture - the clean bright fabric acts as a luminous canvas for colorful environmental light spill while the flowing movement of the material adds whimsy and youthful energy",
+      },
+      {
+        id: "outfit_043",
+        title: "Beaded Tulle Gown Pale Gold",
+        prompt: "Delicate shimmering beaded gown in pale gold with tulle overlay - the intricate beadwork catches light creating dazzling specular highlights while the tulle adds ethereal softness and movement - the pale gold tone sings against muted backgrounds creating an expensive timeless red carpet aesthetic",
+      },
+      {
+        id: "outfit_044",
+        title: "Faux Fur Earmuffs Turtleneck Winter",
+        prompt: "Faux fur earmuffs paired with a sleek turtleneck in cool neutral tones - the plush texture of the fur contrasts with the smooth knit creating tactile visual interest - the winter styling conveys sophisticated warmth and high-fashion editorial elegance",
+      },
     ],
 
     'OutfitTop': [
@@ -1930,6 +1955,16 @@ const PhotoElementRandomizer = () => {
         id: "jewelry_010",
         title: "Small Charms Anklet",
         prompt: "Anklet with small charms",
+      },
+      {
+        id: "jewelry_011",
+        title: "Pearl Earrings Subtle Gleam",
+        prompt: "Pearl earrings with a subtle soft gleam - the pearls catch light with a delicate luminosity that conveys timeless elegance and refined sophistication",
+      },
+      {
+        id: "jewelry_012",
+        title: "Emerald Necklace Vibrant Depth",
+        prompt: "Emerald necklace with extraordinary vibrancy and depth of color - the rich green hues rendered with clarity that makes them visually pop against pale skin highlighting their preciousness and adding a striking jewel-toned accent",
       },
     ],
 
@@ -2899,6 +2934,31 @@ const PhotoElementRandomizer = () => {
         title: "Saxifraga Nature's Resilience",
         prompt: "Rugged wilderness scene with large weathered rocks in varied warm and cool greys deep browns and subtle reddish-browns showcasing mineral composition - lush vibrant mosses and ground cover in rich natural greens from bright lime to deep forest - tiny delicate pink star-shaped saxifraga flowers and creamy white blooms pushing through rock cracks - hints of dried moss in muted yellow-orange - high-angle intimate perspective revealing intricate textures and nature's resilience",
       },
+      {
+        id: "background_015",
+        title: "Suburban Poolside Chain-Link",
+        prompt: "Suburban backyard pool setting with chain-link fence and concrete deck - the mundane everyday quality of the environment creates contrast against the subject - chlorine-blue water and utilitarian fencing evoke a sense of suburban youth and unfiltered summer moments",
+      },
+      {
+        id: "background_016",
+        title: "Vintage Car Interior Warm Leather",
+        prompt: "Vintage car interior with worn leather seats in warm browns and rich patina - the car door frames the subject creating a sense of candid intimacy - sleek metal details and weathered dashboard elements add tactile depth - exterior foliage visible through the windows provides natural contrast to the enclosed cabin warmth",
+      },
+      {
+        id: "background_017",
+        title: "Japanese Gashapon Arcade Vibrant",
+        prompt: "Wall of colorful Japanese gashapon capsule toy machines with bright internal illumination - rows of vibrant reds pinks yellows and blues from the machine housings and their intricate toy graphics create a playful saturated backdrop - the internal lights of the machines cast a multi-hued colorful glow providing dramatic rim lighting and neon-like environmental color spill",
+      },
+      {
+        id: "background_018",
+        title: "Grand Staircase Marble Luxurious",
+        prompt: "Grand architectural staircase in polished marble with elegant banisters and refined lighting - the staircase rises behind the subject emphasizing their presence within a luxurious setting - cool marble surfaces and polished architectural details convey opulence and timeless sophistication - subtle warm lighting from above creates gentle highlights on the stone surfaces",
+      },
+      {
+        id: "background_019",
+        title: "Alpine Valley Snow-Capped Mountains",
+        prompt: "Breathtaking alpine landscape with snow-capped mountain peaks against a vast open sky - lush green valley with vibrant pine trees in the middle ground providing depth and life - crisp cool whites and subtle blue undertones in the snow convey fresh clean mountain air - the grandeur of the natural setting creates a sense of serene majesty and freedom",
+      },
     ],
     'Props': [
       {
@@ -2970,6 +3030,11 @@ const PhotoElementRandomizer = () => {
         id: "props_014",
         title: "Flower Crown Woodland Untamed",
         prompt: "A stunning and elaborate floral hairpiece, seamlessly integrated into an updo, creates a naturalistic and whimsical aesthetic, an arrangement of fresh flowers, foliage, and delicate sprigs, artfully placed to adorn the hair. The overall impression is one of a \"flower crown\" or a decorative floral cluster that is both lush and organic, evoking a garden or woodland feel, featuring a mix of textures, colors, and sizes, giving it depth and visual interest. Key elements include several small to medium-sized roses or rosebuds in soft, muted tones, primarily creamy white or pale ivory, and possibly a very light, blush pink, their classic, layered petals providing timeless elegance and volume. Interspersed among the lighter flowers are clusters of smaller, more delicate blooms in shades of soft lavender and vibrant fuchsia or deep purple, possibly small asters, heather, or similar field flowers, adding a pop of color and a more wild, rustic charm. Abundant greenery forms the base and fills the spaces between the flowers, including small, vibrant green leaves and delicate sprigs of other foliage, possibly eucalyptus or small ferns, adding varying shades and textures of green. Fine, airy sprigs of white baby's breath are woven throughout, their tiny, delicate white flowers adding a subtle, cloud-like texture and enhancing the ethereal quality. To further enhance the organic, natural look, several slender, wispy stalks of what appear to be dried grasses or delicate seed pods are present, often curving gracefully and extending outwards from the main floral clusters, adding height, movement, and a slightly wild, untamed feel. Barely visible, thin, dark ribbons or ties might be used to secure some floral elements. The arrangement is concentrated mainly on the back and side of the head, cascading slightly around the ear and extending towards the crown. The flowers are carefully integrated into the wearer's dark, styled hair, which appears to be in a loose, voluminous bun or low chignon, allowing the floral elements to be the dominant feature. The overall effect is incredibly romantic, whimsical, and sophisticated, perfect for a special occasion.",
+      },
+      {
+        id: "props_015",
+        title: "Pet Cat Intimate Foreground",
+        prompt: "A pet cat held close to the subject - the cat's soft fur provides a warm intimate foreground element that adds depth and tenderness to the composition - the animal creates an organic sense of connection and gentle companionship",
       },
     ],
   };
