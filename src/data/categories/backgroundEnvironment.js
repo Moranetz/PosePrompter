@@ -97,6 +97,11 @@ export const Background = [
     title: "Alpine Valley Snow-Capped Mountains",
     prompt: "Breathtaking alpine landscape with snow-capped mountain peaks against a vast open sky - lush green valley with vibrant pine trees in the middle ground providing depth and life - crisp cool whites and subtle blue undertones in the snow convey fresh clean mountain air - the grandeur of the natural setting creates a sense of serene majesty and freedom",
   },
+  {
+    id: "background_020",
+    title: "Gothic Cathedral Night Grandeur",
+    prompt: "Iconic Gothic cathedral at night towering against an inky black sky — warm upward-facing floodlights illuminate intricate stone carvings spires and flying buttresses creating stark contrasts between glowing stone and deep shadows within Gothic recesses — wet cobblestone pavement in the foreground acts as a mirror-like surface reflecting the cathedral's warm light and sparse city lights with shimmering ethereal quality — the overwhelming architectural scale makes any human figure appear small and solitary enhancing a sense of awe and elegant solitude",
+  },
 ];
 
 export const Props = [

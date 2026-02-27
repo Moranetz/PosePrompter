@@ -107,6 +107,11 @@ export const Framing = [
     title: "Medium-Close Low-Angle Architectural",
     prompt: "Maintain a medium-close slightly low-angle composition allowing the architecture to rise behind her emphasizing her presence within a grand or luxurious setting.",
   },
+  {
+    id: "framing_022",
+    title: "Centered Symmetrical Monumental Backdrop",
+    prompt: "Centered symmetrical composition with a majestic architectural structure filling the background emphasizing its overwhelming presence — subject positioned centrally in the lower third appearing small against the monumental backdrop enhancing the sense of solitude and purpose — the wide-angle perspective creates a sense of immense scale drawing the viewer into the scene and making them feel small in comparison",
+  },
 ];
 
 export const Perspective = [
@@ -244,7 +249,7 @@ export const CameraType = [
   {
     id: "cameratype_009",
     title: "PowerShot Gritty Realism",
-    prompt: "Captured with early 2000s consumer-grade digital point-and-shoot Canon PowerShot A-series with limited dynamic range creating gritty realism with clipped highlights and crushed shadows - lens exhibits slight softness or imperfection in focus especially towards edges and potentially subtle chromatic aberration color fringing around high-contrast areas - these optical characteristics deliberately embraced to create authentic un-retouched feel suggesting moment caught spontaneously rather than meticulously posed",
+    prompt: "This image must simulate being captured on an early 2000s consumer-grade digital point-and-shoot camera Canon PowerShot A-series. Limited dynamic range gritty realism - the camera's inherently limited dynamic range should be evident with highlights noticeably clipped and blown out and shadows deep and slightly crushed losing detail in both extremes - this lack of subtle tonal gradation is a signature of older digital cameras lending a gritty almost unforgiving realism to the scene mirroring raw unpolished emotion. Soft focus and chromatic aberration imperfect authenticity - the lens should exhibit a slight softness or imperfection in focus especially towards the edges and potentially subtle chromatic aberration color fringing around high-contrast areas - these optical characteristics are deliberately embraced to create an authentic un-retouched feel suggesting a moment caught spontaneously rather than meticulously posed",
   },
   {
     id: "cameratype_010",
