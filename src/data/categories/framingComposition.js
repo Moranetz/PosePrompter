@@ -122,6 +122,16 @@ export const Framing = [
     title: "Intimate Cat Bond Multi-Framing",
     prompt: "Close-up to mid-frame intimate composition capturing the tender bond between subject and cat. Profile framing as subject gazes tenderly at the cat creates a powerful emotional triangle between subject cat and viewer — the viewer becomes a silent witness to a private moment of genuine connection. Alternatively a slightly candid mid-frame composition with subject holding the cat gently and offering a direct gentle smile creates an immediate warm connection with the viewer. The framing should feel natural and affectionate — slightly off-center at eye-level allowing enough of the modern stylish interior to establish the sophisticated context while keeping the shared vulnerability and quiet affection as the undeniable emotional core.",
   },
+  {
+    id: "framing_025",
+    title: "Medium Off-Center Workspace Engagement",
+    prompt: "Medium to medium-close slightly off-center composition placing the subject within the frame to highlight natural engagement with workspace — looking towards laptop screen or leaning over notebook creating a sense of genuine focused interaction. Shelves or background elements provide context without distracting. The pose is engaged and natural — hands poised on keyboard or holding a pen — conveying deep concentration. Enough of the workspace environment is visible to establish the sophisticated productive context while keeping the subject as the clear emotional focal point.",
+  },
+  {
+    id: "framing_026",
+    title: "Side-Profile Whiteboard Dynamic Flow",
+    prompt: "Side-profile eye-level composition with the subject slightly off-center creating a dynamic yet balanced frame — leaning into a whiteboard arm extended mid-stroke in an engaged dynamic pose conveying musculoskeletal tension and balance. The camera captures the subtle fluid energy in her movement — the gentle tension in her shoulder the confident grip on the marker the calm intensity of her expression. Layered focus with an artfully shallow depth of field — the plane of critical focus woven through the tip of the marker the text being written and the eyes if visible creating a visual pathway of thought. Foreground and background dissolve into creamy gentle bokeh making the subject and her work the undeniable heart of the image without harsh isolation.",
+  },
 ];
 
 export const Perspective = [
@@ -375,5 +385,25 @@ export const CameraType = [
     id: "cameratype_032",
     title: "Full-Frame Fast Prime Cozy Intimate",
     prompt: "Captured on a premium full-frame mirrorless camera Sony a7 IV or a7 III or a7C or Fujifilm X-T5 or X-T4 paired with a fast prime lens 35mm f/1.4 or 50mm f/1.8. Depth of field moderately shallow to exceptionally shallow creating a soft creamy velvety bokeh that gently blurs or melts the background into an indistinct wash of light and color — this effect strategically isolates the subjects emphasizing their bond and making them the undeniable emotional core of the image. Bokeh should be smooth and free of harsh edges contributing to overall warmth and intimacy — diffused light sources gently glow within the bokeh enhancing the dreamlike quality. Micro-detail and texture rendition renders skin with natural luminous quality and fine fur with phenomenal tactile precision — individual strands discernible even fine hairs of eyebrows rendered with phenomenal clarity. Subtle lens compression from the prime lens gently brings background elements closer creating an almost claustrophobic yet comforting closeness — an approachable intimacy that makes the viewer feel like a welcome guest drawn deeply into the subjects' shared space.",
+  },
+  {
+    id: "cameratype_033",
+    title: "Film DNA Poisson Grain Vignette",
+    prompt: "Simulate authentic analog film capture with deliberate Camera DNA markers — fine luminance noise exhibiting a Poisson distribution in the shadows creating organic grain structure matching ISO 400 film stock. Organic vignetting subtly darkening the corners of the frame drawing focus naturally inward. Kodak Portra color response curve enriching skin tones with warm fidelity and rendering blues with nostalgic depth. 14-stop dynamic range with soft highlight clipping preventing harsh blown-out areas while retaining luminous quality. Film rebate edges and subtle light leak simulation along frame borders adding tactile authenticity — the image should feel like it was physically captured on film not digitally generated.",
+  },
+  {
+    id: "cameratype_034",
+    title: "Canon 50mm f/1.2 L Dreamy Wide Open",
+    prompt: "Captured with a Canon 50mm f/1.2 L lens shot wide open — the signature dreamy softness of this lens at maximum aperture wraps the subject in a luminous haze while maintaining critical sharpness on the focal plane. Spherical aberration in the bokeh highlights creates soft glowing orbs with gentle halation. The extremely shallow depth of field isolates the subject with a creamy ethereal background separation that feels intimate and otherworldly. The lens exhibits a subtle warm color shift and smooth micro-contrast that flatters skin tones — a rendering quality that is unmistakably the Canon L-series character.",
+  },
+  {
+    id: "cameratype_035",
+    title: "X-T5 APS-C Rectilinear Workspace",
+    prompt: "Simulated capture on a Fujifilm X-T5 APS-C sensor with a standard zoom lens at 35mm equivalent focal length and f/2.8 aperture. Depth of field precisely controlled — critical focus plane on the workspace surface and subject's hands with gradual focus falloff across the body and subtle background bokeh with smooth highlight rendering. High acutance on hair strands and fabric texture with zero geometric distortion maintaining rectilinear projection throughout the frame. Minimal chromatic aberration ensuring clean edge definition. Edge-to-edge sharpness with complete absence of barrel or pincushion distortion presents a pristine unblemished visual field that mirrors the ideal of professional clarity and attention to detail.",
+  },
+  {
+    id: "cameratype_036",
+    title: "Vintage Optical Flaws Character",
+    prompt: "Deliberate vintage optical character serving as Camera DNA markers — subtle lateral chromatic aberration creating colored fringing at high-contrast edges. Complex field curvature where the plane of focus gently curves rather than remaining flat. Spherical aberration renders bokeh highlights with soft glowing edges rather than hard circles. Anisotropic bokeh from a cat's eye aperture effect causes out-of-focus highlights to stretch into elongated ovals toward the frame edges. Zeiss Planar-like contrast and color rendering with rich midtone separation. Characteristic Sonnar-style lens flare producing warm streaks and gentle veiling when light sources enter the frame. Foveon-like color separation where each color channel is captured with distinct spatial resolution creating unusually crisp color transitions without moiré.",
   },
 ];

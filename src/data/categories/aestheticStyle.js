@@ -173,6 +173,26 @@ export const Aesthetic = [
     title: "Cozy Intimate Cat Bond",
     prompt: "Generate an image that embodies a warm sophisticated and intimately wholesome cozy chic aesthetic exuding genuine affection and aspirational home comfort with a beloved pet. This delightful vibe is not merely captured but meticulously crafted by the camera's thoughtful rendering which elevates the scene beyond ordinary visual experience enhancing emotional textures beyond natural perception — an intimate cozy authenticity imbued with a soft dreamlike melancholia and the comforting presence of a cherished companion. The subject's pose should be natural and affectionate conveying a deep bond of shared vulnerability and quiet affection — the kind of cherished memory that feels both aspirational and deeply relatable. Perfectly suited for a high-end lifestyle social media feed a pet-lover's blog a home decor blog or a pet enthusiast community — designed to project genuine affection sophisticated comfort and aspirational yet approachable elegance.",
   },
+  {
+    id: "aesthetic_030",
+    title: "Serene Rustic Film Melancholy",
+    prompt: "Generate an image that embodies a serene idyllic and gently melancholic aura that feels authentically captured through a seasoned lens. The scene evokes rustic warmth — a woman seated on a weathered wooden porch in soft natural light — creating a quiet moment that feels timeless and deeply nostalgic. The overall atmosphere should feel like a cherished analog photograph discovered in an old shoebox — imperfect beautiful and emotionally resonant.",
+  },
+  {
+    id: "aesthetic_031",
+    title: "Ethereal Doll-Like Vulnerability",
+    prompt: "Generate an image that embodies an ethereal doll-like intensity with a tangible nostalgic aura of hyper-real vulnerability and cultivated innocence that feels physically captured. The subject gazes directly at the viewer with an unsettling yet captivating directness — her long hair fanned around her — her presence simultaneously fragile and commanding. The image should feel like it exists in a liminal space between fantasy and reality where innocence becomes its own form of power.",
+  },
+  {
+    id: "aesthetic_032",
+    title: "Japandi Focused Productivity",
+    prompt: "Generate an image that embodies a serene focused productivity and aspirational comfort aesthetic achieved through the clean almost luminous rendering characteristic of modern high-quality digital photography — subtly enhancing reality to create an inviting inspiring atmosphere. The environment reflects a blend of Japanese and Scandinavian design characterized by natural materials craftsmanship simplicity and a calm uncluttered aesthetic. Rattan elements natural wood and minimal decor point to thoughtful curated living. The subject radiates engaged intelligence and calm efficiency — the subtle glow from a laptop screen casts a cool reflection on face and hands indicating engagement with the digital world — an approachable radiance that communicates both diligence and genuine contentment.",
+  },
+  {
+    id: "aesthetic_033",
+    title: "Flow State Graceful Command",
+    prompt: "Generate an intimate hyper-realistic photograph that captures the graceful flow of a woman's deep focus — a quiet powerful moment of connection between thought and action rendered with elegant clarity. The subject is captured in a state of flow her body forming a graceful engaged curve as she works at a whiteboard. Her posture is one of balanced intention — there is energy in her extended arm but also poise in her stance. It is the posture of a dancer not a soldier — a moment of serene command. The camera captures the subtle fluid energy in her movement — the gentle tension in her shoulder the confident grip on the marker the calm intensity of her expression. The final image should radiate calm power focused grace and a sense of seamless flow between idea and execution. The technical prowess of the camera is used not to dominate the scene but to serve the beauty and clarity of the moment.",
+  },
 ];
 
 export const Lighting = [
@@ -270,6 +290,11 @@ export const Lighting = [
     id: "lighting_019",
     title: "Soft Indoor Ambient Specular Warmth",
     prompt: "Soft diffused ambient lighting mimicking a well-lit modern home interior with indirect light sources or natural window light filtering into a bedroom complemented by subtle warm fill. Light falls gently and evenly across subjects with gentle light fall-off creating flattering highlights that sculpt features with delicate three-dimensionality — nuanced transitions from light to shadow far more refined than what the eye typically registers intensifying a serene and slightly melancholic mood. This gentle illumination makes skin appear luminous and healthy and fur soft and inviting contributing to overall radiant warmth. Dynamic range ensures highlights are rendered without being blown out preserving detail and preventing a harsh look. Controlled soft specular highlights on jewelry earrings reflective surfaces and eyes should have a gentle yet distinct photographic sparkle — subtly communicating understated elegance. Open well-balanced shadows provide depth and form without becoming overly dark or crushed — the ability to retain detail and subtle color information in mid-tones and darker areas adds richness to fabrics textured surfaces and the overall cozy atmosphere. Soft diffused luminous highlights on cheekbones and the sheen of fur possess a gentle almost glowing quality indicating high dynamic range capture without harshness.",
+  },
+  {
+    id: "lighting_020",
+    title: "Even Diffused Workspace Luminous Clean",
+    prompt: "Even diffused ambient illumination mimicking bright indirect daylight or professional workspace lighting — gently illuminating face and workspace without harsh shadows or blown-out highlights. This creates a clean bright atmosphere that visually communicates calm efficiency and clarity of thought — a brightness that feels more consistently flattering than real-life conditions. Soft enveloping light wraps around the subject creating luminous highlights on skin and work surfaces with open transparent shadows that define form without harshness. Subtle cool reflection from laptop or monitor screens casts onto face and hands indicating digital engagement. Controlled specular highlights on laptop bezels whiteboard frames and polished surfaces communicate cleanliness and modernity — a subtle photographic sheen more pronounced and flattering than incidental office lighting. Preserved shadow detail in fabric folds and arm creases with no blown highlights despite bright background surfaces.",
   },
 ];
 
@@ -404,6 +429,21 @@ export const ColorPalette = [
     title: "Cozy Chic Rich Neutrals",
     prompt: "Warm inviting and slightly desaturated color grade reminiscent of a curated lifestyle blog or high-end interior design aesthetic. Rich neutrals dominate — charcoal grey warm off-whites and soft earth tones rendered with deep yet soft sophistication that feels luxurious not dull. Subtle warm tint with a gentle golden undertone enhances the feeling of comfort and invitation making the home environment feel welcoming and aspirational. Skin tones rendered with a natural healthy luminous glow rich in subtle undertones — warm peaches soft roses — appearing authentic and approachable. Sophisticated neutrals in fabrics and fur rendered with rich nuanced tones avoiding any flatness — the camera's color science accurately captures subtle variations creating understated luxury. Overall color harmony should be inviting and calming with muted background tones complementing subjects creating a cohesive curated visual experience.",
   },
+  {
+    id: "colorpalette_027",
+    title: "Clean Warm-Neutral Productive Radiance",
+    prompt: "Clean slightly warm-neutral color grade meticulously calibrated to evoke a modern polished aesthetic. Natural luminous skin tones rich in subtle undertones — warm browns soft reds — avoiding any artificial smoothness or overly saturated appearance contributing to approachable and inviting radiance. Balanced whites and neutral tones in background walls and paper should be clean without color casts creating a fresh uncluttered backdrop that enhances the feeling of an organized productive environment. Subtle vibrancy and positive energy in the overall color harmony contributing to the aspirational and comforting mood without being overtly bright or distracting.",
+  },
+  {
+    id: "colorpalette_028",
+    title: "Fujifilm Classic Chrome Profile",
+    prompt: "Fujifilm Classic Chrome color profile emulation — desaturated yet rich color rendering with subdued warm tones and deepened shadows. Colors appear muted and sophisticated with a documentary-like quality — reds shift toward orange greens become more olive and blues take on a cooler steel quality. Skin tones rendered with natural warmth but without the typical Portra-style flattery — more honest and grounded. Overall contrast is slightly elevated in the midtones creating a punchy yet refined look that feels editorial and timeless. The Classic Chrome rendering gives images a distinctly analog character without heavy grain — a digital interpretation of classic photojournalistic film stocks.",
+  },
+  {
+    id: "colorpalette_029",
+    title: "Soft Neutral Creative Whiteboard",
+    prompt: "Soft neutral color story with a whisper of warmth — whiteboard surfaces rendered as a bright clean white but not clinical or cold. Marker ink appears as vibrant intelligent blue or deep emerald green — colors that feel creative and focused against the neutral backdrop. Skin tones rendered with a natural healthy and luminous quality. Materials and clothing feel tactile and real with accurate color rendering. The overall palette creates a calm sophisticated workspace atmosphere where creative energy is expressed through selective pops of color against an otherwise restrained neutral foundation.",
+  },
 ];
 
 export const Texture = [
@@ -486,6 +526,11 @@ export const Texture = [
     id: "texture_016",
     title: "Cozy Knit Fur Fireplace Tactile",
     prompt: "Heightened tactile sensation with engaging softness — render all textures with exceptional almost tangible fidelity — soft chunky knit of a sweater the delicate weave of a top delicate fluffy cat fur with individual strands and hairs discernible smooth skin with natural luminous quality rough stacked stone of a fireplace the smooth surface of a TV soft rumpled linen bedding flowing sun-kissed hair strands and polished decor surfaces should all be viscerally tangible and highly detailed. Each individual hair on a cat's face and body should be discernible creating a visceral sense of touch and enhancing the feeling of warmth and comfort. This tactile richness showcasing the transformative capabilities of a high-resolution sensor and sharp lens makes the scene feel incredibly immersive and engaging — inviting the viewer to almost feel the softness and warmth — a depth of detail often enhanced by the photographic process.",
+  },
+  {
+    id: "texture_017",
+    title: "Professional Workspace Materials Tactile",
+    prompt: "Heightened tactile sensation with professional sensory richness — render all textures with exceptional almost tangible fidelity — subtle wrinkles in a linen-like shirt the smooth finish of a laptop the delicate texture of notebook paper the precise lines of a fountain pen the grain of a whiteboard surface and rattan elements should all be viscerally tangible and highly detailed. Hair strands rendered with high acutance and individual clarity. Fabric weave and clothing folds captured with precise micro-contrast. The micro-detail on workspace objects — keyboard keys pen barrels paper edges whiteboard marker tips — communicates the tactile reality of focused work. This textural richness grounds the image in relatable reality while elevating its visual quality inviting a closer more appreciative gaze into the productive world.",
   },
 ];
 
