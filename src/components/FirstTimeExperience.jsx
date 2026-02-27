@@ -1,36 +1,370 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MousePointer, Sparkles, Check, ArrowRight, Zap, Copy, X } from 'lucide-react';
-
-/**
- * FirstTimeExperience - Onboarding overlay for new users
- * 
- * Psychological hooks implemented:
- * 1. Immediate "first hit of delight" - shows them success within 10 seconds
- * 2. Perceived control - they click, something happens immediately
- * 3. Identity shift - positions them as "director" not "user"
- * 4. Reduces anxiety - shows how simple the tool is
- */
+import { ArrowRight, Copy, Check, X } from 'lucide-react';
 
 const ONBOARDING_KEY = 'poseprompt_onboarding_complete';
 
-// Quick demo options for the onboarding
-const quickMoods = [
-  { id: 'confident', label: 'Confident', color: '#f59e0b' },
-  { id: 'mysterious', label: 'Mysterious', color: '#8b5cf6' },
-  { id: 'playful', label: 'Playful', color: '#ec4899' },
+// ─── Pose Figure Canvas ────────────────────────────────────────────────────────
+// A minimal, elegant line-art figure drawn on canvas that responds to selections.
+// Inspired by artist mannequins / fashion illustration croquis.
+
+const FIGURE_POSES = {
+  default: {
+    head: { x: 200, y: 60, radius: 22 },
+    neck: { x: 200, y: 82 },
+    shoulderL: { x: 168, y: 105 },
+    shoulderR: { x: 232, y: 105 },
+    torso: { x: 200, y: 170 },
+    hipL: { x: 182, y: 195 },
+    hipR: { x: 218, y: 195 },
+    elbowL: { x: 148, y: 152 },
+    elbowR: { x: 252, y: 152 },
+    handL: { x: 140, y: 200 },
+    handR: { x: 260, y: 200 },
+    kneeL: { x: 178, y: 268 },
+    kneeR: { x: 222, y: 268 },
+    footL: { x: 170, y: 340 },
+    footR: { x: 230, y: 340 },
+  },
+  confident: {
+    head: { x: 200, y: 55, radius: 22 },
+    neck: { x: 200, y: 77 },
+    shoulderL: { x: 162, y: 100 },
+    shoulderR: { x: 238, y: 100 },
+    torso: { x: 200, y: 165 },
+    hipL: { x: 178, y: 192 },
+    hipR: { x: 222, y: 192 },
+    elbowL: { x: 142, y: 150 },
+    elbowR: { x: 258, y: 150 },
+    handL: { x: 145, y: 195 },
+    handR: { x: 255, y: 195 },
+    kneeL: { x: 172, y: 265 },
+    kneeR: { x: 228, y: 265 },
+    footL: { x: 160, y: 340 },
+    footR: { x: 240, y: 340 },
+  },
+  relaxed: {
+    head: { x: 195, y: 62, radius: 22 },
+    neck: { x: 197, y: 84 },
+    shoulderL: { x: 166, y: 108 },
+    shoulderR: { x: 230, y: 104 },
+    torso: { x: 198, y: 172 },
+    hipL: { x: 184, y: 198 },
+    hipR: { x: 216, y: 195 },
+    elbowL: { x: 144, y: 158 },
+    elbowR: { x: 256, y: 142 },
+    handL: { x: 135, y: 208 },
+    handR: { x: 265, y: 180 },
+    kneeL: { x: 178, y: 272 },
+    kneeR: { x: 224, y: 264 },
+    footL: { x: 168, y: 340 },
+    footR: { x: 238, y: 340 },
+  },
+  dramatic: {
+    head: { x: 190, y: 58, radius: 22 },
+    neck: { x: 193, y: 80 },
+    shoulderL: { x: 160, y: 104 },
+    shoulderR: { x: 234, y: 100 },
+    torso: { x: 202, y: 168 },
+    hipL: { x: 190, y: 196 },
+    hipR: { x: 220, y: 190 },
+    elbowL: { x: 132, y: 140 },
+    elbowR: { x: 270, y: 130 },
+    handL: { x: 110, y: 170 },
+    handR: { x: 290, y: 108 },
+    kneeL: { x: 182, y: 270 },
+    kneeR: { x: 230, y: 258 },
+    footL: { x: 174, y: 340 },
+    footR: { x: 248, y: 340 },
+  },
+};
+
+function lerpPoint(a, b, t) {
+  const result = {};
+  for (const key in a) {
+    if (typeof a[key] === 'object') {
+      result[key] = {};
+      for (const sub in a[key]) {
+        result[key][sub] = a[key][sub] + (b[key][sub] - a[key][sub]) * t;
+      }
+    } else {
+      result[key] = a[key] + (b[key] - a[key]) * t;
+    }
+  }
+  return result;
+}
+
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.5)', glowColor = null, lightingStyle = null }) => {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+  const currentPoseRef = useRef(FIGURE_POSES.default);
+  const targetPoseRef = useRef(FIGURE_POSES.default);
+  const progressRef = useRef(1);
+  const breathRef = useRef(0);
+
+  useEffect(() => {
+    targetPoseRef.current = FIGURE_POSES[pose] || FIGURE_POSES.default;
+    progressRef.current = 0;
+  }, [pose]);
+
+  const drawFigure = useCallback((ctx, points, breath, width, height) => {
+    ctx.clearRect(0, 0, width, height);
+
+    // Subtle breath offset
+    const bOff = Math.sin(breath) * 2;
+
+    // Background glow behind figure
+    if (glowColor) {
+      const grd = ctx.createRadialGradient(200, 180, 20, 200, 180, 180);
+      grd.addColorStop(0, glowColor);
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    // Lighting effect overlays
+    if (lightingStyle === 'golden') {
+      const grd = ctx.createLinearGradient(0, 0, width, height);
+      grd.addColorStop(0, 'rgba(245, 158, 11, 0.08)');
+      grd.addColorStop(0.5, 'rgba(245, 158, 11, 0.03)');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, width, height);
+    } else if (lightingStyle === 'dramatic') {
+      const grd = ctx.createLinearGradient(width, 0, 0, height);
+      grd.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
+      grd.addColorStop(0.3, 'transparent');
+      grd.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
+      grd.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, width, height);
+    } else if (lightingStyle === 'soft') {
+      const grd = ctx.createRadialGradient(200, 100, 40, 200, 200, 200);
+      grd.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    const p = {
+      head: { x: points.head.x, y: points.head.y + bOff * 0.3, radius: points.head.radius },
+      neck: { x: points.neck.x, y: points.neck.y + bOff * 0.25 },
+      shoulderL: { x: points.shoulderL.x, y: points.shoulderL.y + bOff * 0.15 },
+      shoulderR: { x: points.shoulderR.x, y: points.shoulderR.y + bOff * 0.15 },
+      torso: { x: points.torso.x, y: points.torso.y },
+      hipL: { x: points.hipL.x, y: points.hipL.y },
+      hipR: { x: points.hipR.x, y: points.hipR.y },
+      elbowL: { x: points.elbowL.x, y: points.elbowL.y + bOff * 0.08 },
+      elbowR: { x: points.elbowR.x, y: points.elbowR.y + bOff * 0.08 },
+      handL: { x: points.handL.x, y: points.handL.y + bOff * 0.04 },
+      handR: { x: points.handR.x, y: points.handR.y + bOff * 0.04 },
+      kneeL: { x: points.kneeL.x, y: points.kneeL.y },
+      kneeR: { x: points.kneeR.x, y: points.kneeR.y },
+      footL: { x: points.footL.x, y: points.footL.y },
+      footR: { x: points.footR.x, y: points.footR.y },
+    };
+
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Draw shadow/reflection
+    ctx.save();
+    ctx.globalAlpha = 0.06;
+    ctx.fillStyle = accentColor;
+    ctx.beginPath();
+    ctx.ellipse(p.torso.x, 355, 50, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // --- Draw body lines ---
+    const drawLimb = (from, to, lineWidth = 2.2) => {
+      ctx.beginPath();
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = lineWidth;
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+    };
+
+    const drawCurvedLimb = (from, cp, to, lineWidth = 2.2) => {
+      ctx.beginPath();
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = lineWidth;
+      ctx.moveTo(from.x, from.y);
+      ctx.quadraticCurveTo(cp.x, cp.y, to.x, to.y);
+      ctx.stroke();
+    };
+
+    // Torso (curved for elegance)
+    const torsoMid = {
+      x: (p.shoulderL.x + p.shoulderR.x) / 2,
+      y: (p.neck.y + p.torso.y) / 2
+    };
+    drawCurvedLimb(p.neck, { x: torsoMid.x - 2, y: torsoMid.y }, p.torso, 2.5);
+
+    // Shoulders
+    drawCurvedLimb(p.shoulderL, { x: p.neck.x, y: p.shoulderL.y - 4 }, p.shoulderR, 2.2);
+
+    // Hip line
+    drawCurvedLimb(p.hipL, { x: p.torso.x, y: p.hipL.y + 2 }, p.hipR, 2.2);
+
+    // Torso to hips
+    drawLimb(p.torso, { x: (p.hipL.x + p.hipR.x) / 2, y: (p.hipL.y + p.hipR.y) / 2 }, 2.2);
+
+    // Arms
+    drawLimb(p.shoulderL, p.elbowL, 2);
+    drawLimb(p.elbowL, p.handL, 1.8);
+    drawLimb(p.shoulderR, p.elbowR, 2);
+    drawLimb(p.elbowR, p.handR, 1.8);
+
+    // Legs
+    drawLimb(p.hipL, p.kneeL, 2.2);
+    drawLimb(p.kneeL, p.footL, 2);
+    drawLimb(p.hipR, p.kneeR, 2.2);
+    drawLimb(p.kneeR, p.footR, 2);
+
+    // Joints as small circles
+    const drawJoint = (point, r = 3) => {
+      ctx.beginPath();
+      ctx.fillStyle = accentColor;
+      ctx.arc(point.x, point.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    [p.shoulderL, p.shoulderR, p.elbowL, p.elbowR, p.hipL, p.hipR, p.kneeL, p.kneeR].forEach(
+      pt => drawJoint(pt, 2.5)
+    );
+    [p.handL, p.handR, p.footL, p.footR].forEach(pt => drawJoint(pt, 2));
+
+    // Head
+    ctx.beginPath();
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 2.2;
+    ctx.arc(p.head.x, p.head.y, p.head.radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Subtle face line (tilt indicator)
+    const faceTilt = (p.head.x - 200) * 0.04;
+    ctx.beginPath();
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.4;
+    // Eye line
+    ctx.moveTo(p.head.x - 8, p.head.y - 3 + faceTilt);
+    ctx.lineTo(p.head.x + 8, p.head.y - 3 - faceTilt);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Neck
+    drawLimb(
+      { x: p.head.x, y: p.head.y + p.head.radius },
+      p.neck,
+      2
+    );
+
+  }, [accentColor, glowColor, lightingStyle]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 400 * dpr;
+    canvas.height = 380 * dpr;
+    ctx.scale(dpr, dpr);
+
+    let running = true;
+    const animate = () => {
+      if (!running) return;
+      breathRef.current += 0.02;
+
+      if (progressRef.current < 1) {
+        progressRef.current = Math.min(1, progressRef.current + 0.025);
+        const t = easeInOutCubic(progressRef.current);
+        currentPoseRef.current = lerpPoint(currentPoseRef.current, targetPoseRef.current, t);
+      } else {
+        currentPoseRef.current = targetPoseRef.current;
+      }
+
+      drawFigure(ctx, currentPoseRef.current, breathRef.current, 400, 380);
+      animRef.current = requestAnimationFrame(animate);
+    };
+    animate();
+
+    return () => {
+      running = false;
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, [drawFigure]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ width: '100%', maxWidth: '400px', height: 'auto', aspectRatio: '400/380' }}
+    />
+  );
+};
+
+
+// ─── Mini Demo Data ─────────────────────────────────────────────────────────────
+// Real categories from the tool, curated for a compelling first impression.
+
+const demoCategories = [
+  {
+    key: 'pose',
+    label: 'Pose',
+    color: '#10b981',
+    options: [
+      { id: 'confident', label: 'Confident Stance', figurePose: 'confident', prompt: 'shoulders back, commanding presence, subtle power stance, one foot slightly forward' },
+      { id: 'relaxed', label: 'Relaxed Lean', figurePose: 'relaxed', prompt: 'leaning against surface, one leg slightly bent, hip shifted, elegant S-curve' },
+      { id: 'dramatic', label: 'Dramatic Gesture', figurePose: 'dramatic', prompt: 'back half-turned, looking over shoulder, one hand raised, dynamic tension' },
+    ]
+  },
+  {
+    key: 'lighting',
+    label: 'Lighting',
+    color: '#f59e0b',
+    options: [
+      { id: 'golden', label: 'Golden Hour', lightingStyle: 'golden', prompt: 'warm directional golden hour light, soft glow, elongated shadows, romantic ethereal radiance' },
+      { id: 'dramatic', label: 'Hard Light', lightingStyle: 'dramatic', prompt: 'dramatic directional hard light, high-contrast, sharp shadows, theatrical' },
+      { id: 'soft', label: 'Soft Diffused', lightingStyle: 'soft', prompt: 'soft diffused natural window light, gentle luminous glow, minimal shadows, dreamlike quality' },
+    ]
+  },
+  {
+    key: 'aesthetic',
+    label: 'Aesthetic',
+    color: '#a855f7',
+    options: [
+      { id: 'timeless', label: 'Timeless Elegance', prompt: 'sophisticated timeless elegance, classic Hollywood portrait, serene understated luxury' },
+      { id: 'indie', label: 'Indie Film', prompt: 'raw indie film warmth, candid documentary feel, analog grain, authentic moment' },
+      { id: 'ethereal', label: 'Ethereal Dream', prompt: 'ethereal softness, dreamy pastels, curated cool, gentle otherworldly glow' },
+    ]
+  },
+  {
+    key: 'background',
+    label: 'Background',
+    color: '#06b6d4',
+    options: [
+      { id: 'garden', label: 'Estate Garden', prompt: 'lush estate garden, cascading wisteria, romantic stone terraces, theatrical topiary' },
+      { id: 'coastal', label: 'Coastal', prompt: 'private beach, weathered grey fence, sand dunes, soft mist over water' },
+      { id: 'studio', label: 'Minimalist Interior', prompt: 'minimalist interior, high ceilings, large windows, sheer curtains, polished floors' },
+    ]
+  },
 ];
 
+
+// ─── First Time Experience ──────────────────────────────────────────────────────
+
 const FirstTimeExperience = ({ onComplete, onSkip }) => {
-  const [step, setStep] = useState(0);
-  const [selectedMood, setSelectedMood] = useState(null);
-  const [showResult, setShowResult] = useState(false);
+  const [selections, setSelections] = useState({});
   const [isExiting, setIsExiting] = useState(false);
   const [copied, setCopied] = useState(false);
-  const skipButtonRef = useRef(null);
-  const firstMoodButtonRef = useRef(null);
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
 
-  // Check if user has already completed onboarding
   useEffect(() => {
     const completed = localStorage.getItem(ONBOARDING_KEY);
     if (completed === 'true') {
@@ -38,90 +372,88 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
     }
   }, [onComplete]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        handleSkip();
-      }
-      // Tab navigation for mood buttons
-      if (!selectedMood && e.key === 'Enter' && document.activeElement?.closest('[data-mood-button]')) {
-        const activeButton = document.activeElement.closest('[data-mood-button]');
-        if (activeButton) {
-          const moodId = activeButton.getAttribute('data-mood-id');
-          const mood = quickMoods.find(m => m.id === moodId);
-          if (mood) handleMoodSelect(mood);
-        }
-      }
+      if (e.key === 'Escape') handleSkip();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedMood]);
+  }, []);
 
-  // Auto-focus first mood button for keyboard users
-  useEffect(() => {
-    if (!selectedMood && firstMoodButtonRef.current) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        firstMoodButtonRef.current?.focus();
-      }, 100);
-    }
-  }, [selectedMood]);
-
-  const handleMoodSelect = (mood) => {
-    setSelectedMood(mood);
-    // Delay to show the selection, then reveal result
-    setTimeout(() => {
-      setShowResult(true);
-    }, 400);
-  };
-
-  const handleCopyPrompt = async () => {
-    const promptText = moodPrompts[selectedMood.id];
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(promptText);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } else {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = promptText;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      }
-    } catch (err) {
-      console.error('Copy failed:', err);
+  const handleSelect = (categoryKey, option) => {
+    setSelections(prev => ({ ...prev, [categoryKey]: option }));
+    // Auto-advance to next unfilled category
+    const nextIdx = demoCategories.findIndex(
+      (cat, i) => i > activeCategoryIndex && !selections[cat.key] && cat.key !== categoryKey
+    );
+    if (nextIdx !== -1) {
+      setTimeout(() => setActiveCategoryIndex(nextIdx), 300);
     }
   };
 
   const handleComplete = () => {
     setIsExiting(true);
     localStorage.setItem(ONBOARDING_KEY, 'true');
-    setTimeout(() => {
-      onComplete?.();
-    }, 500);
+    setTimeout(() => onComplete?.(), 500);
   };
 
   const handleSkip = () => {
     setIsExiting(true);
     localStorage.setItem(ONBOARDING_KEY, 'true');
-    setTimeout(() => {
-      onSkip?.();
-    }, 300);
+    setTimeout(() => onSkip?.(), 300);
   };
 
-  const moodPrompts = {
-    confident: "Direct gaze, chin slightly raised, shoulders back, commanding presence with subtle power stance...",
-    mysterious: "Averted gaze, face partially in shadow, enigmatic half-smile, contemplative stillness...",
-    playful: "Genuine laugh caught mid-moment, relaxed shoulders, dynamic movement, infectious energy...",
+  const handleCopy = async () => {
+    const text = buildPrompt();
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Copy failed:', err);
+    }
   };
+
+  const buildPrompt = () => {
+    return Object.values(selections)
+      .map(opt => opt.prompt)
+      .filter(Boolean)
+      .join('. ') + '.';
+  };
+
+  const selectionCount = Object.keys(selections).length;
+  const hasSelections = selectionCount > 0;
+  const currentFigurePose = selections.pose?.figurePose || 'default';
+  const currentLighting = selections.lighting?.lightingStyle || null;
+  const currentGlow = (() => {
+    if (selections.aesthetic?.id === 'ethereal') return 'rgba(168, 85, 247, 0.06)';
+    if (selections.aesthetic?.id === 'timeless') return 'rgba(245, 158, 11, 0.04)';
+    if (selections.lighting?.id === 'golden') return 'rgba(245, 158, 11, 0.05)';
+    return null;
+  })();
+
+  // Accent color for the figure based on latest selection
+  const figureAccent = (() => {
+    if (selectionCount === 0) return 'rgba(255,255,255,0.25)';
+    const colors = Object.keys(selections).map(key => {
+      const cat = demoCategories.find(c => c.key === key);
+      return cat?.color || '#fff';
+    });
+    // Blend toward white as more selections are made
+    const alpha = Math.min(0.35 + selectionCount * 0.12, 0.75);
+    return `rgba(255,255,255,${alpha})`;
+  })();
 
   return (
     <AnimatePresence>
@@ -130,441 +462,411 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4 }}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.9)',
-            backdropFilter: 'blur(8px)',
+            background: 'rgba(0, 0, 0, 0.92)',
+            backdropFilter: 'blur(12px)',
             zIndex: 10001,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px'
+            padding: '16px',
+            overflowY: 'auto',
           }}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             style={{
-              background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)',
+              background: 'linear-gradient(160deg, #0a0a10 0%, #111118 50%, #0d0d14 100%)',
               borderRadius: '20px',
-              padding: 'clamp(32px, 6vw, 48px)',
-              maxWidth: '520px',
+              maxWidth: '860px',
               width: '100%',
-              border: '1px solid rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.06)',
               position: 'relative',
               overflow: 'hidden',
-              maxHeight: '90vh',
-              overflowY: 'auto'
+              maxHeight: '92vh',
+              overflowY: 'auto',
             }}
           >
-            {/* Skip button */}
+            {/* Skip */}
             <button
-              ref={skipButtonRef}
               onClick={handleSkip}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleSkip();
-                }
-              }}
               aria-label="Skip introduction"
               style={{
                 position: 'absolute',
-                top: '16px',
-                right: '20px',
+                top: '14px',
+                right: '16px',
                 background: 'transparent',
                 border: 'none',
-                color: 'rgba(255,255,255,0.4)',
+                color: 'rgba(255,255,255,0.3)',
                 fontSize: '13px',
                 cursor: 'pointer',
                 padding: '8px 12px',
                 borderRadius: '6px',
-                transition: 'all 0.2s',
-                outline: 'none'
+                transition: 'color 0.2s',
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
               }}
-              onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.7)'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.4)'}
-              onFocus={(e) => {
-                e.target.style.color = 'rgba(255,255,255,0.7)';
-                e.target.style.outline = '2px solid rgba(255,255,255,0.3)';
-                e.target.style.outlineOffset = '2px';
-              }}
-              onBlur={(e) => {
-                e.target.style.color = 'rgba(255,255,255,0.4)';
-                e.target.style.outline = 'none';
-              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
             >
-              <X size={14} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }} />
+              <X size={14} />
               Skip
             </button>
 
-            {/* Step 1: The hook */}
-            {!selectedMood && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                {/* Icon */}
-                <div style={{
-                  width: '56px',
-                  height: '56px',
-                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%)',
-                  borderRadius: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '24px'
-                }}>
-                  <MousePointer size={26} color="#f59e0b" />
-                </div>
-
-                {/* Headline - speaks to their frustration */}
-                <h2 style={{
-                  fontSize: 'clamp(22px, 5vw, 28px)',
-                  fontWeight: '700',
-                  color: '#ffffff',
-                  marginBottom: '12px',
-                  letterSpacing: '-0.5px',
-                  lineHeight: '1.2'
-                }}>
-                  Stop typing. Start creating.
-                </h2>
-
-                <p style={{
-                  fontSize: 'clamp(14px, 3vw, 16px)',
-                  color: 'rgba(255,255,255,0.6)',
-                  marginBottom: '32px',
-                  lineHeight: '1.6'
-                }}>
-                  Generate perfect prompts with one click. Try it now—pick a mood:
-                </p>
-
-                {/* Quick selection buttons */}
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  marginBottom: '24px',
-                  flexWrap: 'wrap'
-                }}>
-                  {quickMoods.map((mood, index) => (
-                    <motion.button
-                      key={mood.id}
-                      ref={index === 0 ? firstMoodButtonRef : null}
-                      data-mood-button
-                      data-mood-id={mood.id}
-                      onClick={() => handleMoodSelect(mood)}
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      whileTap={{ scale: 0.97 }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleMoodSelect(mood);
-                        }
-                      }}
-                      aria-label={`Select ${mood.label} mood`}
-                      style={{
-                        flex: '1 1 0',
-                        minWidth: '120px',
-                        padding: '16px 20px',
-                        background: `${mood.color}15`,
-                        border: `1px solid ${mood.color}40`,
-                        borderRadius: '12px',
-                        color: mood.color,
-                        fontSize: '15px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.border = `2px solid ${mood.color}`;
-                        e.currentTarget.style.boxShadow = `0 0 0 3px ${mood.color}20`;
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.border = `1px solid ${mood.color}40`;
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      {mood.label}
-                    </motion.button>
-                  ))}
-                </div>
-
-                <p style={{
-                  fontSize: '13px',
-                  color: 'rgba(255,255,255,0.4)',
-                  textAlign: 'center',
-                  marginBottom: '0'
-                }}>
-                  One click. That's it.
-                </p>
-              </motion.div>
-            )}
-
-            {/* Step 2: The payoff - show them immediate value */}
-            {selectedMood && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {/* Success indicator */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                  style={{
-                    width: '56px',
-                    height: '56px',
-                    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '24px'
-                  }}
-                >
+            {/* Layout: figure left, controls right on desktop; stacked on mobile */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              minHeight: '480px',
+            }}
+            className="fte-layout"
+            >
+              {/* ─── Left: Canvas Figure ─── */}
+              <div style={{
+                flex: '0 0 44%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '32px 16px',
+                position: 'relative',
+                borderRight: '1px solid rgba(255,255,255,0.04)',
+              }}>
+                {/* Ambient color wash behind canvas */}
+                {hasSelections && (
                   <motion.div
-                    initial={{ scale: 0, rotate: -45 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: 0.2, type: 'spring', stiffness: 400 }}
-                  >
-                    <Check size={28} color="#22c55e" strokeWidth={3} />
-                  </motion.div>
-                </motion.div>
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.2 }}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: (() => {
+                        const selKeys = Object.keys(selections);
+                        const lastCat = demoCategories.find(c => c.key === selKeys[selKeys.length - 1]);
+                        const col = lastCat?.color || '#8b5cf6';
+                        return `radial-gradient(ellipse at 50% 60%, ${col}08 0%, transparent 70%)`;
+                      })(),
+                      pointerEvents: 'none',
+                    }}
+                  />
+                )}
 
-                <h2 style={{
-                  fontSize: 'clamp(20px, 4vw, 24px)',
-                  fontWeight: '700',
-                  color: '#ffffff',
-                  marginBottom: '8px',
-                  letterSpacing: '-0.5px'
-                }}>
-                  That's your prompt.
-                </h2>
+                <PoseFigureCanvas
+                  pose={currentFigurePose}
+                  accentColor={figureAccent}
+                  glowColor={currentGlow}
+                  lightingStyle={currentLighting}
+                />
 
-                <p style={{
-                  fontSize: 'clamp(13px, 2.5vw, 15px)',
-                  color: 'rgba(255,255,255,0.6)',
-                  marginBottom: '24px'
-                }}>
-                  Copy it and paste into your AI image generator.
-                </p>
-
-                {/* The generated prompt preview */}
+                {/* Live prompt preview below figure */}
                 <AnimatePresence>
-                  {showResult && (
+                  {hasSelections && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
                       transition={{ duration: 0.4 }}
                       style={{
-                        background: 'rgba(0,0,0,0.4)',
-                        borderRadius: '12px',
-                        padding: '20px',
-                        marginBottom: '24px',
-                        border: `1px solid ${selectedMood.color}30`,
+                        width: '100%',
+                        maxWidth: '340px',
+                        marginTop: '8px',
+                        padding: '12px 14px',
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        borderRadius: '10px',
                         position: 'relative',
-                        overflow: 'hidden'
                       }}
                     >
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        marginBottom: '12px'
+                        marginBottom: '8px',
                       }}>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px'
+                        <span style={{
+                          fontSize: '10px',
+                          fontWeight: '600',
+                          color: 'rgba(255,255,255,0.35)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px',
                         }}>
-                          <Sparkles size={14} color={selectedMood.color} />
-                          <span style={{
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            color: selectedMood.color,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                          }}>
-                            {selectedMood.label.toUpperCase()} MOOD
-                          </span>
-                        </div>
+                          Your prompt
+                        </span>
                         <motion.button
-                          onClick={handleCopyPrompt}
+                          onClick={handleCopy}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleCopyPrompt();
-                            }
-                          }}
-                          aria-label={copied ? "Prompt copied" : "Copy prompt"}
+                          aria-label={copied ? 'Copied' : 'Copy prompt'}
                           style={{
-                            padding: '6px 12px',
-                            background: copied 
-                              ? `linear-gradient(135deg, ${selectedMood.color} 0%, ${selectedMood.color}dd 100%)`
-                              : 'rgba(255, 255, 255, 0.08)',
-                            border: copied ? 'none' : `1px solid ${selectedMood.color}40`,
-                            borderRadius: '8px',
-                            color: copied ? '#ffffff' : selectedMood.color,
+                            padding: '3px 8px',
+                            background: copied ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255,255,255,0.06)',
+                            border: '1px solid ' + (copied ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.08)'),
+                            borderRadius: '5px',
+                            color: copied ? '#22c55e' : 'rgba(255,255,255,0.5)',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '6px',
-                            fontSize: '12px',
+                            gap: '4px',
+                            fontSize: '10px',
                             fontWeight: '600',
                             transition: 'all 0.2s',
-                            outline: 'none'
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.boxShadow = `0 0 0 3px ${selectedMood.color}30`;
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.boxShadow = 'none';
                           }}
                         >
-                          {copied ? (
-                            <>
-                              <Check size={12} />
-                              Copied!
-                            </>
-                          ) : (
-                            <>
-                              <Copy size={12} />
-                              Copy
-                            </>
-                          )}
+                          {copied ? <Check size={10} /> : <Copy size={10} />}
+                          {copied ? 'Copied' : 'Copy'}
                         </motion.button>
                       </div>
                       <p style={{
-                        fontSize: '14px',
-                        color: 'rgba(255,255,255,0.9)',
-                        lineHeight: '1.7',
-                        fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                        fontSize: '11.5px',
+                        color: 'rgba(255,255,255,0.55)',
+                        lineHeight: '1.65',
                         margin: 0,
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word',
-                        userSelect: 'text'
+                        fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                        maxHeight: '80px',
+                        overflowY: 'auto',
                       }}>
-                        "{moodPrompts[selectedMood.id]}"
+                        {buildPrompt()}
                       </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
 
-                {/* The identity shift message */}
+              {/* ─── Right: Category Selectors ─── */}
+              <div style={{
+                flex: 1,
+                padding: 'clamp(24px, 4vw, 40px)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}>
+                {/* Header */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.15 }}
+                >
+                  <h2 style={{
+                    fontSize: 'clamp(20px, 4vw, 26px)',
+                    fontWeight: '600',
+                    color: '#f4f4f5',
+                    marginBottom: '8px',
+                    letterSpacing: '-0.5px',
+                    lineHeight: '1.25',
+                  }}>
+                    Shape your scene
+                  </h2>
+                  <p style={{
+                    fontSize: 'clamp(13px, 2.5vw, 14.5px)',
+                    color: 'rgba(255,255,255,0.45)',
+                    marginBottom: '28px',
+                    lineHeight: '1.55',
+                  }}>
+                    Pick from each category — watch the prompt build itself.
+                  </p>
+                </motion.div>
+
+                {/* Category rows */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                  {demoCategories.map((cat, catIdx) => (
+                    <motion.div
+                      key={cat.key}
+                      initial={{ opacity: 0, x: 16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 + catIdx * 0.08 }}
+                    >
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '8px',
+                      }}>
+                        <div style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          background: selections[cat.key] ? cat.color : 'rgba(255,255,255,0.15)',
+                          transition: 'background 0.3s',
+                          boxShadow: selections[cat.key] ? `0 0 8px ${cat.color}40` : 'none',
+                        }} />
+                        <span style={{
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          color: selections[cat.key] ? cat.color : 'rgba(255,255,255,0.4)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.8px',
+                          transition: 'color 0.3s',
+                        }}>
+                          {cat.label}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {cat.options.map((opt) => {
+                          const isSelected = selections[cat.key]?.id === opt.id;
+                          return (
+                            <motion.button
+                              key={opt.id}
+                              onClick={() => handleSelect(cat.key, opt)}
+                              whileHover={{ scale: 1.03, y: -1 }}
+                              whileTap={{ scale: 0.97 }}
+                              aria-label={`Select ${opt.label}`}
+                              aria-pressed={isSelected}
+                              style={{
+                                padding: '9px 16px',
+                                background: isSelected
+                                  ? `${cat.color}18`
+                                  : 'rgba(255,255,255,0.03)',
+                                border: `1px solid ${isSelected ? cat.color + '50' : 'rgba(255,255,255,0.07)'}`,
+                                borderRadius: '9px',
+                                color: isSelected ? cat.color : 'rgba(255,255,255,0.55)',
+                                fontSize: '13px',
+                                fontWeight: isSelected ? '600' : '400',
+                                cursor: 'pointer',
+                                transition: 'all 0.25s',
+                                outline: 'none',
+                                whiteSpace: 'nowrap',
+                              }}
+                              onFocus={(e) => {
+                                e.currentTarget.style.borderColor = cat.color + '60';
+                                e.currentTarget.style.boxShadow = `0 0 0 2px ${cat.color}15`;
+                              }}
+                              onBlur={(e) => {
+                                if (!isSelected) {
+                                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)';
+                                }
+                                e.currentTarget.style.boxShadow = 'none';
+                              }}
+                            >
+                              {opt.label}
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Progress indicator + CTA */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
-                  style={{
-                    background: 'rgba(139, 92, 246, 0.1)',
-                    border: '1px solid rgba(139, 92, 246, 0.2)',
-                    borderRadius: '10px',
-                    padding: '16px',
-                    marginBottom: '24px',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '12px'
-                  }}
+                  style={{ marginTop: '28px' }}
                 >
-                  <Zap size={18} color="#a78bfa" style={{ marginTop: '2px', flexShrink: 0 }} />
-                  <div style={{ flex: 1 }}>
-                    <p style={{
-                      fontSize: '14px',
-                      color: 'rgba(255,255,255,0.7)',
-                      lineHeight: '1.6',
-                      margin: 0,
-                      marginBottom: '8px',
-                      wordBreak: 'break-word',
-                      overflowWrap: 'break-word'
-                    }}>
-                      <strong style={{ color: 'rgba(255,255,255,0.9)' }}>30+ categories</strong> to explore. Mix lighting, poses, styles, moods, and more.
-                    </p>
-                    <p style={{
-                      fontSize: '13px',
-                      color: 'rgba(255,255,255,0.5)',
-                      lineHeight: '1.5',
-                      margin: 0
-                    }}>
-                      <span style={{ color: '#a78bfa', fontWeight: '500' }}>You direct. It describes.</span> No more guessing what to type.
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* CTA */}
-                <motion.button
-                  onClick={handleComplete}
-                  whileHover={{ scale: 1.02, y: -1 }}
-                  whileTap={{ scale: 0.98 }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleComplete();
-                    }
-                  }}
-                  aria-label="Start creating prompts"
-                  style={{
-                    width: '100%',
-                    padding: '16px 24px',
-                    background: '#ffffff',
-                    border: 'none',
-                    borderRadius: '10px',
-                    color: '#0a0a0f',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
+                  {/* Progress dots */}
+                  <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                    transition: 'all 0.2s',
-                    outline: 'none'
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 255, 255, 0.3)';
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                  }}
-                >
-                  Start creating
-                  <ArrowRight size={18} />
-                </motion.button>
-              </motion.div>
-            )}
+                    gap: '6px',
+                    marginBottom: '16px',
+                  }}>
+                    {demoCategories.map((cat) => (
+                      <div
+                        key={cat.key}
+                        style={{
+                          flex: 1,
+                          height: '2px',
+                          borderRadius: '1px',
+                          background: selections[cat.key]
+                            ? cat.color
+                            : 'rgba(255,255,255,0.08)',
+                          transition: 'background 0.4s',
+                          boxShadow: selections[cat.key] ? `0 0 6px ${cat.color}30` : 'none',
+                        }}
+                      />
+                    ))}
+                    <span style={{
+                      fontSize: '11px',
+                      color: 'rgba(255,255,255,0.3)',
+                      marginLeft: '8px',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {selectionCount}/{demoCategories.length}
+                    </span>
+                  </div>
 
-            {/* Background glow */}
-            {selectedMood && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '300px',
-                  height: '300px',
-                  background: `radial-gradient(circle, ${selectedMood.color}15 0%, transparent 70%)`,
-                  borderRadius: '50%',
-                  filter: 'blur(40px)',
-                  pointerEvents: 'none',
-                  zIndex: -1
-                }}
-              />
-            )}
+                  {/* Info text */}
+                  <p style={{
+                    fontSize: '12.5px',
+                    color: 'rgba(255,255,255,0.35)',
+                    lineHeight: '1.6',
+                    marginBottom: '18px',
+                  }}>
+                    {selectionCount === 0
+                      ? 'Each category adds a layer to the final prompt.'
+                      : selectionCount < demoCategories.length
+                        ? `${demoCategories.length - selectionCount} more to explore — or dive in now.`
+                        : 'The full tool has 33 categories across pose, styling, camera, and more.'}
+                  </p>
+
+                  {/* CTA button */}
+                  <motion.button
+                    onClick={handleComplete}
+                    whileHover={{ scale: 1.015, y: -1 }}
+                    whileTap={{ scale: 0.985 }}
+                    aria-label="Enter the full tool"
+                    style={{
+                      width: '100%',
+                      padding: '14px 24px',
+                      background: hasSelections
+                        ? 'rgba(255,255,255,0.95)'
+                        : 'rgba(255,255,255,0.08)',
+                      border: hasSelections
+                        ? 'none'
+                        : '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '10px',
+                      color: hasSelections ? '#0a0a0f' : 'rgba(255,255,255,0.5)',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                      transition: 'all 0.35s',
+                      outline: 'none',
+                    }}
+                    onFocus={(e) => {
+                      if (hasSelections) {
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(255,255,255,0.15)';
+                      }
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    {hasSelections ? 'Open the full studio' : 'Skip to the studio'}
+                    <ArrowRight size={16} />
+                  </motion.button>
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
+
+          {/* Responsive styles injected */}
+          <style>{`
+            @media (max-width: 680px) {
+              .fte-layout {
+                flex-direction: column !important;
+                min-height: auto !important;
+              }
+              .fte-layout > div:first-child {
+                border-right: none !important;
+                border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+                padding: 24px 16px 16px !important;
+                flex: none !important;
+              }
+            }
+          `}</style>
         </motion.div>
       )}
     </AnimatePresence>
@@ -572,4 +874,3 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
 };
 
 export default FirstTimeExperience;
-
