@@ -585,6 +585,16 @@ const PhotoElementRandomizer = () => {
     });
   }, [mergedCategories, indexMapping, loadingUserData]);
 
+  // Categories auto-excluded because the selected Aesthetic already covers them.
+  // Shared between prompt assembly and UI so users can see why categories are skipped.
+  const autoExcludedCategories = useMemo(() => {
+    const aestheticItem = mergedCategories['Aesthetic']?.[selections['Aesthetic']];
+    const isComprehensive =
+      includedCategories['Aesthetic'] && aestheticItem && aestheticItem.comprehensive;
+    if (!isComprehensive) return [];
+    return comprehensiveAestheticOverrides;
+  }, [selections, includedCategories, mergedCategories]);
+
   // Memoized prompt generation
   const generatedPrompt = useMemo(() => {
     // Return empty string if no selections
@@ -592,18 +602,11 @@ const PhotoElementRandomizer = () => {
       return '';
     }
 
-    // Check if the selected Aesthetic is comprehensive (has lighting/color/texture baked in).
-    // When it is, auto-exclude standalone Lighting, ColorPalette, and Texture categories
-    // so the prompt doesn't contain redundant or conflicting instructions.
-    const aestheticItem = mergedCategories['Aesthetic']?.[selections['Aesthetic']];
-    const isComprehensiveAesthetic =
-      includedCategories['Aesthetic'] && aestheticItem && aestheticItem.comprehensive;
-
     const parts = Object.entries(selections)
       .filter(([category]) => {
         if (!includedCategories[category]) return false;
         // Skip categories that the comprehensive aesthetic already covers
-        if (isComprehensiveAesthetic && comprehensiveAestheticOverrides.includes(category)) {
+        if (autoExcludedCategories.includes(category)) {
           return false;
         }
         return true;
@@ -615,7 +618,7 @@ const PhotoElementRandomizer = () => {
       })
       .filter(part => part && part.trim()); // Filter out empty parts
     return parts.length > 0 ? parts.join(' ') : '';
-  }, [selections, includedCategories, mergedCategories]);
+  }, [selections, includedCategories, mergedCategories, autoExcludedCategories]);
 
   // Save prompt to localStorage for Pose Studio (only if prompt is not empty)
   useEffect(() => {
@@ -2128,6 +2131,7 @@ const PhotoElementRandomizer = () => {
               selections={selections}
               lockedCategories={lockedCategories}
               includedCategories={includedCategories}
+              autoExcludedCategories={autoExcludedCategories}
               activeCategory={activeCategory}
               onCategorySelect={handleCategorySelect}
               onToggleLock={toggleLock}
