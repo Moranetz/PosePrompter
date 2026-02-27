@@ -57,7 +57,7 @@ import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 import ActionsSidebar from './components/ActionsSidebar';
 import AuthModal from './components/AuthModal';
 import categories from './data/categories';
-import { categoryDisplayNames, categoryColors, categoryGroupDefinitions } from './data/categoryRegistry';
+import { categoryDisplayNames, categoryColors, categoryGroupDefinitions, comprehensiveAestheticOverrides } from './data/categoryRegistry';
 
 const ONBOARDING_STORAGE_KEY = 'poseprompt_onboarding_complete';
 
@@ -591,8 +591,23 @@ const PhotoElementRandomizer = () => {
     if (!selections || Object.keys(selections).length === 0) {
       return '';
     }
+
+    // Check if the selected Aesthetic is comprehensive (has lighting/color/texture baked in).
+    // When it is, auto-exclude standalone Lighting, ColorPalette, and Texture categories
+    // so the prompt doesn't contain redundant or conflicting instructions.
+    const aestheticItem = mergedCategories['Aesthetic']?.[selections['Aesthetic']];
+    const isComprehensiveAesthetic =
+      includedCategories['Aesthetic'] && aestheticItem && aestheticItem.comprehensive;
+
     const parts = Object.entries(selections)
-      .filter(([category]) => includedCategories[category])
+      .filter(([category]) => {
+        if (!includedCategories[category]) return false;
+        // Skip categories that the comprehensive aesthetic already covers
+        if (isComprehensiveAesthetic && comprehensiveAestheticOverrides.includes(category)) {
+          return false;
+        }
+        return true;
+      })
       .map(([category, index]) => {
         const item = mergedCategories[category]?.[index];
         if (!item) return '';

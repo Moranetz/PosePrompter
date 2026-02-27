@@ -76,6 +76,15 @@ export const categoryColors = {
   'Props': '#84cc16',
 };
 
+// Categories that a comprehensive Aesthetic prompt already covers.
+// When the selected Aesthetic has `comprehensive: true`, these categories
+// are auto-excluded from the assembled prompt to avoid redundancy.
+export const comprehensiveAestheticOverrides = [
+  'Lighting',
+  'ColorPalette',
+  'Texture',
+];
+
 // Group definitions: ordered from most static to most dynamic
 // Each group lists its default categories and all possible categories
 export const categoryGroupDefinitions = [
