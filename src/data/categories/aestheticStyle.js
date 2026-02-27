@@ -463,6 +463,71 @@ export const Aesthetic = [
     title: "2016 SoundCloud Flash Raw DIY",
     prompt: "Generate an image embodying a bold playful and distinctly hazy 2016 SoundCloud aesthetic — raw unfiltered energy and DIY visual culture. The vibe is brazen provocative and authentically unpolished with neon-lit blown-out imagery. Body language is relaxed yet assertive with casual swagger. A bedroom background — bed wall charts personal space — serves as mere suggestion of intimate personal environment barely visible through flash glare. The overall mood captures the edgy unvarnished essence of 2016 SoundCloud visual culture — personal snapshots that project confident fun and slightly dangerous persona.",
   },
+  {
+    id: "aesthetic_088",
+    title: "Coastal Gothic Dark Academia Fog",
+    prompt: "Generate an image embodying an enigmatic and ethereal coastal gothic or dark academia aesthetic — melancholic and mysterious atmosphere with a striking figure silhouetted against dense urban fog. The vibe is curated and artful with stark contrast between the subject's form-fitting dark outfit and the pervasive cool grey-white of thick fog that obscures towering skyscrapers into ghostly silhouettes. The mood is deeply atmospheric — dramatic beauty and enigmatic introspection suited for alternative fashion editorials or art photography portfolios.",
+  },
+  {
+    id: "aesthetic_089",
+    title: "Overcast Ethereal Atmospheric Mystery",
+    prompt: "Generate an image embodying an introspective and profoundly atmospheric aesthetic — curated alternative fashion sensibility wrapped in pervasive ambient fog. The vibe is dreamlike with reality's edges blurred — muted colors and diffused light create an almost otherworldly quality that enhances enigmatic beauty. Suited for alternative fashion editorials mood-driven art photography series or personal blogs designed to evoke mysterious contemplative allure.",
+  },
+  {
+    id: "aesthetic_090",
+    title: "Soft Surrealism Vaporwave Diptych",
+    prompt: "Generate an image combining a close-up portrait with an abstract ethereal scene — exuding a dreamy almost otherworldly soft surrealism or vaporwave aesthetic. The vibe blends personal intimate moments with abstract dreamlike vision — strong backlighting creates dramatic lens flares and halo effects around hair with blown-out highlights and gentle diffused glow. Contemplative nostalgic and subtly surreal — modern romanticism meets avant-garde social media artistry.",
+  },
+  {
+    id: "aesthetic_091",
+    title: "Early Internet Indie Bedroom Pop Lo-Fi",
+    prompt: "Generate an image embodying an authentic awkward yet endearing early internet or indie bedroom pop aesthetic — raw candid self-expression from the era before sophisticated filters. The vibe is genuine unpretentious and intimately personal with slightly uncomfortable serious expressions — endearing awkwardness that feels honest and uncurated. Hand-drawn artwork or personal objects feature prominently. A hallmark of niche online communities where raw expression triumphs over mainstream polish — lo-fi aesthetics valued over perfection.",
+  },
+  {
+    id: "aesthetic_092",
+    title: "Soft Gothic Siren Core Cat Portrait",
+    prompt: "Generate an image embodying an alluring and slightly melancholic soft gothic or siren core aesthetic — cradling a blurred cat with serene pensive expression. The vibe is enigmatic beauty and quiet intensity — luminous almost ethereal imagery with delicate highlights and dreamlike quality. Gentle intimate body language with alluring yet distant gaze — suited for fashion blogs mood-driven social media feeds or online portfolios evoking elegant allure and enigmatic charm.",
+  },
+  {
+    id: "aesthetic_093",
+    title: "Indie Sleaze Park Candid Photographer",
+    prompt: "Generate an image embodying a playful authentic indie sleaze or early 2000s blog aesthetic — rebellious cool artistic detachment and spontaneous fun. The vibe is effortlessly stylish with unposed authenticity — subject holds a camera and cigarette in an everyday park setting. Earthy subdued palette with olive utility-style dress silver camera glint and subtle jewelry. Cool authentically rebellious embodying candid uncurated personal snapshot or street style photography with undeniable retro cool.",
+  },
+  {
+    id: "aesthetic_094",
+    title: "Dark Aesthetic Edgy Influencer Bold",
+    prompt: "Generate an image embodying a bold provocative dark aesthetic or edgy influencer vibe — daring power and controlled rebellion. The vibe is intense and self-assured — assertive body language juxtaposing vulnerability with strength. Moody cinematic atmosphere with soft directional lighting creating gentle highlights. Suited for alternative fashion blogs mood-driven social media feeds or online portfolios evoking edgy allure and powerful self-expression.",
+  },
+  {
+    id: "aesthetic_095",
+    title: "Natural Ethereal Serene Minimalist",
+    prompt: "Generate an image embodying a serene captivating natural ethereal aesthetic with a hint of quiet strength — clean minimalist beauty. The vibe is fresh luminous and harmoniously composed — warm creamy neutrals and pale tones with soft even lighting enhancing natural contours and delicate textures. A close-up portrait radiating serene approachable elegance.",
+  },
+  {
+    id: "aesthetic_096",
+    title: "Enigmatic Bloom Fine Art Ingenue",
+    prompt: "Generate an image embodying an Enigmatic Bloom aura — a captivating blend of ethereal contemplation and quiet resilience rendered in hyper-real yet softly diffused pearlescent light. The vibe is calm intensity introspective beauty and timeless elegance — serene neutral expression with direct yet gently observing gaze reflecting thoughtfulness and understated ingenue quality. Whispering neutrals soft creams and muted earth tones create a harmonious timeless aesthetic — fine art portraiture or high-end minimalist editorial that feels both accessible and profoundly beautiful.",
+  },
+  {
+    id: "aesthetic_097",
+    title: "Summer Nostalgia Convertible Daydream",
+    prompt: "Generate an image embodying an effortlessly chic and dreamy summer nostalgia or cinematic escape aesthetic — quiet luxury and freedom in a convertible. The vibe is serene aspirational and timeless — subject reclines casually gazing thoughtfully into the distance with wistful expression. Late afternoon golden glow illuminates creamy whites and beiges of dress and car interior against lush greens. Suited for luxury lifestyle magazines travel blogs or high-end social media campaigns evoking aspirational freedom beauty and nostalgic summer dreams.",
+  },
+  {
+    id: "aesthetic_098",
+    title: "Golden Hour Convertible Backlighting Reverie",
+    prompt: "Generate an image embodying a nostalgic serene golden hour daydream aesthetic — cinematic warmth and romantic melancholy in the back seat of a convertible. The vibe is quiet introspection and youthful freedom — dramatic backlighting from setting sun with prominent lens flares and radiant glow around hair. Pensive expression with air of relaxed contemplation. Suited for lifestyle blogs travel journals or high-end social media feeds evoking wanderlust quiet beauty and cinematic introspection.",
+  },
+  {
+    id: "aesthetic_099",
+    title: "Alt-Glam Dark Siren Poolside",
+    prompt: "Generate an image embodying a bold edgy and alluring alt-glam or dark siren aesthetic — mysterious allure and unapologetic self-possession poolside. The vibe is cool sophisticated and subtly rebellious — stark impactful palette of crisp white swimsuit deep brown hair and sunglasses cool blue pool water and rich red drink accent. Confident relaxed posture with intense unsmiling gaze. Suited for fashion-forward social media feeds alternative beauty blogs or online magazines projecting enigmatic glamorous and distinctly edgy persona.",
+  },
+  {
+    id: "aesthetic_100",
+    title: "Traditional Craftsmanship Museum Artifact",
+    prompt: "Generate an image embodying an elegant traditional craftsmanship or historical artifact aesthetic — respectful appreciative museum-quality documentation. The vibe is refined and deeply aesthetic — objects displayed within wooden-framed glass case on clean white backdrop for detailed examination. A photographic approach emphasizing cultural significance over casual display. Suited for cultural heritage catalogs artisan portfolios or curated historical exhibits showcasing traditional beauty and meticulous artistry with objective clarity.",
+  },
 ];
 
 export const Lighting = [
@@ -780,6 +845,41 @@ export const Lighting = [
     id: "lighting_063",
     title: "Harsh Flash Blown-Out SoundCloud DIY",
     prompt: "Harsh direct on-camera flash as primary light source with minimal ambient light. Flash creates flat high-contrast illumination eliminating natural shadows and contouring — almost two-dimensional rendering. Intense almost glaring specular highlights on lips eyes and any reflective surfaces — stark and pronounced contributing to raw lacquered appearance central to the aesthetic. Blown-out highlights and deep unrefined shadows creating a deliberately unpolished DIY feel where the flash imperfections are the aesthetic — red-eye effect prominently visible as intentional stylistic marker.",
+  },
+  {
+    id: "lighting_064",
+    title: "Overcast Fog Uniform Ethereal Shadowless",
+    prompt: "Soft diffused lighting characteristic of an overcast or foggy day creating a uniform shadowless illumination that enhances ethereal atmospheric quality. The pervasive ambient fog acts as a massive natural diffuser — light wraps evenly around the subject eliminating harsh shadows and creating a flat but hauntingly beautiful illumination. The uniformity of the light blurs the edges of reality making the entire scene feel dreamlike and otherworldly. No directional light source is apparent — the illumination seems to emanate from the atmosphere itself.",
+  },
+  {
+    id: "lighting_065",
+    title: "Strong Backlighting Blown-Out Halo Lens Flare",
+    prompt: "Strong backlighting from a window or bright light source creating dramatic lens flares and a pronounced halo effect around hair and edges. The backlight pushes highlights into deliberate overexposure — blown-out areas creating luminous white flares that engulf portions of the frame with romanticized nostalgic warmth. Gentle diffused glow wraps around the subject from behind while the front remains softly illuminated by fill light. The lens flares are embraced as artistic elements rather than flaws — streaks and circles of light adding dreamlike surreal atmosphere.",
+  },
+  {
+    id: "lighting_066",
+    title: "Harsh Unfiltered Direct Lo-Fi Raw",
+    prompt: "Harsh and uneven lighting likely from direct unflattering sunlight or a basic overhead room light creating strong shadows on face and body. The light is completely uncontrolled — no diffusion no fill no deliberate direction — resulting in a raw unfiltered snapshot quality that rejects commercial slickness. Strong shadow lines carve across features without softening or flattering intent. The harsh unflattering quality is central to the aesthetic — enhancing rather than detracting from the authentic lo-fi candid feel of early digital photography.",
+  },
+  {
+    id: "lighting_067",
+    title: "Natural Ambient Overcast Park Casual Even",
+    prompt: "Natural ambient lighting suggesting an overcast day or shaded outdoor setting creating soft even illumination with minimal harsh shadows. The light has a casual unpretentious quality — neither dramatic nor flattering but authentically natural. Even illumination wraps around the subject without sculpting or defining features — the kind of light that exists in everyday outdoor settings without photographic intervention. The uniformity contributes to the candid snapshot quality where lighting is incidental rather than intentional.",
+  },
+  {
+    id: "lighting_068",
+    title: "Soft Directional Indoor Ambient Fill Moody",
+    prompt: "Soft directional lighting from an ambient indoor source combined with a subtle fill light creating gentle highlights that sculpt features without harshness. The lighting is moody and cinematic — directional enough to create dimension but soft enough to avoid stark shadows. The fill light prevents deep shadow areas while maintaining atmospheric depth. The overall effect is controlled yet natural-looking — the kind of carefully balanced indoor illumination that creates a brooding intimate atmosphere.",
+  },
+  {
+    id: "lighting_069",
+    title: "Soft Expansive Ambient North Window Pearlescent",
+    prompt: "Soft expansive ambient light from a large north-facing window creating subtle flattering gradations of light and shadow that sculpt features with gentle three-dimensionality. The indirect northern light provides consistent diffused illumination with a delicate almost pearlescent quality — evoking natural purity and gentle grace. The gradual transitions from light to shadow are nuanced and refined — sculpting soft jawlines and high cheekbones with understated elegance. No harsh directional source — the light feels enveloping and inherently flattering.",
+  },
+  {
+    id: "lighting_070",
+    title: "Soft Even Overhead Indoor Documentary",
+    prompt: "Soft even lighting from diffused overhead indoor light sources creating minimal shadows that allow every intricate detail to be clearly visible. The illumination is functional and documentary in character — prioritizing clarity over atmosphere. Even distribution across the subject eliminates dramatic shadows and specular highlights — a neutral lighting environment that lets the objects speak for themselves. The clarity of the illumination surpasses casual observation making fine details and subtle tonal variations plainly visible.",
   },
 ];
 
@@ -1169,6 +1269,46 @@ export const ColorPalette = [
     title: "SoundCloud Neon Flash Harsh Vivid",
     prompt: "High-saturation slightly cool-toned color grade with strong emphasis on bright almost artificial hues pushed by harsh flash. Colors pop in a way that feels almost synthetic and stylized — neon accents visible in bedroom environment. Skin tones slightly blown by flash creating flat high-contrast rendering. The overall palette is garish and deliberately unrefined — vibrant in the way that only cheap flash and consumer cameras produce where the color science is overwhelmed by the light source. This rawness is the aesthetic — anti-polished anti-curated proudly lo-fi.",
   },
+  {
+    id: "colorpalette_078",
+    title: "Stark Melancholic Cool Grey-White Fog",
+    prompt: "Stark melancholic color palette dominated by deep blacks of form-fitting attire contrasted by pale luminous skin and hair — all set against pervasive cool grey and white of thick atmospheric fog. The desaturated cool tones suppress warmth throughout — creating a monochromatic near-grayscale world where only the subject's skin provides contrast. The overall palette feels muted and somber — deliberate absence of warm hues reinforcing the mysterious atmospheric quality. Cool greys transition seamlessly from near-white fog to deep shadow.",
+  },
+  {
+    id: "colorpalette_079",
+    title: "Pale Blown-Out White Luminous Nostalgic",
+    prompt: "Pale washed-out color palette dominated by blown-out whites and soft luminous tones. Skin tones appear pale and ethereal — pushed toward overexposure. Bright almost white light flares engulf areas of the frame creating a romanticized nostalgic warmth despite the overall paleness. The color grade is deliberately high-key — minimal dark tones with highlights pushed into pure white. The overall effect is dreamy and slightly faded — as if the image is dissolving into light itself.",
+  },
+  {
+    id: "colorpalette_080",
+    title: "Natural Unpretentious Early Digital Muted",
+    prompt: "Natural unpretentious color palette characteristic of early digital photography before color grading became ubiquitous. Colors are neither enhanced nor suppressed — simply captured with the flat slightly muddled rendering of basic consumer sensors. Skin tones lack the warm glow of professional color science. The overall palette feels incidentally natural — no deliberate aesthetic choices just the honest reproduction of whatever light and color existed in the moment. Slightly muted and desaturated without being stylized.",
+  },
+  {
+    id: "colorpalette_081",
+    title: "Earthy Subdued Olive Natural Greens Indie",
+    prompt: "Earthy subdued color palette dominated by olive green utility tones and natural greens accented by dark hair tones and the metallic silver of accessories. The colors are muted and slightly desaturated — nothing pops or demands attention. Natural greens of outdoor settings blend with the olive of clothing creating a cohesive earthy harmony. Subtle warm accents from jewelry glints and skin tones prevent the palette from becoming cold. The overall effect is casually cool — understated color that matches the unpretentious candid aesthetic.",
+  },
+  {
+    id: "colorpalette_082",
+    title: "Warm Creamy Neutrals Soft Muted Earth Tones",
+    prompt: "Soft harmonious color palette composed of warm creamy neutrals soft creams and muted earth tones. The palette accentuates clear complexion and natural hair color creating a timeless aesthetic where nothing competes for attention. Pale tones dominate — warm whites soft beiges and subtle flesh tones creating a gentle luminous world. The clean minimalist quality of the background reinforces the palette's restraint. Overall the colors whisper rather than speak — understated elegance that feels both fresh and timeless.",
+  },
+  {
+    id: "colorpalette_083",
+    title: "Warm Golden Whites Beiges Lush Greens Summer",
+    prompt: "Warm inviting color palette dominated by creamy whites and beiges bathed in the golden glow of late afternoon sun. Lush greens provide natural contrast — tree foliage and grass vibrant against the warm neutrals. The golden light infuses everything with a honeyed warmth — skin tones glow pale skin appears sun-kissed and white fabrics radiate with amber undertones. Dark hair provides the deepest tonal anchor. The overall palette evokes summer nostalgia — aspirational warmth and serene beauty in a world painted golden.",
+  },
+  {
+    id: "colorpalette_084",
+    title: "Stark White Blue Red Poolside Impact",
+    prompt: "Stark impactful color palette built on bold contrasts — crisp white against cool blue water accented by a rich red drink that provides the singular warm pop. Deep brown hair and dark sunglasses anchor the cool tones while pale skin bridges the contrast between white and blue. The high-contrast slightly desaturated processing pulls back the vibrancy just enough to feel editorial rather than casual. The overall palette is clean geometric and intentional — minimal colors deployed for maximum graphic impact.",
+  },
+  {
+    id: "colorpalette_085",
+    title: "Natural Wood Gold Floral White Refined",
+    prompt: "Natural refined color palette dominated by warm polished wood tones accented by rich gold and subtle floral hues of painted decorative designs. Crisp white of the backdrop provides clean neutral contrast — earthy browns of a wooden display frame ground the warm spectrum. The true-to-life color rendering preserves every subtle tonal variation — the honey amber of aged wood the warm glint of gold leaf the delicate pinks and greens of hand-painted florals. The overall palette is elegant and historically resonant — warm natural materials rendered with documentary precision.",
+  },
 ];
 
 export const Texture = [
@@ -1477,6 +1617,41 @@ export const Texture = [
     title: "Film Grain Architectural Gate Urban",
     prompt: "Subtle film grain adding warmth and tactile richness to all surfaces. Architectural textures of iron gate and stone wall rendered with natural detail. Hair and fabric catching bright daylight with visible sheen and dimension. Background building discernible but softly blurred — enough texture to read as urban environment. The film rendering gives all surfaces a slight organic quality that feels more tangible and present than digital capture.",
   },
+  {
+    id: "texture_062",
+    title: "Form-Fitting Fabric Skin Metal Atmospheric",
+    prompt: "Smooth figure-hugging fabric clinging to form with subtle sheen where light catches the surface — the tight weave revealing body contours beneath. Pale skin rendered with luminous delicate quality against dark fabric. Textured metal rendered with industrial tactile presence — the cool roughness contrasting sharply with soft organic surfaces. Delicate hands with fine detail visible. The fog-diffused light softens all textures slightly giving everything a slightly ethereal quality.",
+  },
+  {
+    id: "texture_063",
+    title: "Soft Hair Cat Fur Fabric Intimate Dreamlike",
+    prompt: "Soft texture of hair rendered with luminous sheen and gentle flow. Indistinct soft fur of an animal blurred by shallow focus into a warm fuzzy presence — tactile and inviting even without sharp detail. Smooth fabric of clothing with subtle drape and gentle highlights. The soft-focus filter diffuses all textures slightly — creating a dreamlike quality where surfaces are felt rather than seen with precision. The intimate tactile richness invites the viewer to imagine touching rather than just observing.",
+  },
+  {
+    id: "texture_064",
+    title: "Rugged Fabric Metal Camera Accessories Indie",
+    prompt: "Rugged utility fabric of a dress with visible weave and natural drape — workwear texture that reads as practical and authentic. Smooth polished metal of a camera body catching ambient light with a cool subtle glint. Delicate accessories and jewelry adding fine metallic detail. The raw image quality softens textures slightly — nothing is rendered with razor precision which adds to the candid unstudied feel. The contrast between rugged fabric and polished metal creates tactile interest.",
+  },
+  {
+    id: "texture_065",
+    title: "Smooth Fabric Cold Metal Jewelry Moody",
+    prompt: "Smooth fabric of clothing rendered with soft drape and gentle highlights. Cold metal surfaces captured with a distinct weight and solidity — the smooth hardness creating tactile contrast against soft organic textures. Subtle jewelry details with delicate metallic sheen. Skin rendered with natural luminosity in the moody directional light. The crisp smartphone rendering captures surface details with clarity — fabric folds metal edges and skin texture all visible without being over-sharpened.",
+  },
+  {
+    id: "texture_066",
+    title: "Flowing Dress Leather Seats Foliage Summer",
+    prompt: "Smooth flowing fabric of a light dress with gentle drape and movement — the material catching golden light with warm luminous folds. Soft leather of car seats with supple worn texture suggesting warmth and comfort. Lush foliage textures rendered with rich green depth — leaves and branches softly blurred into organic bokeh. Delicate hair strands catching backlighting with individual strand detail visible against the warm glow. The shallow depth of field renders foreground textures sharply while background textures dissolve into dreamy impressionistic softness.",
+  },
+  {
+    id: "texture_067",
+    title: "Wet Skin Sleek Swimsuit Reflective Water Poolside",
+    prompt: "Smooth wet skin rendered with heightened tactile presence — water droplets and a subtle sheen amplifying the natural surface. Sleek swimsuit fabric with taut almost plastic-like quality — the material appearing both soft and structured. Reflective sunglasses with dark mirror finish. Shimmering water surface creating dynamic light patterns — cool blue tones rippling with highlights. The high-contrast slightly desaturated processing gives all textures an almost hyperreal quality — surfaces appear more defined and present than natural observation.",
+  },
+  {
+    id: "texture_068",
+    title: "Polished Wood Gold Painted Detail Paper Documentary",
+    prompt: "Smooth polished wood with warm amber grain patterns — the surface reflecting soft light with a satin sheen. Intricate gold and painted decorative details rendered with documentary precision — every brushstroke and gilded accent clearly visible. Finely carved teeth and edges of crafted objects with sharp tactile detail. Soft white paper texture providing clean neutral contrast. The true-to-life rendering captures material qualities that might be missed by casual observation — the warmth of aged wood the subtle shimmer of gold leaf the delicate layering of paint on carved surfaces.",
+  },
 ];
 
 export const Mood = [
@@ -1774,6 +1949,61 @@ export const Mood = [
     id: "mood_059",
     title: "SoundCloud Brazen Playful Provocative DIY",
     prompt: "Perfectly suited for personal social media designed to project a confident fun and slightly edgy persona. The mood is bold playful and a bit provocative — embodying the brazen unvarnished spirit of 2016 SoundCloud visual culture. A candid personal snapshot style where rawness is the point — anti-polish anti-curation proudly DIY. The aesthetic celebrates imperfection and self-assured attitude over technical quality.",
+  },
+  {
+    id: "mood_060",
+    title: "Melancholic Mysterious Atmospheric Gothic",
+    prompt: "The overall mood is melancholic mysterious and highly atmospheric — embodying a curated artistic or fashion editorial photography style. Designed to evoke a sense of dramatic beauty and enigmatic introspection. The atmosphere is profoundly immersive — reality's edges blur into something more dreamlike and contemplative. Introspective and slightly distant — the subject exists in their own atmospheric world. Suited for alternative fashion editorials art photography portfolios or mood-driven social media feeds.",
+  },
+  {
+    id: "mood_061",
+    title: "Contemplative Nostalgic Subtly Surreal Dreamlike",
+    prompt: "The overall mood is contemplative nostalgic and subtly surreal — blending personal intimate moments with abstract dreamlike vision. A curated artistic or avant-garde social media aesthetic where reality and dream intermingle without clear boundary. Modern romanticism meets surrealist sensibility. Designed to evoke dreamy introspection and modern surrealism — suited for art blogs mood boards or alternative social media feeds.",
+  },
+  {
+    id: "mood_062",
+    title: "Authentic Awkward Intimately Personal Vulnerable",
+    prompt: "The overall mood is authentic intimately personal and subtly vulnerable — embodying a candid uncurated personal snapshot style characteristic of early social media uploads. Genuine unpretentious self-expression where endearing awkwardness feels honest rather than manufactured. Raw expression triumphs over mainstream polish — designed to connect with audiences who value authenticity and lo-fi aesthetics. Suited for personal blogs niche online communities or archival social media posts.",
+  },
+  {
+    id: "mood_063",
+    title: "Alluring Introspective Mysteriously Enigmatic",
+    prompt: "The overall mood is alluring introspective and subtly mysterious — embodying curated artistic or high-fashion lifestyle photography. Enigmatic beauty and quiet intensity create a pull that is both inviting and distant. Serene yet pensive — the gaze suggests depths beyond what is visible. Designed to evoke elegant allure and enigmatic charm — suited for fashion blogs mood-driven social media feeds or online portfolios.",
+  },
+  {
+    id: "mood_064",
+    title: "Cool Effortlessly Stylish Authentically Rebellious",
+    prompt: "The overall mood is cool effortlessly stylish and authentically rebellious — embodying candid uncurated personal snapshot or street style photography. A sense of rebellious artistic detachment and spontaneous fun. The aesthetic is confident and unposed — playful without being performative. Designed to capture genuine moments of youthful self-expression with undeniable retro cool — suited for personal blogs alternative fashion feeds or archival social media posts.",
+  },
+  {
+    id: "mood_065",
+    title: "Intense Provocative Self-Assured Edgy",
+    prompt: "The overall mood is intense provocative and self-assured — embodying curated artistic or alternative social media photography. A sense of daring power and controlled rebellion — assertive body language juxtaposing vulnerability with strength. The moody cinematic atmosphere reinforces the edgy allure. Designed to evoke powerful self-expression — suited for alternative fashion blogs mood-driven social media feeds or online portfolios.",
+  },
+  {
+    id: "mood_066",
+    title: "Calm Intensity Introspective Beauty Timeless Elegance",
+    prompt: "The overall mood is one of calm intensity introspective beauty and timeless elegance — serene yet captivating with a hint of quiet strength. The aesthetic radiates natural purity and gentle grace — a serene approachable elegance that feels both fresh and profoundly timeless. Designed for sophisticated artistic portfolios luxury brand campaigns or high-end minimalist editorials — engineered to convey trustworthiness approachability and youthful grace.",
+  },
+  {
+    id: "mood_067",
+    title: "Serene Aspirational Nostalgic Summer Freedom",
+    prompt: "The overall mood is serene aspirational and timeless — embodying high-end lifestyle or cinematic photography. A sense of effortless freedom contemplation and serene enjoyment — quiet luxury and escape. Designed to evoke aspirational freedom beauty and nostalgic summer dreams — suited for luxury lifestyle magazines travel blogs or high-end social media campaigns.",
+  },
+  {
+    id: "mood_068",
+    title: "Nostalgic Romantically Melancholic Cinematic Wanderlust",
+    prompt: "The overall mood is nostalgic serene and romantically melancholic — embodying curated lifestyle or cinematic photography. A sense of quiet introspection and youthful freedom — gracefully immersed in the moment. The dramatic natural light elevates ordinary scenes into idyllic ethereal settings. Designed to evoke wanderlust quiet beauty and cinematic introspection — suited for lifestyle blogs travel journals or high-end social media feeds.",
+  },
+  {
+    id: "mood_069",
+    title: "Cool Sophisticated Subtly Rebellious Glamorous",
+    prompt: "The overall mood is cool sophisticated and subtly rebellious — embodying curated fashion editorial or high-end lifestyle photography. Mysterious allure and unapologetic self-possession — confident relaxed posture with intense unsmiling gaze. The aesthetic projects power through restraint — enigmatic glamour that feels both accessible and untouchable. Designed to project an enigmatic glamorous and distinctly edgy persona — suited for fashion-forward social media feeds alternative beauty blogs or online magazines.",
+  },
+  {
+    id: "mood_070",
+    title: "Respectful Appreciative Museum-Quality Aesthetic",
+    prompt: "The overall mood is respectful appreciative and deeply aesthetic — embodying museum-quality product photography or archival documentation style. The approach emphasizes cultural significance over casual display — each element presented with reverence for craftsmanship and tradition. Documentary clarity meets refined aesthetic sensibility. Designed to showcase traditional beauty and meticulous artistry with objective clarity — suited for cultural heritage catalogs artisan portfolios or curated historical exhibits.",
   },
 ];
 

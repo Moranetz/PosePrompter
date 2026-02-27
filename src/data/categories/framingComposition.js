@@ -347,6 +347,36 @@ export const Framing = [
     title: "Medium Shot Seated SoundCloud Below Eye-Level",
     prompt: "Medium shot framing subject seated captured from waist up. Camera slightly below eye-level. The composition feels like a personal snapshot — casual framing without precise centering. Flash-lit subject dominates the frame with bedroom background barely visible as indistinct suggestion of personal space. Vertical portrait orientation with the slightly off-center framing adding to raw candid energy. The composition embraces the imperfect spontaneous quality of quick personal photos.",
   },
+  {
+    id: "framing_070",
+    title: "Medium-Full Vertical Below Eye-Level Atmospheric",
+    prompt: "Medium-full shot framing the subject from the knees up in vertical portrait orientation. Camera positioned slightly below eye-level adding subtle authority and presence to the figure. The composition emphasizes the stark contrast between the subject's form and the atmospheric environment — the subject commands the lower two-thirds of the frame while environmental elements recede into diffused background. Stylized pose with the vertical crop creating an elongated editorial feel.",
+  },
+  {
+    id: "framing_071",
+    title: "Horizontal Diptych Close-Up Plus Abstract",
+    prompt: "Horizontal landscape orientation combining a close-up portrait on one side with an abstract ethereal scene on the other — creating a split-frame diptych composition within a single image. Camera slightly above eye-level for the portrait portion. The juxtaposition of intimate human detail against dreamlike abstraction creates visual tension and narrative depth. The horizontal format gives equal weight to both elements allowing the viewer's eye to travel between personal and surreal.",
+  },
+  {
+    id: "framing_072",
+    title: "Medium Shot Eye-Level Lo-Fi Candid Standing",
+    prompt: "Medium shot framing the subject from the hips up standing at eye-level in vertical portrait orientation. The composition feels raw and unposed — casual centering without precise compositional rules. The subject holds an object or artwork towards the camera creating a direct presentational quality. Background elements are indistinct and secondary — all attention forced onto the figure through simple frontal framing. The composition embraces the authentic unpretentious quality of early self-made online content.",
+  },
+  {
+    id: "framing_073",
+    title: "Full-Body Convertible Seated Legs Extended Vertical",
+    prompt: "Full-body shot capturing the subject seated with legs extended in vertical portrait orientation. Camera positioned slightly below eye-level. The composition frames from waist up to include extended legs creating an elongated relaxed silhouette. The subject reclines casually with graceful body language — one leg propped up adding dynamic visual interest. The vertical format emphasizes elegant posture and the sense of languid freedom within the enclosed space.",
+  },
+  {
+    id: "framing_074",
+    title: "Full-Body Horizontal Landscape Reclining Expansive",
+    prompt: "Full-body shot in horizontal landscape orientation capturing the subject reclining with legs extended. Camera positioned slightly above eye-level. The wide horizontal format emphasizes the expansive scene — allowing environmental context to breathe alongside the relaxed figure. The landscape orientation transforms the composition from intimate portrait to cinematic tableau — the subject's posture flowing naturally across the wider frame with dramatic natural light as co-subject.",
+  },
+  {
+    id: "framing_075",
+    title: "Top-Down Overhead Flat-Lay Documentary",
+    prompt: "Top-down flat-lay composition with the camera positioned directly overhead shooting straight down onto objects arranged on a surface. Vertical portrait orientation emphasizing the delicate details and arrangement of the subjects. The overhead perspective eliminates traditional depth and perspective creating a clean graphic composition where every element exists on the same visual plane. The framing isolates objects for detailed examination — documentary precision prioritizing clarity and comprehensive visibility over artistic abstraction.",
+  },
 ];
 
 export const Perspective = [
@@ -885,6 +915,61 @@ export const CameraType = [
     id: "cameratype_089",
     title: "Smartphone Flash SoundCloud Raw Blown-Out",
     prompt: "Simulated capture on a digital camera or smartphone with harsh on-camera flash rendering a raw slightly blown-out image with vibrant almost neon colors and strong unfiltered light sensitivity central to the aesthetic. The camera is slightly below eye-level. Flash creates blown-out highlights deep unrefined shadows and prominent red-eye effect collectively contributing to raw unpolished authentically DIY feel. Shallow depth of field with background of bedroom heavily blurred and almost indistinguishable in the flash glare — serving as mere suggestion of personal intimate space. The rendering embraces imperfection as core aesthetic.",
+  },
+  {
+    id: "cameratype_090",
+    title: "Digital Camera Cool-Toned Atmospheric Filter",
+    prompt: "Simulated capture on a digital camera with a desaturated cool-toned filter rendering a soft atmospheric and almost painterly image with muted colors and a strong emphasis on ambient light. Deep depth of field keeping the subject sharply in focus while distant background elements dissolve into fog-obscured silhouettes — the camera captures atmospheric conditions with a dreamlike quality that blurs the edges of reality. The cool-toned processing suppresses warm hues while maintaining tonal contrast between dark subject elements and pervasive grey-white environmental diffusion. The rendering feels contemplative and art-directed — neither harsh nor overly processed.",
+  },
+  {
+    id: "cameratype_091",
+    title: "Smartphone Soft-Focus High-Exposure Blown-Out",
+    prompt: "Simulated capture on a smartphone with a soft-focus high-exposure filter rendering a luminous hazy image with blown-out highlights and a gentle diffused glow. The camera is positioned slightly above eye-level. The high-exposure processing pushes bright areas into pure white creating romanticized nostalgic light flares that engulf portions of the frame. Deep depth of field keeps elements in soft focus throughout — the overall image has a gauzy ethereal quality where sharp detail is deliberately sacrificed for dreamlike luminosity. The rendering embraces overexposure as a stylistic tool rather than a flaw.",
+  },
+  {
+    id: "cameratype_092",
+    title: "Older Smartphone Webcam Lo-Fi Unfiltered",
+    prompt: "Simulated capture on an older smartphone or webcam rendering a slightly blurry low-resolution image with harsh unfiltered light sensitivity and a natural unpretentious color palette reminiscent of early digital photography before sophisticated filters. The low megapixel count creates inherent softness and subtle pixelation — image quality that feels authentic to the pre-smartphone era of self-made online content. Shallow depth of field with the background heavily blurred and indistinct forcing attention onto the subject. The rendering embraces technical limitation as aesthetic — lo-fi imperfection valued over mainstream polish.",
+  },
+  {
+    id: "cameratype_093",
+    title: "Smartphone Soft-Focus Luminous Ethereal",
+    prompt: "Simulated capture on a high-quality smartphone with a soft-focus filter rendering a luminous almost ethereal image with delicate highlights and a dreamlike quality. The camera is slightly above eye-level. The soft-focus processing gently diffuses fine detail while preserving overall form and expression — creating a flattering luminous glow that enhances without obscuring. Moderate depth of field keeping the subject clearly defined while background elements dissolve into soft indistinct tones. The rendering feels polished and intentional — smartphone computational photography elevated by deliberate artistic softening.",
+  },
+  {
+    id: "cameratype_094",
+    title: "Older Digital Point-and-Shoot Raw Muted",
+    prompt: "Simulated capture on an older digital point-and-shoot camera rendering a slightly blurry raw image with natural somewhat muted colors and a casual unfiltered light sensitivity. The camera is slightly below eye-level adding a subtle dynamic energy. Shallow depth of field keeping the subject relatively in focus while the background softly blurs into natural everyday context. The imperfect optics create an inherent slight diffusion and color desaturation — not quite sharp not quite smooth — that feels authentically candid and unpretentious. The rendering embodies spontaneous snapshot quality where technical polish is absent by design.",
+  },
+  {
+    id: "cameratype_095",
+    title: "Smartphone Crisp HD Natural Moody",
+    prompt: "Simulated capture on a high-quality smartphone rendering a crisp high-definition image with natural color accuracy and a subtle moody light sensitivity. The camera is slightly above eye-level. The modern sensor delivers sharp detail and clean tonal rendering without the computational over-processing of portrait mode — colors feel true to life yet the overall image carries a cinematic moodiness through the interplay of natural exposure and ambient light. The rendering is polished but restrained — contemporary smartphone photography at its most intentional.",
+  },
+  {
+    id: "cameratype_096",
+    title: "DSLR Prime Lens Pearlescent Razor-Thin DOF",
+    prompt: "Simulated capture on a high-resolution DSLR with a fast prime lens rendering a luminous hyper-real yet softly diffused image characterized by a delicate almost pearlescent light sensitivity that enhances natural skin luminosity without harshness. A razor-thin depth of field isolates the subject's face with exquisite sharpness blurring the background into an abstract wash of luminous indistinct pale tones — the extreme focus isolation ensures the subject is the singular captivating focal point. The prime lens delivers phenomenal micro-contrast and acutance on fine facial details while maintaining the characteristic smooth gentle bokeh of fast glass. The rendering feels elevated and refined — fine art portraiture quality.",
+  },
+  {
+    id: "cameratype_097",
+    title: "DSLR Wide Aperture Sun-Kissed Bokeh",
+    prompt: "Simulated capture on a high-quality DSLR with a wide aperture lens rendering a crisp sun-kissed image with beautiful bokeh and a warm inviting light sensitivity. The camera is positioned slightly below eye-level. Shallow depth of field keeps the subject sharply in focus while the background dissolves into ethereal bokeh — soft circular out-of-focus highlights that glow with warm golden tones. The wide aperture captures natural light with rich luminosity creating a radiant quality that feels magical and nostalgic. The rendering embodies aspirational lifestyle photography — technically polished yet emotionally warm.",
+  },
+  {
+    id: "cameratype_098",
+    title: "DSLR Cinematic Backlighting Lens Flare",
+    prompt: "Simulated capture on a high-quality DSLR rendering a crisp warm and highly cinematic image with beautiful lens flare and a rich natural color palette. The camera is positioned slightly above eye-level. The lens captures dramatic backlighting from the setting sun creating prominent artistic lens flares that streak across the frame — golden hexagonal or circular flare elements adding cinematic character. Shallow depth of field softly blurs the background transforming ordinary scenes into idyllic ethereal settings. The rendering embraces optical artifacts as storytelling tools — lens flares and warm color shifts conveying nostalgic romance.",
+  },
+  {
+    id: "cameratype_099",
+    title: "Smartphone High-Contrast Desaturated Hyperreal",
+    prompt: "Simulated capture on a high-quality smartphone with a high-contrast slightly desaturated filter rendering a crisp almost hyperreal image with strong highlights and a deliberate stylized light sensitivity. The camera is slightly above eye-level. The processing amplifies tonal contrast while pulling back color saturation — creating an image that feels both vivid and restrained with an editorial edge. Shallow depth of field keeps the subject sharply defined while background elements remain discernible but softly blurred. The rendering projects a curated intentional quality — smartphone photography pushed toward fashion editorial through calculated post-processing.",
+  },
+  {
+    id: "cameratype_100",
+    title: "Smartphone Documentary True-to-Life Top-Down",
+    prompt: "Simulated capture on a high-quality smartphone utilizing a neutral true-to-life color profile that meticulously preserves subtle tones and intricate details resulting in a sharp almost documentary-style image with balanced exposure and fine texture rendition. The camera is positioned directly overhead creating a flat top-down perspective. Deep depth of field keeps all elements in razor-sharp focus from foreground details to subtle background context. The rendering prioritizes objective clarity over artistic interpretation — meticulous color accuracy and even exposure allowing every fine detail to be clearly visible surpassing casual observation.",
   },
 ];
 
