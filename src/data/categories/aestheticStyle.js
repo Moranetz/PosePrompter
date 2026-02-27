@@ -438,6 +438,31 @@ export const Aesthetic = [
     title: "Perfect Essence Pristine Luxury",
     prompt: "Generate an image embodying perfect essence of pristine luxury — clean bright and exquisitely detailed where luxury is not just seen but felt. Unrivaled dynamic range ensures pristine luminous whites glowing with textural purity free from any blown-out hint yet retaining every delicate fold and nuance. Shadows rich deep and open revealing subtle color and textural information without crushing — profound sense of depth and realism. This meticulous highlight and shadow handling creates ethereal purity of light feeling almost heavenly surpassing natural human vision — cornerstone of the luxurious essence.",
   },
+  {
+    id: "aesthetic_083",
+    title: "Wabi-Sabi Yūgen Japanese Stillness",
+    prompt: "Generate a profound and serene photographic portrait embodying the Japanese aesthetic principles of Wabi-Sabi and Yūgen. The composition is a masterclass in Ma — negative space — with vast empty areas of textured wall surrounding the subject. Her pose is one of natural unforced stillness her body angled away while her face turns towards the lens — her gaze a direct quiet observation suggesting a vast unspoken internal world her lips neutral and slightly parted. The background is a minimalist weathered interior — a single bare window with a cracked pane revealing soft-focus overcast sky and pale plaster wall stained with subtle watermarks and ghosts of old paint. The overall mood is one of tranquil melancholy profound simplicity and deeply beautiful imperfection — a captured moment of Yūgen that feels more like a visual haiku than a photograph evoking a palpable sense of Mono no Aware — a gentle sadness for the impermanence of all things.",
+  },
+  {
+    id: "aesthetic_084",
+    title: "Smartphone Evening Street Allure Candid",
+    prompt: "Generate an image capturing a subtly alluring and candid evening street portrait — a spontaneous moment rendered with naturalistic smartphone intimacy. The subject exudes a subtle confident allure with a soft yet direct gaze engaging the viewer. Her stance is relaxed yet poised with one hand delicately resting near her collarbone suggesting thoughtful self-assurance. The overall mood is one of quiet allure and contemporary chic — a blend of candid authenticity with curated elegance characteristic of sophisticated lifestyle aesthetic. Intimate isolation within an urban evening setting — faint light trails and softly blurred background enhancing her presence.",
+  },
+  {
+    id: "aesthetic_085",
+    title: "Film Editorial Urban Confident",
+    prompt: "Generate an image with a confident artfully casual editorial mood captured with film-like richness. The aesthetic is sophisticated lifestyle or fashion photography — candid yet editorial. Vibrant slightly desaturated yet realistic rendering with strong light sensitivity and subtle grain characteristic of film. The subject projects natural confidence within an urban architectural context — the scene balances her presence with structural elements of gates walls and distant buildings. Contemporary style and natural beauty within an urban setting.",
+  },
+  {
+    id: "aesthetic_086",
+    title: "Vintage Filter Warm Contentment",
+    prompt: "Generate an image evoking quiet contentment artistic appreciation and sophisticated casualness. The aesthetic is candid yet curated lifestyle photography with a warm intimate and authentic feel — subtle grain and nuanced light sensitivity from a digital camera with a slightly vintage or film-like filter. The mood is gentle and relaxed emphasizing the subject's engaging expression and natural pose as primary focal points.",
+  },
+  {
+    id: "aesthetic_087",
+    title: "2016 SoundCloud Flash Raw DIY",
+    prompt: "Generate an image embodying a bold playful and distinctly hazy 2016 SoundCloud aesthetic — raw unfiltered energy and DIY visual culture. The vibe is brazen provocative and authentically unpolished with neon-lit blown-out imagery. Body language is relaxed yet assertive with casual swagger. A bedroom background — bed wall charts personal space — serves as mere suggestion of intimate personal environment barely visible through flash glare. The overall mood captures the edgy unvarnished essence of 2016 SoundCloud visual culture — personal snapshots that project confident fun and slightly dangerous persona.",
+  },
 ];
 
 export const Lighting = [
@@ -735,6 +760,26 @@ export const Lighting = [
     id: "lighting_059",
     title: "Luminous Diffused Luxury Ambient",
     prompt: "Soft expansive highly diffused ambient lighting mimicking glow of large window on overcast day or professional large-source studio diffusion. Luminous sculpting creating gentle yet defined three-dimensional forms through nuanced light fall-off — no harsh shadows or flat areas making everything appear radiant and perfectly illuminated almost existing in idealized space. Delicate precise specular highlights on reflective surfaces like polished metal glassware and glossy textures sparkling with refined photographic pop — carefully rendered points of light subtly communicating high quality and craftsmanship.",
+  },
+  {
+    id: "lighting_060",
+    title: "Overcast Window Wabi-Sabi Shadowless Glow",
+    prompt: "Soft diffused utterly natural light emanating solely from an overcast sky through a single window. The gentle shadowless glow illuminates fine hairs on skin and delicate textures of the scene with quiet reverence. No artificial fill or reflectors — only the pale grey light of an overcast day filtering through cracked glass creating a sense of impermanence and tranquil stillness. The light falls evenly across the weathered interior without drama evoking Mono no Aware — a gentle luminosity that whispers rather than shouts.",
+  },
+  {
+    id: "lighting_061",
+    title: "Evening Streetlamp Soft Ambient Glow",
+    prompt: "Soft diffused artificial lighting from overhead streetlamp or nearby light source in the evening casting a gentle warm glow that illuminates face and hair. The ambient light creates flattering illumination without harsh shadows — a touch of mystery highlighting contours softly. Mixed ambient sources with faint light trails in the background contribute to intimate urban atmosphere. The low-light conditions add a natural intimacy and slight grain characteristic of evening photography.",
+  },
+  {
+    id: "lighting_062",
+    title: "Bright Direct Daylight Defined Shadows",
+    prompt: "Natural direct bright daylight casting soft but defined shadows that highlight features and surrounding textures. Strong light sensitivity creating vibrant illumination with clear tonal separation. The directional quality of the sunlight adds dimension and sculptural quality to both the subject and the architectural elements in the scene — confident editorial lighting that balances flattering portraiture with environmental context.",
+  },
+  {
+    id: "lighting_063",
+    title: "Harsh Flash Blown-Out SoundCloud DIY",
+    prompt: "Harsh direct on-camera flash as primary light source with minimal ambient light. Flash creates flat high-contrast illumination eliminating natural shadows and contouring — almost two-dimensional rendering. Intense almost glaring specular highlights on lips eyes and any reflective surfaces — stark and pronounced contributing to raw lacquered appearance central to the aesthetic. Blown-out highlights and deep unrefined shadows creating a deliberately unpolished DIY feel where the flash imperfections are the aesthetic — red-eye effect prominently visible as intentional stylistic marker.",
   },
 ];
 
@@ -1104,6 +1149,26 @@ export const ColorPalette = [
     title: "Fujifilm Classic Pristine Luxury",
     prompt: "Sophisticated warm-neutral color grade precisely tuned to evoke color science of Fujifilm classic film simulations such as Classic Chrome or Pro Neg Std. Impeccably clean and accurate white balance ensuring whites appear brilliant and inviting while maintaining subtle warmth across entire image. Rich natural saturation with exceptional separation making each hue distinct and vibrant within harmonious palette — creams golds soft blues healthy skin tones. Precise color rendering contributing to authentic sense of opulence making scene feel genuinely luxurious rather than artificially enhanced.",
   },
+  {
+    id: "colorpalette_074",
+    title: "Wabi-Sabi Muted Monochromatic Earthy",
+    prompt: "Severely muted almost monochromatic symphony of earthy tones — cool grey of overcast sky warm creamy white of linen and skin pale beige of weathered plaster wall and dark rich brown of hair. The palette is stripped to essence — no saturated accents no vibrancy — only the quiet dialogue between warm and cool neutrals. Subtle watermark stains on the wall add organic tonal variation. Film stock imparts a gentle desaturation that unifies all tones into a single whispered register evoking the Japanese principle of Shibui — understated restrained beauty.",
+  },
+  {
+    id: "colorpalette_075",
+    title: "Evening Street Warm Ambient Cool Shadows",
+    prompt: "Warm amber-toned illumination from artificial street lighting against cool blue-grey shadows of evening urban environment. Skin tones rendered with healthy warm glow from the nearby light source. Dark street background with indistinct warm bokeh lights providing scattered color accents. The color balance sits between the warmth of artificial light and the natural coolness of twilight creating an intimate atmospheric tension. Pearl white of jewelry accessories providing subtle cool highlight accent against warm skin.",
+  },
+  {
+    id: "colorpalette_076",
+    title: "Film Urban Vibrant Desaturated Editorial",
+    prompt: "Vibrant yet slightly desaturated color grade characteristic of film stock with rich color rendition. Colors feel authentic and grounded rather than digitally enhanced — the subtle desaturation adding a timeless editorial quality. Strong tonal separation between architectural elements and the subject. Warm skin tones balanced against cool urban greys and stone tones. The palette communicates sophisticated confidence — neither over-processed nor flat but sitting in the precise sweet spot of editorial film color.",
+  },
+  {
+    id: "colorpalette_077",
+    title: "SoundCloud Neon Flash Harsh Vivid",
+    prompt: "High-saturation slightly cool-toned color grade with strong emphasis on bright almost artificial hues pushed by harsh flash. Colors pop in a way that feels almost synthetic and stylized — neon accents visible in bedroom environment. Skin tones slightly blown by flash creating flat high-contrast rendering. The overall palette is garish and deliberately unrefined — vibrant in the way that only cheap flash and consumer cameras produce where the color science is overwhelmed by the light source. This rawness is the aesthetic — anti-polished anti-curated proudly lo-fi.",
+  },
 ];
 
 export const Texture = [
@@ -1397,6 +1462,21 @@ export const Texture = [
     title: "Luxury Fabric Surface Exaggerated Tactile",
     prompt: "Exaggerated tactile sensation going far beyond visual — every texture from delicate weave of silk pajamas to intricate carvings of antique furniture to crispness of linen and subtle sheen of polished surfaces rendered with almost palpable richness. Heightened textural fidelity direct result of high-resolution medium format sensor and critically sharp lens creating immersive experience where luxury is felt not just seen. Finest thread of fabric to subtlest gleam on polished surface captured with surgical precision and palpable tactile quality.",
   },
+  {
+    id: "texture_059",
+    title: "Linen Plaster Grain Wabi-Sabi Imperfection",
+    prompt: "Exquisite tangible texture of linen fabric on the shoulder in critical focus — every fiber and weave visible. Weathered plaster wall with subtle watermarks stains and ghosts of old paint adding organic patina. Fine hairs on skin illuminated by window light. Cracked window pane with its web of fracture lines. Organic 35mm film grain layered over all surfaces — the grain itself becoming a textural element that unifies the scene. Everything dissolves into soft grainy blur beyond the shallow focal plane creating a powerful contrast between critical sharpness and dreamy dissolution.",
+  },
+  {
+    id: "texture_060",
+    title: "Hair Pearls Fabric Smartphone Evening",
+    prompt: "Long hair showing soft texture catching ambient evening light. Smooth fabric of top contrasting with the delicate textured pearls of bracelet — the interplay between matte and lustrous surfaces. Skin rendered with natural smartphone softness — neither overly sharp nor artificially smoothed. The low-light conditions add subtle grain that softens all textures into a cohesive intimate register. Background bokeh lights as soft circular shapes providing textural depth to the out-of-focus areas.",
+  },
+  {
+    id: "texture_061",
+    title: "Film Grain Architectural Gate Urban",
+    prompt: "Subtle film grain adding warmth and tactile richness to all surfaces. Architectural textures of iron gate and stone wall rendered with natural detail. Hair and fabric catching bright daylight with visible sheen and dimension. Background building discernible but softly blurred — enough texture to read as urban environment. The film rendering gives all surfaces a slight organic quality that feels more tangible and present than digital capture.",
+  },
 ];
 
 export const Mood = [
@@ -1669,6 +1749,31 @@ export const Mood = [
     id: "mood_054",
     title: "Pristine Luxury Aspirational Perfection",
     prompt: "Perfect essence where luxury is not just seen but felt — pristine luminous incredibly detailed and deeply evocative. Every photographic element conspires to create idealized aspirational reality. Soft expansive illumination making everything appear radiant and perfectly illuminated almost existing in an idealized space. Subject's interaction with pristine environment feels natural yet elevated — authentic opulence rather than artificial enhancement. Perfect for luxury lifestyle hospitality or premium brand content.",
+  },
+  {
+    id: "mood_055",
+    title: "Wabi-Sabi Tranquil Melancholy Poetic Silence",
+    prompt: "Perfectly suited for a niche art photography platform designed to resonate with an audience that seeks depth silence and poetic beauty over glamour. The mood is one of tranquil melancholy profound simplicity and deeply beautiful imperfection — a visual haiku rather than a photograph. Mono no Aware — a gentle sadness for the impermanence of all things — pervades every element. The quiet intensity of the gaze speaks volumes about an unspoken internal world. Yūgen — the beauty of things unseen — is felt rather than shown.",
+  },
+  {
+    id: "mood_056",
+    title: "Evening Street Candid Intimate Lifestyle",
+    prompt: "Perfectly suited for personal social media like Instagram designed to highlight an intimate yet stylish personal moment. The mood is subtly alluring and candid — a spontaneous moment captured with quiet sophistication. Quiet allure and contemporary chic — candid authenticity blended with curated elegance characteristic of sophisticated lifestyle aesthetic. The evening urban setting adds a cinematic quality to what feels like a genuine personal moment.",
+  },
+  {
+    id: "mood_057",
+    title: "Urban Editorial Confident Contemporary",
+    prompt: "Perfectly suited for a fashion magazine spread lookbook or high-end social media campaign designed to showcase contemporary style and natural beauty within an urban context. The mood is confident artfully casual with an editorial yet candid feel — sophisticated lifestyle photography that projects effortless cool within architectural surroundings.",
+  },
+  {
+    id: "mood_058",
+    title: "Warm Artistic Casual Contentment",
+    prompt: "The mood is one of quiet contentment artistic appreciation and sophisticated casualness — candid yet curated lifestyle photography. The warmth and authenticity of the vintage filter contributes to a sense of genuine personal moment elevated by artistic sensibility. Relaxed and engaging — the viewer feels they are sharing a pleasant intimate moment with the subject.",
+  },
+  {
+    id: "mood_059",
+    title: "SoundCloud Brazen Playful Provocative DIY",
+    prompt: "Perfectly suited for personal social media designed to project a confident fun and slightly edgy persona. The mood is bold playful and a bit provocative — embodying the brazen unvarnished spirit of 2016 SoundCloud visual culture. A candid personal snapshot style where rawness is the point — anti-polish anti-curation proudly DIY. The aesthetic celebrates imperfection and self-assured attitude over technical quality.",
   },
 ];
 

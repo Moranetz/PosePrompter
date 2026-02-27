@@ -906,6 +906,70 @@ const presets = [
       Mood: "mood_054",
     },
   },
+
+  // ─── Batch 3: merged prompt extractions ──────────────────────────────
+  {
+    id: "preset_b3_001",
+    title: "Wabi-Sabi Yūgen Japanese Portrait",
+    entries: {
+      Aesthetic: "aesthetic_083",
+      CameraType: "cameratype_086",
+      Lighting: "lighting_060",
+      ColorPalette: "colorpalette_074",
+      Texture: "texture_059",
+      Framing: "framing_066",
+      Mood: "mood_055",
+    },
+  },
+  {
+    id: "preset_b3_002",
+    title: "Smartphone Evening Street Portrait",
+    entries: {
+      Aesthetic: "aesthetic_084",
+      CameraType: "cameratype_087",
+      Lighting: "lighting_061",
+      ColorPalette: "colorpalette_075",
+      Texture: "texture_060",
+      Framing: "framing_067",
+      Mood: "mood_056",
+    },
+  },
+  {
+    id: "preset_b3_003",
+    title: "Film Editorial Urban Landscape",
+    entries: {
+      Aesthetic: "aesthetic_085",
+      CameraType: "cameratype_088",
+      Lighting: "lighting_062",
+      ColorPalette: "colorpalette_076",
+      Texture: "texture_061",
+      Framing: "framing_068",
+      Mood: "mood_057",
+    },
+  },
+  {
+    id: "preset_b3_004",
+    title: "Vintage Filter Warm Intimate",
+    entries: {
+      Aesthetic: "aesthetic_086",
+      CameraType: "cameratype_049",
+      Lighting: "lighting_061",
+      ColorPalette: "colorpalette_075",
+      Mood: "mood_058",
+    },
+  },
+  {
+    id: "preset_b3_005",
+    title: "2016 SoundCloud Flash Aesthetic",
+    entries: {
+      Aesthetic: "aesthetic_087",
+      CameraType: "cameratype_089",
+      Lighting: "lighting_063",
+      ColorPalette: "colorpalette_077",
+      Framing: "framing_069",
+      Mood: "mood_059",
+    },
+  },
 ];
 
 export default presets;

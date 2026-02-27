@@ -327,6 +327,26 @@ export const Framing = [
     title: "Balanced Luxury Interior Thoughtful Composition",
     prompt: "Balanced thoughtful composition guiding eye through luxurious scene whether intimate close-up or wider interior shot. Perspective chosen to highlight subject's interaction with pristine environment. Exceptionally shallow medium-format depth of field with creamy painterly bokeh creating intimate envelope around subject and key elements enhancing sense of privacy and preciousness. Smooth perfectly circular out-of-focus highlights adding to luxurious dreamlike quality. Every compositional element conspiring to create idealized aspirational reality.",
   },
+  {
+    id: "framing_066",
+    title: "Medium Close-Up Ma Negative Space Off-Center",
+    prompt: "Medium close-up from collarbones up positioned off-center surrounded by vast empty areas of textured wall — a masterclass in Ma negative space. Eye-level camera creating direct intimate connection. The subject occupies perhaps one-third of the frame while the remaining space is given to the weathered interior — the emptiness itself becoming compositional subject. Vertical 4:5 orientation emphasizing intimate portrait-like quality. Shallow depth of field with only the nearest eye and shoulder texture in critical focus while everything else dissolves into soft grainy blur.",
+  },
+  {
+    id: "framing_067",
+    title: "Half-Body Waist-Up Vertical Street Evening",
+    prompt: "Half-body portrait from waist up slightly off-center to the right in vertical portrait orientation. Medium shot cutting just above hips. Eye-level camera with direct gaze as primary focal point. Shallow depth of field separating subject sharply from softly blurred dark street background with indistinct bokeh lights. The composition emphasizes figure and direct gaze — intimate yet stylish with the urban evening setting providing atmospheric depth without competing for attention. One hand near collarbone adding gestural interest.",
+  },
+  {
+    id: "framing_068",
+    title: "Horizontal Landscape Urban Architectural Balance",
+    prompt: "Horizontal landscape orientation balancing the subject's presence with architectural elements of the scene — gate wall distant building. Slightly below eye-level camera adding subtle sense of stature and confidence. Moderate depth of field keeping subject in sharp focus while background architecture remains discernible but softly blurred. The wider frame allows the urban context to breathe alongside the subject creating an editorial feel that is both portrait and environmental study.",
+  },
+  {
+    id: "framing_069",
+    title: "Medium Shot Seated SoundCloud Below Eye-Level",
+    prompt: "Medium shot framing subject seated captured from waist up. Camera slightly below eye-level. The composition feels like a personal snapshot — casual framing without precise centering. Flash-lit subject dominates the frame with bedroom background barely visible as indistinct suggestion of personal space. Vertical portrait orientation with the slightly off-center framing adding to raw candid energy. The composition embraces the imperfect spontaneous quality of quick personal photos.",
+  },
 ];
 
 export const Perspective = [
@@ -845,6 +865,26 @@ export const CameraType = [
     id: "cameratype_085",
     title: "GFX 100S GF 80mm f/1.7 Luxury Rendering",
     prompt: "Simulated capture on medium format digital camera Fujifilm GFX 100S paired with fast critically sharp prime lens Fujifilm GF 80mm f/1.7 R WR — definitive choice for achieving perfect essence through superior rendering. Expansive dynamic range ensuring pristine luminous whites glowing with textural purity and rich deep open shadows revealing subtle color information — highlight and shadow handling creating ethereal purity surpassing natural vision. Unparalleled micro-contrast and ultra-high resolution rendering every detail with surgical precision and palpable tactile richness. Fast prime producing exceptionally shallow depth of field with exquisite creamy painterly bokeh and smooth perfectly circular out-of-focus highlights. Virtually no distortion chromatic aberration or unwanted flares — optically pristine rendering.",
+  },
+  {
+    id: "cameratype_086",
+    title: "Vintage Film SLR Fujifilm Superia 35mm",
+    prompt: "Simulated capture on a vintage film SLR loaded with Fujifilm Superia stock shot on grainy 35mm film. Soft focus with subtle light leaks and organic grain characteristic of the film stock creating deep emotional resonance that feels both timeless and deeply personal. Shallow depth of field ensuring only the nearest eye and immediate foreground texture are in critical focus while the rest dissolves into soft grainy blur — creating powerful sense of isolation and introspection. The film rendering imparts a dreamy slightly faded quality with naturally rolled-off highlights and open shadows that retain color information.",
+  },
+  {
+    id: "cameratype_087",
+    title: "Modern Smartphone Evening Natural Light",
+    prompt: "Simulated capture on a modern smartphone with standard lens resulting in slightly soft realistic render with natural light sensitivity. The smartphone processing creates a naturalistic image avoiding harshness while gently capturing ambient light. Shallow depth of field keeps subject sharply in focus while blurred background of dark street and indistinct lights creates soft bokeh effect separating subject from environment. The rendering has a gentle ambient quality characteristic of contemporary smartphone cameras in low-light conditions — neither overly processed nor artificially enhanced.",
+  },
+  {
+    id: "cameratype_088",
+    title: "Film Camera Subtle Grain Rich Color",
+    prompt: "Simulated capture on what appears to be a film camera given the subtle grain and rich color rendition. Vibrant slightly desaturated yet realistic image with strong light sensitivity. Moderate depth of field keeping subject sharply in focus while background elements remain discernible but softly blurred creating natural separation. The slightly below eye-level camera position adds a subtle sense of stature and confidence. Film grain visible but refined — adding texture and warmth without overwhelming detail.",
+  },
+  {
+    id: "cameratype_089",
+    title: "Smartphone Flash SoundCloud Raw Blown-Out",
+    prompt: "Simulated capture on a digital camera or smartphone with harsh on-camera flash rendering a raw slightly blown-out image with vibrant almost neon colors and strong unfiltered light sensitivity central to the aesthetic. The camera is slightly below eye-level. Flash creates blown-out highlights deep unrefined shadows and prominent red-eye effect collectively contributing to raw unpolished authentically DIY feel. Shallow depth of field with background of bedroom heavily blurred and almost indistinguishable in the flash glare — serving as mere suggestion of personal intimate space. The rendering embraces imperfection as core aesthetic.",
   },
 ];
 
