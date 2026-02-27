@@ -102,9 +102,8 @@ export const Aesthetic = [
   },
   {
     id: "aesthetic_017",
-    title: "Whimsical",
-    comprehensive: true,
-    prompt: "Generate an image that embodies \"Whimsical Ethereal Innocence\" with subtly unsettling undertone reminiscent of dreamlike fairy tale or classic art portrait. This aura is not merely captured but meticulously constructed by camera's precise rendering which elevates scene beyond ordinary visual experience giving it timeless almost painterly quality. Camera simulation utilizes high-end medium format digital camera paired with fast critically sharp medium format prime lens - subject's skin delicate lace of dress texture of hair and especially soft fur should exhibit phenomenal clarity and micro-detail rendering every strand and fiber with tangible almost hyper-real fidelity this level of detail combined with ethereal lighting creates paradoxical dreamlike realism far beyond natural human vision making fantastical elements feel grounded yet magical - depth of field ultra-shallow creating exquisite buttery-smooth bokeh that completely dissolves background into homogenous wash of color this visual isolation of subject against pristine backdrop directly amplifies feeling of contained dreamlike world making them sole captivating focus of quiet narrative bokeh perfectly clean with no distracting elements - lens exhibits virtually no distortion chromatic aberration or vignetting ensuring pristine optically perfect image that subtly reinforces ethereal and timeless quality as if viewed through flawless lens into another realm. Lighting utilizes soft diffused and highly controlled studio lighting mimicking large softbox or parabolic reflector placed slightly off-axis - light luminous and exceptionally even across subject's face creating subtle almost internal glow that softens features and eliminates harsh shadows this gentle enveloping illumination contributes heavily to ethereal and innocent quality making subject appear almost angelic - despite evenness there should be subtle light fall-off that gently sculpts facial features creating delicate sense of three-dimensionality without any harshness this precise control of light and shadow hallmark of high-end studio photography allowing for refined portrayal of form that enhances subject's delicate presence - soft yet distinct catchlights in eyes giving them lifelike sparkle that draws viewer in and adds element of sentience to gaze even in such stylized scene. Color palette features clean slightly cool-toned color grade with subtle warmth in skin tones reminiscent of classic fine art portraiture or high-key film stocks - background deep rich desaturated teal or muted blue-grey providing sophisticated cool counterpoint to warm skin and hair this specific hue rendered with photographic precision creates almost infinite dreamlike stage for subject depth of color that feels deliberately chosen and enhanced.",
+    title: "Whimsical Ethereal Innocence",
+    prompt: "Generate an image that embodies a Whimsical Ethereal Innocence with a subtly unsettling undertone reminiscent of a dreamlike fairy tale or classic art portrait. This aura is not merely captured but meticulously constructed by the camera's precise rendering which elevates the scene beyond ordinary visual experience giving it a timeless almost painterly quality. The fantastical elements should feel grounded yet magical creating a paradoxical dreamlike realism. The subject should appear within a contained dreamlike world as the sole captivating focus of a quiet narrative as if viewed through a flawless lens into another realm.",
   },
   {
     id: "aesthetic_018",
@@ -249,6 +248,11 @@ export const Lighting = [
     title: "Cathedral Floodlight Dramatic Night",
     prompt: "Dramatic artificial illumination from cathedral floodlights and ambient city glow captured with enhanced photographic sensitivity — the architecture powerfully illuminated by warm upward-facing floodlights creating stark contrasts between glowing stone and deep shadows within Gothic recesses — this dramatic lighting exaggerates architectural details and textures making them pop with almost theatrical intensity not seen as vividly in real life — wet pavement in the foreground acts as a mirror-like surface reflecting the cathedral light and sparse city lights with a shimmering ethereal quality creating luminous streaks and pools that add to the mysterious atmosphere — the night sky rendered as inky profound black provides stark dramatic contrast to the illuminated architecture — true blacks without crushing shadow detail in the foreground creating a sense of infinite darkness around the glowing monument",
   },
+  {
+    id: "lighting_018",
+    title: "Angelic Softbox Ethereal Glow",
+    prompt: "Soft diffused and highly controlled studio lighting mimicking a large softbox or parabolic reflector placed slightly off-axis. Light is luminous and exceptionally even across subject's face creating a subtle almost internal glow that softens features and eliminates harsh shadows — this gentle enveloping illumination contributes heavily to an ethereal and innocent quality making subject appear almost angelic. Despite the evenness there should be subtle light fall-off that gently sculpts facial features creating a delicate sense of three-dimensionality without any harshness — this precise control of light and shadow is a hallmark of high-end studio photography allowing for a refined portrayal of form that enhances the subject's delicate presence. Soft yet distinct catchlights in the eyes giving them a lifelike sparkle that draws the viewer in and adds an element of sentience to the gaze even in such a stylized scene.",
+  },
 ];
 
 export const ColorPalette = [
@@ -361,6 +365,11 @@ export const ColorPalette = [
     id: "colorpalette_022",
     title: "Cool Gothic Monochromatic Stone",
     prompt: "Cool-toned slightly desaturated color grade emphasizing the stark beauty of a nighttime architectural scene — monochromatic dominance leaning towards cool greys desaturated creams and deep blacks allowing architectural details to speak for themselves — this near-monochromatic approach enhances timeless gothic elegance giving the architecture an almost sculptural quality — where floodlights hit stone a subtle warm golden glow provides just enough contrast to prevent the image from feeling flat — reflections on wet ground pick up subtle hints of deep blue or indigo from distant city lights adding mysterious cool color — a detail often more apparent in a photograph than to the casual observer",
+  },
+  {
+    id: "colorpalette_023",
+    title: "Cool Fine Art Teal Dreamscape",
+    prompt: "Clean slightly cool-toned color grade with subtle warmth in skin tones reminiscent of classic fine art portraiture or high-key film stocks. Background should be a deep rich desaturated teal or muted blue-grey providing a sophisticated cool counterpoint to warm skin and hair — this specific hue rendered with photographic precision creates an almost infinite dreamlike stage for the subject — the depth of color feels deliberately chosen and enhanced.",
   },
 ];
 
