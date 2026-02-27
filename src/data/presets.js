@@ -1132,6 +1132,119 @@ const presets = [
       Mood: "mood_070",
     },
   },
+  // ---- Batch 5 presets (10 sets from 13 raw prompts) ----
+  {
+    id: "preset_b5_001",
+    title: "Unbothered Luxury Private Jet Quiet Flex",
+    entries: {
+      Aesthetic: "aesthetic_101",
+      CameraType: "cameratype_101",
+      Framing: "framing_076",
+      Lighting: "lighting_071",
+      ColorPalette: "colorpalette_086",
+      Texture: "texture_069",
+      Mood: "mood_071",
+    },
+  },
+  {
+    id: "preset_b5_002",
+    title: "Relaxed Defiant Main Character Window",
+    entries: {
+      Aesthetic: "aesthetic_102",
+      Framing: "framing_077",
+    },
+  },
+  {
+    id: "preset_b5_003",
+    title: "Indie Adventure Horseback Quirky Nostalgic",
+    entries: {
+      Aesthetic: "aesthetic_103",
+      CameraType: "cameratype_102",
+      Framing: "framing_078",
+      Lighting: "lighting_072",
+      ColorPalette: "colorpalette_087",
+      Mood: "mood_072",
+    },
+  },
+  {
+    id: "preset_b5_004",
+    title: "Subway Camcorder Indie Rebel",
+    entries: {
+      Aesthetic: "aesthetic_104",
+      CameraType: "cameratype_103",
+      Mood: "mood_073",
+    },
+  },
+  {
+    id: "preset_b5_005",
+    title: "Alt-Teen Angst Underground Rock",
+    entries: {
+      Aesthetic: "aesthetic_105",
+      CameraType: "cameratype_104",
+      Framing: "framing_079",
+      Lighting: "lighting_072",
+      ColorPalette: "colorpalette_088",
+      Texture: "texture_070",
+      Mood: "mood_074",
+    },
+  },
+  {
+    id: "preset_b5_006",
+    title: "Glam Casual Social Media Star",
+    entries: {
+      Aesthetic: "aesthetic_106",
+      CameraType: "cameratype_105",
+      Framing: "framing_080",
+      Lighting: "lighting_073",
+      ColorPalette: "colorpalette_089",
+      Texture: "texture_071",
+      Mood: "mood_075",
+    },
+  },
+  {
+    id: "preset_b5_007",
+    title: "Dark Angel Alt-Grunge Fairy",
+    entries: {
+      Aesthetic: "aesthetic_107",
+      CameraType: "cameratype_106",
+      Framing: "framing_081",
+      Lighting: "lighting_074",
+      ColorPalette: "colorpalette_090",
+      Mood: "mood_076",
+    },
+  },
+  {
+    id: "preset_b5_008",
+    title: "Luxury Bags Humorous Self-Aware",
+    entries: {
+      Aesthetic: "aesthetic_108",
+      CameraType: "cameratype_107",
+      Mood: "mood_077",
+    },
+  },
+  {
+    id: "preset_b5_009",
+    title: "Parisian Chic Dynamic Influencer",
+    entries: {
+      Aesthetic: "aesthetic_109",
+      CameraType: "cameratype_108",
+      Framing: "framing_082",
+      Lighting: "lighting_075",
+      ColorPalette: "colorpalette_091",
+      Mood: "mood_078",
+    },
+  },
+  {
+    id: "preset_b5_010",
+    title: "Selfie Ring Light Approachable Glamour",
+    entries: {
+      Aesthetic: "aesthetic_110",
+      Framing: "framing_083",
+      Lighting: "lighting_076",
+      Texture: "texture_072",
+      Mood: "mood_079",
+    },
+  },
 ];
 
 export default presets;

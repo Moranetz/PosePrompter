@@ -377,6 +377,46 @@ export const Framing = [
     title: "Top-Down Overhead Flat-Lay Documentary",
     prompt: "Top-down flat-lay composition with the camera positioned directly overhead shooting straight down onto objects arranged on a surface. Vertical portrait orientation emphasizing the delicate details and arrangement of the subjects. The overhead perspective eliminates traditional depth and perspective creating a clean graphic composition where every element exists on the same visual plane. The framing isolates objects for detailed examination — documentary precision prioritizing clarity and comprehensive visibility over artistic abstraction.",
   },
+  {
+    id: "framing_076",
+    title: "High-Angle Overhead Reclining Vertical",
+    prompt: "Decadent high-angle shot with the camera positioned directly above looking down — framed from head down to mid-thigh — vertical portrait orientation emphasizing the subject's comfortable reclining pose as the primary focal point — the elevated perspective creating an intimate almost voyeuristic viewpoint.",
+  },
+  {
+    id: "framing_077",
+    title: "Relaxed Window Shallow-DOF Vertical",
+    prompt: "Shallow depth of field composition keeping the subject sharply in focus with textures rendered with clarity — background visible through a window showing an urban scene with reflections softly blurred with bokeh effect hinting at the bustling world outside while firmly centering attention on the subject's intimate space — vertical portrait orientation emphasizing relaxed pose and distinctive outfit.",
+  },
+  {
+    id: "framing_078",
+    title: "Candid Medium-Full Eye-Level Upright Vertical",
+    prompt: "Candid medium-full shot at eye-level — framed from the knees up capturing the full upper body — vertical portrait orientation emphasizing the subject's quirky pose and surroundings as the primary focal points.",
+  },
+  {
+    id: "framing_079",
+    title: "Medium Shot Waist-Up Confrontational Vertical",
+    prompt: "Raw dynamic medium shot from the waist up at eye-level — vertical portrait orientation powerfully emphasizing the subject's expressive face defiant gestures and graphic clothing as primary focal points.",
+  },
+  {
+    id: "framing_080",
+    title: "Medium-Close Chest-Up Self-Framing Vertical",
+    prompt: "Engaging medium-close shot from the chest up at eye-level — hands held up to frame the face in a stylized gesture with head tilted and gaze directed playfully to one side — vertical portrait orientation emphasizing the subject's expressive face playful pose and stylish casual wear.",
+  },
+  {
+    id: "framing_081",
+    title: "High-Angle Medium Seated From Above",
+    prompt: "Striking high-angle medium shot with the camera positioned above looking down at a seated subject on the ground — framed from above capturing the full seated posture — creating a raw almost voyeuristic perspective.",
+  },
+  {
+    id: "framing_082",
+    title: "Dynamic Full-Body Mid-Stride Energetic Vertical",
+    prompt: "Dynamic full-body shot capturing the subject mid-stride in an almost dance-like pose — one leg lifted with energetic engaging body language — vertical portrait orientation emphasizing the full figure and stylish outfit as primary focal points — the composition makes the movement and outfit the star.",
+  },
+  {
+    id: "framing_083",
+    title: "Direct Selfie Deep-DOF Background Vertical",
+    prompt: "Direct-to-camera selfie composition with a deep depth of field keeping the face sharply in focus while an organized background display is clearly visible but slightly softened — vertical portrait orientation emphasizing the face and expressive gaze as primary focal points — providing an aspirational context of curated taste behind the subject.",
+  },
 ];
 
 export const Perspective = [
@@ -970,6 +1010,46 @@ export const CameraType = [
     id: "cameratype_100",
     title: "Smartphone Documentary True-to-Life Top-Down",
     prompt: "Simulated capture on a high-quality smartphone utilizing a neutral true-to-life color profile that meticulously preserves subtle tones and intricate details resulting in a sharp almost documentary-style image with balanced exposure and fine texture rendition. The camera is positioned directly overhead creating a flat top-down perspective. Deep depth of field keeps all elements in razor-sharp focus from foreground details to subtle background context. The rendering prioritizes objective clarity over artistic interpretation — meticulous color accuracy and even exposure allowing every fine detail to be clearly visible surpassing casual observation.",
+  },
+  {
+    id: "cameratype_101",
+    title: "Smartphone Warm Muted Filter Romanticized",
+    prompt: "Simulated capture on a high-quality smartphone utilizing a deliberately muted warm-toned filter that softens the scene's inherent intensity — creating an almost dreamy intimate aspirational feel — crisp yet subtly romanticized image with natural ambient light sensitivity that feels both aspirational and candid — shallow depth of field keeping the subject sharply in focus while the background is softly blurred with a creamy bokeh effect adding to the sense of exclusive luxury and intimate privacy — high artificial light sensitivity flattens harsh shadows and amplifies subtle contours.",
+  },
+  {
+    id: "cameratype_102",
+    title: "Older Low-Res Digital Camera 2000s Nostalgic",
+    prompt: "Simulated capture on an older lower-resolution digital camera or early smartphone circa 2000s to early 2010s — rendering a slightly blurry raw image with noticeable digital noise in darker areas and a tendency towards slightly washed-out highlights — slightly muted saturation common to older digital sensors making the scene feel a touch less vibrant than real life adding to its nostalgic quality — deep depth of field keeping both subject and immediate background in reasonable focus — avoiding the sophisticated bokeh of modern lenses presenting a broader more encompassing view that feels less curated and more like a captured moment.",
+  },
+  {
+    id: "cameratype_103",
+    title: "Vintage-Mimicking Crisp Ethereal Camcorder",
+    prompt: "Simulated capture deliberately mimicking a vintage feel — rendering a crisp yet ethereal image with a sense of playful artistic self-awareness — background blurred into abstract streaks of light and shadow with deliberate haziness adding a sense of motion and isolating the subject as the captivating center of attention — all meticulously captured and exaggerated by the camera's lens to create a distinctive vibrant aura.",
+  },
+  {
+    id: "cameratype_104",
+    title: "Smartphone Natural Uncorrected Raw Unpolished",
+    prompt: "Simulated capture on a smartphone with a natural uncorrected color profile that captures raw greens and shadows without enhancement — contributing to candid almost snapshot-like authenticity — crisp yet unpolished image with a natural light sensitivity that feels immediate and unposed — moderate depth of field keeping subject sharply in focus while the background of dense varied foliage is discernible but softly blurred with natural bokeh creating a textured backdrop.",
+  },
+  {
+    id: "cameratype_105",
+    title: "Smartphone Bright Overexposed Beauty Filter Computational",
+    prompt: "Simulated capture on a high-quality smartphone utilizing a bright slightly overexposed filter that intentionally blows out some highlights — softening details and enhancing luminosity beyond what the human eye perceives — creating an almost airbrushed flawless quality to skin eliminating minor imperfections and emphasizing a youthful glow — high almost artificial light sensitivity flattens harsh shadows and amplifies subtle contours — very shallow depth of field keeping subject sharply in focus with exquisite detail while the background is aggressively softened and blurred into creamy bokeh — powerful computational flash or advanced low-light processing engineering a luminous halo around hair and edges.",
+  },
+  {
+    id: "cameratype_106",
+    title: "Older Digital Camera Raw Gritty Desaturated",
+    prompt: "Simulated capture on an older digital camera or smartphone — rendering a crisp yet gritty image with a slightly desaturated cool color cast — stark almost brutal light sensitivity that captures every detail without idealization — unpolished feel that strips away any artificial glamour — raw almost voyeuristic approach giving the image a direct confrontational quality.",
+  },
+  {
+    id: "cameratype_107",
+    title: "Smartphone Slightly Soft Natural Unpretentious",
+    prompt: "Simulated capture on a smartphone rendering a slightly soft unpretentious image with natural colors and direct unrefined lighting — moderate depth of field keeping subject sharply in focus while the plain background provides a minimalist domestic context — natural unenhanced rendering that avoids idealization.",
+  },
+  {
+    id: "cameratype_108",
+    title: "Smartphone Slightly Below Eye-Level Sharp Balanced",
+    prompt: "Simulated capture on a high-quality smartphone from slightly below eye-level — producing a sharp well-lit image with balanced colors and a sophisticated light sensitivity — moderate depth of field keeping subject sharply in focus while the background of a minimalist stylish room is discernible but softly blurred providing an aspirational lifestyle context.",
   },
 ];
 

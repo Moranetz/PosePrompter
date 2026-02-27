@@ -528,6 +528,56 @@ export const Aesthetic = [
     title: "Traditional Craftsmanship Museum Artifact",
     prompt: "Generate an image embodying an elegant traditional craftsmanship or historical artifact aesthetic — respectful appreciative museum-quality documentation. The vibe is refined and deeply aesthetic — objects displayed within wooden-framed glass case on clean white backdrop for detailed examination. A photographic approach emphasizing cultural significance over casual display. Suited for cultural heritage catalogs artisan portfolios or curated historical exhibits showcasing traditional beauty and meticulous artistry with objective clarity.",
   },
+  {
+    id: "aesthetic_101",
+    title: "Unbothered Luxury Quiet Flex",
+    prompt: "Generate an image embodying an audacious unbothered luxury or quiet flex aesthetic — a decadent curated wealth-porn aspirational lifestyle where the contrast between cozy elements like plush loungewear and soft bedding and the display of hard cash creates a surreal blend amplifying the unbothered opulence — conveying a blasé familiarity with extreme wealth and an ultimate state of relaxed indulgence as if caught unawares in a natural habitat of opulence — body language utterly unconcerned and deeply comfortable embodying the ultimate state of having arrived — elevating unbothered to an almost untouchable aspirational ideal — the intentionality of the display is key with a deliberate almost dismissive arrangement conveying both sheer quantity and casual indifference to monumental value — a powerful understated flex perfectly suited for high-end lifestyle social media and aspirational communities projecting ultimate financial freedom and an enviable unbothered existence.",
+  },
+  {
+    id: "aesthetic_102",
+    title: "Relaxed Defiant Main Character",
+    prompt: "Generate an image embodying a relaxed almost defiant main character aesthetic — utterly relaxed posture with complete disregard for conventional public decorum — body language both vulnerable in its relaxation and powerful in its nonchalance embodying a singular main character presence — self-possession and bold personal expression where comfort meets confident disregard — conveying an ultimate state of comfort and a blend of ease with audacious individuality.",
+  },
+  {
+    id: "aesthetic_103",
+    title: "Indie Adventure Nostalgic Snapshot",
+    prompt: "Generate an image embodying a quirky indie adventure or unexpected cowboy aesthetic — a nostalgic unpolished charm that feels authentic and unforced far from a professional photoshoot — not a polished equestrian but someone trying something new embracing a playful slightly theatrical moment — the overall feel is innocent adventure lighthearted awkwardness and genuine unpretentious fun embodying a candid personal snapshot style that resonates with a niche appreciation for authenticity over perfection — telling a story of an unexpected encounter or a charmingly unheroic journey — evoking quirky charm relatable amateurism and a genuine unpretentious moment of self-discovery.",
+  },
+  {
+    id: "aesthetic_104",
+    title: "Indie Rebel Subway Energy",
+    prompt: "Generate an image embodying a playful rebellion artistic self-awareness and undeniable youthful swagger — a curated indie fashion editorial or street style aesthetic — cool energetic authentically rebellious with an infectious almost defiant energy — confident and engaging leaning into the shot — abstract streaks of light and shadow add to the sense of motion and urban dynamism — evoking rebellious spirit artistic vision and electrifying youthful energy suited for alternative fashion or youth culture.",
+  },
+  {
+    id: "aesthetic_105",
+    title: "Alt-Teen Angst Underground Rock",
+    prompt: "Generate an image embodying a defiant alt-teen angst or underground rock aesthetic — raw unfiltered powerfully conveyed through a candid almost snapshot-like perspective — confrontational swagger with rock-on hand gestures and a sullen slightly aggressive pout and narrowed eyes conveying rebellious defiance and youthful disaffection — confident assertive body language embodying an I-don't-care-what-you-think attitude — authentically alternative non-conformist identity — edgy authentic and defiantly cool persona suited for alternative music communities or independent fashion.",
+  },
+  {
+    id: "aesthetic_106",
+    title: "Glam Casual Social Media Star",
+    prompt: "Generate an image embodying a playful confident slightly provocative glam casual or social media star aesthetic — self-aware coquettish charm with mischievous confidence and clear awareness of being photographed for an audience — body language expressive and inviting meticulously curated for social media engagement — cheerful flirtatious aspirational embodying quintessential curated social media influencer or personal branding photography — engineered through specific photographic techniques to appear effortlessly perfect — presenting a version of reality optimized for digital consumption — projecting approachable glamour and confident playful self-expression.",
+  },
+  {
+    id: "aesthetic_107",
+    title: "Dark Angel Alt-Grunge Fairy",
+    prompt: "Generate an image embodying a bold melancholic and subtly defiant dark angel or alt-grunge fairy aesthetic — raw unfiltered approach that strips away any artificial glamour — the overall mood is melancholic rebellious and subtly provocative embodying a candid raw indie or underground photography style — evoking poignant rebellion and unconventional beauty suited for an alternative fashion zine or art photography exploring urban subcultures.",
+  },
+  {
+    id: "aesthetic_108",
+    title: "Luxury Bags Humorous Self-Aware",
+    prompt: "Generate an image embodying a humorous self-aware aspirational aesthetic — a candid social media post designed for engagement and relatability within a luxury-obsessed culture — posing with prominent luxury bags in a minimalist domestic context — the overall feel is humorous self-aware and aspirational showcasing a relatable yet aspirational persona with an unpretentious approach to displaying curated luxury.",
+  },
+  {
+    id: "aesthetic_109",
+    title: "Parisian Chic Playful Influencer",
+    prompt: "Generate an image embodying a confident high-fashion Parisian chic meets playful influencer aesthetic — effortless style confidence and joyful self-expression — captured in a dynamic almost dance-like energy with engaging body language making the outfit the star — conveying an air of effortless style confidence and vibrant personality — chic playful and aspirational embodying a curated fashion blog or high-end lifestyle photography style suited for fashion influencer social media or style publications.",
+  },
+  {
+    id: "aesthetic_110",
+    title: "Selfie Ring Light Approachable Glamour",
+    prompt: "Generate an image embodying a confident inviting aspirational selfie aesthetic — a personal social media selfie style designed for intimate connection and showcasing a luxurious lifestyle — relaxed and engaging body language typical of a direct-to-camera selfie — an organized luxurious display visible in the background providing aspirational context of success and curated taste — projecting approachable glamour and success fostering a sense of connection.",
+  },
 ];
 
 export const Lighting = [
@@ -880,6 +930,36 @@ export const Lighting = [
     id: "lighting_070",
     title: "Soft Even Overhead Indoor Documentary",
     prompt: "Soft even lighting from diffused overhead indoor light sources creating minimal shadows that allow every intricate detail to be clearly visible. The illumination is functional and documentary in character — prioritizing clarity over atmosphere. Even distribution across the subject eliminates dramatic shadows and specular highlights — a neutral lighting environment that lets the objects speak for themselves. The clarity of the illumination surpasses casual observation making fine details and subtle tonal variations plainly visible.",
+  },
+  {
+    id: "lighting_071",
+    title: "Soft Ambient Natural Window Intimate Luxurious",
+    prompt: "Soft ambient lighting primarily from natural light filtering through a window — creating gentle highlights and soft diffused shadows that contribute to an intimate luxurious atmosphere — naturally illuminated rather than overtly staged enhancing an effortless quality — the golden light adding warmth without harsh directionality.",
+  },
+  {
+    id: "lighting_072",
+    title: "Natural Ambient Overcast Dappled Outdoor Candid",
+    prompt: "Natural ambient light from an overcast day or dappled sunlight filtered through trees — creating soft even illumination without any artificial manipulation — subtle highlights and shadows that define features and textures contributing to a genuine unvarnished candid feel — a slightly flat naturalistic documentary quality rather than dramatic artful light.",
+  },
+  {
+    id: "lighting_073",
+    title: "Soft Even Interior Computational Flash Luminous",
+    prompt: "Soft even lighting from interior ambient lights combined with powerful computational flash or advanced low-light processing — creating uniform flattering illumination that minimizes imperfections — smoothing skin texture and creating a luminous halo around hair and edges — an effect entirely engineered by the camera's algorithms not typically seen by the naked eye — deliberately sculpting features for maximum visual appeal.",
+  },
+  {
+    id: "lighting_074",
+    title: "Harsh Direct Flash Raw Unflattering",
+    prompt: "Harsh direct on-camera flash creating strong unflattering highlights and deep pronounced shadows — giving the image a raw almost voyeuristic unpolished feel — stark almost brutal illumination capturing every detail without idealization — stripping away any flattering quality and replacing it with gritty confrontational directness.",
+  },
+  {
+    id: "lighting_075",
+    title: "Soft Even Diffused Indoor Gentle Highlight",
+    prompt: "Soft even lighting from diffused indoor sources — creating gentle highlights and minimal shadows that define outfit textures and the subject's dynamic form — flattering balanced illumination that feels clean and modern.",
+  },
+  {
+    id: "lighting_076",
+    title: "Ring Light Diffused Indoor Flattering Selfie",
+    prompt: "Soft even lighting likely from a ring light or diffused indoor source — creating flattering highlights on skin and a bright inviting glow without harsh shadows — giving the complexion an almost flawless airbrushed quality that is often sought after in selfie photography — warm inviting luminosity suited for intimate direct-to-camera compositions.",
   },
 ];
 
@@ -1309,6 +1389,36 @@ export const ColorPalette = [
     title: "Natural Wood Gold Floral White Refined",
     prompt: "Natural refined color palette dominated by warm polished wood tones accented by rich gold and subtle floral hues of painted decorative designs. Crisp white of the backdrop provides clean neutral contrast — earthy browns of a wooden display frame ground the warm spectrum. The true-to-life color rendering preserves every subtle tonal variation — the honey amber of aged wood the warm glint of gold leaf the delicate pinks and greens of hand-painted florals. The overall palette is elegant and historically resonant — warm natural materials rendered with documentary precision.",
   },
+  {
+    id: "colorpalette_086",
+    title: "Warm Rich Brown White Vibrant Green Gold",
+    prompt: "Warm and rich color palette dominated by cozy brown tones and soft whites — sharply punctuated by vibrant greens and golden light — a muted warm-toned filter softening the overall intensity creating an almost dreamy intimate aspirational feel with a blend of earthy comfort and vivid color accents.",
+  },
+  {
+    id: "colorpalette_087",
+    title: "Natural Earthy Brown Green Muted Nostalgic",
+    prompt: "Natural and earthy color palette dominated by warm browns and dirt tones — muted greens of foliage in the background — casual blues and whites of everyday clothing — slightly muted saturation making the scene feel a touch less vibrant than real life adding to a nostalgic quality.",
+  },
+  {
+    id: "colorpalette_088",
+    title: "Deep Faded Black Rich Green Pale Contrast",
+    prompt: "Color palette dominated by deep almost faded black and rich natural greens of foliage — contrasted by pale skin tones and dark hair — captured with slightly muted saturation creating a raw unenhanced naturalistic grade.",
+  },
+  {
+    id: "colorpalette_089",
+    title: "Bright Fresh Bleached White Dark Hair Rosy",
+    prompt: "Bright and fresh color palette dominated by crisp almost bleached white clothing which appears even brighter due to overexposure settings — contrasting sharply with long dark voluminous wavy hair and full rosy lips — background warm tones slightly desaturated further emphasizing the subject's vibrancy — optimized for digital consumption.",
+  },
+  {
+    id: "colorpalette_090",
+    title: "Slightly Desaturated Cool Stark Gritty",
+    prompt: "Slightly desaturated cool color palette with stark contrast — deep pronounced shadows and strong highlights creating a gritty unidealized tonal range — cool cast contributing to a melancholic rebellious atmosphere.",
+  },
+  {
+    id: "colorpalette_091",
+    title: "Classic Black White Tweed Patent Light Wood",
+    prompt: "Classic elegant color palette featuring timeless black and white tweed — crisp white of skirt and accessories — patent black of shoes and handbag — set against a clean modern interior with neutral walls and light wood flooring — sophisticated and refined.",
+  },
 ];
 
 export const Texture = [
@@ -1651,6 +1761,26 @@ export const Texture = [
     id: "texture_068",
     title: "Polished Wood Gold Painted Detail Paper Documentary",
     prompt: "Smooth polished wood with warm amber grain patterns — the surface reflecting soft light with a satin sheen. Intricate gold and painted decorative details rendered with documentary precision — every brushstroke and gilded accent clearly visible. Finely carved teeth and edges of crafted objects with sharp tactile detail. Soft white paper texture providing clean neutral contrast. The true-to-life rendering captures material qualities that might be missed by casual observation — the warmth of aged wood the subtle shimmer of gold leaf the delicate layering of paint on carved surfaces.",
+  },
+  {
+    id: "texture_069",
+    title: "Plush Loungewear Soft Bedding Crisp Paper",
+    prompt: "Soft plush texture of loungewear and bedding contrasted with crisp tangible texture of paper currency and banknotes — rich tactile details captured with almost visceral clarity — all contributing to an idealized reality that blends comfort with material excess.",
+  },
+  {
+    id: "texture_070",
+    title: "Soft Worn Cotton Organic Leaf Natural",
+    prompt: "Soft worn texture of a cotton t-shirt and organic textures of surrounding leaves and foliage — tactile richness captured with unpretentious clarity and naturalistic rendering.",
+  },
+  {
+    id: "texture_071",
+    title: "Plush Hoodie Smooth Fabric Voluminous Hair Hyperreal",
+    prompt: "Soft plush texture of a hoodie — smooth fabric of an underlying t-shirt — and voluminous waves of hair all contributing to a rich tactile experience — captured with an idealized almost hyperreal clarity presenting a version of reality optimized for digital consumption.",
+  },
+  {
+    id: "texture_072",
+    title: "Smooth Skin Delicate Gold Necklace Varied Display",
+    prompt: "Smooth texture of skin — delicate gold of a necklace catching light — and varied textures of accessories and display items in the background adding subtle visual interest and depth.",
   },
 ];
 
@@ -2004,6 +2134,51 @@ export const Mood = [
     id: "mood_070",
     title: "Respectful Appreciative Museum-Quality Aesthetic",
     prompt: "The overall mood is respectful appreciative and deeply aesthetic — embodying museum-quality product photography or archival documentation style. The approach emphasizes cultural significance over casual display — each element presented with reverence for craftsmanship and tradition. Documentary clarity meets refined aesthetic sensibility. Designed to showcase traditional beauty and meticulous artistry with objective clarity — suited for cultural heritage catalogs artisan portfolios or curated historical exhibits.",
+  },
+  {
+    id: "mood_071",
+    title: "Extreme Understated Opulence Relaxed Aspirational",
+    prompt: "The overall mood is one of extreme yet paradoxically understated opulence and complete relaxation — embodying curated wealth-porn or aspirational lifestyle photography where the contrast between cozy and extravagant elements creates a surreal blend — inviting both awe and a touch of voyeurism into a highly exclusive world — projecting ultimate financial freedom and an enviable unbothered existence.",
+  },
+  {
+    id: "mood_072",
+    title: "Innocent Adventure Lighthearted Genuine Unpretentious",
+    prompt: "The overall mood is one of innocent adventure lighthearted awkwardness and genuine unpretentious fun — embodying a candid personal snapshot style — evoking quirky charm relatable amateurism and a genuine moment of self-discovery.",
+  },
+  {
+    id: "mood_073",
+    title: "Cool Energetic Authentically Rebellious Indie",
+    prompt: "The overall mood is cool energetic and authentically rebellious — embodying a curated indie fashion editorial or street style photography — evoking rebellious spirit artistic vision and electrifying youthful energy suited for alternative fashion or youth culture.",
+  },
+  {
+    id: "mood_074",
+    title: "Rebellious Moody Authentically Alternative",
+    prompt: "The overall mood is rebellious moody and authentically alternative — embodying a candid social media post or album cover for an indie band — projecting an edgy authentic and defiantly cool persona suited for alternative music communities or non-conformist expression.",
+  },
+  {
+    id: "mood_075",
+    title: "Cheerful Flirtatious Aspirational Social Media",
+    prompt: "The overall mood is cheerful flirtatious and aspirational — embodying quintessential curated social media influencer or personal branding photography — designed for maximum visual appeal and engagement through digital enhancement — projecting approachable glamour and confident playful self-expression.",
+  },
+  {
+    id: "mood_076",
+    title: "Melancholic Rebellious Raw Indie Underground",
+    prompt: "The overall mood is melancholic rebellious and subtly provocative — embodying a candid raw indie or underground photography style — evoking poignant rebellion and unconventional beauty suited for alternative subcultures.",
+  },
+  {
+    id: "mood_077",
+    title: "Humorous Self-Aware Aspirational Relatable Luxury",
+    prompt: "The overall mood is humorous self-aware and aspirational — embodying a candid social media post designed for engagement and relatability within a luxury-obsessed culture — showcasing a relatable yet aspirational persona.",
+  },
+  {
+    id: "mood_078",
+    title: "Chic Playful Aspirational High-Fashion",
+    prompt: "The overall mood is chic playful and aspirational — embodying a curated fashion blog or high-end lifestyle photography style — showcasing aspirational fashion and a vibrant personality with effortless confidence.",
+  },
+  {
+    id: "mood_079",
+    title: "Confident Inviting Aspirational Intimate Connection",
+    prompt: "The overall mood is confident inviting and aspirational — embodying a personal social media selfie style designed for intimate connection — projecting approachable glamour and success fostering a sense of warm engagement.",
   },
 ];
 
