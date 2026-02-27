@@ -133,7 +133,7 @@ function fileToBase64(file) {
       const base64 = reader.result.split(',')[1];
       resolve(base64);
     };
-    reader.onerror = reject;
+    reader.onerror = () => reject(new Error('Failed to read the image file.'));
     reader.readAsDataURL(file);
   });
 }

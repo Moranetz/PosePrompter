@@ -162,10 +162,12 @@ const ActionsSidebar = ({
         <Plus size={14} /> Create Set
       </button>
 
-      <button onClick={onPhotoToPrompt} style={btnBase} onMouseEnter={hoverIn} onMouseLeave={hoverOut}
-        aria-label="Photo to Prompt" title="Upload a photo and generate a detailed prompt from it">
-        <Camera size={14} /> Photo to Prompt
-      </button>
+      {onPhotoToPrompt && (
+        <button onClick={onPhotoToPrompt} style={btnBase} onMouseEnter={hoverIn} onMouseLeave={hoverOut}
+          aria-label="Photo to Prompt" title="Upload a photo and generate a detailed prompt from it">
+          <Camera size={14} /> Photo to Prompt
+        </button>
+      )}
 
       {showPackages && (
         <button

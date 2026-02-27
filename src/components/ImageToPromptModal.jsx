@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, Loader2, Camera, Sparkles, Check, ChevronDown } from 'lucide-react';
 import { analyzeImage, validateImageFile } from '../utils/imageAnalysisService';
@@ -98,15 +98,38 @@ const ImageToPromptModal = ({ isOpen, onClose, onSaveOption, categories }) => {
     }
   }, [file, selectedCategory]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!generatedPrompt.trim() || !generatedTitle.trim()) return;
 
-    onSaveOption(selectedCategory, {
-      title: generatedTitle.trim(),
-      prompt: generatedPrompt.trim(),
-    });
-    setSaved(true);
+    try {
+      await onSaveOption(selectedCategory, {
+        title: generatedTitle.trim(),
+        prompt: generatedPrompt.trim(),
+      });
+      setSaved(true);
+    } catch {
+      // savePhotoToPromptOption handles its own error/rollback and alerts
+    }
   }, [generatedPrompt, generatedTitle, selectedCategory, onSaveOption]);
+
+  // Reset saved state when user switches category after saving
+  const prevCategoryRef = useRef(selectedCategory);
+  useEffect(() => {
+    if (prevCategoryRef.current !== selectedCategory) {
+      prevCategoryRef.current = selectedCategory;
+      setSaved(false);
+    }
+  }, [selectedCategory]);
+
+  // Abort in-flight analysis if modal unmounts or closes
+  useEffect(() => {
+    return () => {
+      if (abortRef.current) {
+        abortRef.current.abort();
+        abortRef.current = null;
+      }
+    };
+  }, []);
 
   if (!isOpen) return null;
 
