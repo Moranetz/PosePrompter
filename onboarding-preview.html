@@ -423,6 +423,8 @@ let breath = 0;
 let accentAlpha = 0.25;
 let lightingStyle = null;
 let glowColor = null;
+let aestheticStyle = null; // 'timeless', 'indie', 'ethereal'
+let backgroundStyle = null; // 'garden', 'coastal', 'studio'
 
 // ─── Canvas Drawing ─────────────────────────────────────────────────────────
 
@@ -467,16 +469,205 @@ function drawFigure() {
   const breathAmts = [0.3, 0.25, 0.15, 0.15, 0.08, 0.08, 0.04, 0.04];
   breathKeys.forEach((k,i) => { if(p[k]) p[k].y += bOff * breathAmts[i]; });
 
-  // Background glow
-  if (glowColor) {
-    const grd = ctx.createRadialGradient(200,180,20,200,180,180);
-    grd.addColorStop(0, glowColor);
-    grd.addColorStop(1, 'transparent');
-    ctx.fillStyle = grd;
-    ctx.fillRect(0,0,400,380);
+  // ─── Background environment ───
+  if (backgroundStyle === 'garden') {
+    // Organic vine/leaf shapes behind figure
+    ctx.save();
+    ctx.globalAlpha = 0.07;
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+    // Left vine
+    ctx.beginPath();
+    ctx.moveTo(30, 380);
+    ctx.quadraticCurveTo(40, 280, 55, 200);
+    ctx.quadraticCurveTo(50, 140, 70, 80);
+    ctx.stroke();
+    // Leaves on left vine
+    [[50,180],[60,130],[45,230]].forEach(([lx,ly]) => {
+      ctx.beginPath();
+      ctx.ellipse(lx, ly, 12, 6, -0.5 + Math.sin(breath*0.5)*0.1, 0, Math.PI*2);
+      ctx.stroke();
+    });
+    // Right vine
+    ctx.beginPath();
+    ctx.moveTo(370, 380);
+    ctx.quadraticCurveTo(360, 260, 345, 180);
+    ctx.quadraticCurveTo(350, 110, 330, 60);
+    ctx.stroke();
+    [[350,200],[340,140],[355,260]].forEach(([lx,ly]) => {
+      ctx.beginPath();
+      ctx.ellipse(lx, ly, 12, 6, 0.5 - Math.sin(breath*0.5)*0.1, 0, Math.PI*2);
+      ctx.stroke();
+    });
+    // Ground texture - grass strokes
+    ctx.globalAlpha = 0.04;
+    for (let i = 0; i < 20; i++) {
+      const gx = 40 + i * 17;
+      ctx.beginPath();
+      ctx.moveTo(gx, 365);
+      ctx.lineTo(gx + Math.sin(breath + i) * 2, 355 - Math.random() * 8);
+      ctx.stroke();
+    }
+    // Wisteria hanging curves at top
+    ctx.globalAlpha = 0.05;
+    ctx.strokeStyle = '#a855f7';
+    for (let i = 0; i < 5; i++) {
+      const wx = 60 + i * 70;
+      ctx.beginPath();
+      ctx.moveTo(wx, 0);
+      ctx.quadraticCurveTo(wx + 10, 30 + Math.sin(breath + i)*3, wx + 5, 50 + Math.sin(breath*0.7 + i)*4);
+      ctx.stroke();
+    }
+    ctx.restore();
+  } else if (backgroundStyle === 'coastal') {
+    ctx.save();
+    // Horizon line
+    ctx.globalAlpha = 0.06;
+    ctx.strokeStyle = '#06b6d4';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 120);
+    ctx.lineTo(400, 118);
+    ctx.stroke();
+    // Water waves
+    ctx.globalAlpha = 0.04;
+    for (let w = 0; w < 4; w++) {
+      ctx.beginPath();
+      const wy = 135 + w * 25;
+      for (let x = 0; x < 400; x += 5) {
+        const y = wy + Math.sin((x * 0.03) + breath + w * 1.5) * (3 + w);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    // Sand dune contour at bottom
+    ctx.globalAlpha = 0.05;
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 350);
+    ctx.quadraticCurveTo(100, 340, 200, 345);
+    ctx.quadraticCurveTo(300, 350, 400, 338);
+    ctx.stroke();
+    // Dune grass strokes
+    ctx.globalAlpha = 0.04;
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 8; i++) {
+      const gx = 20 + i * 50;
+      ctx.beginPath();
+      ctx.moveTo(gx, 348);
+      ctx.quadraticCurveTo(gx + Math.sin(breath + i)*3, 330, gx + 3, 318);
+      ctx.stroke();
+    }
+    // Mist / atmospheric haze
+    const mist = ctx.createLinearGradient(0, 100, 0, 160);
+    mist.addColorStop(0, 'rgba(255,255,255,0.03)');
+    mist.addColorStop(1, 'transparent');
+    ctx.fillStyle = mist;
+    ctx.fillRect(0, 100, 400, 60);
+    ctx.restore();
+  } else if (backgroundStyle === 'studio') {
+    ctx.save();
+    // Clean geometric lines — window frame
+    ctx.globalAlpha = 0.05;
+    ctx.strokeStyle = 'rgba(255,255,255,1)';
+    ctx.lineWidth = 1;
+    // Large window left
+    ctx.strokeRect(20, 30, 60, 120);
+    ctx.beginPath();
+    ctx.moveTo(50, 30); ctx.lineTo(50, 150); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(20, 90); ctx.lineTo(80, 90); ctx.stroke();
+    // Large window right
+    ctx.strokeRect(320, 30, 60, 120);
+    ctx.beginPath();
+    ctx.moveTo(350, 30); ctx.lineTo(350, 150); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(320, 90); ctx.lineTo(380, 90); ctx.stroke();
+    // Floor line
+    ctx.globalAlpha = 0.04;
+    ctx.beginPath();
+    ctx.moveTo(0, 355);
+    ctx.lineTo(400, 355);
+    ctx.stroke();
+    // Subtle floor reflection lines converging to center
+    ctx.globalAlpha = 0.02;
+    ctx.beginPath();
+    ctx.moveTo(0, 380); ctx.lineTo(200, 355); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(400, 380); ctx.lineTo(200, 355); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(100, 380); ctx.lineTo(200, 355); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(300, 380); ctx.lineTo(200, 355); ctx.stroke();
+    // Sheer curtain suggestion on windows
+    ctx.globalAlpha = 0.03;
+    ctx.fillStyle = 'rgba(255,255,255,1)';
+    ctx.fillRect(22, 32, 56, 116);
+    ctx.fillRect(322, 32, 56, 116);
+    ctx.restore();
   }
 
-  // Lighting overlays
+  // ─── Aesthetic color treatment ───
+  if (aestheticStyle === 'timeless') {
+    // Warm golden wash — classic Hollywood
+    const grd = ctx.createRadialGradient(200, 150, 40, 200, 180, 220);
+    grd.addColorStop(0, 'rgba(245, 158, 11, 0.07)');
+    grd.addColorStop(0.6, 'rgba(245, 158, 11, 0.03)');
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 400, 380);
+  } else if (aestheticStyle === 'indie') {
+    // Film grain effect
+    ctx.save();
+    ctx.globalAlpha = 0.035;
+    for (let i = 0; i < 120; i++) {
+      const gx = Math.random() * 400;
+      const gy = Math.random() * 380;
+      const gs = 0.5 + Math.random() * 1.5;
+      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)';
+      ctx.fillRect(gx, gy, gs, gs);
+    }
+    ctx.restore();
+    // Warm desaturated vignette
+    const vig = ctx.createRadialGradient(200, 190, 80, 200, 190, 250);
+    vig.addColorStop(0, 'transparent');
+    vig.addColorStop(1, 'rgba(139, 69, 19, 0.06)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, 400, 380);
+  } else if (aestheticStyle === 'ethereal') {
+    // Dreamy pastel multi-glow
+    const g1 = ctx.createRadialGradient(140, 120, 20, 140, 120, 150);
+    g1.addColorStop(0, 'rgba(168, 85, 247, 0.06)');
+    g1.addColorStop(1, 'transparent');
+    ctx.fillStyle = g1; ctx.fillRect(0, 0, 400, 380);
+    const g2 = ctx.createRadialGradient(280, 200, 20, 280, 200, 140);
+    g2.addColorStop(0, 'rgba(236, 72, 153, 0.04)');
+    g2.addColorStop(1, 'transparent');
+    ctx.fillStyle = g2; ctx.fillRect(0, 0, 400, 380);
+    const g3 = ctx.createRadialGradient(180, 280, 20, 180, 280, 120);
+    g3.addColorStop(0, 'rgba(6, 182, 212, 0.04)');
+    g3.addColorStop(1, 'transparent');
+    ctx.fillStyle = g3; ctx.fillRect(0, 0, 400, 380);
+    // Soft floating particles
+    ctx.save();
+    ctx.globalAlpha = 0.06;
+    for (let i = 0; i < 12; i++) {
+      const px = 50 + (i * 31) % 300;
+      const py = 40 + (i * 47) % 300 + Math.sin(breath * 0.5 + i) * 8;
+      const pr = 1 + (i % 3);
+      ctx.beginPath();
+      ctx.fillStyle = i % 3 === 0 ? '#a855f7' : i % 3 === 1 ? '#ec4899' : '#06b6d4';
+      ctx.arc(px, py, pr, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ─── Lighting overlays ───
   if (lightingStyle === 'golden') {
     const grd = ctx.createLinearGradient(0,0,400,380);
     grd.addColorStop(0,'rgba(245,158,11,0.08)');
@@ -497,7 +688,18 @@ function drawFigure() {
     ctx.fillStyle = grd; ctx.fillRect(0,0,400,380);
   }
 
-  const col = `rgba(255,255,255,${accentAlpha})`;
+  // ─── Figure line color ───
+  let figureColor;
+  if (aestheticStyle === 'timeless') {
+    figureColor = `rgba(255, 230, 180, ${accentAlpha + 0.1})`;
+  } else if (aestheticStyle === 'indie') {
+    figureColor = `rgba(220, 200, 180, ${accentAlpha + 0.05})`;
+  } else if (aestheticStyle === 'ethereal') {
+    figureColor = `rgba(200, 180, 255, ${accentAlpha + 0.1})`;
+  } else {
+    figureColor = `rgba(255,255,255,${accentAlpha})`;
+  }
+  const col = figureColor;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -638,19 +840,21 @@ function selectOption(catKey, optId) {
   const opt = cat.options.find(o => o.id === optId);
   selections[catKey] = opt;
 
-  // Update figure
+  // Update figure pose
   if (opt.pose) { targetPose = POSES[opt.pose]; progress = 0; }
-  if (opt.lighting !== undefined) { lightingStyle = opt.lighting || null; }
 
-  // Update accent
+  // Update lighting
+  if (catKey === 'lighting') { lightingStyle = opt.lighting || null; }
+
+  // Update aesthetic style
+  if (catKey === 'aesthetic') { aestheticStyle = opt.id; }
+
+  // Update background environment
+  if (catKey === 'background') { backgroundStyle = opt.id; }
+
+  // Update accent brightness with selection count
   const count = Object.keys(selections).length;
   accentAlpha = Math.min(0.35 + count * 0.12, 0.75);
-
-  // Update glow
-  if (selections.aesthetic?.id === 'ethereal') glowColor = 'rgba(168,85,247,0.06)';
-  else if (selections.aesthetic?.id === 'timeless') glowColor = 'rgba(245,158,11,0.04)';
-  else if (selections.lighting?.id === 'golden') glowColor = 'rgba(245,158,11,0.05)';
-  else glowColor = null;
 
   render();
 }

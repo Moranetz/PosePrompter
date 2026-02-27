@@ -98,7 +98,7 @@ function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.5)', glowColor = null, lightingStyle = null }) => {
+const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.5)', glowColor = null, lightingStyle = null, aestheticStyle = null, backgroundStyle = null }) => {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const currentPoseRef = useRef(FIGURE_POSES.default);
@@ -117,37 +117,159 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
     // Subtle breath offset
     const bOff = Math.sin(breath) * 2;
 
-    // Background glow behind figure
-    if (glowColor) {
-      const grd = ctx.createRadialGradient(200, 180, 20, 200, 180, 180);
-      grd.addColorStop(0, glowColor);
-      grd.addColorStop(1, 'transparent');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, width, height);
+    // ─── Background environment ───
+    if (backgroundStyle === 'garden') {
+      ctx.save();
+      ctx.globalAlpha = 0.07;
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(30, height);
+      ctx.quadraticCurveTo(40, 280, 55, 200);
+      ctx.quadraticCurveTo(50, 140, 70, 80);
+      ctx.stroke();
+      [[50,180],[60,130],[45,230]].forEach(([lx,ly]) => {
+        ctx.beginPath();
+        ctx.ellipse(lx, ly, 12, 6, -0.5 + Math.sin(breath*0.5)*0.1, 0, Math.PI*2);
+        ctx.stroke();
+      });
+      ctx.beginPath();
+      ctx.moveTo(370, height);
+      ctx.quadraticCurveTo(360, 260, 345, 180);
+      ctx.quadraticCurveTo(350, 110, 330, 60);
+      ctx.stroke();
+      [[350,200],[340,140],[355,260]].forEach(([lx,ly]) => {
+        ctx.beginPath();
+        ctx.ellipse(lx, ly, 12, 6, 0.5 - Math.sin(breath*0.5)*0.1, 0, Math.PI*2);
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 0.05;
+      ctx.strokeStyle = '#a855f7';
+      for (let i = 0; i < 5; i++) {
+        const wx = 60 + i * 70;
+        ctx.beginPath();
+        ctx.moveTo(wx, 0);
+        ctx.quadraticCurveTo(wx + 10, 30 + Math.sin(breath + i)*3, wx + 5, 50 + Math.sin(breath*0.7 + i)*4);
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else if (backgroundStyle === 'coastal') {
+      ctx.save();
+      ctx.globalAlpha = 0.06;
+      ctx.strokeStyle = '#06b6d4';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, 120); ctx.lineTo(width, 118); ctx.stroke();
+      ctx.globalAlpha = 0.04;
+      for (let w = 0; w < 4; w++) {
+        ctx.beginPath();
+        const wy = 135 + w * 25;
+        for (let x = 0; x < width; x += 5) {
+          const y = wy + Math.sin((x * 0.03) + breath + w * 1.5) * (3 + w);
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 0.05;
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, 350); ctx.quadraticCurveTo(100, 340, 200, 345);
+      ctx.quadraticCurveTo(300, 350, width, 338); ctx.stroke();
+      ctx.restore();
+    } else if (backgroundStyle === 'studio') {
+      ctx.save();
+      ctx.globalAlpha = 0.05;
+      ctx.strokeStyle = 'rgba(255,255,255,1)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(20, 30, 60, 120);
+      ctx.beginPath(); ctx.moveTo(50, 30); ctx.lineTo(50, 150); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(20, 90); ctx.lineTo(80, 90); ctx.stroke();
+      ctx.strokeRect(320, 30, 60, 120);
+      ctx.beginPath(); ctx.moveTo(350, 30); ctx.lineTo(350, 150); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(320, 90); ctx.lineTo(380, 90); ctx.stroke();
+      ctx.globalAlpha = 0.04;
+      ctx.beginPath(); ctx.moveTo(0, 355); ctx.lineTo(width, 355); ctx.stroke();
+      ctx.globalAlpha = 0.03;
+      ctx.fillStyle = 'rgba(255,255,255,1)';
+      ctx.fillRect(22, 32, 56, 116);
+      ctx.fillRect(322, 32, 56, 116);
+      ctx.restore();
     }
 
-    // Lighting effect overlays
+    // ─── Aesthetic color treatment ───
+    if (aestheticStyle === 'timeless') {
+      const grd = ctx.createRadialGradient(200, 150, 40, 200, 180, 220);
+      grd.addColorStop(0, 'rgba(245, 158, 11, 0.07)');
+      grd.addColorStop(0.6, 'rgba(245, 158, 11, 0.03)');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd; ctx.fillRect(0, 0, width, height);
+    } else if (aestheticStyle === 'indie') {
+      ctx.save();
+      ctx.globalAlpha = 0.035;
+      for (let i = 0; i < 120; i++) {
+        const gx = Math.random() * width;
+        const gy = Math.random() * height;
+        const gs = 0.5 + Math.random() * 1.5;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)';
+        ctx.fillRect(gx, gy, gs, gs);
+      }
+      ctx.restore();
+      const vig = ctx.createRadialGradient(200, 190, 80, 200, 190, 250);
+      vig.addColorStop(0, 'transparent');
+      vig.addColorStop(1, 'rgba(139, 69, 19, 0.06)');
+      ctx.fillStyle = vig; ctx.fillRect(0, 0, width, height);
+    } else if (aestheticStyle === 'ethereal') {
+      const g1 = ctx.createRadialGradient(140, 120, 20, 140, 120, 150);
+      g1.addColorStop(0, 'rgba(168, 85, 247, 0.06)'); g1.addColorStop(1, 'transparent');
+      ctx.fillStyle = g1; ctx.fillRect(0, 0, width, height);
+      const g2 = ctx.createRadialGradient(280, 200, 20, 280, 200, 140);
+      g2.addColorStop(0, 'rgba(236, 72, 153, 0.04)'); g2.addColorStop(1, 'transparent');
+      ctx.fillStyle = g2; ctx.fillRect(0, 0, width, height);
+      ctx.save();
+      ctx.globalAlpha = 0.06;
+      for (let i = 0; i < 12; i++) {
+        const px = 50 + (i * 31) % 300;
+        const py = 40 + (i * 47) % 300 + Math.sin(breath * 0.5 + i) * 8;
+        ctx.beginPath();
+        ctx.fillStyle = i % 3 === 0 ? '#a855f7' : i % 3 === 1 ? '#ec4899' : '#06b6d4';
+        ctx.arc(px, py, 1 + (i % 3), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // ─── Lighting overlays ───
     if (lightingStyle === 'golden') {
       const grd = ctx.createLinearGradient(0, 0, width, height);
       grd.addColorStop(0, 'rgba(245, 158, 11, 0.08)');
       grd.addColorStop(0.5, 'rgba(245, 158, 11, 0.03)');
       grd.addColorStop(1, 'transparent');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = grd; ctx.fillRect(0, 0, width, height);
     } else if (lightingStyle === 'dramatic') {
       const grd = ctx.createLinearGradient(width, 0, 0, height);
       grd.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
       grd.addColorStop(0.3, 'transparent');
       grd.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
       grd.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = grd; ctx.fillRect(0, 0, width, height);
     } else if (lightingStyle === 'soft') {
       const grd = ctx.createRadialGradient(200, 100, 40, 200, 200, 200);
       grd.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
       grd.addColorStop(1, 'transparent');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = grd; ctx.fillRect(0, 0, width, height);
+    }
+
+    // ─── Figure line color based on aesthetic ───
+    let figureCol = accentColor;
+    if (aestheticStyle === 'timeless') {
+      const m = accentColor.match(/[\d.]+/g);
+      figureCol = m ? `rgba(255, 230, 180, ${Math.min(parseFloat(m[3] || 0.5) + 0.1, 1)})` : accentColor;
+    } else if (aestheticStyle === 'indie') {
+      const m = accentColor.match(/[\d.]+/g);
+      figureCol = m ? `rgba(220, 200, 180, ${Math.min(parseFloat(m[3] || 0.5) + 0.05, 1)})` : accentColor;
+    } else if (aestheticStyle === 'ethereal') {
+      const m = accentColor.match(/[\d.]+/g);
+      figureCol = m ? `rgba(200, 180, 255, ${Math.min(parseFloat(m[3] || 0.5) + 0.1, 1)})` : accentColor;
     }
 
     const p = {
@@ -174,7 +296,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
     // Draw shadow/reflection
     ctx.save();
     ctx.globalAlpha = 0.06;
-    ctx.fillStyle = accentColor;
+    ctx.fillStyle = figureCol;
     ctx.beginPath();
     ctx.ellipse(p.torso.x, 355, 50, 6, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -183,7 +305,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
     // --- Draw body lines ---
     const drawLimb = (from, to, lineWidth = 2.2) => {
       ctx.beginPath();
-      ctx.strokeStyle = accentColor;
+      ctx.strokeStyle = figureCol;
       ctx.lineWidth = lineWidth;
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
@@ -192,7 +314,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
 
     const drawCurvedLimb = (from, cp, to, lineWidth = 2.2) => {
       ctx.beginPath();
-      ctx.strokeStyle = accentColor;
+      ctx.strokeStyle = figureCol;
       ctx.lineWidth = lineWidth;
       ctx.moveTo(from.x, from.y);
       ctx.quadraticCurveTo(cp.x, cp.y, to.x, to.y);
@@ -230,7 +352,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
     // Joints as small circles
     const drawJoint = (point, r = 3) => {
       ctx.beginPath();
-      ctx.fillStyle = accentColor;
+      ctx.fillStyle = figureCol;
       ctx.arc(point.x, point.y, r, 0, Math.PI * 2);
       ctx.fill();
     };
@@ -242,7 +364,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
 
     // Head
     ctx.beginPath();
-    ctx.strokeStyle = accentColor;
+    ctx.strokeStyle = figureCol;
     ctx.lineWidth = 2.2;
     ctx.arc(p.head.x, p.head.y, p.head.radius, 0, Math.PI * 2);
     ctx.stroke();
@@ -250,7 +372,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
     // Subtle face line (tilt indicator)
     const faceTilt = (p.head.x - 200) * 0.04;
     ctx.beginPath();
-    ctx.strokeStyle = accentColor;
+    ctx.strokeStyle = figureCol;
     ctx.lineWidth = 1.2;
     ctx.globalAlpha = 0.4;
     // Eye line
@@ -266,7 +388,7 @@ const PoseFigureCanvas = ({ pose = 'default', accentColor = 'rgba(255,255,255,0.
       2
     );
 
-  }, [accentColor, glowColor, lightingStyle]);
+  }, [accentColor, glowColor, lightingStyle, aestheticStyle, backgroundStyle]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -565,6 +687,8 @@ const FirstTimeExperience = ({ onComplete, onSkip }) => {
                   accentColor={figureAccent}
                   glowColor={currentGlow}
                   lightingStyle={currentLighting}
+                  aestheticStyle={selections.aesthetic?.id || null}
+                  backgroundStyle={selections.background?.id || null}
                 />
 
                 {/* Live prompt preview below figure */}
