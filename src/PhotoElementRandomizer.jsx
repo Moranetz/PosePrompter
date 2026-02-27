@@ -391,6 +391,11 @@ const PhotoElementRandomizer = () => {
         title: "Vintage Americana Indie Film Heroine",
         prompt: "Generate an image that embodies an effortlessly cool sun-drenched \"vintage Americana\" or \"indie film heroine\" aesthetic infused with a compelling blend of confidence and subtle vulnerability. This entire vibe is not merely a snapshot of reality but is meticulously crafted and amplified by the specific characteristics of analog film photography rendering a scene that feels richer and more emotionally resonant than direct visual experience.",
       },
+      {
+        id: "aesthetic_025",
+        title: "Ethereal Softness Curated Cool",
+        prompt: "Generate an image that embodies a captivating \"ethereal softness meets curated cool\" aesthetic infused with a delicate sense of intimate connection and an almost dreamlike quality. This distinctive vibe is not merely observed but is meticulously constructed and amplified by the camera's precise rendering elevating the scene beyond ordinary visual experience.",
+      },
     ],
 
     // ============================================================================
@@ -2246,6 +2251,11 @@ const PhotoElementRandomizer = () => {
         title: "Dynamic Medium Shot Car Door",
         prompt: "Maintain a dynamic medium shot composition with her leaning slightly out of the car door - the car door frames her adding a sense of candid intimacy.",
       },
+      {
+        id: "framing_019",
+        title: "Medium-Close Off-Center Cat Foreground",
+        prompt: "Maintain a medium-close slightly off-center composition placing her gaze directly at the viewer while the cat provides a soft foreground element - her pose should be relaxed and intimate conveying a gentle connection with the viewer and her pet - the cat is held close its fur a soft blur in the foreground a visual technique that guides the eye directly to her face and reinforces the sense of intimate connection.",
+      },
     ],
 
     'CameraAngle': [
@@ -2436,6 +2446,11 @@ const PhotoElementRandomizer = () => {
         title: "Medium Format Portra 400 Replication",
         prompt: "To achieve this specific look especially the color rendition warmth skin tone fidelity and subtle grain it is highly probable this image was shot on medium format film with a warm-toned film stock or a very skilled digital emulation of it. Film stock - the most likely candidate for earthy nostalgic vibrancy with beautiful rich greens exceptional skin tone rendition warm peachy-beige and harmonious slightly desaturated yet vibrant colors is Kodak Portra 400 or 800. Camera type - given the clarity resolution and the distinct film look a medium format film camera such as a Contax 645 Pentax 67 or a Fuji GA645 is a strong possibility paired with a fast prime lens 80mm f/2.0 or 110mm f/2.0 for portraits to achieve that beautiful creamy bokeh and sharpness - while possible on 35mm film the depth and overall fidelity here lean towards medium format. Digital emulation - if shot digitally it would be a high-end full-frame mirrorless or DSLR camera such as Sony Alpha Canon R series Nikon Z series or Fuji GFX for medium format digital with a fast prime lens and then heavily post-processed with a Kodak Portra 400 film simulation LUT or custom color grading designed to mimic these specific film characteristics paying close attention to skin tone handling and overall warmth.",
       },
+      {
+        id: "cameratype_028",
+        title: "Sony A7R V Ethereal Bokeh Porcelain",
+        prompt: "This image must simulate being captured on a high-end full-frame digital camera Sony Alpha A7R V or Canon EOS R3 paired with a fast wide-aperture prime lens 50mm f/1.2 or 85mm f/1.4. Ultra-shallow depth of field and ethereal bokeh intimate dreaminess - the depth of field should be exceptionally shallow creating an exquisite creamy almost painterly bokeh that completely melts the background into a soft indistinct wash of color and light - this extreme blur far more pronounced than human vision strategically isolates the subject drawing intense focus to their interaction and creating an intimate dreamlike envelope around them - the bokeh should exhibit smooth perfectly circular out-of-focus highlights that subtly glow contributing to the ethereal atmosphere and making the scene feel less like a snapshot and more like a cherished memory. Micro-contrast and skin tone luminosity porcelain perfection - the subject's face should exhibit subtle micro-contrast and exceptional resolution rendering her skin with a luminous almost porcelain-like quality rich in delicate cool undertones subtle pinks cool beiges - this high fidelity to her complexion a hallmark of professional sensors and lenses enhances her ethereal beauty making her skin appear flawlessly smooth yet natural a level of perfection often enhanced by the camera's ability to see and render light on skin with extreme precision. Lens character soft focus and gentle fall-off - the lens should exhibit a gentle flattering soft focus effect at wider apertures subtly softening sharp edges without losing crucial detail contributing to the overall dreamlike aesthetic - there should also be a slight natural vignetting around the edges gently darkening the corners to further draw focus inward.",
+      },
     ],
 
     'Lighting': [
@@ -2498,6 +2513,11 @@ const PhotoElementRandomizer = () => {
         id: "lighting_012",
         title: "Specular Highlights Gleam Luxury",
         prompt: "Specular highlights gleam of luxury - introduce crisp yet controlled specular highlights on her hair the faux fur of her earmuffs the slight sheen of her turtleneck and the reflective surfaces of any subtle jewelry - these highlights should have a photographic pop and zing reflecting light with a subtle shimmering quality that conveys a sense of high-end materials and the pristine environment.",
+      },
+      {
+        id: "lighting_013",
+        title: "Soft Diffused Ambient Enveloping Glow",
+        prompt: "Utilize soft diffused ambient lighting likely from a nearby window or a large softbox creating a gentle enveloping glow. Flat even illumination unblemished serenity - the light should be soft and exceptionally even across her face minimizing harsh shadows and creating a sense of unblemished serenity - this flat but flattering light is carefully controlled to reduce imperfections making her features appear smoother and more angelic. Subtle catchlights and specular highlights spark of life - introduce delicate yet distinct catchlights in her eyes that sparkle with a photographic pop indicating precise light direction - subtle specular highlights should also be visible on her glossy hair and the cat's fur catching the light with a soft sheen that communicates texture and life often more noticeable in a high-quality capture than in real life. Luminous hair and fur tactile softness - the light should illuminate her long dark hair and the cat's fur creating a luminous sheen that highlights individual strands and hairs making them appear incredibly soft and tactile - this detailed rendering of texture is a testament to the camera's sensor resolution and light gathering capabilities.",
       },
     ],
 
@@ -2587,6 +2607,11 @@ const PhotoElementRandomizer = () => {
         title: "Cool Winter Editorial Alpine Jewel",
         prompt: "Harmonious palette sophisticated dream - the overall color harmony should evoke a sense of dreamlike sophistication and refined allure contributing to the ethereal glamour. Apply a cool clean yet subtly vibrant color grade reminiscent of a high-fashion winter editorial. Luminous skin tones healthy glow - her skin tones should maintain a healthy natural glow despite the cool environment avoiding any overly desaturated or cold appearance ensuring her beauty remains warm and inviting. Vibrant jewel tones striking accents - the emeralds in her necklace should exhibit extraordinary vibrancy and depth of color their green hues rendered with a richness and clarity that makes them visually pop against her pale skin and gown a photographic enhancement that highlights their preciousness. Apply a clean vibrant yet naturally balanced color grade leaning slightly towards cool blues in the snow and warm neutrals in her attire. Crisp cool whites alpine freshness - the snow-capped mountains should be rendered with crisp cool whites and subtle blue undertones conveying the fresh clean air of the alpine environment - the camera's white balance should accurately capture the cool tones of the snow without making them appear dull. Vibrant greens lush valley life - the greens of the valley and pine trees should be vibrant and lush adding life and depth to the middle ground showcasing the camera's ability to render a wide spectrum of natural hues.",
       },
+      {
+        id: "colorpalette_018",
+        title: "Cool Desaturated Minimalist Curated",
+        prompt: "Apply a cool-toned slightly desaturated color grade reminiscent of a modern minimalist aesthetic often seen in high-end lifestyle photography. Cool clean palette sophisticated calm - the overall color palette should lean towards cool blues and desaturated neutrals creating a sophisticated and calm atmosphere - the deep navy of her top combined with the muted tones of the background should feel harmonious and understated. Luminous skin tones ethereal glow - her skin tones while cool should maintain a luminous quality appearing fair and delicate against her dark hair and the muted background - this precise rendering of skin tones is crucial for the ethereal effect. Rich deep blacks depth and contrast - ensure rich deep blacks in her hair and top providing contrast and depth without being crushed - the camera's dynamic range preserves detail even in these dark areas.",
+      },
     ],
 
     'Texture': [
@@ -2635,6 +2660,11 @@ const PhotoElementRandomizer = () => {
         title: "Micro-Contrast Skin Radiant Authenticity",
         prompt: "Micro-contrast and skin tone fidelity radiant authenticity - the subject's face should exhibit exceptional micro-contrast and resolution rendering her skin with a natural luminous quality rich in subtle healthy undertones warm peaches cool rosy hues avoiding any plastic or overly smoothed appearance - this high fidelity to natural skin texture a hallmark of professional sensors makes her feel authentic radiant and approachable despite the aspirational setting.",
       },
+      {
+        id: "texture_010",
+        title: "Silky Hair Soft Fur Tangible Intimacy",
+        prompt: "Heightened tactile sensation sensory richness - render all textures with exceptional almost tangible fidelity - the smooth delicate skin the long silky strands of her hair the soft blurred fur of the cat and the subtle details of the background objects like the model ship should all be viscerally tangible and highly detailed where in focus - this tactile richness is what truly elevates the image making it an experience rather than just a visual drawing the viewer into her serene and intimate world in a way the human eye without photographic enhancement would struggle to achieve.",
+      },
     ],
 
     'Mood': [
@@ -2677,6 +2707,11 @@ const PhotoElementRandomizer = () => {
         id: "mood_008",
         title: "Curated Authentic Subtle Glamour",
         prompt: "This image is perfectly suited for a fashion editorial an indie lifestyle blog a personal portfolio or a social media feed aiming for a curated authentic and subtly glamorous aesthetic all elevated and made timeless by the unique evocative qualities of film photography.",
+      },
+      {
+        id: "mood_009",
+        title: "Ethereal Beauty Sophisticated Calm",
+        prompt: "This image is perfectly suited for a high-end lifestyle blog a fashion editorial with an intimate mood or an artistic social media feed designed to evoke a sense of ethereal beauty sophisticated calm and a gentle personal connection all meticulously crafted and enhanced by the sophisticated eye of a professional camera system.",
       },
     ],
 
