@@ -2494,6 +2494,11 @@ const PhotoElementRandomizer = () => {
         title: "Harsh On-Camera Flash Override",
         prompt: "The light is primarily from the harsh direct on-camera flash overriding any natural ambient light. Apply a cool-leaning slightly desaturated color grade with a distinct digital film simulation feel of early point-and-shoot cameras.",
       },
+      {
+        id: "lighting_012",
+        title: "Specular Highlights Gleam Luxury",
+        prompt: "Specular highlights gleam of luxury - introduce crisp yet controlled specular highlights on her hair the faux fur of her earmuffs the slight sheen of her turtleneck and the reflective surfaces of any subtle jewelry - these highlights should have a photographic pop and zing reflecting light with a subtle shimmering quality that conveys a sense of high-end materials and the pristine environment.",
+      },
     ],
 
     'ColorPalette': [
@@ -2577,6 +2582,11 @@ const PhotoElementRandomizer = () => {
         title: "Earthy Nostalgic Vibrancy Warm Harmony",
         prompt: "Earthy nostalgic vibrancy with warm harmony - the captivating power of this palette lies in its masterclass of harmonious analogous colors and subtle complementary accents all rendered with a warmth and richness that evokes nostalgia. Dominant hues primarily analogous built around variations of greens yellow-greens and yellows with warm brown undertones. Vibrant harmonious accents approximately 15-20% from plaid shirt providing visual energy and sophisticated contrast. Analogous harmony greens yellows browns - the dominant use of greens browns and warm skin tones leaning into the yellow-orange spectrum creates an inherently soothing and natural harmony making the image feel grounded organic and easy on the eyes. Strategic complementary contrast teal-blue versus oranges-browns - the genius lies in the plaid's teal-blue accents - blue is a near-complementary color to orange-brown - by introducing these cooler tones in a vibrant yet contained manner the warmer elements skin hair rocks golden plaid pop and feel more alive creating a subtle visual tension that adds dynamism without discord - this is a classic technique for making colors sing. Skin tone as a central anchor emotional connection - the perfectly rendered warm peachy-beige skin tone approximately 10-15% of the image is not just a color it is the emotional anchor - its natural warmth and subtle luminosity make the subject feel real healthy and approachable - in color theory warm skin tones often harmonize beautifully with earthy greens and blues making the subject feel integrated into the natural environment - the photographic rendering of this skin tone with its delicate highlights and shadows is key to its captivating quality. Golden hour warmth nostalgia and softness - even if not shot during literal golden hour the overall warm shift in the color grading a characteristic of Portra film imbues the entire scene with a soft nostalgic glow - this is not just a filter it is a subtle manipulation of the white balance and color curves that makes everything feel slightly softer more inviting and imbued with a sense of cherished memory - this photographic enhancement of warmth is what truly elevates the nostalgic feel. Depth and richness through micro-contrast - the colors are not flat - there is a subtle depth to each hue a richness that makes them feel tactile and full - this is achieved through the camera's ability to capture micro-contrast within each color such as subtle variations within a single green leaf or a single stripe of blue in the plaid making the colors feel dimensional and luxurious. Quiet pop from film emulation - the colors have a pop without being garish - they are vibrant enough to be eye-catching but the overall warmth and subtle desaturation characteristic of Kodak Portra 400 film prevent them from being overwhelming - this specific film aesthetic renders colors with a beautiful natural vibrancy that avoids harsh digital saturation contributing to the timeless authentic feel.",
       },
+      {
+        id: "colorpalette_017",
+        title: "Cool Winter Editorial Alpine Jewel",
+        prompt: "Harmonious palette sophisticated dream - the overall color harmony should evoke a sense of dreamlike sophistication and refined allure contributing to the ethereal glamour. Apply a cool clean yet subtly vibrant color grade reminiscent of a high-fashion winter editorial. Luminous skin tones healthy glow - her skin tones should maintain a healthy natural glow despite the cool environment avoiding any overly desaturated or cold appearance ensuring her beauty remains warm and inviting. Vibrant jewel tones striking accents - the emeralds in her necklace should exhibit extraordinary vibrancy and depth of color their green hues rendered with a richness and clarity that makes them visually pop against her pale skin and gown a photographic enhancement that highlights their preciousness. Apply a clean vibrant yet naturally balanced color grade leaning slightly towards cool blues in the snow and warm neutrals in her attire. Crisp cool whites alpine freshness - the snow-capped mountains should be rendered with crisp cool whites and subtle blue undertones conveying the fresh clean air of the alpine environment - the camera's white balance should accurately capture the cool tones of the snow without making them appear dull. Vibrant greens lush valley life - the greens of the valley and pine trees should be vibrant and lush adding life and depth to the middle ground showcasing the camera's ability to render a wide spectrum of natural hues.",
+      },
     ],
 
     'Texture': [
@@ -2619,6 +2629,11 @@ const PhotoElementRandomizer = () => {
         id: "texture_008",
         title: "Suede Ribbing Leather Tangible Fidelity",
         prompt: "Heightened tactile sensation sensory richness - render all textures with exceptional almost tangible fidelity - the soft suede of her jacket the fine ribbing of her tank top the subtle texture of her denim if visible the sleekness of her hair the worn leather of the car seats and the subtle glint of metal details - these textures from the smooth skin to the fabric's weave are rendered with a tactile precision by the film and lens that transcends casual observation inviting a closer more appreciative gaze that accentuates the sensory richness of the scene.",
+      },
+      {
+        id: "texture_009",
+        title: "Micro-Contrast Skin Radiant Authenticity",
+        prompt: "Micro-contrast and skin tone fidelity radiant authenticity - the subject's face should exhibit exceptional micro-contrast and resolution rendering her skin with a natural luminous quality rich in subtle healthy undertones warm peaches cool rosy hues avoiding any plastic or overly smoothed appearance - this high fidelity to natural skin texture a hallmark of professional sensors makes her feel authentic radiant and approachable despite the aspirational setting.",
       },
     ],
 
