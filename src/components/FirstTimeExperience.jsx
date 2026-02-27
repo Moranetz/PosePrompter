@@ -12,40 +12,40 @@ const ONBOARDING_KEY = 'poseprompt_onboarding_complete';
 
 const FIGURE_POSES = {
   default: {
-    head:{x:200,y:52}, neck:{x:200,y:78},
-    sL:{x:170,y:86}, sR:{x:230,y:86},
-    torso:{x:200,y:152}, hL:{x:183,y:178}, hR:{x:217,y:178},
-    eL:{x:148,y:140}, eR:{x:252,y:140},
-    wL:{x:140,y:194}, wR:{x:260,y:194},
-    kL:{x:188,y:254}, kR:{x:212,y:254},
-    fL:{x:185,y:332}, fR:{x:215,y:332},
+    head:{x:200,y:52}, neck:{x:200,y:72},
+    sL:{x:183,y:88}, sR:{x:217,y:88},
+    torso:{x:200,y:148}, hL:{x:191,y:176}, hR:{x:209,y:176},
+    eL:{x:170,y:138}, eR:{x:230,y:138},
+    wL:{x:166,y:192}, wR:{x:234,y:192},
+    kL:{x:195,y:260}, kR:{x:205,y:260},
+    fL:{x:193,y:338}, fR:{x:207,y:338},
   },
   confident: {
-    head:{x:200,y:48}, neck:{x:200,y:74},
-    sL:{x:163,y:83}, sR:{x:237,y:83},
-    torso:{x:200,y:150}, hL:{x:180,y:176}, hR:{x:220,y:176},
-    eL:{x:138,y:136}, eR:{x:262,y:136},
-    wL:{x:132,y:190}, wR:{x:268,y:190},
-    kL:{x:176,y:252}, kR:{x:224,y:252},
-    fL:{x:168,y:332}, fR:{x:232,y:332},
+    head:{x:200,y:48}, neck:{x:200,y:70},
+    sL:{x:180,y:86}, sR:{x:220,y:86},
+    torso:{x:200,y:146}, hL:{x:189,y:174}, hR:{x:211,y:174},
+    eL:{x:164,y:134}, eR:{x:236,y:134},
+    wL:{x:158,y:186}, wR:{x:242,y:186},
+    kL:{x:192,y:258}, kR:{x:208,y:258},
+    fL:{x:188,y:338}, fR:{x:212,y:338},
   },
   relaxed: {
-    head:{x:194,y:54}, neck:{x:196,y:80},
-    sL:{x:167,y:90}, sR:{x:228,y:85},
-    torso:{x:197,y:154}, hL:{x:184,y:180}, hR:{x:214,y:177},
-    eL:{x:144,y:150}, eR:{x:256,y:132},
-    wL:{x:136,y:204}, wR:{x:264,y:174},
-    kL:{x:186,y:258}, kR:{x:216,y:250},
-    fL:{x:180,y:332}, fR:{x:228,y:332},
+    head:{x:198,y:54}, neck:{x:198,y:74},
+    sL:{x:183,y:90}, sR:{x:216,y:87},
+    torso:{x:199,y:150}, hL:{x:191,y:178}, hR:{x:209,y:175},
+    eL:{x:172,y:148}, eR:{x:232,y:130},
+    wL:{x:170,y:200}, wR:{x:236,y:178},
+    kL:{x:195,y:260}, kR:{x:208,y:256},
+    fL:{x:193,y:338}, fR:{x:211,y:338},
   },
   dramatic: {
-    head:{x:191,y:50}, neck:{x:194,y:76},
-    sL:{x:162,y:85}, sR:{x:234,y:81},
-    torso:{x:202,y:152}, hL:{x:188,y:178}, hR:{x:220,y:174},
-    eL:{x:132,y:126}, eR:{x:268,y:116},
-    wL:{x:110,y:158}, wR:{x:290,y:94},
-    kL:{x:190,y:256}, kR:{x:228,y:246},
-    fL:{x:184,y:332}, fR:{x:240,y:332},
+    head:{x:198,y:50}, neck:{x:199,y:72},
+    sL:{x:182,y:87}, sR:{x:218,y:85},
+    torso:{x:200,y:148}, hL:{x:192,y:176}, hR:{x:210,y:174},
+    eL:{x:166,y:130}, eR:{x:236,y:120},
+    wL:{x:160,y:172}, wR:{x:246,y:108},
+    kL:{x:195,y:260}, kR:{x:212,y:254},
+    fL:{x:193,y:338}, fR:{x:214,y:338},
   },
 };
 
@@ -85,7 +85,7 @@ function torsoPathD(p) {
 
 function dressPathD(p, breath) {
   const hemY = Math.max(p.kL.y, p.kR.y) + 18;
-  const flare = 24, fl = Math.sin(breath * 0.5) * 3, fl2 = Math.sin(breath * 0.4 + 1.2) * 2;
+  const flare = 16, fl = Math.sin(breath * 0.5) * 2, fl2 = Math.sin(breath * 0.4 + 1.2) * 1.5;
   const mx = (p.hL.x + p.hR.x) / 2;
   return `M ${n(p.hL.x-4)},${n(p.hL.y-3)} C ${n(p.hL.x-10)},${n((p.hL.y+hemY)/2)} ${n(p.kL.x-flare+fl)},${n(hemY-14)} ${n(p.kL.x-flare+fl)},${n(hemY)} Q ${n(mx-12)},${n(hemY+6+fl2)} ${n(mx)},${n(hemY+5+fl2)} Q ${n(mx+12)},${n(hemY+6+fl2)} ${n(p.kR.x+flare-fl)},${n(hemY)} C ${n(p.kR.x+flare-fl)},${n(hemY-14)} ${n(p.hR.x+10)},${n((p.hR.y+hemY)/2)} ${n(p.hR.x+4)},${n(p.hR.y-3)} Z`;
 }
@@ -345,8 +345,8 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
 
     // Legs
     const ll = $('legL'), lr = $('legR');
-    if (ll) { ll.setAttribute('d', limbPath(p.kL, p.fL, 10, 6)); ll.setAttribute('fill', skinC); }
-    if (lr) { lr.setAttribute('d', limbPath(p.kR, p.fR, 10, 6)); lr.setAttribute('fill', skinC); }
+    if (ll) { ll.setAttribute('d', limbPath(p.kL, p.fL, 7, 4.5)); ll.setAttribute('fill', skinC); }
+    if (lr) { lr.setAttribute('d', limbPath(p.kR, p.fR, 7, 4.5)); lr.setAttribute('fill', skinC); }
 
     // Shoes
     const sl = $('shoeL'), sr = $('shoeR');
@@ -387,15 +387,15 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
 
     // Arms
     const aul = $('armUL'), all = $('armLL'), aur = $('armUR'), alr = $('armLR');
-    if (aul) { aul.setAttribute('d', limbPath(p.sL, p.eL, 10, 7)); aul.setAttribute('fill', skinC); }
-    if (all) { all.setAttribute('d', limbPath(p.eL, p.wL, 7, 4.5)); all.setAttribute('fill', skinC); }
-    if (aur) { aur.setAttribute('d', limbPath(p.sR, p.eR, 10, 7)); aur.setAttribute('fill', skinC); }
-    if (alr) { alr.setAttribute('d', limbPath(p.eR, p.wR, 7, 4.5)); alr.setAttribute('fill', skinC); }
+    if (aul) { aul.setAttribute('d', limbPath(p.sL, p.eL, 7, 5)); aul.setAttribute('fill', skinC); }
+    if (all) { all.setAttribute('d', limbPath(p.eL, p.wL, 5, 3)); all.setAttribute('fill', skinC); }
+    if (aur) { aur.setAttribute('d', limbPath(p.sR, p.eR, 7, 5)); aur.setAttribute('fill', skinC); }
+    if (alr) { alr.setAttribute('d', limbPath(p.eR, p.wR, 5, 3)); alr.setAttribute('fill', skinC); }
 
     // Hands
     const hl = $('handL'), hr2 = $('handR');
-    if (hl) { hl.setAttribute('cx', n(p.wL.x)); hl.setAttribute('cy', n(p.wL.y+2)); hl.setAttribute('rx','3.5'); hl.setAttribute('ry','4'); hl.setAttribute('fill', skinC); }
-    if (hr2) { hr2.setAttribute('cx', n(p.wR.x)); hr2.setAttribute('cy', n(p.wR.y+2)); hr2.setAttribute('rx','3.5'); hr2.setAttribute('ry','4'); hr2.setAttribute('fill', skinC); }
+    if (hl) { hl.setAttribute('cx', n(p.wL.x)); hl.setAttribute('cy', n(p.wL.y+2)); hl.setAttribute('rx','2.8'); hl.setAttribute('ry','3.2'); hl.setAttribute('fill', skinC); }
+    if (hr2) { hr2.setAttribute('cx', n(p.wR.x)); hr2.setAttribute('cy', n(p.wR.y+2)); hr2.setAttribute('rx','2.8'); hr2.setAttribute('ry','3.2'); hr2.setAttribute('fill', skinC); }
 
     // Head
     const hs = $('headShape');
@@ -415,7 +415,7 @@ const PoseFigureSVG = ({ pose = 'default', lightingStyle = null, aestheticStyle 
 
     // Hair cap
     const hc = $('hairCap');
-    if (hc) { hc.setAttribute('cx', n(p.head.x)); hc.setAttribute('cy', n(p.head.y-4)); hc.setAttribute('rx','16'); hc.setAttribute('ry','20'); hc.setAttribute('fill', hairC); }
+    if (hc) { hc.setAttribute('cx', n(p.head.x)); hc.setAttribute('cy', n(p.head.y-4)); hc.setAttribute('rx','15'); hc.setAttribute('ry','18'); hc.setAttribute('fill', hairC); }
 
     // Hair strands
     const headDir = (p.head.x - 200) * 0.12;
