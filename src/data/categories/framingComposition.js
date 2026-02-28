@@ -522,6 +522,206 @@ export const Framing = [
     title: "Slightly Above Downward Tilt Detail Focus",
     prompt: "Camera positioned slightly above the subject with a subtle downward tilt — the angle adding a sense of lightness and vulnerability — emphasizing clothing details accessories and the top of the head — the downward perspective making the subject appear more intimate and approachable — minimal background visible keeping focus on the figure and their detailed styling.",
   },
+  {
+    id: "framing_105",
+    title: "Overhead Intimate Foreground Blur",
+    prompt: "Shot from directly above — a handheld overhead angle that feels personal and unposed, as if taken by someone standing over the subject. The arm creates a slight foreground blur, adding depth and intimacy with a secret observer's perspective. The framing encompasses the face, shoulders, and spilled hair on the pillow surface, creating a contained world within the frame.",
+  },
+  {
+    id: "framing_106",
+    title: "Waist-Up Off-Center Elevated",
+    prompt: "Framed from the waist up with a slightly off-center composition, placing focus on the face and the flowing movement of the upper body. The camera angle is slightly elevated, enhancing the subject's stature and profile. Soft-focus technique isolates the subject from the background, creating depth while maintaining sharp detail on delicate features — a relaxed yet elevated composition suited for lifestyle or fashion editorial work.",
+  },
+  {
+    id: "framing_107",
+    title: "Eye-Level Profile Off-Center",
+    prompt: "The camera angle is eye-level, capturing the subject's profile while leaving enough room to highlight the surroundings. The composition is slightly off-center, drawing attention to poised posture and a contemplative sideward gaze. Shallow depth of field isolates the subject from the blurred background, emphasizing presence in the moment — a balanced frame that gives equal weight to confident stance and environmental context.",
+  },
+  {
+    id: "framing_108",
+    title: "Mid-Body Graceful Interior Frame",
+    prompt: "The subject is framed from mid-body with the composition adding a graceful flow to the image. Positioned within a well-lit interior setting, the framing captures the full torso and upper legs, highlighting the juxtaposition of structured garments against an elegant backdrop. The camera sits at a neutral, slightly intimate distance, allowing patterns, tailoring, and expression to share equal visual weight within the composition.",
+  },
+  {
+    id: "framing_109",
+    title: "Off-Center Mystery Face Averted",
+    prompt: "The model is captured in an off-center composition, face obscured by soft waves of hair as she turns gracefully away from the camera. The framing emphasizes the flowing movement of garments — cascading sleeves, shimmering fabric — while maintaining depth through a softly blurred background that serves as an unassuming canvas. Mid-motion poses suggest fluid movement, with the subject's gesture and fabric details drawing the viewer's eye through deliberate negative space.",
+  },
+  {
+    id: "framing_110",
+    title: "Minimalist Turned-Away Fabric Focus",
+    prompt: "A minimalist composition where the subject is turned away from the camera with one hand resting on the hip, accentuating quiet grace. The face remains gently hidden by hair, adding a layer of intimacy. The framing allows the texture and design of the fabric to speak for itself, with the body's silhouette creating a fluid visual line. The stance highlights the gentle movement of layered material against a soft, uncluttered backdrop.",
+  },
+  {
+    id: "framing_111",
+    title: "Seated Mid-Body Vintage Warmth",
+    prompt: "The subject is framed in a seated position, one leg crossed over the other, leaning slightly forward with a hand resting on the knee — exuding quiet elegance. The camera captures from mid-body, emphasizing the collar, buttons, and pleated skirt details. The framing includes ambient interior elements — warm table textures, candle glow — that contribute to an intimate, cozy atmosphere without competing for attention. The composition feels balanced between subject and setting.",
+  },
+  {
+    id: "framing_112",
+    title: "Full-Body Environmental Drift",
+    prompt: "A full-body composition where the subject drifts lazily at the edge of an environmental setting, framed to capture the entirety of the flowing garments from shoulders to sandals. The camera maintains enough distance to include surrounding natural elements — water reflections, soft blooms — while keeping the subject as the clear focal point. Hair and fabric movement mirror the gentle rhythms of the environment, creating visual harmony between figure and setting.",
+  },
+  {
+    id: "framing_113",
+    title: "Tight Hair Upper-Body Intimacy",
+    prompt: "Tight framing centered on the hair and upper body, with the subject's hair dominating the visual composition as it cascades over the shoulders and partially covers the face. The frame captures the interplay between flowing strands and the form-fitting garment beneath, letting hair and subtle movement dominate. Colors of clothing melt seamlessly into the background, ensuring the luminous hair texture and soft skin tone remain the primary visual focus.",
+  },
+  {
+    id: "framing_114",
+    title: "Reclining Angled Gentle Profile",
+    prompt: "The subject is captured in a reclining position, body angled away from the camera with only a gentle profile visible and eyes softly closed. The framing encompasses the full reclining form, with ruffled fabric floating around the body and surrounding soft textures — pillows, smooth sheets — creating a cocoon-like composition. The surreal, dreamlike quality is enhanced by the shallow angle that makes the subject appear to dissolve into the surface beneath.",
+  },
+  {
+    id: "framing_115",
+    title: "Elongated Mid-Length Editorial Frame",
+    prompt: "Framed at mid-length with the subject's pose elongated yet casual, as though drifting between spaces. The camera angle is slightly above eye level, capturing the profile at an angle that gently showcases the contours of the form while giving a clear view of the body. The subject's gaze is softened and directed just out of frame, creating mystery. Hands are placed delicately on fabric folds or in a natural yet elegant position — a composition that feels both cinematic and aspirational with effective use of shallow depth of field.",
+  },
+  {
+    id: "framing_116",
+    title: "Above Off-Center Diagonal Intimate",
+    prompt: "The subject is framed slightly off-center, body angled at a subtle diagonal, with the camera positioned just above and slightly tilted downward. This vantage captures intricate fabric details as light glistens softly across the surface. A raised hand near the face holds a strand of hair that drapes sensually, while the subject remains partially obscured — reinforcing intimacy while showcasing the refined ensemble. The composition draws a visual line from the detailed garment through the gesture to the partially hidden expression.",
+  },
+  {
+    id: "framing_117",
+    title: "Tight Face Cap Eye-Level Crop",
+    prompt: "The composition centers on the face with the upper body visible, slightly cropped just below the shoulders to emphasize facial features and headwear. The camera angle is direct and eye-level, adding confrontational intimacy to the frame. The subject's gaze is directed downward while facing the camera, with wind-tousled hair adding gentle motion. Shallow depth of field ensures the subject remains the sharp focal point while the background dissolves into soft suggestion of environment.",
+  },
+  {
+    id: "framing_118",
+    title: "Three-Quarter Slightly Elevated Crop",
+    prompt: "Three-quarter framing that cuts just below the knees — the camera sits slightly higher than eye level, providing an intimate yet regal perspective that emphasizes the subject's silhouette and stance. The shallow depth of field blurs the background into a soft textural wash, isolating the subject as the clear focal point and intensifying focus on expression and body language.",
+  },
+  {
+    id: "framing_119",
+    title: "Low Angle Reclined Natural",
+    prompt: "Low camera angle looking slightly upward at a reclining subject — the perspective emphasizes the smooth lines of the body against the ground plane while the gentle tilt of the head leads the eye toward the subject's serene expression. The composition balances editorial precision with candid warmth, framing the full figure with enough surrounding environment to establish context without competing for attention.",
+  },
+  {
+    id: "framing_120",
+    title: "Elevated Seated Environmental Frame",
+    prompt: "A slightly elevated camera angle captures the full seated figure along with the surrounding environment — the framing includes enough of the setting to establish an atmospheric context while keeping the subject as the clear anchor of the composition. The focus softens peripheral details, allowing the smoothness of skin and warmth of light to dominate while the environment provides a lush, enveloping frame.",
+  },
+  {
+    id: "framing_121",
+    title: "Full Body Reclined Lounging",
+    prompt: "Full-body framing of a subject reclining on furniture with legs extended — the composition captures the deliberate yet relaxed quality of the pose, with the body creating a natural diagonal that draws the eye across the frame. The camera maintains a neutral angle that emphasizes the interplay of the figure with the surface beneath, allowing patterned shadows and fabric textures to fill the negative space organically.",
+  },
+  {
+    id: "framing_122",
+    title: "Full Length Walking Away",
+    prompt: "Full-length framing from head to toe captures the subject mid-stride walking away from the camera — the movement of fabric and hair creates a dynamic energy within an otherwise static frame. The medium camera height emphasizes the graceful figure and the way the outfit catches the light in motion, while the slight turn of the head back toward the lens adds a moment of connection within the departing gesture.",
+  },
+  {
+    id: "framing_123",
+    title: "Seated Crossed Intimate Angle",
+    prompt: "The subject is framed seated with legs crossed — her body partially turned toward the camera creates a natural angle of visual interest. The framing is close enough to reveal textural detail in the clothing and the objects being held, while the shallow depth of field softly dissolves the background into an atmospheric wash of green and light. The composition invites the viewer to examine the interplay between the subject's relaxed posture and the elements in her hands.",
+  },
+  {
+    id: "framing_124",
+    title: "Elongated Full Body Editorial",
+    prompt: "Full-body editorial framing with the subject leaning against furniture — the composition elongates the legs and emphasizes silhouette, with one foot slightly lifted to add dynamism. The tight balance between subject and negative space creates a visually striking proportion where the figure commands nearly the entire vertical frame, drawing the eye from the tilt of the head down through the full length of the body.",
+  },
+  {
+    id: "framing_125",
+    title: "Upper Body Window Intimate",
+    prompt: "Upper-body framing with the subject angled toward an off-frame light source — the composition creates a sense of intimacy by cropping close enough to reveal jewelry details and the texture of flowers held near the face. The shallow depth of field with soft bokeh in the background enhances the dreamlike quality, keeping all attention on the subject's partially concealed expression and the delicate objects that frame her features.",
+  },
+  {
+    id: "framing_126",
+    title: "Tight Mystery Face Frame",
+    prompt: "A tight framing centered on the upper body and face where a wrapped accessory conceals most of the features — only the eyes remain visible, intensifying the subject's gaze and creating a powerful focal point. The composition isolates the subject from the environment through both the crop and a blurred background, forcing the viewer to engage with the limited visible expression and the rich textural detail of the concealing fabric.",
+  },
+  {
+    id: "framing_127",
+    title: "Off-Center Angled Soft Focus",
+    prompt: "The subject is placed off-center in the frame with the body angled slightly away from the viewer — the asymmetric composition creates a natural sense of movement and intimacy, as if the camera has captured a private, unguarded moment. The extremely shallow depth of field dissolves the background into creamy bokeh, making the subject and the fabric she touches the only elements in sharp focus, while her partially obscured face adds an air of editorial mystery.",
+  },
+  {
+    id: "framing_128",
+    title: "Dynamic Turning Movement Frame",
+    prompt: "A dynamic composition where the subject's body is slightly turned away from the camera, creating a sense of captured movement — the framing is wide enough to showcase the full silhouette and the dramatic volume of the outfit, while the background remains soft and diffused. The tousled hair and billowing fabric add kinetic energy to the frame, and the hand resting on the hip provides a grounding anchor point within the overall sense of motion.",
+  },
+  {
+    id: "framing_129",
+    title: "Eye Level Direct Bookish",
+    prompt: "The camera is positioned at eye level to maintain a direct, engaging connection with the subject — the body is turned slightly while the head faces forward, creating a subtle asymmetry that feels both composed and natural. The framing includes enough of the surrounding space to suggest an intellectual environment without pulling focus, with the shallow depth of field rendering the backdrop as a rich textural blur that complements rather than competes with the subject's relaxed presence.",
+  },
+  {
+    id: "framing_130",
+    title: "Candid Street Walking Forward",
+    prompt: "A candid street-level composition captures the subject walking forward — the framing encompasses the full figure with the flowing dress and structured accessories clearly visible. The background is a subtly blurred urban scene that ensures all attention remains on the subject's confident forward motion and approachable expression, while the sunlight creates a natural halo effect around the hair that adds a luminous, almost ethereal frame within the frame.",
+  },
+  {
+    id: "framing_131",
+    title: "Overhead Duo Floor Composition",
+    prompt: "Two subjects captured from a slightly elevated angle as they lounge on the floor — the camera positioned to encompass both figures and the patterned surface beneath them. The framing is loose enough to include surrounding props and environmental details — creating a compositional balance between the two subjects while preserving the casual, grounded energy of their shared space.",
+  },
+  {
+    id: "framing_132",
+    title: "Three-Quarter Lean Against Surface",
+    prompt: "A three-quarter body shot with the subject leaning against a vertical surface — slightly off-center in the frame to create visual tension. The composition allows the environment to breathe around the figure while keeping the subject as the clear anchor — one shoulder angled toward camera, face turned with direct eye contact, creating an intimate yet confident connection with the viewer.",
+  },
+  {
+    id: "framing_133",
+    title: "Full-Body Mid-Motion Walk",
+    prompt: "A full-body shot capturing the subject mid-stride — slightly off-center with the body angled toward the viewer but the face partially turned away. The framing includes enough floor space to show the sweep of fabric in motion — the camera positioned at roughly eye level to preserve natural proportions while emphasizing the fluidity and grace of the walking movement.",
+  },
+  {
+    id: "framing_134",
+    title: "Full-Body Descending Stairs Sweep",
+    prompt: "A full-body composition capturing the subject descending a staircase — the camera framed to include the architectural lines of the railing and steps while keeping the figure as the focal point. The vertical lines of the setting create natural leading lines that draw the eye to the subject — one hand on the banister providing an anchor point, the body angled to show both movement and poise.",
+  },
+  {
+    id: "framing_135",
+    title: "Standing Balcony Horizon Framing",
+    prompt: "The subject is framed standing at a balcony edge with the horizon line visible behind — the composition balances the figure against the expansive backdrop. The camera captures from roughly waist-up to full-body — positioning the subject slightly to one side so the scenic vista fills the remaining frame, creating a dialogue between intimate portraiture and landscape photography.",
+  },
+  {
+    id: "framing_136",
+    title: "Garden Stroll Medium Shot",
+    prompt: "A medium to three-quarter shot capturing the subject mid-stroll through a garden environment — the framing loose and naturalistic, with foliage softly framing the edges. The subject is positioned slightly off-center with their body angled and gaze directed outward — creating a candid, editorial quality that feels observed rather than posed.",
+  },
+  {
+    id: "framing_137",
+    title: "Urban Street Walking Shot",
+    prompt: "The subject is captured walking through an urban street in a three-quarter to full-body composition — slightly turned to glance over one shoulder toward the camera. The framing includes enough of the street environment to establish context while maintaining the figure as the dominant element — the slightly compressed perspective of the street creating natural depth and leading lines.",
+  },
+  {
+    id: "framing_138",
+    title: "Standing Among Botanicals Portrait",
+    prompt: "A full-body to three-quarter composition with the subject standing gracefully among surrounding greenery — the camera positioned to capture the interplay between the figure and the organic shapes of plants around them. The framing keeps the subject central while allowing botanical elements to create a natural vignette — emphasizing the delicate relationship between the human form and the living environment.",
+  },
+  {
+    id: "framing_139",
+    title: "Minimalist Window Foreground Portrait",
+    prompt: "The subject stands in the foreground near a large window — framed from roughly mid-thigh up, face partially turned away to create a candid atmosphere. The camera angle is slightly above eye level, adding a gentle downward perspective that creates depth between the subject and the expansive view behind. The composition places the subject against negative space from the window, creating an intimate portrait within a spacious setting.",
+  },
+  {
+    id: "framing_140",
+    title: "Medium Shot Lounging Repose",
+    prompt: "A medium shot capturing the subject in a state of relaxed repose — the camera angle slightly above eye level, providing a flattering perspective. The framing is intimate, cutting at roughly mid-body and including enough of the surrounding soft furnishings to establish the luxurious environment — the subject's relaxed posture filling the frame with comfortable, unhurried energy.",
+  },
+  {
+    id: "framing_141",
+    title: "Wide Social Gathering Scene",
+    prompt: "A slightly elevated, wide-angle composition capturing a social gathering — the framing encompasses multiple figures and the scenic backdrop beyond. The depth of field keeps the primary subjects in sharp focus while the background softens, directing attention to the social interaction while preserving the grandeur of the setting. The camera angle creates a sense of being a privileged observer of this exclusive moment.",
+  },
+  {
+    id: "framing_142",
+    title: "Candid Active Urban Capture",
+    prompt: "A candid, naturalistic framing capturing the subject in active motion within a city setting — the composition is loose and spontaneous, as if caught by a passerby with a keen eye. The framing balances the figure against the urban architecture, allowing movement and environmental context to share the frame equally — creating an editorial quality that feels authentic and unposed.",
+  },
+  {
+    id: "framing_143",
+    title: "Dynamic Motion Blur Framing",
+    prompt: "A dynamic composition capturing the subject in motion — hair and fabric creating sweeping lines across the frame. The framing may range from close-up to three-quarter, with the camera positioned to emphasize the kinetic energy of the moment. Slight motion blur on peripheral elements while the subject's core remains in focus — creating a tension between stillness and movement within a single frame.",
+  },
+  {
+    id: "framing_144",
+    title: "Runway Event Walking Frame",
+    prompt: "A full-body to three-quarter composition capturing the subject walking with purpose — the framing tight enough to showcase outfit details while including enough environment to establish the setting's elegance. The background is softly blurred, with the subject sharp and centered — creating the focused, directional energy of a runway walk or confident entrance into a high-profile space.",
+  },
 ];
 
 export const Perspective = [
@@ -1191,5 +1391,21 @@ export const CameraType = [
     title: "Black-and-White Monochrome Film Filter Candid",
     prompt: "Black-and-white processing or monochrome film stock — stripping color to create a vintage timeless feel — tonal range from deep blacks to soft whites with rich mid-tones — slightly dim interior lighting creating moody shadows — the monochrome treatment adding emotional depth and a sense of captured memory rather than staged photography.",
   },
+  {
+    id: "cameratype_116",
+    title: "Black-and-White Editorial Format",
+    prompt: "Black-and-white photography format that enhances the classic, timeless feel of the image — monochrome treatment that strips away color distraction and focuses attention on texture, shadow, and form. The format accentuates sharp contrasts between dark and light elements while the soft focus on the background creates depth separation. The processing style suggests an analog or film-inspired approach, with smooth tonal gradients and a natural, unposed photographic sensibility suited for editorial or candid social media publication.",
+  },
+  {
+    id: "cameratype_117",
+    title: "Soft Bokeh Shallow Depth",
+    prompt: "A lens producing a gentle, dreamy bokeh effect in the background — soft circles of light playing at the edges of the frame. The depth of field is shallow, isolating the subject with a smooth, creamy separation from the environment. The lens rendering is warm and slightly soft — creating a flattering, romantic quality with gentle transitions between in-focus and out-of-focus areas.",
+  },
+  {
+    id: "cameratype_118",
+    title: "Natural Warmth Lifestyle Lens",
+    prompt: "A natural, warm lens character suited for lifestyle and editorial work — rendering skin tones with flattering accuracy and providing gentle, organic bokeh in out-of-focus areas. The depth of field is moderately shallow, keeping the subject sharp while allowing backgrounds to soften into pleasing, non-distracting blur. The overall rendering is clean yet characterful — avoiding clinical sharpness in favor of a natural, lived-in quality.",
+  },
+
 ];
 

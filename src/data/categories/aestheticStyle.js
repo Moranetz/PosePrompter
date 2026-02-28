@@ -738,6 +738,206 @@ export const Aesthetic = [
     title: "Pink Beaded Top Eyelet Shorts Soft Luxury",
     prompt: "Delicate soft luxury featuring an intricate beaded and embroidered pink top glistening with golden and pearl-like accents — white ruffled eyelet shorts contrasting softness with crispness — golden accessories including necklace bracelet and rings amplifying understated luxury — camera slightly above with a subtle downward tilt adding lightness — focus on intricate beading and embroidery — soft lighting evoking a sunlit vibe with gentle warmth — balancing innocence with sophisticated craftsmanship — casual poise exuding soft elegance and carefree joy.",
   },
+  {
+    id: "aesthetic_143",
+    title: "Dreamy Overhead Muse Intimacy",
+    prompt: "Dreamy, romantic, and achingly intimate — a muse captured mid-thought, radiating vulnerability without needing to say anything. The mood is less 'look at me' and more 'stay in this moment with me.' Humble, poetic, revealing nothing yet giving everything — the feeling of someone who loves you taking a photo in silence. Hair spills naturally, cheeks slightly flushed, lips parted — it is vulnerability made visual, emotionally gentle rather than edited pretty.",
+  },
+  {
+    id: "aesthetic_144",
+    title: "Serene Oceanside Candid Grace",
+    prompt: "Serene and naturalistic — a candid moment of quiet contemplation and understated luxury. The subject gazes off into the distance, body angled to the side, suggesting introspection and effortless elegance. The feeling is one of quiet grace in a natural setting, evoking nostalgia and calm — relaxed yet elevated, capturing the purity of the moment with a sensual, dreamlike quality.",
+  },
+  {
+    id: "aesthetic_145",
+    title: "Sporty-Chic Casual Luxury",
+    prompt: "Sporty-chic energy blending athletic refinement with casual elegance — the essence of country club or tennis-inspired sophistication. A balance between relaxed outdoor luxury and youthful, confident poise. The look strikes an effortless cool, embodying understated luxury with a touch of sportiness — the simplicity elevated by restraint and confident posture.",
+  },
+  {
+    id: "aesthetic_146",
+    title: "Polished Poise Playful Elegance",
+    prompt: "Polished poise with a dash of playful elegance — structured high-fashion sensibility softened by ease and charm. The subject exudes a soft yet confident expression, conveying the feeling of being chic and ready for a glamorous outing. A sophisticated aura that blends sharp tailored aesthetics with a graceful, approachable warmth — perfect for a fashion editorial that balances refinement with personality.",
+  },
+  {
+    id: "aesthetic_147",
+    title: "Floral Artistry Ethereal Movement",
+    prompt: "Ethereal movement and deliberate artistry — garments that feel like artwork brought to life, blending high fashion with nature's organic beauty. Flowing fabrics shimmer softly, catching the light and creating a fluid, almost magical effect reminiscent of a dreamlike world. A quiet energy pervades — confident but serene — that speaks to the unspoken beauty of details inviting a closer look. The juxtaposition between controlled beauty and free-flowing softness, combining soft femininity with bold creative expression.",
+  },
+  {
+    id: "aesthetic_148",
+    title: "Elevated Ethereal Lounging Grace",
+    prompt: "Elevated lounging aesthetic — relaxed but dripping with refined luxury. The fabric's gentle sheen catches the light in an almost otherworldly way, creating an enchanting visual flow. Minimalist in composition yet beautifully detailed, with quiet grace accentuated by turned-away poses and an intimate, hypnotic quality. An ideal mix of elegance and whimsy — structured elements combined with soft, swirling fabric that embodies serene confidence.",
+  },
+  {
+    id: "aesthetic_149",
+    title: "Vintage Innocence Understated Sophistication",
+    prompt: "The essence of innocence and understated sophistication — vintage-inspired charm with a timeless, polished sensibility. A nostalgic yet classic aesthetic where crispness of tailored details contrasts with softness of movement, inviting a calm, introspective mood. Refined yet quiet luxury, combining a playful touch with elegant simplicity — the feeling of a timeless, serene moment captured in fabric and form.",
+  },
+  {
+    id: "aesthetic_150",
+    title: "Riverbank Poetic Luxurious Stillness",
+    prompt: "A visual poem of understated luxury combining high fashion with the simplicity of nature — the epitome of luxurious stillness. Everything exists in perfect harmony, from fabrics that catch the light just right to the timeless beauty of a fleeting moment. Subtlety is everything — the sparkle of silk in sunlight, intricate embroidery detail, and a quiet powerful aura that makes the presence unforgettable yet fleeting. An almost cinematic dream where nothing is rushed, evoking calm, beauty, and quiet strength.",
+  },
+  {
+    id: "aesthetic_151",
+    title: "Hair-Centric Intimate Allure",
+    prompt: "The subject's hair plays a vital role in setting the dreamy tone — cascading gently, soft waves catching the light as if shimmering. An aura of mystery where hair frames the face delicately, never fully revealing the subject, maintaining a quiet, almost ethereal quality. The tension between exposure and concealment creates a deliberately intimate yet subtly provocative mood — vulnerability emphasized through the interplay of windswept strands and still composure. Curiosity and intrigue drawn from the contrast between softness and restraint.",
+  },
+  {
+    id: "aesthetic_152",
+    title: "Ethereal Dreamy Reclining Repose",
+    prompt: "Ethereal and dreamlike — the quality of a subject slowly melting into softness, surrounded by comfort and escape. An opalescent glow captures the light in a way that makes the scene surreal, with hair flowing in a gentle, untouched halo of movement. Hypnotic and enchanting, blending luxury with innocence, making even the most delicate moments feel rooted in something more expansive. A romantic, intimate scene where relaxed body language and flowing fabric evoke fluidity and subtle sophistication.",
+  },
+  {
+    id: "aesthetic_153",
+    title: "Soft Neutral Editorial Elegance",
+    prompt: "A delicate, ethereal composition balancing femininity and subtle strength — quiet confidence captured in editorial form. The subject drifts between spaces as though existing in a dreamy fashion narrative, casual yet deeply elegant. A sense of effortless beauty and quiet luxury balanced between nature and fashion, evoking a nostalgic tone. Timeless beauty with a modern twist — both intimate and aspirational, inviting the viewer to engage with the image as though sharing a private moment.",
+  },
+  {
+    id: "aesthetic_154",
+    title: "Black Lace Private Allure",
+    prompt: "Private allure and quiet sophistication — an introspective, seductive elegance where the subject seems lost in her own world yet intimately engaged with the viewer through gesture and subtle posture. A sense of mystery reinforced by partial obscurity, where bold contrast between delicate skin and rich dark fabric creates a quietly commanding presence. The mood is deeply personal, refined, and warmly inviting despite its air of exclusivity.",
+  },
+  {
+    id: "aesthetic_155",
+    title: "Timeless Monochrome Chic Mystery",
+    prompt: "Subtly confident and effortlessly chic — a classic, timeless sensibility enhanced by monochrome treatment. Eyes partially hidden create an air of mystery, while wind-tousled hair adds gentle dynamic motion to an otherwise still, composed presence. The subject feels fresh, slightly detached, and coolly self-assured — a clean aesthetic where minimalism and relaxed elegance converge. Natural and unposed in spirit, suggesting quiet sophistication captured candidly.",
+  },
+  {
+    id: "aesthetic_156",
+    title: "Athletic Elegance Grand Interior",
+    prompt: "A striking juxtaposition of modern athletic minimalism against grand classical architecture — the subject's youthful sportswear feels subversive against ornate walls and decorative moulding. The monochrome treatment strips away color to reveal pure texture and structure, transforming a casual polo-and-shorts silhouette into something timeless and editorial. There is an undercurrent of quiet power — relaxed confidence that refuses to perform, the kind of understated sophistication that belongs equally in a luxury fashion magazine and a cinematic black-and-white portrait series. The image oscillates between contemporary cool and vintage gravitas, making the ordinary feel regal.",
+  },
+  {
+    id: "aesthetic_157",
+    title: "Pastoral Embroidered Innocence",
+    prompt: "An intimate return to nature where vintage-inspired femininity meets the quiet poetry of reclining on soft grass — the subject embodies a nostalgic pastoral ideal, an unhurried moment of beauty that balances editorial precision with candid warmth. There is a sense of old-world romance revived through modern simplicity, as though time has slowed to honor the delicate interplay of handcrafted detail against the raw organic world. The mood drifts between wistful remembrance and present-moment serenity, where every wind-swept strand of hair and gentle tilt of the head tells a story of effortless, understated grace.",
+  },
+  {
+    id: "aesthetic_158",
+    title: "Tropical Retreat Effortless Grace",
+    prompt: "A lifestyle portrait that captures the laid-back luxury of a tropical retreat — the subject exists in a liminal space between posed and candid, as though the camera simply witnessed a private moment of personal elegance. There is an unmistakable sense of vacation ease, where femininity and innocence intertwine with quiet confidence. The scene feels both ethereal and personal, offering a glimpse into a relaxed intimate world where sophistication is worn as naturally as the warm breeze — an aspirational yet approachable vision of effortless island living.",
+  },
+  {
+    id: "aesthetic_159",
+    title: "Lattice Light Quiet Repose",
+    prompt: "A meditative interior scene where patterned shadow play transforms a casual lounging moment into something hypnotic and painterly — the rhythmic lattice shadows create a visual cadence across the subject and the environment, turning comfort into art. There is a harmonious blend of nature and personal luxury, where the outside world filters in through slats to create an atmosphere of serene domesticity. The mood is introspective and unhurried, inviting the viewer to linger in a space where quiet elegance and genuine comfort are indistinguishable.",
+  },
+  {
+    id: "aesthetic_160",
+    title: "Fleeting Grace Modern Minimalism",
+    prompt: "A captured-in-motion portrait where the subject walks through a minimalist space, her movement transforming the room into a stage for a fleeting moment of grace — the image balances innocence and sophistication, timelessness and contemporaneity. There is a sense of quiet narrative, as though the viewer has stumbled upon a private passage through an elegant space. The overall feeling is one of luxurious ease amplified by architectural restraint, where every surface and texture serves to elevate a single graceful gesture into something cinematic and memorable.",
+  },
+  {
+    id: "aesthetic_161",
+    title: "Botanical Lace Still Life",
+    prompt: "A candid outdoor portrait that merges still-life sensibility with fashion intimacy — the subject becomes part of a living composition where organic elements and intricate handcraft exist in gentle dialogue. There is a grounded warmth to the scene, a connection to nature that feels neither staged nor accidental but rather discovered in a moment of genuine peace. The interplay between the subject's relaxed posture and the careful arrangement of natural elements creates a quiet narrative of abundance, beauty, and the tactile pleasure of holding something precious from the earth.",
+  },
+  {
+    id: "aesthetic_162",
+    title: "Cinematic Editorial Confidence",
+    prompt: "A high-fashion editorial moment that balances youthful playfulness with assured sensuality — the subject commands attention through posture and presence rather than spectacle. The image speaks to an aspirational yet grounded aesthetic where sophistication and subtle power coexist with approachability. There is a polished minimalism at work, a deliberate restraint that allows texture and silhouette to carry the visual weight. The mood evokes the quiet confidence of someone entirely comfortable in their own world, captured at the intersection of luxury brand campaign and intimate personal portrait.",
+  },
+  {
+    id: "aesthetic_163",
+    title: "Pensive Floral Intimate Portrait",
+    prompt: "An intimate and ethereal portrait where the subject retreats into a private moment of contemplation, partially hidden behind delicate flowers that serve as both shield and adornment. The scene feels like a stolen glance into a personal ritual of beauty and reflection, where vulnerability and quiet power coexist. There is a dreamlike quality to the composition — the act of holding flowers to the face transforms a simple gesture into something poetic and mysterious, inviting the viewer to imagine the thought behind the gaze rather than simply observe the surface.",
+  },
+  {
+    id: "aesthetic_164",
+    title: "Tactical Mystique Dual Persona",
+    prompt: "A diptych-inspired concept that explores dual facets of identity through the same concealing gesture — the subject uses a tactical scarf to create mystery and intrigue across contrasting environments. In one mode, the aesthetic channels outdoor adventure and elemental strength; in the other, it embraces urban grit and nocturnal rebellion. The partially obscured face becomes a canvas for projecting both vulnerability and defiance, and the two settings amplify each other to create a portrait of someone who moves fluidly between worlds — bold yet understated, fierce yet intimate.",
+  },
+  {
+    id: "aesthetic_165",
+    title: "Blush Silk Dreamlike Romance",
+    prompt: "A romantic editorial vision where delicate embellishment and translucent fabric create an atmosphere of hushed, intimate beauty — the subject exists in a soft-focus world where mystery and allure emerge from partially obscured features and gentle gestures. There is a vintage-inspired romanticism that feels neither costume nor pastiche but rather a genuine emotional register, as though the image captures the precise moment between private reverie and public poise. The overall sensibility is one of calm luxury and timeless femininity, where every shimmer of silk and glint of beadwork tells a story of careful, quiet elegance.",
+  },
+  {
+    id: "aesthetic_166",
+    title: "Dramatic Volume Effortless Movement",
+    prompt: "A dynamic fashion moment where dramatic volume and sheer intricacy meet candid movement — the subject is captured mid-gesture, her body slightly turned away as if the camera caught a passing moment of unrehearsed grace. The outfit's architectural drama contrasts with the ease of her posture, creating a tension between spectacle and nonchalance. There is an undercurrent of quiet strength beneath the billowing fabric and cascading hair, a sense that true elegance is found not in stillness but in the confident, unhurried way someone moves through space.",
+  },
+  {
+    id: "aesthetic_167",
+    title: "Intellectual Quiet Luxury Retreat",
+    prompt: "A multi-faceted portrait of cultured elegance where intellectual curiosity and quiet luxury merge into a single cohesive sensibility — the subject is equally at home among towering bookshelves and cozy reading nooks, radiating an unbothered confidence that bridges street style and academic chic. There is a cinematic editorial quality to the scenes, where moments of reading and reflection become acts of personal expression. The aesthetic blends vintage sophistication with contemporary ease, evoking a world where leather-bound volumes and modern loungewear coexist naturally, and where poise emerges from genuine engagement with one's surroundings rather than performance.",
+  },
+  {
+    id: "aesthetic_168",
+    title: "Sunlit Street Feminine Breeze",
+    prompt: "A candid street-style capture that radiates youthful, sun-kissed energy — the subject walks forward with effortless confidence, her movement creating a sense of breezy spontaneity that elevates casual elegance into something aspirational. The scene embodies the golden-hour magic of a perfect city day, where feminine softness and modern high-fashion structure exist in easy harmony. There is a carefree luminosity to the entire composition, as though the sunlight itself conspires to create a halo of warmth and movement around the subject, turning an ordinary sidewalk into a runway of natural grace.",
+  },
+  {
+    id: "aesthetic_169",
+    title: "Playful Cozy Duo Intimacy",
+    prompt: "Two young women share a playful yet elegant afternoon lounging together on a vintage rug — their candid energy and easy camaraderie radiating warmth and youthful spirit. The scene embodies the intersection of high-fashion sensibility and everyday joy — sequins meeting cozy knits, laughter meeting poise — capturing that effortless balance between luxury and grounded intimacy that feels like a secret world shared between close friends.",
+  },
+  {
+    id: "aesthetic_170",
+    title: "City Car Lean Confidence",
+    prompt: "A model leans casually against a sleek car in an upscale city setting — the spontaneity of street life meeting the grace of modern luxury. The scene radiates serene confidence and laid-back poise — an off-shoulder drape catching the light while the city hums softly behind her. It captures that effortless intersection of carefree attitude and quiet sophistication — the kind of moment that feels both spontaneous and perfectly composed.",
+  },
+  {
+    id: "aesthetic_171",
+    title: "Ghibli-Inspired Silk Editorial",
+    prompt: "A dreamy editorial moment caught mid-motion in a minimalist studio — the model walks across the floor with an elusive energy, her hair cascading to partially obscure her face, one hand resting on a vintage chair while the other brushes her hair back. The scene channels a Studio Ghibli-inspired magic — a moment frozen in time where quiet confidence meets ethereal mystery. Her presence resonates without revealing everything — inviting the viewer to linger and discover the layers of understated elegance and personal expression within the atmosphere.",
+  },
+  {
+    id: "aesthetic_172",
+    title: "Grand Staircase Timeless Elegance",
+    prompt: "A figure descends a grand staircase with serene opulence — the interplay of classical architecture and graceful movement evoking timeless sophistication. One hand rests lightly on an ornate banister, the body angled with quiet confidence. The scene carries cinematic weight — a tableau of refined luxury and romantic grandeur that feels both editorial and deeply personal, as if witnessing a private moment of composed beauty within a storied interior.",
+  },
+  {
+    id: "aesthetic_173",
+    title: "Coastal Cashmere Sunset Tranquility",
+    prompt: "A moment of tranquil contemplation as the subject gazes toward the ocean at sunset — the embodiment of coastal elegance and effortless refinement. The scene radiates a peaceful, aspirational quality — understated luxury woven into the simplicity of the moment. It captures that feeling of having arrived at a place of quiet contentment — sophisticated yet deeply relaxed, where beauty emerges naturally from stillness and the gentle rhythm of the coastline.",
+  },
+  {
+    id: "aesthetic_174",
+    title: "Bohemian Garden Sweet Innocence",
+    prompt: "A sunlit garden moment radiating sweet, bohemian femininity — the subject embodies a nice-girl, gentle energy as she moves through lush greenery with effortless charm. Loose natural waves, a small bouquet of wildflowers, and a romantic vintage sensibility create a dreamy tableau of personal tranquility. The aesthetic blends grounded innocence with quiet sophistication — evoking timeless simplicity and the kind of ethereal presence that feels both approachable and aspirational.",
+  },
+  {
+    id: "aesthetic_175",
+    title: "Pastel Streetwear Hypebeast Charm",
+    prompt: "A spontaneous yet perfectly curated street-style moment blending modern femininity with hypebeast cool — oversized silhouettes and designer details meet a relaxed, carefree attitude. The aesthetic balances sweet, approachable charm with street-savvy confidence — capturing that youthful energy where high fashion dissolves into urban ease. It is the intersection of playful self-expression and laid-back luxury — effortlessly cool without ever trying too hard.",
+  },
+  {
+    id: "aesthetic_176",
+    title: "Indoor Botanical Hidden Luxury",
+    prompt: "A graceful figure stands among delicate plants in an indoor botanical setting — the scene inviting viewers to pause and discover quiet luxury in the smallest details. Hidden embroidery along a hemline, understated embellishments only visible upon close inspection — the aesthetic celebrates the joy of discovery and intimate attention to craft. It is a dreamy, ethereal moment where elegance whispers rather than shouts, creating an interactive experience of layered beauty.",
+  },
+  {
+    id: "aesthetic_177",
+    title: "Minimalist Interior Quiet Living",
+    prompt: "A serene moment of quiet introspection within a minimalist interior — the subject exists in a state of effortless calm, embodying a high-end lifestyle that feels deeply relatable and grounded. The aesthetic captures authenticity within luxury — personal moments rendered with cinematic sensitivity. There is a sense of stillness and gentle reflection that makes the ordinary feel elevated, where comfort and sophistication merge into a single, unhurried breath.",
+  },
+  {
+    id: "aesthetic_178",
+    title: "Satin Slip Intimate Romance",
+    prompt: "An intimate, romantic scene of quiet repose — the subject lounges in a moment of refined tranquility that feels both personal and aspirational. The aesthetic celebrates softness and vulnerability — where gentle fabrics, natural beauty, and unhurried stillness converge into a tableau of sensual elegance. It captures the poetry of a private moment — the kind of scene that feels like a whispered secret, luxurious yet deeply human.",
+  },
+  {
+    id: "aesthetic_179",
+    title: "High-Society Lakeside Gathering",
+    prompt: "A refined high-society gathering exuding quiet wealth and cultured sophistication — well-dressed figures engage in leisurely conversation against a backdrop of architectural grandeur. The aesthetic evokes exclusivity without ostentation — cinematic in its composition and almost novelistic in its sense of narrative. There is an air of mystery and composed luxury, as if each figure carries their own story within this tableau of timeless elegance and social grace.",
+  },
+  {
+    id: "aesthetic_180",
+    title: "Active Parisian Free Spirit",
+    prompt: "A candid moment of active urban life infused with Parisian-style free-spirited elegance — the subject balances health-consciousness with effortlessly chic sensibility. The aesthetic captures the joy of simple moments elevated by style and independence — a blend of fitness, freedom, and quiet rebellion against convention. There is a youthful, adventurous energy that feels both grounded and aspirational — finding beauty in movement and the spontaneity of city living.",
+  },
+  {
+    id: "aesthetic_181",
+    title: "Dreamy Motion Flowy Fragments",
+    prompt: "Dynamic, motion-filled moments where flowing fabrics and wind-blown hair create a sense of freedom and spontaneous beauty — the subject appears lost in the feeling of the moment, caught between stillness and movement. The aesthetic blends carefree whimsy with intimate glamour — soft motion creating an almost musical quality to each frame. There is a dreamy innocence reminiscent of early Taylor Swift mixed with contemporary sophistication — capturing those fleeting seconds where grace becomes kinetic energy.",
+  },
+  {
+    id: "aesthetic_182",
+    title: "Polished Event Night-Out Glamour",
+    prompt: "A polished, fashion-forward presence moving through high-profile settings — from runway to elegant evening events — with confident poise and refined allure. The aesthetic balances youthful spontaneity with sophisticated curation — classic glamour receiving a contemporary twist through playful details and unexpected combinations. Each moment carries an air of exclusivity and cinematic tension, as if the subject exists within their own narrative of high-fashion elegance and grounded celebrity charm.",
+  },
 ];
 
 export const Lighting = [
@@ -1215,6 +1415,161 @@ export const Lighting = [
     id: "lighting_095",
     title: "Sepia Warm Window Cinematic Nostalgic",
     prompt: "Soft natural light filtering through a window — warm sepia tones creating a nostalgic cinematic quality — retro warmth pulling the viewer into a luxurious dreamlike world — light enhancing delicate fabric textures and adding a slightly surreal golden quality — gentle shadows creating depth in the hallway or interior setting.",
+  },
+  {
+    id: "lighting_096",
+    title: "Overexposed Soft Emotional Light",
+    prompt: "Overexposed whites that wrap the subject in light, softening skin and surroundings into an emotionally gentle glow. The lighting is not technically precise but rather deliberately blown out — creating a dreamy haze that dissolves edges and makes everything feel tender and unguarded. Shadows are virtually absent, replaced by a luminous cocoon of diffused warmth.",
+  },
+  {
+    id: "lighting_097",
+    title: "Soft Natural Warmth Texture Highlight",
+    prompt: "Natural light with a soft warmth from the sun, highlighting fabric textures and the subtle shine on skin. The light is bright yet diffused, contributing to a serene and naturalistic atmosphere. It catches delicate surfaces and creates a gentle luminosity without harsh shadows — the kind of golden, open-air light that makes everything appear kissed by daylight and effortlessly radiant.",
+  },
+  {
+    id: "lighting_098",
+    title: "Balanced Soft Interior Shadow Depth",
+    prompt: "Balanced and soft interior lighting that illuminates the face evenly while creating a slight shadow that adds depth and intrigue. The light feels ambient and well-distributed — neither dramatic nor flat — suggesting a well-lit room with controlled natural or artificial sources. The gentle shadows define structure and texture without creating stark contrast, maintaining an elegant and polished atmosphere.",
+  },
+  {
+    id: "lighting_099",
+    title: "Warm Light Filtering Through Foliage",
+    prompt: "Warm natural light filtering through overhead canopy, emphasizing romantic textures and soft fabric surfaces. The light creates dappled patterns of sun and shadow — gentle, shifting illumination that makes shimmering materials catch and release light in a fluid, almost magical way. The overall effect is golden and intimate, with the filtered quality adding depth and an organic warmth to every surface it touches.",
+  },
+  {
+    id: "lighting_100",
+    title: "Soft Diffused Dreamlike Glow",
+    prompt: "Soft, diffused lighting that casts a golden glow across the scene — dream-like illumination pouring through as if from soft curtains or a nearby window. The light gently caresses skin and fabric, highlighting delicate features and creating a hypnotic, almost otherworldly quality. Shadows are minimal and blended, contributing to a serene warmth that makes everything appear suspended in a timeless, gentle haze.",
+  },
+  {
+    id: "lighting_101",
+    title: "Soft Warm Vintage Ambient Glow",
+    prompt: "Soft and warm lighting with a vintage, cozy feel — suggesting candlelight or warm sconce glow combined with gentle natural light filtering through the space. The illumination is intimate and romantic, casting a serene warmth that enhances nostalgic, timeless qualities. Light reflects softly off ribbed textures and metallic accents, creating subtle highlights without breaking the muted, comfortable atmosphere.",
+  },
+  {
+    id: "lighting_102",
+    title: "Natural Sunlight Hair Luminance",
+    prompt: "Soft natural sunlight that amplifies highlights in hair, creating subtle shifts between light and shadow as the subject turns. The light gives way to a luminous skin tone — kissed softly by natural illumination — while shadows in the hair add dimension and depth. The overall lighting is gentle and directional, never fully revealing the subject but touching every detail with enough warmth to make textures shimmer and glow.",
+  },
+  {
+    id: "lighting_103",
+    title: "Golden Hour Editorial Softness",
+    prompt: "Natural golden hour glow or diffused daylight that gently caresses skin and highlights the fine details of fabric textures. The light plays off surfaces, drawing attention to intricate patterns while creating depth in the composition. A touch of glimmer on fabric catches the viewer's eye — the illumination is dreamy and warm yet controlled enough for editorial precision, balancing intimate softness with professional clarity.",
+  },
+  {
+    id: "lighting_104",
+    title: "Warm Ambient Intimate Reflection",
+    prompt: "Warm, ambient lighting that gently reflects off fabric and skin, creating a soft, inviting atmosphere. The light glistens across detailed surfaces — lace patterns, smooth skin, metallic jewelry — with a warm tonality that draws the eye to intricate details. The overall illumination is indirect and enveloping, creating pools of gentle brightness that invite closeness while maintaining an intimate, slightly shadowed depth around the edges of the frame.",
+  },
+  {
+    id: "lighting_105",
+    title: "Soft Directional Overcast Diffused",
+    prompt: "Soft yet directional lighting suggesting overcast or diffused daylight — the kind of even, gentle illumination that enhances an intimate mood without creating harsh shadows. The light adds clarity to facial features and fabric texture while maintaining a quiet, understated quality. The directional element provides subtle dimension and definition without drama, perfectly suited for monochrome treatment where tonal range matters more than color warmth.",
+  },
+  {
+    id: "lighting_106",
+    title: "Soft Afternoon Golden Diffused",
+    prompt: "Soft, golden afternoon light — diffused and warm, filtering gently to cast delicate shadows that define texture and form without harsh contrast. The light suggests a mid-afternoon quality, creating gentle gradients that illuminate the face and upper body while allowing the surroundings to recede into a soft glow. The warmth of the illumination flatters skin tones and enhances the luminous quality of light-colored fabrics.",
+  },
+  {
+    id: "lighting_107",
+    title: "Directional Soft Monochrome Sculpting",
+    prompt: "Soft but clearly directional light that sculpts form through gentle gradients rather than hard shadows — the illumination highlights the outfit and softens architectural lines in the background, creating depth through tonal separation rather than color contrast. The light quality enhances texture and structure, making fabric weave and skin surface equally tactile, as though the absence of color has heightened the viewer's sensitivity to every surface variation.",
+  },
+  {
+    id: "lighting_108",
+    title: "Dappled Golden Foliage Filtered",
+    prompt: "Soft, golden natural light filtered through overhead foliage — the dappled illumination creates a patchwork of warm highlights and gentle leaf-shaped shadows across the subject and the ground. The diffused quality prevents harsh contrast while the organic pattern of light and shadow adds visual rhythm to the scene. Transitions between illuminated and shaded areas are smooth and gradual, lending the entire composition a serene, dreamlike atmosphere.",
+  },
+  {
+    id: "lighting_109",
+    title: "Warm Lattice Shadow Pattern",
+    prompt: "Warm golden sunlight filtering through horizontal slats or lattice — the structured shadow pattern creates hypnotic parallel lines across the subject and the surrounding surfaces, transforming ordinary illumination into a graphic, almost painterly element. The interplay between warm light bands and cool shadow strips adds depth and visual intrigue, while the overall warmth of the illumination maintains an inviting, peaceful quality beneath the geometric overlay.",
+  },
+  {
+    id: "lighting_110",
+    title: "Warm Minimalist Interior Glow",
+    prompt: "Warm, diffused interior light that creates a clean, even illumination across a minimalist space — the light emphasizes soft wood tones and catches the shimmer of delicate fabrics in motion. There is enough directionality to create subtle highlights on skin and fabric surfaces without introducing competing shadows. The overall quality is bright yet intimate, as though the space itself radiates a gentle, welcoming warmth that flatters everything within it.",
+  },
+  {
+    id: "lighting_111",
+    title: "Soft Diffused Intimate Glow",
+    prompt: "Soft, natural light — diffused and without harsh direction — creating a subtle, even glow across the subject's skin and the delicate details of the outfit and accessories. The illumination has a quality of gentle radiance, producing no hard shadows but instead smooth, luminous transitions that enhance the dreamlike atmosphere. The contrast with smooth surrounding surfaces gives the space a tranquil, peaceful quality, while the soft highlights on skin and fabric draw the viewer's eye to textural details.",
+  },
+  {
+    id: "lighting_112",
+    title: "Stark Cinematic Defined Shadows",
+    prompt: "Stark, cinematic lighting with clearly defined shadows that sculpt the face and outfit while leaving the background in a soft, atmospheric glow — the light is bold yet controlled, creating high contrast between illuminated surfaces and shadowed recesses. The quality is editorial and dramatic, emphasizing the sheen of skin and the interplay of opaque and semi-transparent fabrics. The directional nature of the light creates a visual hierarchy that places the subject firmly as the focal point against a darker, receding environment.",
+  },
+  {
+    id: "lighting_113",
+    title: "Dual Natural Backlit Contrast",
+    prompt: "A dual lighting approach that transitions between environments — in one mode, natural outdoor light emphasizes fabric texture and adds depth to the subject's expression with even, diffused illumination. In the other, stark backlighting from behind creates an edgy rim-light effect that separates the subject from a dark environment, accentuating contours and creating dramatic contrast. The two approaches work together to reveal different facets of the same subject — one grounded and earthy, the other bold and nocturnal.",
+  },
+  {
+    id: "lighting_114",
+    title: "Soft Warm Side Illumination",
+    prompt: "Soft light emanating from one side of the frame — the directional quality creates a warm, flattering glow over delicate fabric surfaces while casting the opposite side into gentle, graduated shadow. The illumination catches embroidery, beadwork, and translucent materials, making them shimmer and appear to emit their own gentle radiance. The warmth of the light enhances the pastel quality of the scene, producing an overall effect that is both intimate and ethereal, as though the subject is lit from within.",
+  },
+  {
+    id: "lighting_115",
+    title: "Bright Sun Halo Street Light",
+    prompt: "Bright, direct sunlight creating a soft halo effect around the subject's hair and the edges of the figure — the high-key illumination floods the scene with warmth and energy, making fabrics glow and skin appear radiant. The light is strong enough to create movement-catching highlights on flowing materials while the slight overexposure at the edges produces a luminous, ethereal quality. The overall effect is youthful and energetic, turning a casual walking moment into something almost angelic.",
+  },
+  {
+    id: "lighting_116",
+    title: "Ambient Golden Interior Warmth",
+    prompt: "A blend of ambient interior light sources — overhead fixtures cast a soft golden glow from above while secondary sources add gentle, flickering warmth from the periphery. The combined illumination creates a rich, layered lighting environment with carefully balanced shadows and highlights that emphasize the subject's comfortable presence. The light is intimate and inviting, producing a cinematic editorial quality where the warmth of the environment feels as tangible as the textures of the clothing and furnishings.",
+  },
+  {
+    id: "lighting_117",
+    title: "Soft Window Ambient Wash",
+    prompt: "Soft, ambient light from a nearby window washes over the scene — diffused and gentle, creating even illumination without harsh shadows. The light wraps around forms with a warm undertone, enhancing textures and skin with a natural, flattering glow. Subtle shadows add dimension without drama — the overall quality reminiscent of a quiet afternoon where light itself feels unhurried and inviting.",
+  },
+  {
+    id: "lighting_118",
+    title: "Golden Hour City Warmth",
+    prompt: "Golden hour sunlight bathes the scene in warm, amber-toned illumination — creating delicate shadows on skin and fabric while lending an ethereal glow to every surface. The light is directional yet soft, filtering between structures to cast long, gentle shadows that add depth and romance. Highlights catch on metallic and glossy surfaces — the overall quality sun-drenched and cinematic, with that specific late-afternoon magic that makes everything look its most beautiful.",
+  },
+  {
+    id: "lighting_119",
+    title: "Diffused Studio Natural Glow",
+    prompt: "Diffused natural light filters through large windows — creating a soft, warm, golden illumination that fills the space evenly. Shadows play gently across the scene, highlighting the fluidity of fabrics and the delicate movements of the subject. The light has a dream-like quality — not harsh or directional but enveloping and tender, creating a luminous atmosphere where every surface seems to emit a subtle inner glow.",
+  },
+  {
+    id: "lighting_120",
+    title: "Warm Chandelier Interior Light",
+    prompt: "Warm, golden light from overhead fixtures — possibly chandeliers or sconces — fills an interior space with a rich, enveloping glow. Natural light supplements through large windows, casting a secondary warmth that softens shadows and creates gentle highlights on polished surfaces. The dual light sources produce a layered illumination — architectural in quality, with the kind of warm complexity that makes interior spaces feel both grand and intimate.",
+  },
+  {
+    id: "lighting_121",
+    title: "Sunset Diffused Golden Wash",
+    prompt: "The warm, diffused glow of a setting sun creates a peaceful, golden illumination — the light soft and directional, casting a gentle warmth across skin and smooth fabric textures. The quality is naturally romantic — shadows elongated and soft-edged, highlights warm rather than bright. The overall effect is serene and flattering, with the specific quality of late-day light that transforms ordinary moments into something quietly luminous.",
+  },
+  {
+    id: "lighting_122",
+    title: "Dappled Garden Sun Filtering",
+    prompt: "Natural sunlight filters through foliage — casting dappled patterns of light and shadow across the subject and surroundings. The illumination is warm and organic, with bright pools of golden light interspersed with soft, cool shadows from leaves and branches. The effect is dynamic yet gentle — creating a natural play of highlight and shade that adds texture and life to every surface it touches.",
+  },
+  {
+    id: "lighting_123",
+    title: "Soft Diffused Botanical Light",
+    prompt: "Natural light filters softly through surrounding greenery — creating a diffused, gentle illumination with a subtle organic quality. The light carries a faint green-gold tint from passing through leaves, giving the scene a dreamy, ethereal character. Shadows are minimal and soft — the overall quality is peaceful and flattering, like being wrapped in nature's own softbox.",
+  },
+  {
+    id: "lighting_124",
+    title: "Elevated Afternoon Sun Warmth",
+    prompt: "Soft sunlight from early to late afternoon — warm and naturally flattering, casting gentle highlights and shadows that emphasize the textures of skin and fabric. The light has a natural warmth indicating the golden period of the day, enhancing earth tones and creating a sun-kissed quality. The illumination is directional enough to create dimension but soft enough to avoid harsh contrasts — the kind of effortless light that makes outdoor scenes glow.",
+  },
+  {
+    id: "lighting_125",
+    title: "Moody Interior Dramatic Warmth",
+    prompt: "Warm, moody interior lighting with dramatic contrast — soft pools of golden light from sconces or ambient fixtures punctuated by deeper shadows. The illumination creates an intimate, almost cinematic atmosphere with careful chiaroscuro — highlighting the subject while allowing the surrounding space to fall into rich, inviting darkness. Natural light may supplement from windows, adding a secondary dimension of warmth and depth to the scene.",
+  },
+  {
+    id: "lighting_126",
+    title: "Romantic Sconce Warm Filtering",
+    prompt: "Warm light from wall sconces combined with natural light filtering through the space — casting a romantic, serene glow that wraps around surfaces with gentle luminosity. The quality is soft and intimate, with golden undertones that enhance warm skin tones and soft fabrics. Shadows are deep but not harsh — the overall effect is one of quiet luxury and gentle drama, perfect for creating an atmosphere of refined warmth.",
   },
 ];
 
@@ -1789,6 +2144,191 @@ export const ColorPalette = [
     title: "Pink Gold White Delicate Sunlit Beaded",
     prompt: "Pink beaded fabric with golden and pearl-like accents as focal color — crisp white from ruffled eyelet shorts — warm gold from necklace bracelet and rings — soft skin tones in warm sunlit glow — minimal neutral background letting the pink and gold take center stage — overall palette delicate feminine and sunlit with luxurious metallic warmth.",
   },
+  {
+    id: "colorpalette_115",
+    title: "Overexposed Whites Soft Flush",
+    prompt: "A palette dominated by overexposed, luminous whites that wrap the entire scene in a blown-out ethereal glow. Subtle skin flush — soft pinks in the cheeks — provides the only warmth against the sea of white. The tonal range is deliberately narrow and high-key, with gentle creams and near-whites creating a dreamy, emotionally tender atmosphere where color is felt more than seen.",
+  },
+  {
+    id: "colorpalette_116",
+    title: "Pastel Beige Reflective Serenity",
+    prompt: "Soft pastel tones anchored by a warm beige palette — pale fabric hues set against the crisp, slightly reflective quality of distant water. The colors create a harmonious blend of muted warmth and cool blue-greens in the background. The overall grade is light and airy with a gentle warmth, where soft neutrals dominate and the subtle interplay between warm skin tones and cool environmental tones evokes quiet nostalgia and calm.",
+  },
+  {
+    id: "colorpalette_117",
+    title: "Crisp White Green Sporty Clean",
+    prompt: "A clean, sporty palette built on crisp whites paired with lush greens and subtle blue accents. The color grade is fresh and natural, with the brightness of white athletic-inspired garments set against the rich verdant tones of an outdoor backdrop. The overall feel is bright, youthful, and energetic — a minimalist palette that communicates casual luxury through restraint and the refreshing contrast between pristine fabric and natural green tones.",
+  },
+  {
+    id: "colorpalette_118",
+    title: "Monochrome Pattern Warm Interior",
+    prompt: "A graphic palette built on the high contrast of black-and-white patterned fabric set against a dark blazer, softened by the warm amber and cream tones of a classic interior setting. The interplay between the sharp geometric pattern and the muted, warm background creates visual interest without overwhelm. The overall color story is sophisticated and structured — bold pattern contrast tempered by warm, inviting environmental tones.",
+  },
+  {
+    id: "colorpalette_119",
+    title: "Floral Pastel Iridescent Shimmer",
+    prompt: "A palette rich with soft pastel tones and iridescent shimmer — floral hues that range from blush pinks and soft greens to painterly splashes of color against natural denim blues. Sequins and embellishments catch the light with a prismatic quality, while organic greens from the surrounding environment anchor the dreamier tones. The overall effect is a harmonious blend of natural and embellished color — luxurious, ethereal, and alive with shifting chromatic detail.",
+  },
+  {
+    id: "colorpalette_120",
+    title: "Soft Beige Gold Muted Pastels",
+    prompt: "A dreamy palette of soft beige tones, light gold, and muted pastels that blend harmoniously with warm skin tones. The color grade is deliberately gentle — the palette reads as a single, cohesive whisper of warmth rather than distinct colors. Neutral backgrounds in beige and pale gold allow fabric sheens to provide the only color variation, creating a hypnotic, tonal quality where everything exists in the same luminous temperature.",
+  },
+  {
+    id: "colorpalette_121",
+    title: "Off-White Warm Gold Rustic Accent",
+    prompt: "A warm, intimate palette centered on off-white and cream tones with golden accents from buttons and candlelight. Rustic wood tones and the subtle warmth of ambient glow provide earthy contrast to the predominantly light palette. The overall color story is timeless and cozy — soft neutrals with pops of warm gold that suggest vintage refinement without departing from a muted, comfortable temperature throughout.",
+  },
+  {
+    id: "colorpalette_122",
+    title: "Golden Pastel Natural Harmony",
+    prompt: "A palette suffused with golden sunlight tones — pastel-colored fabrics shimmer with a warm, kissed quality, while natural greens and soft blooms echo delicate femininity. The colors are universally soft, with nothing harsh or saturated, creating visual harmony where every tone appears to exist in the same warm, diffused light. Natural earth tones, pale pastels, and gentle golds blend as though the entire scene has been bathed in late-afternoon warmth.",
+  },
+  {
+    id: "colorpalette_123",
+    title: "Rich Neutral Luminous Warmth",
+    prompt: "A rich neutral palette where warm skin tones, luminous hair highlights, and muted garment colors melt seamlessly into a softened background. The color story is restrained and intimate — subtle shifts between light and shadow in hair provide the primary color movement, while clothing in deep, neutral tones recedes to let natural warmth and luminosity dominate. The overall grade is warm and subdued, with just enough contrast to define form against ground.",
+  },
+  {
+    id: "colorpalette_124",
+    title: "Soft Neutral White Pastel Editorial",
+    prompt: "A palette of soft neutrals, whites, and muted pastels — the color grade of a curated editorial where every tone whispers rather than speaks. Cool pastels blend with warm accent textures, and the overall effect shifts dynamically yet gently in the light. Muted beige and ivory dominate, with subtle embroidered or textured details providing quiet chromatic interest. The palette feels both fresh and nostalgic, balancing contemporary minimalism with romantic softness.",
+  },
+  {
+    id: "colorpalette_125",
+    title: "Warm Black Skin Glow Gold",
+    prompt: "A palette anchored by rich, warm blacks in lace and fabric, contrasted by the luminous glow of skin in warm ambient light. Delicate gold jewelry provides carefully placed accent points that catch the light. The underlying surface texture adds warm brown and cream tones that ground the composition. The overall color story is dark and luxurious — warm blacks and skin tones create an intimate, chiaroscuro-like depth where light emerges from shadow.",
+  },
+  {
+    id: "colorpalette_126",
+    title: "Pure Monochrome Tonal Depth",
+    prompt: "Pure black-and-white treatment that strips the image to essential tonal contrasts — the classic, timeless feel of monochrome photography where every shade between pure black and paper white carries visual weight. Crisp white fabric stands out sharply against darker elements, with smooth gradients of gray creating dimensional depth. The absence of color intensifies texture, form, and the emotional weight of shadow and highlight, lending a vintage editorial gravity.",
+  },
+  {
+    id: "colorpalette_127",
+    title: "Crisp White Architectural Neutral",
+    prompt: "A palette dominated by crisp whites and clean neutrals — the tonal range moves from bright, luminous white through soft cream to subtle warm gray, with the absence of strong color creating a minimalistic elegance. Light-toned fabrics and surfaces reflect the ambient illumination, producing a luminous, almost glowing quality. The restrained palette allows texture, form, and composition to carry the visual interest, elevating simplicity into something regal and editorial.",
+  },
+  {
+    id: "colorpalette_128",
+    title: "Monochrome Metallic Editorial Tones",
+    prompt: "A palette stripped to monochrome tones with subtle metallic accents — the absence of color shifts attention to tonal gradation, texture, and the interplay of light and shadow. Soft gradients from deep charcoal through medium gray to bright highlights create a sense of depth and dimension. Occasional metallic glints — silver, pewter, or muted gold — punctuate the grayscale range, adding a touch of luxury and visual interest without breaking the restrained tonal discipline.",
+  },
+  {
+    id: "colorpalette_129",
+    title: "White Red Accent Soft Green",
+    prompt: "A light, airy palette where white dominates — complemented by delicate red embroidery accents that provide small, precise pops of warmth against the clean base. Soft greens from surrounding natural elements create an organic counterpoint, grounding the composition in earthy freshness. The overall color feel is clean and harmonious, with the red details serving as focal points that draw the eye without overwhelming the gentle, pastoral mood of the composition.",
+  },
+  {
+    id: "colorpalette_130",
+    title: "Cream Earthy Tropical Warm",
+    prompt: "A calm, warm palette built on soft cream whites and earthy wood tones — the colors evoke natural materials and organic warmth, with vibrant tropical greens providing depth and life in the periphery. The tonal range stays within a narrow band of warm neutrals, creating a sophisticated and approachable feel. Golden light suffuses the palette with a subtle amber cast, unifying the cream, wood, and green into a cohesive atmosphere of relaxed, sun-warmed elegance.",
+  },
+  {
+    id: "colorpalette_131",
+    title: "Muted Blue Soft White Green",
+    prompt: "A gentle, muted palette anchored by soft blue and white — the checkered pattern of alternating cool and warm tones creates a visual rhythm that is both soothing and visually engaging. Delicate greens peek through from peripheral elements, adding organic freshness to the cooler base tones. The warm golden cast of filtered light overlays the palette with a subtle warmth, preventing the blues from feeling cold and instead creating an atmosphere of peaceful, dreamy domesticity.",
+  },
+  {
+    id: "colorpalette_132",
+    title: "Organic Neutral Green Purple",
+    prompt: "A palette dominated by soft neutrals and light greens — the earthy, organic color range is punctuated by natural pops of deep purple and dusty mauve from botanical elements, creating unexpected warmth within the predominantly green and cream composition. The overall feel is fresh and grounded, with the purple accents adding visual richness and a sense of abundance. The diffused, warm light unifies all the tones into a harmonious, naturally elegant palette.",
+  },
+  {
+    id: "colorpalette_133",
+    title: "White Blush Pink Romantic",
+    prompt: "A soft, romantic palette centered on whites and delicate blush pinks — the colors create an atmosphere of gentle femininity and quiet luxury. Cream and ivory serve as the base, with soft pink tones ranging from barely-there rose to warm blush providing depth and warmth. Touches of golden warmth from the ambient light add subtle luminosity, while the overall effect is one of serene, dreamlike beauty where every tone whispers rather than shouts.",
+  },
+  {
+    id: "colorpalette_134",
+    title: "Tactical Earth Dark Urban",
+    prompt: "A dual-register palette that moves between earthy outdoor tones and dark urban noir — on one end, muted greens and warm beiges evoke natural landscapes and tactical practicality; on the other, deep blacks, charcoal grays, and stark whites create high contrast and nocturnal edge. The two palettes share a restrained intensity, avoiding bright or saturated colors in favor of tones that convey both elemental rawness and urban sophistication. Subtle graffiti-adjacent accent tones add gritty texture to the darker register.",
+  },
+  {
+    id: "colorpalette_135",
+    title: "Rich Earth Soft Neutral Harmony",
+    prompt: "A harmonious palette combining rich, warm earthy tones with soft neutrals — the color range moves from deep golden amber through warm beige to soft cream, with occasional cooler neutral accents providing balance. The overall effect is grounded and natural, with the warm tones creating a sense of golden-hour radiance throughout the composition. The palette supports both drama and ease, allowing bold fabric volumes to feel approachable rather than overwhelming.",
+  },
+  {
+    id: "colorpalette_136",
+    title: "Bookish Blue Cream Warm Wood",
+    prompt: "A cultured palette built on soft blues, warm creams, and rich wood tones — the colors evoke libraries and cozy reading spaces, with pale yellow and ivory fabrics providing lightness against dark wooden accents and leather-bound surfaces. Warm amber from interior light sources suffuses the entire palette with a golden undertone, while soft gray and beige provide neutral bridges between the warmer and cooler elements. The overall impression is intellectual, refined, and inviting — understated luxury expressed through chromatic restraint.",
+  },
+  {
+    id: "colorpalette_137",
+    title: "Sunlit Pastel Golden Breeze",
+    prompt: "A sun-drenched palette of soft pastels bathed in golden light — whites and creams dominate the composition, with the bright sunlight adding a warm, amber-tinged glow to every surface. The subject's golden hair harmonizes with the warm light, creating a unified field of luminous, youthful color. The overall palette is high-key and airy, with the subtle warmth preventing the whites from feeling clinical and instead producing an atmosphere of carefree, sunny elegance.",
+  },
+  {
+    id: "colorpalette_138",
+    title: "Warm Neutrals Rich Textures",
+    prompt: "A harmonious palette of warm neutrals — creams, soft whites, and earthy beiges grounded by occasional deep tones. The color grade emphasizes the tactile richness of mixed textures — metallic shimmer catching against matte knit, polished surfaces reflecting warm ambient tones. The overall palette feels luxurious yet approachable — each tone complementing the next to create a cohesive warmth that never overwhelms.",
+  },
+  {
+    id: "colorpalette_139",
+    title: "Golden Hour Cream Denim",
+    prompt: "A sun-warmed palette centered on cream and soft gold tones — warm amber highlights playing against cool denim blues. The color grade leans into golden-hour warmth, where every surface takes on a honeyed glow. Skin tones are enhanced with a warm, sun-kissed quality — the overall palette evoking that specific magic of late-afternoon light where even ordinary colors become luminous and romantic.",
+  },
+  {
+    id: "colorpalette_140",
+    title: "Ivory Beige Muted Gold",
+    prompt: "A refined palette of ivory, beige, and subtle muted gold — soft neutral tones that allow fabric textures and light to become the visual interest. The color grade is restrained and sophisticated — no single tone demands attention, instead creating a cohesive, tonal environment where warmth emerges from the interplay of closely related hues. Faint shimmer accents add depth without breaking the monochromatic serenity.",
+  },
+  {
+    id: "colorpalette_141",
+    title: "Pastel Silk Cream Warmth",
+    prompt: "A delicate palette dominated by soft pastels — cream, gentle rose, and warm beige tones creating an ethereal, dreamlike color environment. The color grade is light and airy — gentle golden warmth infusing each tone with luminosity. Metallic accents in soft gold and polished surfaces provide subtle contrast — the overall palette evoking serene opulence and classical romance without heaviness.",
+  },
+  {
+    id: "colorpalette_142",
+    title: "Coastal Beige Sunset Muted",
+    prompt: "A muted coastal palette — soft beiges, warm whites, and gentle sunset-gold tones blending into serene, oceanic undertones. The color grade emphasizes tranquility — warm tones softened as if viewed through the gentle haze of a setting sun. Minimal accents of gold from jewelry catch the light — the overall palette feels like a deep, peaceful exhale where warmth meets the coolness of open sky.",
+  },
+  {
+    id: "colorpalette_143",
+    title: "Sunlit Garden Earth Greens",
+    prompt: "A natural palette of sunlit greens, warm whites, and earthy beiges — vibrant foliage creating a lush backdrop for soft, neutral tones. The color grade emphasizes the organic warmth of natural light on organic surfaces — golden sunlight filtering through greenery to create warm highlights against cool, leafy shadows. Occasional soft pops of wildflower color add gentle vibrancy without breaking the pastoral harmony.",
+  },
+  {
+    id: "colorpalette_144",
+    title: "Pastel Urban Soft Washed",
+    prompt: "A soft, washed palette of pastel tones — blush pinks, pale yellows, and soft whites against cool urban grays and faded denim blues. The color grade is light and slightly desaturated — creating an elevated, editorial quality where street textures are softened into an almost painterly register. The overall palette balances youthful freshness with refined restraint — hypebeast aesthetics rendered in watercolor tones.",
+  },
+  {
+    id: "colorpalette_145",
+    title: "Light Pink Botanical Green",
+    prompt: "A delicate palette of light pink and nude tones set against the organic greens of surrounding foliage — the color grade is soft and slightly warm, creating a dreamy, ethereal quality. Skin tones glow with natural warmth — fabric catches light in soft pink and champagne hues. The overall palette feels feminine and botanical — a gentle dialogue between blush warmth and verdant cool that evokes quiet, natural luxury.",
+  },
+  {
+    id: "colorpalette_146",
+    title: "Cream Beige Oceanic Serenity",
+    prompt: "A serene palette of creamy whites, gentle beiges, and soft hints of blue-gray — evoking the quiet intersection of interior warmth and oceanic coolness. The color grade is soft and muted — each tone blending seamlessly into the next with no harsh contrasts. Occasional accents of soft pastel and greenery add subtle dimensionality — the overall palette communicating calm sophistication and a lifestyle of understated refinement.",
+  },
+  {
+    id: "colorpalette_147",
+    title: "Soft Pink Satin Neutral Gray",
+    prompt: "A palette of pale pinks, soft whites, and light grays — the color grade emphasizing the luminous quality of satin and silk surfaces. Warm pink tones are balanced by cool, neutral grays — creating an intimate, romantic color environment. The overall palette is muted and serene — gentle enough to feel like a whisper, with the specific quality of early morning or late evening light where colors exist at their softest and most vulnerable.",
+  },
+  {
+    id: "colorpalette_148",
+    title: "Warm Neutrals Golden Society",
+    prompt: "A sophisticated palette of warm neutrals — whites, beiges, and soft earth tones punctuated by rich accents of deep fabric tones and vivid florals. Golden warmth suffuses the scene — polished surfaces reflecting ambient light in champagne and amber hues. The color grade is warm and cinematic — evoking the rich, saturated tones of a high-society gathering where every surface has been considered and curated.",
+  },
+  {
+    id: "colorpalette_149",
+    title: "Parisian Warm Muted Urban",
+    prompt: "A warm, muted palette with a distinctly Parisian quality — soft grays, warm stone tones, and gentle earth colors creating a sophisticated urban canvas. The color grade is natural and timeless — avoiding trend-specific treatments in favor of a classic, editorial warmth. Occasional pops of warm fabric tones and skin highlights provide gentle contrast — the overall palette feeling like a vintage photograph given new life.",
+  },
+  {
+    id: "colorpalette_150",
+    title: "Blush Motion Warm Ethereal",
+    prompt: "A dreamy palette of soft blush tones, warm whites, and gentle sunlit highlights — the color grade slightly warm and softly desaturated to create an ethereal, motion-filled quality. Colors seem to blend at their edges — the effect of movement creating a watercolor quality where tones flow into one another. The overall palette is romantic and carefree — evoking innocence and freedom through gentle, luminous warmth.",
+  },
+  {
+    id: "colorpalette_151",
+    title: "Night Event Rich Warm Tones",
+    prompt: "A sophisticated nighttime palette — rich blacks, warm golden tones, and soft ivory creating dramatic yet elegant contrasts. The color grade is warm and slightly saturated — ambient lighting bringing out champagne highlights in fabric and skin while deep tones provide luxurious depth. Occasional accents of olive, cream, and metallic gold add complexity — the overall palette feeling exclusive, polished, and cinematically rich.",
+  },
 ];
 
 export const Texture = [
@@ -2231,6 +2771,196 @@ export const Texture = [
     id: "texture_088",
     title: "Tweed Gray Woven Structured Coat Pattern",
     prompt: "Textured gray tweed with a woven pattern of small pink and white squares — structured coat fabric with a slightly rough sophisticated surface — contrasted with the cozy fuzzy feel of a knitted sweater underneath — the combination of structured woven outerwear and soft knit underlayer creating a rich multi-dimensional tactile experience.",
+  },
+  {
+    id: "texture_089",
+    title: "Pillow Softness Skin Hair",
+    prompt: "Soft pillow fabric beneath naturally spilling hair — the textures are tactile and intimate, with slightly flushed skin rendered in gentle, overexposed smoothness. Hair has a natural, sleep-tousled quality that reads as unposed and authentic. The surrounding surface textures are plush and yielding, creating a cocoon of material softness that makes every surface appear inviting and warm to the touch.",
+  },
+  {
+    id: "texture_090",
+    title: "Silk Sheen Luminous Skin",
+    prompt: "Smooth silk fabric with a delicate sheen that catches the light — the material flows with a gentle luminosity, creating visual movement across its surface. The silk contrasts against the subtle shine of skin, both surfaces sharing a quality of refined smoothness. The fabric drapes and shifts with a fluid, sensual weight, while the overall texture story is one of polished, light-catching surfaces that feel luxurious and ethereal to the eye.",
+  },
+  {
+    id: "texture_091",
+    title: "Ribbed Knit Athletic Stretch",
+    prompt: "Ribbed knit fabric with a clean, structured texture — the fine ridges create a tactile pattern that catches subtle light variations. The material has an athletic stretch quality, form-fitting yet breathable, with the embossed texture adding visual interest to an otherwise minimalist surface. The overall tactile impression is crisp and fresh, communicating both comfort and refined casual quality through its structured weave.",
+  },
+  {
+    id: "texture_092",
+    title: "Houndstooth Structured Tailoring",
+    prompt: "Sharp houndstooth pattern creating a graphic, tactile surface — the repeating geometric weave adds visual rhythm and dimension. Structured blazer fabric with clean lines and tailored weight contrasts with the lighter, more intricate patterned dress beneath. The interplay between the crisp, defined edges of the pattern and the smooth fabric of the blazer creates a sophisticated textural dialogue between structured formality and decorative intricacy.",
+  },
+  {
+    id: "texture_093",
+    title: "Floral Sequin Silk Cascade",
+    prompt: "A rich tapestry of textures — flowing silk with a gentle shimmer, iridescent sequins catching light in prismatic flashes, and bold floral embellishments that feel almost painterly. Cascading ruffles add dimensional movement, while sheer fabric panels create layered transparency. Intricate embroidery and delicate artistic detailing transform fabric into artwork — each surface tells its own tactile story, from the weight of sequined denim to the whisper-light float of silk chiffon.",
+  },
+  {
+    id: "texture_094",
+    title: "Ribbed Knit Pearl Pleated Cotton",
+    prompt: "Soft ribbed knit fabric with a feminine, vintage-inspired tactile quality — the subtle ridged pattern creates gentle surface variation. Large pearl-like buttons add smooth, reflective accents against the matte knit ground. Soft pleats at the hem introduce structured folds that complement the ribbed pattern, while scalloped collar edges provide delicate, hand-finished detail. The overall textural impression is cozy yet refined — warm surfaces with precious, polished accents.",
+  },
+  {
+    id: "texture_095",
+    title: "Delicate Silk Vintage Knit",
+    prompt: "Delicate silk that shimmers as if kissed by reflected light — the fabric moves in waves, subtle yet captivating, with a weightless quality. Paired with the softer, more structured texture of a loosely draped vintage-inspired knit and the grounded simplicity of natural material sandals. A small metallic bracelet adds a glinting accent. The overall texture palette ranges from weightless and translucent to cozy and substantial, creating a rich tactile narrative from ethereal to earthy.",
+  },
+  {
+    id: "texture_096",
+    title: "Windswept Hair Minimal Fabric",
+    prompt: "The primary texture is windswept, unruly hair — long, loose strands with an effortless, naturally tousled quality that contrasts with the smooth, tight surface of a minimalist body-con garment. The hair's organic, flowing movement creates a dynamic texture against the controlled, sleek surface beneath. Every strand catches light differently, creating a complex interplay of shine and shadow that dominates the textural composition with raw, natural beauty.",
+  },
+  {
+    id: "texture_097",
+    title: "Ruffled Sheer Opalescent Plush",
+    prompt: "Soft ruffles in sheer, delicate material that captures an opalescent glow — the fabric floats around the body with a surreal, almost weightless quality. Surrounding textures include plush pillows, smooth silk sheets, and fluffy bedding that creates layers of softness. The interplay between the structured ruffles and the yielding surfaces beneath suggests total material comfort — every texture in the scene invites touch, from the crisp ruffle edges to the cloud-like bedding.",
+  },
+  {
+    id: "texture_098",
+    title: "Lace Sheer Ruffles Embroidery",
+    prompt: "A layered textural composition of lace, sheer fabric, and intricate ruffles that blend elegance with comfort — each material adding both depth and lightness. Muted embroidery and delicate pleats at the neckline create fine surface detail visible upon close inspection. The fabrics shift subtly in the light, with translucent panels, soft draping, and textured weaves creating a dynamic yet gentle surface story. Every detail invites closer examination, rewarding attention with quiet sophistication.",
+  },
+  {
+    id: "texture_099",
+    title: "Black Lace Skin Contrast",
+    prompt: "Rich black lace with intricate woven patterns that glisten under warm light — the detailed lacework creates a complex surface of shadow and sheen. The bold texture of the dark fabric contrasts sharply with smooth, luminous skin, creating a tactile push-pull between delicate craftsmanship and organic softness. An underlying warm, textured surface adds depth and grounding warmth beneath, while delicately placed jewelry introduces fine metallic accents against both lace and skin.",
+  },
+  {
+    id: "texture_100",
+    title: "Crisp Cotton Cap Hair Wind",
+    prompt: "Crisp white cotton with a clean, pressed quality — the kind of simple, luxurious fabric that photographs beautifully in its plainness. The structured weave of a branded cap adds a different tactile quality — stiffer, more defined — contrasting with the softness of wind-blown hair that adds organic movement and textural dynamism. The combination spans from tailored precision to natural flowing softness, creating a rich textural range within a minimalist visual palette.",
+  },
+  {
+    id: "texture_101",
+    title: "Crisp Athletic Ornate Contrast",
+    prompt: "The interplay of crisp, technical athletic fabric against ornate classical architectural surfaces — smooth, structured polo cotton and tailored shorts with clean seams contrast sharply with the decorative moulding, carved details, and aged patina of the surrounding walls and furniture. The monochrome treatment heightens the tactile difference, making every weave of the fabric and every groove in the architectural detail equally palpable. The shallow depth of field softens the ornate background into a textural blur that frames the sharp, modern lines of the outfit.",
+  },
+  {
+    id: "texture_102",
+    title: "Embroidered Hem Natural Ground",
+    prompt: "Delicate hand-embroidered detailing at the hem and edges of a lightweight dress — the intricate threadwork creates tiny raised patterns that catch the light and add dimensional interest to the otherwise smooth, soft fabric. The ruffled edges flutter with subtle movement, and the overall surface alternates between silky smoothness and the slight relief of the embroidered motifs. The fabric rests against the organic roughness of grass and earth, creating a gentle textural dialogue between handcraft and nature.",
+  },
+  {
+    id: "texture_103",
+    title: "Flowing Fabric Vintage Wood",
+    prompt: "Soft, flowing fabric with a gentle drape and subtle ruffled texture — the material catches the light along its folds, creating smooth gradients of highlight and shadow that emphasize its fluid, lightweight quality. The fabric contrasts against warm, weathered wood with visible grain and patina, creating a tactile dialogue between softness and solidity. The combination of delicate textile and aged natural surface evokes both elegance and groundedness, with each material enhancing the other's distinctive character.",
+  },
+  {
+    id: "texture_104",
+    title: "Woven Pattern Soft Upholstery",
+    prompt: "The interplay of multiple woven textures — a soft, flowy dress fabric dances with light alongside the geometric regularity of a checkered upholstery pattern. A textured woven headband adds another layer of handcrafted surface interest. The different weave patterns create a visual rhythm of regular and organic textures, with the structured grid of the upholstery providing a counterpoint to the fluid drape of the clothing. The overall effect is tactile and inviting, encouraging the viewer to imagine the softness of each distinct surface.",
+  },
+  {
+    id: "texture_105",
+    title: "Tulle Silk Skin Interplay",
+    prompt: "A layered interplay of tulle, silk, and bare skin — the sheer, airy quality of tulle allows light to pass through and creates a soft, veiled effect, while the underlying silk provides a smooth, luminous base with a subtle sheen. The combination produces an effect where translucency and opacity alternate across the surface, revealing and concealing in gentle measure. The delicate shimmer of the fabrics catching light in motion adds ephemeral sparkle against the clean, matte backdrop of a minimalist interior.",
+  },
+  {
+    id: "texture_106",
+    title: "Intricate Lace Organic Elements",
+    prompt: "Intricate lacework with visible pattern complexity — the openwork weave creates a delicate grid of threads and negative space that plays beautifully with backlighting, producing shadow patterns on the skin beneath. The lace surface has a tactile richness that contrasts with the smoothness of skin and the soft, organic textures of surrounding natural elements. The interplay between the precision of the lacework and the irregularity of natural surfaces creates a composition where craftsmanship and nature feel equally alive and equally precious.",
+  },
+  {
+    id: "texture_107",
+    title: "Shimmering Sheer Lacework Opulent",
+    prompt: "A shimmering, semi-sheer surface with detailed lacework overlay — the base fabric has a metallic luminosity that catches stark light and creates subtle gleams across the surface, while the lacework pattern adds intricate dimensional detail on top. The contrast between the smooth sheen of skin visible through the sheer areas and the structured opacity of the lace creates a push-pull of revelation and concealment. The overall effect is opulent yet youthful, with the sleek interplay of fabric layers producing a visually striking, tactile richness.",
+  },
+  {
+    id: "texture_108",
+    title: "Tactical Woven Earthy Patterns",
+    prompt: "Heavy, tactical woven fabric with intricate earthy patterns — the material has a substantial weight and visible weave structure that creates a sense of durability and purposeful construction. The patterning is detailed and rhythmic, with muted tonal variations that add visual depth across the surface. In contrast, smoother leather and structured outerwear fabrics provide a sleek counterpoint, and the overall textural composition moves between rugged, handcrafted warmth and sharp, urban precision.",
+  },
+  {
+    id: "texture_109",
+    title: "Embroidered Silk Beadwork Shimmer",
+    prompt: "Luxurious silk with intricate embroidery and subtle beadwork — the base fabric has a smooth, fluid quality with a gentle sheen, while the embroidered elements create raised, dimensional patterns that catch the light at different angles. Tiny beads add pinpoints of reflective brilliance, creating a constellation-like effect across the surface. The translucent quality of the sheer portions allows skin to show through as a warm, living layer beneath the ornamental surface, producing an effect that is both ethereal and richly tactile.",
+  },
+  {
+    id: "texture_110",
+    title: "Billowy Layers Sheer Embroidered",
+    prompt: "Voluminous, billowy fabric layers that catch the light and create soft, sculptural folds — the material moves effortlessly, producing cascading waves of highlight and shadow across the ample surface area. Paired with a sheer top featuring intricate embroidery, the composition contrasts maximum volume in the lower half with delicate transparency above, creating a dramatic textural dialogue between abundance and refinement. The overall surface quality is one of lightness despite the drama, with the fabrics seeming to float and breathe with the subject's movement.",
+  },
+  {
+    id: "texture_111",
+    title: "Ivory Silk Lace Leather Bound",
+    prompt: "Delicate ivory silk with lace detailing at the edges — the smooth, lustrous base fabric contrasts with the openwork lace at cuffs and collar, creating a subtle textural border effect. Soft knit sweater surfaces provide warm, tactile coziness in alternate moments. The surrounding environment introduces aged leather, dark polished wood, and the soft matte of book pages — a rich tapestry of surfaces that range from refined textile to scholarly patina, all unified by the warm golden light that emphasizes every grain and weave.",
+  },
+  {
+    id: "texture_112",
+    title: "Lace Eyelet Structured Leather",
+    prompt: "Delicate lace and eyelet detailing on a lightweight dress — the openwork pattern creates a rhythmic alternation of fabric and negative space, allowing light to play through and create micro-shadows on the skin beneath. The eyelet holes are precise and regularly spaced, adding a subtle geometric quality to the otherwise organic drape of the fabric. A structured leather accessory provides a contrasting surface — smooth, firm, and modern against the softness and delicacy of the dress — creating a balanced textural composition that bridges romantic femininity and contemporary edge.",
+  },
+  {
+    id: "texture_113",
+    title: "Mixed Knit Sequin Softness",
+    prompt: "A tactile interplay of cozy knit weave and sparkling sequin surfaces — chunky, ribbed knitwear providing soft, warm dimensionality alongside the glimmering catch of light on embellished fabric. The contrast between matte comfort and reflective glamour creates a rich sensory experience — enhanced by the lush pile of a vintage patterned textile underneath, adding depth and grounding the luxurious textures in warmth.",
+  },
+  {
+    id: "texture_114",
+    title: "Soft Drape Crisp Denim",
+    prompt: "The gentle drape of a soft, flowing fabric contrasts with the structured crispness of tailored denim — creating a balance between fluid femininity and casual resilience. The draping fabric catches light in soft folds and gentle creases, while denim provides a grounded, tactile counterpoint with its slightly textured weave and clean finishing.",
+  },
+  {
+    id: "texture_115",
+    title: "Silk Sheen Eyelet Embroidery",
+    prompt: "Luxurious silk with a subtle luminous sheen — the fabric catching soft light to create gentle highlights that emphasize its drape and fluidity. Layered with delicate eyelet embroidery — intricate perforated patterns that add tactile depth and visual interest upon close inspection. Faint sequin shimmer woven into the fabric adds another layer of quiet luxury — the overall textural experience sophisticated and multi-layered, rewarding close attention.",
+  },
+  {
+    id: "texture_116",
+    title: "Pastel Silk Polished Marble",
+    prompt: "The smooth, fluid drape of pastel silk — catching light in an ethereal, almost dreamlike way as it moves. The fabric's gentle sheen contrasts with the cool, polished surface of marble — reflective and hard against the silk's softness. Wrought-iron details add an organic, textural element with their intricate, handcrafted quality — the interplay of these surfaces creating a narrative of refined craftsmanship and natural elegance.",
+  },
+  {
+    id: "texture_117",
+    title: "Cashmere Billowy Tailored Smooth",
+    prompt: "Soft cashmere with billowy, generous drape — the fabric's gentle nap creating a warm, touchable surface that catches light with subtle dimensionality. Paired with smooth, tailored fabric that provides clean lines and a polished counterpoint — the contrast between cozy softness and structured smoothness creates a satisfying textural dialogue. Minimal metallic accents from jewelry add a refined, cool-toned sparkle.",
+  },
+  {
+    id: "texture_118",
+    title: "Cotton Lace Linen Natural",
+    prompt: "Soft white cotton with delicate lace trim — the interplay of smooth, breathable fabric and intricate, openwork lace creating feminine textural depth. Layered with the natural, slightly nubby quality of linen — its relaxed drape and visible weave adding an organic, grounded character. The overall texture is light, airy, and tactile — evoking handcrafted quality and natural beauty in every fiber.",
+  },
+  {
+    id: "texture_119",
+    title: "Oversized Cotton Distressed Denim",
+    prompt: "Luxuriously smooth, lightweight cotton with a slightly oversized drape — the fabric falling in soft, generous folds that catch light evenly. Paired with distressed denim — its deliberate wear patterns, frayed edges, and faded surface providing a lived-in, authentic counterpoint. The combination of pristine softness and worn texture creates a compelling tactile contrast between careful curation and casual ease.",
+  },
+  {
+    id: "texture_120",
+    title: "Lightweight Silk Subtle Embroidery",
+    prompt: "Near-weightless silk with an almost liquid drape — the fabric so light it responds to the slightest movement. Subtle embroidery along the hemline reveals itself only upon close inspection — adding hidden dimensionality and craft. Understated embellishments such as tiny pearl accents provide delicate textural surprise — the overall surface quality is one of quiet, discoverable luxury that rewards intimate attention.",
+  },
+  {
+    id: "texture_121",
+    title: "Oversized Knit Soft Drape",
+    prompt: "An oversized knit weave with visible texture and gentle bulk — the fabric creating soft, sculptural folds that add dimension to the silhouette. The knit's tactile quality is warm and inviting — each stitch visible and contributing to the overall sense of handcrafted comfort. Paired with smooth, draped fabric that provides contrast — the combination of chunky and fluid textures creating a sophisticated yet approachable surface narrative.",
+  },
+  {
+    id: "texture_122",
+    title: "Satin Slip Lace Plush",
+    prompt: "Smooth, luminous satin with an elegant drape — the fabric reflecting light in soft, continuous highlights that trace the contours of the body. Delicate lace detailing adds romantic, openwork texture at key points — its intricate patterns providing visual depth against the satin's sleek surface. Surrounding plush textures from soft furnishing fabrics create a layered, sensory-rich environment of refined softness.",
+  },
+  {
+    id: "texture_123",
+    title: "Linen Summer Airy Lightness",
+    prompt: "Light, airy linen and flowing cotton — fabrics that breathe and move with gentle ease. The surface quality is natural and slightly textured — visible weave patterns creating organic visual interest. Paired with the smooth, cool quality of wicker and natural fiber — the overall texture narrative is one of summer lightness, where every surface feels sun-warmed, breathable, and effortlessly comfortable.",
+  },
+  {
+    id: "texture_124",
+    title: "Flowing Fabric Motion Softness",
+    prompt: "Light, flowing fabric in motion — pleats and draping catching air to create dynamic, sculptural shapes that change with each movement. The surface quality is soft and slightly luminous — fabric responding to light differently as it moves through space. The texture is ephemeral and kinetic — less about static surface quality and more about the way material behaves when animated by the body's natural motion.",
+  },
+  {
+    id: "texture_125",
+    title: "Structured Wool Ruffled Layers",
+    prompt: "Dense, luxurious wool with a smooth, structured surface — the fabric holding its shape with clean architectural lines while still conveying warmth and refinement. Layered with ruffled, lighter fabrics that provide a counterpoint of movement and feminine softness. Satin ribbon and silk accents introduce a cool, smooth quality — the interplay of structured warmth and fluid delicacy creating a richly layered textural experience.",
+  },
+  {
+    id: "texture_126",
+    title: "Lace Floral Delicate Detail",
+    prompt: "Intricate floral lace with visible pattern work — the openwork creating delicate shadows and textural depth across the surface. The lace has a handcrafted quality — scalloped edges and patterned motifs adding romantic, vintage character. Paired with structured elements like ribbon belting and pearl accessories — the overall surface narrative balances delicacy with intentional design, each texture contributing to a story of considered femininity.",
   },
 ];
 
@@ -2749,6 +3479,186 @@ export const Mood = [
     id: "mood_103",
     title: "Soft Playful Casual Innocent Sophisticated Joy",
     prompt: "The overall mood is soft playful and casually poised — balancing innocence with sophisticated craftsmanship — carefree joy wrapped in delicate luxury — an Instagram-ready quality that exudes soft elegance without effort — the atmosphere gentle and sunlit inviting the viewer into a world of refined simplicity.",
+  },
+  {
+    id: "mood_104",
+    title: "Tender Vulnerable Poetic Silence",
+    prompt: "Achingly tender and quietly vulnerable — the emotional register of a private, unguarded moment witnessed in silence. The mood suggests someone beloved captured mid-thought, radiating a poetic intimacy that requires no words. It is humble and revealing, the kind of emotional resonance that lingers — not seeking attention but quietly unforgettable, like a memory of warmth and closeness preserved in stillness.",
+  },
+  {
+    id: "mood_105",
+    title: "Serene Contemplative Calm Elegance",
+    prompt: "A mood of serene contemplation and quiet elegance — calm, peaceful, and gently introspective. The subject gazes into the distance with a sense of being elsewhere, evoking nostalgia and understated grace. There is a luxurious stillness to the moment — nothing rushed, nothing forced — where beauty exists in the space between thought and expression, and the viewer is invited to pause and linger in the quiet sophistication of the scene.",
+  },
+  {
+    id: "mood_106",
+    title: "Confident Relaxed Sporty Ease",
+    prompt: "Relaxed yet elevated confidence — a youthful, effortless energy that communicates ease without sacrificing poise. The mood is sporty and fresh, with a contemplative touch that adds depth to the otherwise casual atmosphere. An air of effortless cool pervades, suggesting someone entirely comfortable in their element — understated yet powerful, the kind of quiet confidence that makes minimalism feel intentional and luxurious.",
+  },
+  {
+    id: "mood_107",
+    title: "Chic Confident Playful Polish",
+    prompt: "Polished poise infused with a dash of playful elegance — the mood of someone who wears sophistication easily, without rigidity. The emotional tone is chic and self-assured, with soft confidence and gentle charm creating a warmth beneath the structured exterior. There is a readiness and brightness to the mood — glamorous but approachable, refined but never austere.",
+  },
+  {
+    id: "mood_108",
+    title: "Serene Artistic Quiet Energy",
+    prompt: "A quiet energy that is confident but serene — speaking to the unspoken beauty of details that invite closer inspection. The mood balances tranquility with artistic wonder, where each garment tells a story and every movement carries grace. There is enchantment in the subtlety, a dreamlike quality where elegance and nature converge, urging the viewer to slow down and engage with the beauty of deliberate craftsmanship and flowing movement.",
+  },
+  {
+    id: "mood_109",
+    title: "Hypnotic Refined Lounging Grace",
+    prompt: "An enchanting, hypnotic mood of refined lounging — the emotional tone of elevated relaxation where every surface is luxurious and every gesture carries quiet confidence. The feeling is dreamlike and intimate, with a sense of being suspended in a beautiful, private moment. Elegance and whimsy coexist in a space where structured beauty and free-flowing ease create a serene, deeply personal atmosphere.",
+  },
+  {
+    id: "mood_110",
+    title: "Calm Introspective Vintage Innocence",
+    prompt: "A calm, introspective mood evoking vintage innocence and understated sophistication — the feeling of a timeless, serene moment. The emotional register is gentle and personal, combining quiet elegance with a nostalgic warmth. There is an intimacy to the mood that suggests private moments of self-possessed grace, where simplicity reveals its own quiet luxury and the subject exists in a world of soft, assured composure.",
+  },
+  {
+    id: "mood_111",
+    title: "Mysterious Intimate Curious Intrigue",
+    prompt: "An atmosphere of curiosity and intrigue — deliberately intimate yet subtly provocative, where the tension between exposure and concealment creates magnetic pull. The mood is mysterious and alluring, with vulnerability emphasized through gesture and partial revelation. There is an aura of quiet drama where stillness contains latent energy, and the viewer is drawn into a space of fascination by what is suggested rather than shown.",
+  },
+  {
+    id: "mood_112",
+    title: "Enchanted Dreamlike Comfort Escape",
+    prompt: "Hypnotic and enchanting — the mood of melting into dreamlike comfort where luxury and innocence merge. An emotional quality that is both expansive and intimate, making even the most delicate moments feel rooted in something profound. The feeling is one of romantic escape and gentle dissolution — a moment where the subject becomes part of the softness surrounding them, creating an atmosphere of total, surrendered serenity.",
+  },
+  {
+    id: "mood_113",
+    title: "Quiet Confident Aspirational Editorial",
+    prompt: "A mood of calm, quiet confidence balancing femininity and subtle strength — the emotional tone of a dreamy fashion narrative. The atmosphere is nostalgic yet fresh, invoking timeless beauty with a modern sensibility. The feeling is both intimate and aspirational, as though the viewer is sharing a private moment with someone who exists effortlessly at the intersection of elegance and approachable ease — perfect for editorial storytelling that resonates on a personal level.",
+  },
+  {
+    id: "mood_114",
+    title: "Introspective Seductive Personal Sophistication",
+    prompt: "Introspective, seductive, and elegant — the mood of someone lost in their own world yet intimately engaged with the observer through subtle gesture. A deeply personal sophistication pervades, where private allure creates quiet magnetism. The emotional register is warm and inviting despite its air of exclusivity — a mysterious energy where the viewer feels drawn into a world of refined sensuality and self-assured grace.",
+  },
+  {
+    id: "mood_115",
+    title: "Cool Detached Effortless Chic",
+    prompt: "Subtly confident with a fresh, slightly detached cool — the mood of effortless chic where sophistication requires no effort and elegance is a natural state. The emotional tone is clean and uncluttered, with a relaxed energy that communicates quiet self-assurance. There is a timeless quality to the detachment — not cold, but composed — suggesting someone who exists at their own pace, unbothered and naturally captivating.",
+  },
+  {
+    id: "mood_116",
+    title: "Understated Power Quiet Sophistication",
+    prompt: "A mood of understated power and quiet sophistication — the image conveys confidence that does not demand attention but rather invites careful observation. The atmosphere feels editorial yet intimate, as though the subject exists in a world of private luxury where every gesture carries meaning. There is a sense of timeless elegance beneath the casual surface, a deliberate restraint that makes simplicity feel regal and the ordinary feel elevated to the level of high-fashion narrative.",
+  },
+  {
+    id: "mood_117",
+    title: "Nostalgic Pastoral Serenity",
+    prompt: "A mood of nostalgic serenity grounded in natural beauty — the atmosphere evokes quiet, unhurried moments where the subject exists in gentle harmony with the surrounding organic environment. There is a wistful, remembrance-like quality, as though the image captures a perfect afternoon that will be treasured long after it passes. The intimacy is warm and inviting, balanced between editorial precision and the candid ease of a genuinely peaceful, contemplative state.",
+  },
+  {
+    id: "mood_118",
+    title: "Relaxed Tropical Sophistication",
+    prompt: "A mood of relaxed sophistication with a tropical warmth — the atmosphere captures the specific feeling of unhurried elegance found in luxurious retreat settings, where personal time feels both precious and effortless. The subject radiates approachable confidence, and the overall feeling is one of intimate lifestyle beauty where the viewer feels invited into a moment of genuine personal peace rather than observing a staged performance.",
+  },
+  {
+    id: "mood_119",
+    title: "Meditative Dreamy Domestic Calm",
+    prompt: "A mood of meditative calm and dreamy domestic comfort — the atmosphere is introspective and unhurried, inviting the viewer to slow down and appreciate the quiet beauty of a private moment. There is a hypnotic quality created by the interplay of patterned light and soft textures, where serenity and visual intrigue coexist without contradiction. The mood lingers between contemplation and contentment, suggesting a life where luxury is measured not in possessions but in the quality of peaceful, undisturbed moments.",
+  },
+  {
+    id: "mood_120",
+    title: "Quiet Contemplative Romance",
+    prompt: "A mood of quiet contemplation and soft romance — the atmosphere is feminine and serene, with a touch of mystery created by partially concealed expression. There is an artistic, almost painterly sensibility where beauty and thoughtfulness are inseparable, and the subject's pensive state invites the viewer to imagine the inner world behind the gentle exterior. The overall feeling balances vulnerability with subtle power, creating an intimacy that feels earned rather than performed.",
+  },
+  {
+    id: "mood_121",
+    title: "Bold Editorial Approachable Confidence",
+    prompt: "A mood of bold editorial confidence tempered by genuine approachability — the atmosphere bridges high-fashion aspiration with personal authenticity, creating a sense that sophistication and subtle power are natural rather than constructed. There is an energy of quiet self-assurance that neither demands nor deflects attention, instead occupying the space with a grounded elegance. The viewer feels drawn to the subject's presence as much for the ease of her bearing as for the visual drama of the composition.",
+  },
+  {
+    id: "mood_122",
+    title: "Defiant Mystery Dual Intensity",
+    prompt: "A mood of defiant mystery and layered intensity — the atmosphere shifts between bold outdoor strength and raw urban edge, unified by a sense of personal mystique and deliberate concealment. The visible eyes above the concealing fabric convey both vulnerability and power, creating an emotional tension between invitation and resistance. The mood channels both luxury athleisure and street-level rebellion, suggesting a subject who moves between worlds with equal confidence and refuses to be reduced to a single identity.",
+  },
+  {
+    id: "mood_123",
+    title: "Ethereal Romantic Introspection",
+    prompt: "A mood of ethereal romantic introspection — the atmosphere is dreamlike and serene, evoking a sense of timeless beauty captured in a private, unhurried moment. There is an air of mystery created by partially obscured features and gentle, intimate gestures with fabric. The overall feeling is one of calm luxury and vintage-inspired femininity, where the subject appears lost in a personal reverie that the viewer is privileged to witness. The intimacy is genuine and the elegance is quiet, suggesting a world where beauty is contemplated rather than consumed.",
+  },
+  {
+    id: "mood_124",
+    title: "Intellectual Cultured Warm Ease",
+    prompt: "A mood of intellectual warmth and cultured ease — the atmosphere blends cozy domestic comfort with refined, scholarly elegance, creating a sense of life lived among beautiful objects and meaningful pursuits. There is a cinematic editorial quality to the quietness, as though each moment of reading or reflection is worthy of being framed and preserved. The mood is simultaneously luxurious and understated, suggesting a subject whose confidence comes from inner richness rather than outward display, and whose surroundings reflect genuine taste rather than conspicuous acquisition.",
+  },
+  {
+    id: "mood_125",
+    title: "Youthful Breezy Carefree Energy",
+    prompt: "A mood of youthful, breezy energy and sun-kissed confidence — the atmosphere captures the specific feeling of a perfect, carefree day in the city where everything aligns in effortless harmony. There is a luminous, forward-moving quality to the mood, as though the subject is walking into the best part of her day with a slight smile and a completely unbothered grace. The overall feeling is aspirational yet relatable, balancing influencer polish with genuine, infectious warmth.",
+  },
+  {
+    id: "mood_126",
+    title: "Playful Intimate Camaraderie",
+    prompt: "The emotional tone is one of genuine warmth and playful intimacy — laughter shared between close friends, easy camaraderie that needs no performance. There is a youthful exuberance grounded by comfort and trust — the kind of energy that makes viewers feel they are witnessing a real, unguarded moment of connection and joy.",
+  },
+  {
+    id: "mood_127",
+    title: "Serene Confident Carefree",
+    prompt: "A mood of serene confidence and carefree ease — the subject radiates quiet self-assurance without effort or pretense. The emotional tone is relaxed yet elevated — capturing that specific feeling of being perfectly comfortable in one's own skin while the world softens around you. It is the editorial equivalent of a deep, satisfied breath.",
+  },
+  {
+    id: "mood_128",
+    title: "Dreamy Mystery Quiet Confidence",
+    prompt: "An emotional tone of dreamy mystery and quiet confidence — the viewer drawn in by what is partially concealed rather than fully revealed. There is an inviting yet elusive energy — intimate but not entirely accessible, creating a magnetic quality that lingers. The mood is poetic and contemplative, with an underlying sense of personal expression that feels deeply authentic.",
+  },
+  {
+    id: "mood_129",
+    title: "Serene Opulence Romantic Grace",
+    prompt: "The emotional tone is one of serene opulence and romantic grace — timeless elegance suffused with gentle warmth. There is a sense of quiet confidence and composed beauty — the feeling of moving through a world that rewards poise and refinement. The mood is editorial and cinematic — aspirational yet emotionally resonant, evoking the quiet thrill of inhabiting a beautiful moment.",
+  },
+  {
+    id: "mood_130",
+    title: "Tranquil Coastal Contentment",
+    prompt: "A deeply peaceful emotional tone — tranquil contentment that comes from stillness and connection to the natural world. The mood is reflective and unhurried — the kind of quiet luxury that cannot be purchased but only experienced. There is an aspirational quality rooted in simplicity — the feeling that true elegance emerges from inner peace and the beauty of an unforced moment.",
+  },
+  {
+    id: "mood_131",
+    title: "Sweet Bohemian Natural Charm",
+    prompt: "A sweet, approachable emotional tone — gentle femininity grounded in natural beauty and bohemian ease. The mood is one of personal tranquility with a hint of romantic whimsy — the subject embodying a nice-girl energy that feels genuine rather than performed. There is an innocence and simplicity to the feeling — timeless, warmhearted, and quietly captivating.",
+  },
+  {
+    id: "mood_132",
+    title: "Cool Laid-Back Urban Energy",
+    prompt: "An effortlessly cool emotional tone — relaxed, modern, and street-savvy with a sweet undercurrent of approachable charm. The mood balances bold confidence with laid-back ease — the kind of energy that makes everyday moments feel like curated editorial content. There is a youthful freshness and playful self-awareness — the subject clearly enjoying both the fashion and the freedom of the moment.",
+  },
+  {
+    id: "mood_133",
+    title: "Ethereal Discoverable Hidden Beauty",
+    prompt: "A gentle, ethereal emotional tone centered on quiet discovery — the mood invites the viewer to look closer, to pause and notice hidden details. There is a sense of intimate, personal beauty that rewards attention — the emotional quality of a whispered secret or a beautiful detail noticed only by those who truly look. The feeling is dreamy yet grounded in craft and intentionality.",
+  },
+  {
+    id: "mood_134",
+    title: "Calm Introspective Quiet Luxury",
+    prompt: "A serene, introspective emotional tone — the mood of quiet personal reflection within a space of comfortable luxury. There is a sense of stillness and gentle nostalgia — the feeling of being fully present in a beautiful, unhurried moment. The emotional quality is both aspirational and deeply relatable — luxury as lived experience rather than display, comfort as the truest form of elegance.",
+  },
+  {
+    id: "mood_135",
+    title: "Intimate Romantic Refined Calm",
+    prompt: "An intimate, romantic emotional tone — gentle, warm, and suffused with refined calm. The mood is one of private luxury and tender repose — the feeling of being completely at ease in a beautiful, softly lit space. There is a vulnerability and openness to the emotional quality — sensual without being overt, personal without being performative, elegant in its simplicity.",
+  },
+  {
+    id: "mood_136",
+    title: "Exclusive Cultured Social Warmth",
+    prompt: "An emotional tone of exclusive warmth and cultured sophistication — the feeling of belonging to a curated social world of taste and refinement. The mood is leisurely and composed — the quiet confidence of people who inhabit elegance naturally. There is a cinematic quality — as if the moment carries narrative weight, each figure contributing to a story of high-society grace and intimate social connection.",
+  },
+  {
+    id: "mood_137",
+    title: "Free-Spirited Active Independence",
+    prompt: "A joyful, free-spirited emotional tone — the feeling of independence, movement, and active engagement with the world. The mood balances health-conscious vitality with a nonchalant, rebellious edge — the kind of youthful energy that finds beauty in spontaneity and freedom in movement. There is an underlying warmth and authenticity — the feeling of someone fully alive in their moment.",
+  },
+  {
+    id: "mood_138",
+    title: "Carefree Whimsical Innocence",
+    prompt: "A dreamy, carefree emotional tone — whimsical innocence meeting spontaneous glamour. The mood captures the feeling of being lost in a beautiful moment — wind-blown, sun-touched, and completely free. There is a quality of youthful abandon tempered by natural grace — the emotional equivalent of a song that makes you want to dance without thinking. It is both intimate and expansive, playful and surprisingly poignant.",
+  },
+  {
+    id: "mood_139",
+    title: "Polished Confident Night Allure",
+    prompt: "A polished, confident emotional tone with an undercurrent of allure and exclusivity — the feeling of stepping into a world of high fashion and elevated social settings with natural poise. The mood balances youthful spontaneity with sophisticated composure — playful yet aware, charming yet commanding. There is a cinematic tension to the feeling — as if each moment carries both the thrill of being seen and the power of self-possession.",
   },
 ];
 
