@@ -643,6 +643,101 @@ export const Aesthetic = [
     title: "Mystery Elegance Intellectual Intimacy Feminine Gaze",
     prompt: "Generate an image embodying mystery and intellectual intimacy through a partially obscured face — the viewer invited to engage deeply and project their own feelings fostering a deeper connection — delicate elegance with silk eyelet and sequins used subtly where richness of materials is felt rather than announced — no loud branding or overt showiness just texture and fine details that reward closer inspection — movement and emotion with a hand brushing back hair or the flow of fabric adding dynamic grace and spontaneity — quiet storytelling transcending clothing to become an invitation to experience something profound — feminine gaze sensuality celebrating femininity through softness mystery and quiet confidence that invites admiration without demanding it — empowering and refreshing — creating an atmosphere that feels like an escape into a world both serene and rich with details.",
   },
+  {
+    id: "aesthetic_124",
+    title: "Serene Contemplation Layered Jewelry Dark Portrait",
+    prompt: "Modern chic portrait emphasizing serene contemplation and natural beauty — multiple layered necklaces with intricate designs in red black and gold — large silver earrings adding a touch of glamour — dark background making the subject stand out prominently — soft lighting highlighting features and textures of clothing — gazing slightly to the right exuding calm and sophistication — understated elegance with a quiet confident presence.",
+  },
+  {
+    id: "aesthetic_125",
+    title: "Cozy Reading Sofa Intellectual Warmth",
+    prompt: "Intimate indoor moment of quiet reading and relaxation on a plush cushioned sofa — hair tied back in a neat ponytail with a patterned scarf in vibrant red blue and gold — engrossed in a photograph book held close to the chest — richly patterned multicolored rug with intricate geometric designs covering a wooden floor — cozy indoor environment with natural light softly illuminating creating a warm inviting atmosphere — serene and intimate composition focused on the stillness of absorbed contemplation.",
+  },
+  {
+    id: "aesthetic_126",
+    title: "High Fashion Runway Tweed Leopard Sophistication",
+    prompt: "Fashion runway photography with high-resolution sophisticated styling — textured gray tweed coat with a pattern of small pink and white squares — knitted sweater underneath in a muted earthy leopard print with a cozy slightly fuzzy feel — blurred runway environment drawing attention to the central figure — bright even lighting casting a soft glow emphasizing textures and details — sophisticated and modern ambiance typical of high-fashion editorial runway photography.",
+  },
+  {
+    id: "aesthetic_127",
+    title: "Floral Headband Crochet Boho Fashion Show",
+    prompt: "Close-up fashion show moment with bohemian contemporary chic — long wavy brown hair adorned with a colorful floral headband featuring gold and black accents — white crocheted top exposing shoulders — striking brown eyes accentuated with dramatic black eyeliner — neutral expression with a slight hint of a smile — clean modern atmosphere with bright lighting highlighting fashion accessories and delicate crochet textures — chic and contemporary styling.",
+  },
+  {
+    id: "aesthetic_128",
+    title: "Scandinavian Boutique Armchair Contemplative",
+    prompt: "Contemplative moment in a warm Scandinavian boutique environment — long wavy blonde hair cascading over shoulders wearing a light blue long-sleeved sweater with loose white pants — seated in a luxurious tan leather armchair with plush cushion — wooden paneling and shelves neatly arranged with clothing in blue green and beige — patterned multicolored rug with traditional design adding warmth — serene inviting atmosphere of quiet reflection in a curated retail space.",
+  },
+  {
+    id: "aesthetic_129",
+    title: "Smartphone Obscured Face Modern Interior Art",
+    prompt: "Subject standing indoors holding a smartphone in front of face partially obscuring expression — long straight brown hair cascading past shoulders — modern stylish interior with high ceilings and white walls — large colorful abstract painting on the wall in vibrant yellow red and blue — wooden chair near a window allowing natural light to filter in — overall atmosphere modern and stylish with a focus on neutral tones and soft textures.",
+  },
+  {
+    id: "aesthetic_130",
+    title: "Burgundy Leather Luxe Red Scarf Layered",
+    prompt: "Rich sophisticated style with a deep burgundy leather jacket featuring a glossy finish — white blouse underneath with a long shimmering red scarf draping elegantly around the neck — delicate gold chain necklace with a small oval pendant — long wavy brown hair cascading down the chest — indoor setting with natural window light casting soft shadows and highlighting the rich textures of leather and scarf — emphasis on layered luxurious fabrics and warm metallic accents.",
+  },
+  {
+    id: "aesthetic_131",
+    title: "Ocean Window Introspective Contemporary Calm",
+    prompt: "Serene contemplative moment seated in a modern grey upholstered chair with wooden legs facing a large floor-to-ceiling window — calm ocean with gentle waves and overcast sky beyond — light green oversized sweater with grey sweatpants and black combat boots — relaxed posture with arms resting on armrests gaze directed outward — tall green potted plant with slender leaves adding nature to the indoor setting — dark grey tiles contemporary aesthetic with bookshelf and cozy well-read environment — peaceful and introspective quiet reflection.",
+  },
+  {
+    id: "aesthetic_132",
+    title: "Coastal Evening Balcony Harbor Twilight Luxury",
+    prompt: "Elevated balcony scene capturing a serene evening in a coastal city — long wavy brown hair standing with back to camera gazing at a picturesque harbor — cozy white fuzzy sweater and white pants — luxury yachts with white hulls reflecting the twilight sky — cityscape illuminated by warm lights casting a soft glow over the water — rugged hills and mountains in the distance — sky transitioning from deep blue to lighter horizon at dusk — calm blend of natural and urban elements creating a tranquil picturesque moment.",
+  },
+  {
+    id: "aesthetic_133",
+    title: "Window Ledge Brown Knit Leather Boots Chic",
+    prompt: "Intimate close-up of a subject seated on a window ledge with legs drawn up to chest — sleeveless ribbed brown knit dress reaching mid-thigh — knee-high brown leather boots with gold buckles and straps — long dark brown hair cascading over shoulders framing the face — delicate gold necklace and matching bracelet — beige wall with large window showing textured grey urban exterior — natural window lighting casting soft shadows — intimate and stylish composition emphasizing refined chic appearance.",
+  },
+  {
+    id: "aesthetic_134",
+    title: "Black Ribbed Top Bedroom Doorway Minimal",
+    prompt: "Minimal indoor portrait in a bedroom setting — black sleeveless ribbed knit top with center front zipper and off-the-shoulder sleeves — multiple thin gold chains with circular pendants adding a touch of elegance — straight shoulder-length brown hair with bangs framing the face — doorway to another room revealing a bed with white sheets and personal items — light beige walls and wooden floor — soft even lighting creating a warm understated ambiance.",
+  },
+  {
+    id: "aesthetic_135",
+    title: "Black-and-White Car Backseat Vintage Candid",
+    prompt: "Black-and-white candid photograph in the backseat of a car — long straight hair cascading over shoulders wearing a textured knitted long-sleeved dress — neutral expression with a slight almost coy smile — holding a smartphone casually — dimly lit car interior with textured leather seat surface — another person partially visible in the front seat blurred by motion — indistinct street and buildings through the window — monochrome filter adding a vintage timeless feel capturing a moment of relaxed leisure.",
+  },
+  {
+    id: "aesthetic_136",
+    title: "Bathroom Selfie Casual Rustic-Modern Intimate",
+    prompt: "Casual bathroom selfie capturing intimate personal self-expression — holding an iPhone partially obstructing the face — blonde hair tied back with black-framed glasses — loose-fitting dark gray sweatshirt — pale pink wall with rustic wooden beam and modern stainless steel sink — metallic trash can and soap dispenser visible — reflection in the mirror adding depth — soft warm glow with a mix of modern and rustic elements — the overall atmosphere casual and intimate.",
+  },
+  {
+    id: "aesthetic_137",
+    title: "Garden Ethereal White Dress Vintage Cinematic",
+    prompt: "Serene and slightly ethereal outdoor portrait in a garden setting — sleeveless white form-fitting dress with dark voluminous hair styled in a messy updo — lush green leaves of a tree partially framing the subject — sunlight filtering through the leaves casting dappled shadows on face and dress — wooden table with a white cloth and potted plants in background — glass jar adding rustic charm — a vintage almost cinematic feel capturing a moment of quiet introspection with striking presence — mix of natural elements and compelling femininity.",
+  },
+  {
+    id: "aesthetic_138",
+    title: "Red Carpet Navy Blazer Power Glamour",
+    prompt: "Elegant sophisticated red carpet portrait — dark navy blue tailored blazer over a crisp white dress shirt with a dark blue tie knotted neatly — bold makeup with dark eyeliner mascara and bright red lipstick contrasting sharply with a pale complexion — dark brown hair pulled back into a sleek low bun — large dangling intricate sparkly earrings adding glamour — blurred formal event background with other attendees in dark attire — confident and poised demeanor radiating elegant sophistication.",
+  },
+  {
+    id: "aesthetic_139",
+    title: "Co-Working Founder Navy Suit Professional Power",
+    prompt: "Start-up founder presenting in a co-working conference room — sleek dark navy blue suit consisting of blazer and matching short skirt in smooth tailored fabric — sheer black pantyhose adding elegance — white dress shirt with black necktie — hair slicked back into a neat low bun — minimal polished makeup with bold red lipstick as a focal point — small dark blue clutch bag — the overall color palette dominated by dark blue and white with vibrant red lipstick standing out — high fashion glamour conveying confidence in a professional setting.",
+  },
+  {
+    id: "aesthetic_140",
+    title: "Airport Travel Floral Dress Breezy Feminine",
+    prompt: "Effortless chic travel aesthetic walking through an airport terminal — loose-fitting cream-colored cardigan with pearl details paired with a short white floral dress featuring soft ruffles — breezy airy silhouette lending effortless elegance — soft peachy tones contrasting with light fresh florals — tan leather handbag adding sophistication — warm soft lighting creating an inviting comfortable mood — blurred figures and structures in motion creating dynamic background — candid yet polished creating delicate balance between relaxed off-duty styling and high-end fashion.",
+  },
+  {
+    id: "aesthetic_141",
+    title: "Hallway Vintage Dress Editorial Cinematic",
+    prompt: "High-fashion editorial scene in a hallway framed by open doors — short patterned dress with a vintage feel and delicate floral print — statement heels adding bold contrast — subtly commanding yet relaxed posture — retro wallpaper and warm sepia tones creating a nostalgic luxurious world — soft natural light from the window filtering through with a cinematic feel — playful femininity in a slightly surreal dreamlike setting emphasizing approachable high fashion.",
+  },
+  {
+    id: "aesthetic_142",
+    title: "Pink Beaded Top Eyelet Shorts Soft Luxury",
+    prompt: "Delicate soft luxury featuring an intricate beaded and embroidered pink top glistening with golden and pearl-like accents — white ruffled eyelet shorts contrasting softness with crispness — golden accessories including necklace bracelet and rings amplifying understated luxury — camera slightly above with a subtle downward tilt adding lightness — focus on intricate beading and embroidery — soft lighting evoking a sunlit vibe with gentle warmth — balancing innocence with sophisticated craftsmanship — casual poise exuding soft elegance and carefree joy.",
+  },
 ];
 
 export const Lighting = [
@@ -1075,6 +1170,51 @@ export const Lighting = [
     id: "lighting_086",
     title: "Soft Diffused Warm Dream-Like Ghibli Caress",
     prompt: "Soft diffused lighting creating a warm intimate atmosphere — gently caressing the subject rather than harshly illuminating — emphasizing the fluidity of fabrics and the contours of form — a dream-like quality reminiscent of Studio Ghibli enchanting environments where light and shadow tell as much story as the characters themselves — the soft glow enhancing mood making everything feel serene elegant and inviting — the viewer feels they are witnessing something beautiful and fleeting.",
+  },
+  {
+    id: "lighting_087",
+    title: "Dark Background Soft Subject Highlighting",
+    prompt: "Dark background making the subject stand out prominently — soft lighting highlighting features and textures of clothing and accessories — creating separation between subject and background — the light gently drawing attention to details of jewelry fabric and facial features without harsh shadows.",
+  },
+  {
+    id: "lighting_088",
+    title: "Warm Natural Indoor Soft Ambient Glow",
+    prompt: "Natural light softly illuminating the indoor scene — warm and inviting atmosphere with soft shadows — likely from a nearby window or ambient light source — creating a cozy gentle glow throughout the space — enhancing the textures of fabrics and furnishings — warm tone without harshness — intimate comfortable mood.",
+  },
+  {
+    id: "lighting_089",
+    title: "Bright Even Fashion Runway Soft Glow",
+    prompt: "Bright and even lighting typical of a fashion runway or show setting — casting a soft glow on the face and clothing — emphasizing textures and details of fabrics and accessories — clean modern illumination creating a sophisticated professional ambiance — no harsh shadows with even distribution across the subject.",
+  },
+  {
+    id: "lighting_090",
+    title: "Overcast Ocean Daylight Through Floor-to-Ceiling Glass",
+    prompt: "Overcast daylight diffusing through a large floor-to-ceiling window — thick layer of grey clouds creating an even cool illumination — the ocean beyond providing a grey-blue ambient light — subject's reflection faintly visible on the glass — contemplative calm atmosphere with soft diffused shadows — no direct sun creating an even meditative quality.",
+  },
+  {
+    id: "lighting_091",
+    title: "Twilight Harbor Warm City Dusk Glow",
+    prompt: "Twilight illumination at dusk with the sky transitioning from deep blue to lighter horizon — warm city lights casting a soft glow over the water and harbor — luxury yacht hulls reflecting the fading light — ambient blend of natural twilight and artificial warm city illumination — creating a serene and picturesque quality at the golden edge of evening.",
+  },
+  {
+    id: "lighting_092",
+    title: "Dim Monochrome Car Interior Vintage",
+    prompt: "Dimly lit car interior with muted shadows and limited light sources — monochrome filter stripping color to create a vintage timeless feel — light entering through the car window showing indistinct exterior — another passenger's form blurred adding to the casual candid quality — shadows softening features and creating a moody atmospheric intimacy.",
+  },
+  {
+    id: "lighting_093",
+    title: "Dappled Sunlight Through Garden Leaves",
+    prompt: "Sunlight filtering through lush green tree leaves — casting dappled shadows on the face and dress — creating a serene and slightly ethereal quality — natural outdoor illumination with gentle highlights and soft shadow patterns — the interplay of sun and foliage producing a vintage almost cinematic warmth — organic and intimate garden light.",
+  },
+  {
+    id: "lighting_094",
+    title: "Formal Event Blurred Ambient Glamour",
+    prompt: "Lighting from a formal event or red carpet setting — the background blurred and out of focus with hints of other attendees — creating an ambient glamorous glow — subject illuminated with even professional lighting emphasizing makeup and fabric details — bokeh from background lights adding depth and atmosphere.",
+  },
+  {
+    id: "lighting_095",
+    title: "Sepia Warm Window Cinematic Nostalgic",
+    prompt: "Soft natural light filtering through a window — warm sepia tones creating a nostalgic cinematic quality — retro warmth pulling the viewer into a luxurious dreamlike world — light enhancing delicate fabric textures and adding a slightly surreal golden quality — gentle shadows creating depth in the hallway or interior setting.",
   },
 ];
 
@@ -1579,6 +1719,76 @@ export const ColorPalette = [
     title: "Warm Neutrals Candlelight Cream Dusty Blush Antique Gold",
     prompt: "Warm neutrals of candlelight cream dusty blush faded peach and antique gold — cool accents of bone soft gold and smoke — pops of pink-toned lip balm white mug or vintage blue detail — soft contrast of velvet black with creamy white — everything warm burnished and golden with morning intimacy.",
   },
+  {
+    id: "colorpalette_101",
+    title: "Dark Background Red Black Gold Silver Glamour",
+    prompt: "Dark moody background allowing subject to stand out — intricate red black and gold accents in jewelry and accessories — large silver metallic tones adding glamour — overall modern chic palette with dark base and warm metallic highlights — sophisticated contrast between dark surroundings and ornate personal details.",
+  },
+  {
+    id: "colorpalette_102",
+    title: "Warm Beige Multicolor Rich Textile Pattern",
+    prompt: "Warm beige and cream base tones from plush furniture and soft fabrics — rich multicolored accents from patterned textiles featuring red blue green brown and gold in intricate geometric designs — black clothing creating contrast — wooden floor tones and natural material warmth — overall palette cozy and inviting with vibrant textile accents against warm neutral surroundings.",
+  },
+  {
+    id: "colorpalette_103",
+    title: "Gray Pink Muted Earthy Fashion Neutral",
+    prompt: "Muted earthy palette centered on textured grays and soft pinks — tweed gray with small pink and white squares — leopard print in subdued earth tones — knitted fabrics in natural muted shades — clean white backgrounds — professional fashion palette that is sophisticated without being loud — neutrals and earth tones dominating.",
+  },
+  {
+    id: "colorpalette_104",
+    title: "Burgundy Red Gold Warm Shimmering Luxe",
+    prompt: "Deep burgundy leather with glossy finish — shimmering red scarf with warm undertones — gold chain and pendant accents — white blouse providing clean contrast — warm brown hair tones blending with the rich palette — off-white wall background — overall luxurious warm palette dominated by deep reds and warm metallics with crisp white accent.",
+  },
+  {
+    id: "colorpalette_105",
+    title: "Cool Grey Green Overcast Ocean Contemporary",
+    prompt: "Cool grey palette inspired by overcast ocean skies — grey upholstery and dark grey floor tiles — light green from an oversized sweater and potted plant — grey sweatpants and black combat boots grounding the palette — light blue accent from a sofa — bookshelf adding warm wood tones — overall contemporary cool palette with natural green accents against grey backdrop.",
+  },
+  {
+    id: "colorpalette_106",
+    title: "Deep Blue Twilight White Harbor Warm Lights",
+    prompt: "Deep blue sky transitioning to lighter shades near the horizon — white from fuzzy sweater and yacht hulls — warm amber and gold from city lights reflecting on water — dark railing with intricate details — rugged earth tones from distant hills — overall palette of deep blues and warm amber creating a serene twilight atmosphere with crisp white accents.",
+  },
+  {
+    id: "colorpalette_107",
+    title: "Black White Monochrome Vintage Muted",
+    prompt: "Pure monochrome palette stripped of color — range of greys from light to dark — textured surfaces creating visual interest through tone rather than hue — dimly lit interior shadows and muted highlights — vintage timeless quality from the absence of color — the monochrome filter creating an intimate atmospheric warmth through tonal contrast alone.",
+  },
+  {
+    id: "colorpalette_108",
+    title: "Navy White Red Power Formal Crisp",
+    prompt: "Dark navy blue as dominant color from tailored suit and accessories — crisp white from dress shirt — bright red lipstick as a bold focal point contrasting with pale complexion — sparkly metallic tones from earrings — dark attire in the blurred background — overall palette conveying power and sophistication with a striking color contrast between navy white and red.",
+  },
+  {
+    id: "colorpalette_109",
+    title: "Brown Gold Warm Neutral Urban Chic",
+    prompt: "Warm brown tones from ribbed knit fabric and leather boots — gold accents from buckles straps necklaces and bracelets — beige walls and grey urban exterior visible through window — medium brown skin tones blending warmly — overall earthy warm palette of browns and golds creating an intimate urban chic atmosphere with metallic highlights.",
+  },
+  {
+    id: "colorpalette_110",
+    title: "Pale Pink Rustic Wood Stainless Modern",
+    prompt: "Pale pink wall as a soft warm base — rustic wooden beam adding natural warmth — stainless steel sink and fixtures providing cool modern contrast — dark gray sweatshirt and black glasses framing — white door and fixtures — overall palette mixing soft pink warmth with rustic wood and cool metal for a casual intimate modern aesthetic.",
+  },
+  {
+    id: "colorpalette_111",
+    title: "Green White Vintage Garden Dappled Warm",
+    prompt: "Lush green from tree leaves creating an organic natural border — white from a form-fitting dress and table cloth — wooden brown from the table and jar — potted plant earthy tones — dappled sunlight creating warm golden accents on skin and fabric — overall palette of natural greens and whites with warm vintage undertones — serene and ethereal garden aesthetic.",
+  },
+  {
+    id: "colorpalette_112",
+    title: "Cream Peach Floral Soft Travel Breezy",
+    prompt: "Cream-colored cardigan and warm peach tones — white floral dress with delicate colorful prints — pearl-like details adding subtle shimmer — tan leather handbag in warm camel — soft blonde hair catching light — overall palette of warm creams peachy tones and delicate florals — dreamy and breezy travel aesthetic that feels feminine and inviting.",
+  },
+  {
+    id: "colorpalette_113",
+    title: "Warm Sepia Retro Muted Floral Nostalgic",
+    prompt: "Warm sepia tones creating a nostalgic retro atmosphere — muted colors surrounding the subject — delicate floral print in subdued vintage hues — retro wallpaper patterns adding period charm — warm golden and amber undertones pulling the viewer into a luxurious nostalgic world — overall palette evoking vintage editorial photography.",
+  },
+  {
+    id: "colorpalette_114",
+    title: "Pink Gold White Delicate Sunlit Beaded",
+    prompt: "Pink beaded fabric with golden and pearl-like accents as focal color — crisp white from ruffled eyelet shorts — warm gold from necklace bracelet and rings — soft skin tones in warm sunlit glow — minimal neutral background letting the pink and gold take center stage — overall palette delicate feminine and sunlit with luxurious metallic warmth.",
+  },
 ];
 
 export const Texture = [
@@ -1986,6 +2196,41 @@ export const Texture = [
     id: "texture_081",
     title: "Silk Eyelet Sequins Flowing Subtle Luxury",
     prompt: "Silk eyelet and sequins inherently luxurious but used subtly — evoking refinement and beauty through understated application creating effortless luxury — flowing skirt with dynamic movement — delicate fabrics that reward closer inspection where each detail can only be truly appreciated upon careful viewing — fine details and textures felt rather than announced — artistically crafted with a discerning eye for beauty and design.",
+  },
+  {
+    id: "texture_082",
+    title: "Ribbed Knit Fuzzy Sweater Cozy Woven",
+    prompt: "Ribbed knit fabric with visible textural lines and slight stretch — fuzzy cozy sweater with a slightly soft surface that appears warm and touchable — woven patterns in earthy or muted tones — knitted long-sleeved fabrics with visible stitch structure — the overall feel is cozy handcrafted and intimate.",
+  },
+  {
+    id: "texture_083",
+    title: "Glossy Leather Shimmering Metallic Chain",
+    prompt: "Deep glossy leather with a reflective finish catching light in smooth curves — shimmering scarf or fabric with an elegant flowing drape — delicate gold chain necklace with a small pendant — metallic buckles and straps on boots or accessories — the interplay of glossy leather and shimmering metallic creating a rich layered tactile experience.",
+  },
+  {
+    id: "texture_084",
+    title: "Tailored Suit Smooth Formal Sheer Pantyhose",
+    prompt: "Smooth tailored suit fabric in a precise fitted cut — sheer black pantyhose adding a touch of translucent elegance — crisp white dress shirt fabric against a dark tie — intricate sparkly earring surfaces catching light — the overall feel is polished professional and luxurious with a balance of matte and sparkle textures.",
+  },
+  {
+    id: "texture_085",
+    title: "Plush Cushion Patterned Rug Warm Wood Paneling",
+    prompt: "Plush cushioned upholstery creating a soft inviting surface — patterned rug with intricate woven geometric designs adding rich tactile detail — wooden floor and wood paneling providing natural warmth and grain — smooth leather armchair surfaces — the combined effect is cozy luxurious and well-appointed with layered indoor textures.",
+  },
+  {
+    id: "texture_086",
+    title: "White Crocheted Ruffled Eyelet Airy Feminine",
+    prompt: "White crocheted fabric with visible handmade openwork patterns — delicate ruffles and eyelet details creating an airy lightweight feel — soft cotton and linen with a breezy flowing quality — floral print on lightweight dress fabric — pearl-like embellishments adding subtle dimensional detail — the overall texture is feminine light and breathable with artisanal charm.",
+  },
+  {
+    id: "texture_087",
+    title: "Beaded Embroidered Pearl-Like Intricate Crafted",
+    prompt: "Intricate beading and embroidery glistening with golden and pearl-like accents — fabric softness contrasting with the crispness of eyelet shorts — delicate handcrafted surface detail that rewards close inspection — the overall feel of sophisticated craftsmanship where each bead and stitch contributes to a luxurious tactile tapestry of innocence and allure.",
+  },
+  {
+    id: "texture_088",
+    title: "Tweed Gray Woven Structured Coat Pattern",
+    prompt: "Textured gray tweed with a woven pattern of small pink and white squares — structured coat fabric with a slightly rough sophisticated surface — contrasted with the cozy fuzzy feel of a knitted sweater underneath — the combination of structured woven outerwear and soft knit underlayer creating a rich multi-dimensional tactile experience.",
   },
 ];
 
@@ -2449,6 +2694,61 @@ export const Mood = [
     id: "mood_092",
     title: "Serene Rich Quiet Sensuality Feminine Escape",
     prompt: "The overall mood is serene and rich with details creating an atmosphere that feels like an escape — quiet sensuality from softness mystery and quiet confidence — a celebration of femininity that invites admiration without demanding it empowering and refreshing — deeper storytelling that resonates on an emotional level transcending visual to create experience feeling and connection — the combination of mystery luxury artistry and quiet emotion makes the viewer want to explore the image further.",
+  },
+  {
+    id: "mood_093",
+    title: "Calm Sophisticated Contemplative Natural Poise",
+    prompt: "The overall mood is calm sophisticated and contemplative — exuding a sense of natural poise and quiet confidence — no rush no performance just present in the moment — understated elegance creating an atmosphere of serene refinement — the viewer drawn into a moment of peaceful absorption.",
+  },
+  {
+    id: "mood_094",
+    title: "Sophisticated Modern High-Fashion Editorial",
+    prompt: "The overall mood is sophisticated and modern — typical of high-fashion editorial and runway photography — professional polish with clean contemporary ambiance — the subject commanding attention through refined styling and confident presence — every element intentional and curated for maximum visual impact.",
+  },
+  {
+    id: "mood_095",
+    title: "Contemporary Stylish Modern Rich Textural",
+    prompt: "The overall mood is contemporary and stylish — modern interior aesthetic with focus on neutral tones and soft textures — a sense of curated taste and quiet wealth — stylish without being ostentatious — the atmosphere suggesting someone who inhabits beautiful spaces naturally and without effort.",
+  },
+  {
+    id: "mood_096",
+    title: "Peaceful Introspective Ocean Quiet Reflection",
+    prompt: "The overall mood is peaceful and introspective — capturing a moment of quiet reflection gazing toward an expanse of calm water or open view — contemporary calm with a meditative quality — the subject choosing stillness and inner contemplation — the overcast atmosphere adding to the serene inward-looking feeling.",
+  },
+  {
+    id: "mood_097",
+    title: "Tranquil Scenic Twilight Urban Natural Blend",
+    prompt: "The overall mood is calm and tranquil — blending natural scenery with urban elements at twilight — a sense of elevated leisure and quiet appreciation of beauty — the subject part of a picturesque scene without dominating it — serene and picturesque atmosphere between day and night.",
+  },
+  {
+    id: "mood_098",
+    title: "Intimate Urban Chic Understated Warm",
+    prompt: "The overall mood is intimate and stylishly understated — urban chic with warm personal quality — the composition focusing on refined details of clothing and accessories — an atmosphere that feels both fashionable and genuinely personal — intimate without being revealing warm without being soft.",
+  },
+  {
+    id: "mood_099",
+    title: "Candid Relaxed Vintage Timeless Casual",
+    prompt: "The overall mood is casual and candid — capturing a moment of relaxed leisure with a vintage timeless quality — no posing no performance just a naturally captured instant — the atmosphere casual and intimate with a sense of authenticity — the monochrome or desaturated quality adding emotional depth and nostalgia.",
+  },
+  {
+    id: "mood_100",
+    title: "Ethereal Vintage Cinematic Nostalgic Dreamlike",
+    prompt: "The overall mood is serene and slightly ethereal — vintage almost cinematic quality capturing quiet introspection — nostalgic and dreamlike with warm golden or sepia undertones — the atmosphere evoking a beautiful fleeting moment in time — surreal yet approachable combining high-fashion editorial with nostalgic intimacy.",
+  },
+  {
+    id: "mood_101",
+    title: "Elegant Confident Power Glamour Formal",
+    prompt: "The overall mood is elegant and sophisticated — radiating confident power and glamour — formal event energy with poised demeanor — bold beauty choices creating striking visual contrast — the atmosphere commanding attention through polished professionalism and unshakeable self-assurance.",
+  },
+  {
+    id: "mood_102",
+    title: "Effortless Breezy Travel Polish Feminine",
+    prompt: "The overall mood is effortless and breezy — chic travel aesthetic that feels both grounded and aspirational — an inviting comfortable energy with soft feminine polish — the atmosphere capturing the ease of someone who looks beautiful without trying — a delicate balance between casual off-duty styling and genuine high-end fashion.",
+  },
+  {
+    id: "mood_103",
+    title: "Soft Playful Casual Innocent Sophisticated Joy",
+    prompt: "The overall mood is soft playful and casually poised — balancing innocence with sophisticated craftsmanship — carefree joy wrapped in delicate luxury — an Instagram-ready quality that exudes soft elegance without effort — the atmosphere gentle and sunlit inviting the viewer into a world of refined simplicity.",
   },
 ];
 

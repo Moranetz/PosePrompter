@@ -442,6 +442,86 @@ export const Framing = [
     title: "Partially Obscured Face Movement Grace Captured",
     prompt: "Partially obscured face creating mystery and intellectual intimacy — hair hand movements and body positioning serving as an invitation to explore rather than static viewing — a moment of movement captured like a snapshot of grace and spontaneity — the subject alive and engaged in her world — dynamic quality that feels like something you could step into.",
   },
+  {
+    id: "framing_089",
+    title: "Center Subject Dark Blurred Background Portrait",
+    prompt: "Subject positioned centrally in the frame against a dark or blurred background — the viewer's attention drawn directly to the subject who stands out prominently — background details indistinct or intentionally dark to emphasize the figure and their accessories — tight enough to capture clothing and jewelry details while showing enough of the subject for context.",
+  },
+  {
+    id: "framing_090",
+    title: "From Behind Seated Reading Intimate Voyeur",
+    prompt: "Subject positioned from behind showing the back of the head and hair — seated and engrossed in a book or object held close — an intimate voyeuristic angle where the viewer observes without being observed — the composition suggesting a private unguarded moment of absorption — surrounding environment providing context and warmth.",
+  },
+  {
+    id: "framing_091",
+    title: "Center Frame Runway Fashion Walk",
+    prompt: "Subject centered in the frame walking or positioned on a runway or fashion show setting — blurred figures of models or audience members in the background creating depth — the composition drawing all attention to the central figure — professional fashion photography framing that isolates the subject through focus while maintaining event context.",
+  },
+  {
+    id: "framing_092",
+    title: "Full Seated Armchair Room Context",
+    prompt: "Full seated figure in a luxurious chair with room furnishings visible in the background — shelving and curated objects adding environmental storytelling — the composition capturing both the relaxed seated posture and the well-appointed surroundings — a contemplative gaze directed off to the side adding emotional depth to the scene.",
+  },
+  {
+    id: "framing_093",
+    title: "Phone Object Covering Face Standing Interior",
+    prompt: "Subject standing and holding a phone or object in front of face partially obscuring their expression — vertical composition in an interior space with environmental details visible around the figure — the obstruction creating mystery and tension — background elements like paintings furniture or windows adding contextual richness beyond the partially hidden subject.",
+  },
+  {
+    id: "framing_094",
+    title: "Waist-Up Layered Texture Detail Focus",
+    prompt: "Waist-up framing that emphasizes layered clothing textures and accessory details — the composition tight enough to reveal fabric surfaces and jewelry but loose enough to capture the overall outfit silhouette — blurred indoor background keeping attention on the subject — focus on the interplay of multiple materials and textures within the outfit.",
+  },
+  {
+    id: "framing_095",
+    title: "Seated Facing Window Panoramic View Beyond",
+    prompt: "Subject seated facing a large window with a panoramic view beyond — the window framing both the figure and the distant landscape or seascape — room elements visible around the edges creating an intimate interior context — the composition balancing the small human figure against the vast view creating a contemplative scale contrast.",
+  },
+  {
+    id: "framing_096",
+    title: "Back to Camera Elevated Railing Overlook",
+    prompt: "Subject's back to the camera standing at a railing or balcony edge — hand resting on the railing — an expansive landscape cityscape or harbor visible below and beyond — the composition inviting the viewer to share the subject's elevated vantage point — the figure silhouetted against the vast backdrop creating a sense of privileged perspective.",
+  },
+  {
+    id: "framing_097",
+    title: "Seated Ledge Legs Drawn Up Close-Up",
+    prompt: "Close-up of a seated figure on a window ledge or narrow surface — legs drawn up to the chest or bent at an angle — the composition emphasizing the intimate compact posture — clothing and boot details visible — exterior partially seen through the window or opening — an intimate contained framing that focuses on the body language of quiet repose.",
+  },
+  {
+    id: "framing_098",
+    title: "Standing Doorway Adjacent Room Depth",
+    prompt: "Subject standing in a room with a doorway revealing an adjacent space — the layered rooms creating compositional depth through receding planes — personal items and furniture visible through the doorway adding narrative detail — the composition using the architectural frame of the doorway to create visual depth and suggest the subject's lived-in environment.",
+  },
+  {
+    id: "framing_099",
+    title: "Car Backseat Candid Blurred Passenger",
+    prompt: "Subject seated in the backseat of a vehicle — casual candid composition — another blurred passenger partially visible in the front seat adding depth — car window showing an indistinct exterior — the cramped intimate space of the car creating a naturally close framing — the composition capturing the casual unposed quality of a moment in transit.",
+  },
+  {
+    id: "framing_100",
+    title: "Foliage Partial Framing Outdoor Garden Portrait",
+    prompt: "Lush foliage or tree branches partially framing the subject from one side — outdoor garden or natural setting with plants and organic elements creating borders — the composition using natural elements as a frame within the frame — background details like tables or structures adding depth beyond the green foreground — the organic framing creating a sense of discovery and natural intimacy.",
+  },
+  {
+    id: "framing_101",
+    title: "Presenter Conference Room Audience Backs",
+    prompt: "Subject positioned centrally in a conference room or professional space — audience or attendees shown from behind facing the subject — the composition placing the viewer among the audience looking up at the presenter — professional setting with clean lines and modern furnishings — the subject commanding the room through positioning and the directional gaze of the audience.",
+  },
+  {
+    id: "framing_102",
+    title: "Walking Motion Through Large Indoor Space",
+    prompt: "Subject captured in motion walking through a large indoor space such as a terminal or lobby — waist to mid-thigh framing — blurred surroundings suggesting movement and dynamism — the composition conveying the forward momentum and confident stride of the subject — busy environment rendered soft through motion creating a dreamy contrast with the in-focus subject.",
+  },
+  {
+    id: "framing_103",
+    title: "Hallway Doors Architectural Framing",
+    prompt: "Subject framed by open doors or architectural elements in a hallway — the doorframes creating natural symmetrical borders — environment visible around and behind the subject providing atmospheric context — the composition using the geometric structure of the hallway to frame and contain the subject — retro or vintage architectural details adding narrative richness.",
+  },
+  {
+    id: "framing_104",
+    title: "Slightly Above Downward Tilt Detail Focus",
+    prompt: "Camera positioned slightly above the subject with a subtle downward tilt — the angle adding a sense of lightness and vulnerability — emphasizing clothing details accessories and the top of the head — the downward perspective making the subject appear more intimate and approachable — minimal background visible keeping focus on the figure and their detailed styling.",
+  },
 ];
 
 export const Perspective = [
@@ -1100,6 +1180,16 @@ export const CameraType = [
     id: "cameratype_113",
     title: "Portrait Lens DSLR Painterly Warm Grain",
     prompt: "DSLR or iPhone 14 to 15 Pro with 50mm or 85mm equivalent portrait lens — f/1.8 to f/2.5 for painterly depth — 1/125 to capture motion without blur — ISO 250 to 400 keeping warm tone using natural light only — white balance set to Cloudy for warmth — edited with soft grain low clarity on background warm highlights and subtle vignette.",
+  },
+  {
+    id: "cameratype_114",
+    title: "High-Resolution Sharp Focus Blurred Background Portrait",
+    prompt: "High-resolution photography with sharp focus on the subject and blurred background creating depth — indicating a portrait lens or telephoto with shallow depth of field — professional grade capture emphasizing fine details of textures and accessories — even exposure with crisp detail rendering throughout the subject plane.",
+  },
+  {
+    id: "cameratype_115",
+    title: "Black-and-White Monochrome Film Filter Candid",
+    prompt: "Black-and-white processing or monochrome film stock — stripping color to create a vintage timeless feel — tonal range from deep blacks to soft whites with rich mid-tones — slightly dim interior lighting creating moody shadows — the monochrome treatment adding emotional depth and a sense of captured memory rather than staged photography.",
   },
 ];
 
