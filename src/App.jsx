@@ -26,11 +26,6 @@ const AppContent = () => {
   const [currentRoute, setCurrentRoute] = React.useState(() => window.location.hash);
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-  // When auth succeeds from the landing page, send users into the main app
-  const handleAuthSuccess = React.useCallback(() => {
-    window.location.hash = '#app';
-  }, []);
-
   // Handle hash-based routing with polling as fallback
   React.useEffect(() => {
     let lastHash = window.location.hash;
@@ -236,11 +231,6 @@ const AppContent = () => {
   // Show error reports page if route is #error-reports
   if (actualRoute === '#error-reports') {
     return <ErrorReports />;
-  }
-
-  // Show marketing landing page by default (no hash) or at #landing
-  if (!actualRoute || actualRoute === '#landing') {
-    return <LandingPage onAuthSuccess={handleAuthSuccess} />;
   }
 
   // Show main app directly - no landing page gate
