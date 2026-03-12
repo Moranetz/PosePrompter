@@ -102,6 +102,11 @@ export const Background = [
     title: "Gothic Cathedral Night Grandeur",
     prompt: "Iconic Gothic cathedral at night towering against an inky black sky — warm upward-facing floodlights illuminate intricate stone carvings spires and flying buttresses creating stark contrasts between glowing stone and deep shadows within Gothic recesses — wet cobblestone pavement in the foreground acts as a mirror-like surface reflecting the cathedral's warm light and sparse city lights with shimmering ethereal quality — the overwhelming architectural scale makes any human figure appear small and solitary enhancing a sense of awe and elegant solitude",
   },
+  {
+    id: "background_021",
+    title: "Underwater Submerged Ethereal",
+    prompt: "Fully submerged underwater environment — crystal-clear water with visible light rays piercing down from the surface above creating shifting columns of luminous turquoise and aquamarine. Tiny suspended particles catch the light like floating dust motes adding atmospheric depth. The water refracts and bends light in organic rippling caustic patterns across every surface — skin, fabric, hair all receive dancing light patterns. Air bubbles trail upward in silver strings. The underwater world has a cathedral-like silence and weightlessness — hair floats and fans outward in slow motion, fabrics billow and drift with fluid grace defying gravity. The color palette shifts from bright sun-lit turquoise near the surface to deeper blue-green tones below. Visibility extends into soft blue infinity creating a sense of vast serene openness. The overall effect is dreamlike, otherworldly, and hauntingly beautiful — a suspension between reality and fantasy where movement is slow, graceful, and free from terrestrial constraints.",
+  },
 ];
 
 export const Props = [

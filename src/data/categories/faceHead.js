@@ -160,6 +160,11 @@ export const FacialExpression = [
     title: "Vulnerable Exposed Emotional State",
     prompt: "Vulnerable and exposed emotional state",
   },
+  {
+    id: "facialexpression_020",
+    title: "Primal Scream Raw Intensity",
+    prompt: "Face mid-scream — mouth wide open with full teeth and tongue visible, jaw dropped to its maximum extension, every facial muscle engaged and strained with raw primal intensity. Eyes squeezed tight or blown wide with unfiltered emotion — veins subtly visible at temples and neck from the force of the expression. The scream reads as cathartic and visceral — not pain but release, a guttural expulsion of everything held inside. Tendons in the neck are taut and defined, nostrils flared, brow furrowed deeply. The expression is arresting and confrontational — it breaks the fourth wall of composed beauty photography with something honest, animal, and deeply human. Every line on the face tells a story of intensity — this is the opposite of a posed smile, it is emotion at full volume with nothing held back.",
+  },
 ];
 
 export const Eyes = [

@@ -222,6 +222,11 @@ export const Outfit = [
     title: "Faux Fur Earmuffs Turtleneck Winter",
     prompt: "Faux fur earmuffs paired with a sleek turtleneck in cool neutral tones - the plush texture of the fur contrasts with the smooth knit creating tactile visual interest - the winter styling conveys sophisticated warmth and high-fashion editorial elegance",
   },
+  {
+    id: "outfit_045",
+    title: "Natural Fibers Linen Cotton Silk",
+    prompt: "All clothing and fabrics are made exclusively from natural fibers — breathable linen with its characteristic slight crumple and lived-in texture, organic cotton with soft matte finish and visible weave, raw silk with subtle luster and gentle drape, fine merino wool with delicate hand-feel, or cashmere with its unmistakable cloud-like softness. The garments show the hallmarks of natural materials: the way linen relaxes into graceful creases rather than holding rigid structure, the soft grain of cotton canvas, the organic irregularity of hand-woven textiles. No synthetic sheen, no polyester smoothness, no nylon stretch — every surface reads as honest, tactile, and earth-derived. The natural fibers catch and diffuse light differently than synthetics, creating a warm matte quality with subtle depth that photographs with rich, authentic texture rather than flat plastic reflections.",
+  },
 ];
 
 export const OutfitTop = [
