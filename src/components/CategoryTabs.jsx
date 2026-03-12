@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CategoryTabs = ({
@@ -10,6 +10,7 @@ const CategoryTabs = ({
   selections,
   lockedCategories,
   includedCategories,
+  autoExcludedCategories = [],
   activeCategory,
   onCategorySelect,
   onToggleLock,
@@ -171,6 +172,7 @@ const CategoryTabs = ({
             const isActive = activeCategory === category;
             const isLocked = lockedCategories[category] || false;
             const isIncluded = includedCategories[category] !== false;
+            const isAutoExcluded = autoExcludedCategories.includes(category);
             const color = categoryColors[category] || '#8b5cf6';
             const options = categories[category] || [];
             const currentIndex = selections[category] || 0;
@@ -210,7 +212,7 @@ const CategoryTabs = ({
                     letterSpacing: '-0.01em',
                     cursor: 'pointer',
                     transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    opacity: isIncluded ? 1 : 0.5,
+                    opacity: (!isIncluded || isAutoExcluded) ? 0.5 : 1,
                     display: 'flex',
                     alignItems: 'center',
                     gap: '10px',
@@ -257,11 +259,34 @@ const CategoryTabs = ({
                       <Lock size={7} color="#09090b" />
                     </motion.div>
                   )}
+
+                  {isAutoExcluded && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      title="Covered by current Aesthetic — not included in prompt"
+                      style={{
+                        position: 'absolute',
+                        top: '-4px',
+                        left: '-4px',
+                        width: '14px',
+                        height: '14px',
+                        borderRadius: '50%',
+                        background: '#a855f7',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 1px 4px rgba(168, 85, 247, 0.4)'
+                      }}
+                    >
+                      <Sparkles size={7} color="#ffffff" />
+                    </motion.div>
+                  )}
                 </motion.button>
 
                 {/* Quick Actions - Only show on hover or when active */}
                 <AnimatePresence>
-                  {(isActive || isLocked || !isIncluded) && (
+                  {(isActive || isLocked || !isIncluded || isAutoExcluded) && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
@@ -273,6 +298,20 @@ const CategoryTabs = ({
                         marginTop: '2px'
                       }}
                     >
+                      {isAutoExcluded && (
+                        <span style={{
+                          fontSize: '9px',
+                          color: '#a855f7',
+                          fontWeight: '500',
+                          padding: '3px 6px',
+                          background: 'rgba(168, 85, 247, 0.1)',
+                          borderRadius: '4px',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          Covered by Aesthetic
+                        </span>
+                      )}
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

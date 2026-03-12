@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Loader2, 
-  Sparkles, 
-  Download, 
-  RefreshCw, 
-  Share2, 
-  ChevronDown, 
+import {
+  Loader2,
+  Sparkles,
+  Download,
+  RefreshCw,
+  Share2,
+  ChevronDown,
   ChevronUp,
   Zap,
   Image as ImageIcon,
@@ -62,6 +62,18 @@ const MODELS = [
   },
 ];
 
+// Classify an error message into an actionable type
+const classifyError = (errorMsg) => {
+  const msg = (errorMsg || '').toLowerCase();
+  if (msg.includes('insufficient credits') || msg.includes('not enough')) return 'credits';
+  if (msg.includes('rate limit') || msg.includes('too many requests') || msg.includes('429')) return 'rate_limit';
+  if (msg.includes('content policy') || msg.includes('safety') || msg.includes('moderation')) return 'content_policy';
+  if (msg.includes('timeout') || msg.includes('timed out') || msg.includes('aborted')) return 'timeout';
+  if (msg.includes('network') || msg.includes('fetch') || msg.includes('failed to fetch') || msg.includes('connection')) return 'network';
+  if (msg.includes('500') || msg.includes('502') || msg.includes('503') || msg.includes('server')) return 'server';
+  return 'unknown';
+};
+
 const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => {
   const { user } = useAuth();
   const [selectedModel, setSelectedModel] = useState(PROVIDERS.FLUX);
@@ -73,6 +85,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState('');
+  const [errorType, setErrorType] = useState(null); // 'credits' | 'rate_limit' | 'content_policy' | 'timeout' | 'network' | 'server' | 'unknown'
+  const [retryCountdown, setRetryCountdown] = useState(0);
+  const retryTimerRef = useRef(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [advancedOptions, setAdvancedOptions] = useState({
@@ -93,6 +108,13 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const progressPercent = numVariations > 0
     ? Math.round((generatingCount / numVariations) * 100)
     : 0;
+
+  // Cleanup retry timer on unmount
+  useEffect(() => {
+    return () => {
+      if (retryTimerRef.current) clearInterval(retryTimerRef.current);
+    };
+  }, []);
 
   // Check if model is available
   const isModelAvailable = useCallback((modelId) => {
@@ -240,6 +262,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
     setGenerating(true);
     setGeneratingCount(0);
     setError('');
+    setErrorType(null);
+    setRetryCountdown(0);
+    if (retryTimerRef.current) clearInterval(retryTimerRef.current);
     setSuccessMessage('');
     setGeneratedImage(null);
     setGeneratedImages([]);
@@ -353,15 +378,42 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
     } catch (err) {
       logger.error('Generation error:', err);
       const errorMsg = getErrorMessage(err);
-      
-      if (errorMsg.includes('Insufficient credits')) {
-        setError('Insufficient credits. Please purchase more credits to continue.');
-      } else if (errorMsg.includes('Rate limit')) {
-        setError('Too many requests. Please wait a moment before generating again.');
-      } else if (errorMsg.includes('content policy') || errorMsg.includes('Content policy')) {
-        setError('Your prompt violates content policy. Please modify your prompt.');
-      } else {
-        setError(errorMsg || 'Failed to generate images. Please try again.');
+      const type = classifyError(errorMsg);
+      setErrorType(type);
+
+      switch (type) {
+        case 'credits':
+          setError('Insufficient credits. Please purchase more credits to continue.');
+          break;
+        case 'rate_limit': {
+          setError('Too many requests. Please wait a moment before trying again.');
+          // Start a 15-second countdown so user knows when they can retry
+          setRetryCountdown(15);
+          retryTimerRef.current = setInterval(() => {
+            setRetryCountdown(prev => {
+              if (prev <= 1) {
+                clearInterval(retryTimerRef.current);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+          break;
+        }
+        case 'content_policy':
+          setError('Your prompt may violate content policy. Try adjusting the wording.');
+          break;
+        case 'timeout':
+          setError('The request timed out. The server may be busy \u2014 try again or choose a different model.');
+          break;
+        case 'network':
+          setError('Network error. Check your internet connection and try again.');
+          break;
+        case 'server':
+          setError('The AI service is temporarily unavailable. Try a different model or wait a moment.');
+          break;
+        default:
+          setError(errorMsg || 'Failed to generate images. Please try again.');
       }
     } finally {
       setGenerating(false);
@@ -470,16 +522,23 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
         setTimeout(() => setSuccessMessage(''), 3000);
       }
     } catch (err) {
-      console.error('Regeneration error:', err);
+      logger.error('Regeneration error:', err);
       const errorMsg = getErrorMessage(err);
-      if (errorMsg.includes('Insufficient credits')) {
-        setError('Insufficient credits. Please purchase more credits to continue.');
-      } else if (errorMsg.includes('Rate limit')) {
-        setError('Too many requests. Please wait a moment before generating again.');
-      } else if (errorMsg.includes('content policy')) {
-        setError('Your prompt violates content policy. Please modify your prompt.');
-      } else {
-        setError(errorMsg || 'Failed to regenerate image. Please try again.');
+      const type = classifyError(errorMsg);
+      setErrorType(type);
+
+      switch (type) {
+        case 'credits':
+          setError('Insufficient credits. Please purchase more credits to continue.');
+          break;
+        case 'rate_limit':
+          setError('Too many requests. Please wait a moment before trying again.');
+          break;
+        case 'content_policy':
+          setError('Your prompt may violate content policy. Try adjusting the wording.');
+          break;
+        default:
+          setError(errorMsg || 'Failed to regenerate image. Please try again.');
       }
     } finally {
       setGenerating(false);
@@ -668,36 +727,99 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
             exit={{ opacity: 0, y: -10 }}
             style={{
               marginBottom: '24px',
-              padding: '12px 16px',
+              padding: '14px 16px',
               background: 'rgba(239, 68, 68, 0.1)',
               border: '1px solid rgba(239, 68, 68, 0.3)',
               borderRadius: '8px',
               color: '#fca5a5',
               fontSize: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
             }}
           >
-            <AlertCircle size={16} />
-            <span>{error}</span>
-            <button
-              onClick={() => setError('')}
-              style={{
-                marginLeft: 'auto',
-                background: 'transparent',
-                border: 'none',
-                color: '#fca5a5',
-                cursor: 'pointer',
-                padding: '8px',
-                minWidth: '36px',
-                minHeight: '36px',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <X size={16} />
-            </button>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+              <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+              <div style={{ flex: 1 }}>
+                <span>{error}</span>
+                {/* Actionable suggestions based on error type */}
+                {errorType === 'rate_limit' && retryCountdown > 0 && (
+                  <div style={{ marginTop: '8px', fontSize: '12px', color: 'rgba(252, 165, 165, 0.7)' }}>
+                    You can retry in {retryCountdown}s...
+                  </div>
+                )}
+                {(errorType === 'server' || errorType === 'timeout') && (
+                  <div style={{ marginTop: '8px', fontSize: '12px', color: 'rgba(252, 165, 165, 0.7)' }}>
+                    Try switching to{' '}
+                    {MODELS.filter(m => m.id !== selectedModel).slice(0, 2).map((m, i, arr) => (
+                      <span key={m.id}>
+                        <button
+                          onClick={() => { setSelectedModel(m.id); setError(''); setErrorType(null); }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#a78bfa',
+                            cursor: 'pointer',
+                            padding: 0,
+                            fontSize: '12px',
+                            textDecoration: 'underline',
+                          }}
+                        >
+                          {m.name}
+                        </button>
+                        {i < arr.length - 1 ? ' or ' : ''}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {/* Retry button for retryable errors */}
+                {['rate_limit', 'timeout', 'network', 'server', 'unknown'].includes(errorType) && (
+                  <button
+                    onClick={() => {
+                      setError('');
+                      setErrorType(null);
+                      setRetryCountdown(0);
+                      if (retryTimerRef.current) clearInterval(retryTimerRef.current);
+                      handleGenerate();
+                    }}
+                    disabled={generating || (errorType === 'rate_limit' && retryCountdown > 0)}
+                    style={{
+                      marginTop: '10px',
+                      padding: '6px 14px',
+                      background: 'rgba(139, 92, 246, 0.15)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      borderRadius: '6px',
+                      color: '#a78bfa',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      cursor: (errorType === 'rate_limit' && retryCountdown > 0) ? 'not-allowed' : 'pointer',
+                      opacity: (errorType === 'rate_limit' && retryCountdown > 0) ? 0.5 : 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    <RefreshCw size={12} />
+                    {errorType === 'rate_limit' && retryCountdown > 0
+                      ? `Retry in ${retryCountdown}s`
+                      : 'Retry'}
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => { setError(''); setErrorType(null); }}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#fca5a5',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
           </motion.div>
         )}
 
