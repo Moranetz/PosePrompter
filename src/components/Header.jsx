@@ -5,7 +5,7 @@ import { resetUserAccountData, getUserProfile } from '../firestoreService';
 import AuthModal from './AuthModal';
 import CreditBalance from './CreditBalance';
 
-const Header = ({ onOpenVisibilitySettings, onCyclePreset, activePresetIndex, presetCount, activePresetTitle }) => {
+const Header = ({ onOpenVisibilitySettings, onCyclePreset, activePresetIndex, presetCount, activePresetTitle, activePresetSetsLabel }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
@@ -323,7 +323,11 @@ const Header = ({ onOpenVisibilitySettings, onCyclePreset, activePresetIndex, pr
                   maxWidth: '180px',
                   fontWeight: activePresetIndex >= 0 ? '500' : '400',
                 }}
-                title={activePresetTitle || 'Click arrows to cycle presets'}
+                title={
+                  activePresetIndex >= 0 && activePresetTitle
+                    ? (activePresetSetsLabel ? `${activePresetTitle} — Sets: ${activePresetSetsLabel}` : activePresetTitle)
+                    : 'Click arrows to cycle presets'
+                }
               >
                 {activePresetIndex >= 0
                   ? `${activePresetIndex + 1}/${presetCount} ${activePresetTitle}`

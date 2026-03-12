@@ -597,12 +597,9 @@ const uploadImageToStorage = async (userId, imageUrl, imageId) => {
       const fileName = `users/${userId}/generations/${imageId}.png`;
       const file = bucket.file(fileName);
       
-      // Extract content-type from response headers
-      const contentType = response.headers.get('content-type') || 'image/png';
-      
       await file.save(Buffer.from(buffer), {
         metadata: {
-          contentType: contentType,
+          contentType: contentType || 'image/png',
         },
       });
       

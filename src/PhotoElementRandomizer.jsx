@@ -1718,6 +1718,18 @@ const PhotoElementRandomizer = () => {
     loadPreset(nextIndex);
   }, [activePresetIndex, loadPreset]);
 
+  // Which categories the active preset sets (for UX: show "Sets: Aesthetic, ..." and category indicators)
+  const activePresetCategoryKeys = useMemo(() => {
+    if (activePresetIndex < 0) return [];
+    const preset = presets[activePresetIndex];
+    return preset ? Object.keys(preset.entries) : [];
+  }, [activePresetIndex]);
+  const activePresetSetsLabel = useMemo(() => {
+    return activePresetCategoryKeys
+      .map((k) => categoryDisplayNames[k] || k)
+      .join(', ');
+  }, [activePresetCategoryKeys, categoryDisplayNames]);
+
   // Edit a saved set
   const handleEditSet = useCallback((savedSet) => {
     setEditingSet(savedSet);
@@ -2141,6 +2153,7 @@ const PhotoElementRandomizer = () => {
           activePresetIndex={activePresetIndex}
           presetCount={presets.length}
           activePresetTitle={activePresetIndex >= 0 ? presets[activePresetIndex]?.title : null}
+          activePresetSetsLabel={activePresetSetsLabel || null}
         />
 
         {/* Main app area – replicates three-column generator layout:
@@ -2198,6 +2211,7 @@ const PhotoElementRandomizer = () => {
               onToggleInclude={toggleInclude}
               isLoggedIn={!!user}
               onAddCustomOption={handleAddCustomOption}
+              presetCategoryKeys={activePresetCategoryKeys}
               onExpandedGroupChange={(groupIndex) => {
                 setExpandedGroup(groupIndex);
                 // Auto-show modal when Clothes & Styling group (index 3) is expanded for first time

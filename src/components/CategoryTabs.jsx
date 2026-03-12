@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Sparkles } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Sparkles, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CategoryTabs = ({
@@ -19,7 +19,8 @@ const CategoryTabs = ({
   onAddCustomOption,
   onExpandedGroupChange,
   expandedGroup: expandedGroupProp,
-  getCategoryFilteredCount
+  getCategoryFilteredCount,
+  presetCategoryKeys = [],
 }) => {
   // Use prop if provided, otherwise use internal state
   const [internalExpandedGroup, setInternalExpandedGroup] = useState(2); // Start with "Aesthetic & Style" (most used)
@@ -173,6 +174,7 @@ const CategoryTabs = ({
             const isLocked = lockedCategories[category] || false;
             const isIncluded = includedCategories[category] !== false;
             const isAutoExcluded = autoExcludedCategories.includes(category);
+            const isSetByPreset = presetCategoryKeys.includes(category);
             const color = categoryColors[category] || '#8b5cf6';
             const options = categories[category] || [];
             const currentIndex = selections[category] || 0;
@@ -223,6 +225,13 @@ const CategoryTabs = ({
                     position: 'relative'
                   }}
                 >
+                  {isSetByPreset && (
+                    <BookOpen
+                      size={12}
+                      style={{ color: 'rgba(255, 255, 255, 0.5)', flexShrink: 0 }}
+                      title="Set by current preset"
+                    />
+                  )}
                   <span style={{ whiteSpace: 'nowrap' }}>{categoryDisplayNames[category]}</span>
                   
                   {hasSelection && (
