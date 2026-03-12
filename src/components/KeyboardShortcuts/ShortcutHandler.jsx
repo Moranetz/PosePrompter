@@ -20,6 +20,8 @@ const ShortcutHandler = ({
   onToggleLock,
   onToggleInclude,
   onToggleFavorite,
+  onUndo,
+  onRedo,
   onEscape,
   enabled = true,
 }) => {
@@ -118,6 +120,18 @@ const ShortcutHandler = ({
         return;
       }
 
+      // Undo / Redo (Ctrl+Z / Ctrl+Y or Cmd+Z / Cmd+Shift+Z)
+      if ((event.ctrlKey || event.metaKey) && event.key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        onUndo?.();
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && (event.key === 'y' || (event.key === 'z' && event.shiftKey))) {
+        event.preventDefault();
+        onRedo?.();
+        return;
+      }
+
       // Escape
       if (matchesShortcut(event, KEYBOARD_SHORTCUTS.ESCAPE)) {
         event.preventDefault();
@@ -141,6 +155,8 @@ const ShortcutHandler = ({
     onToggleLock,
     onToggleInclude,
     onToggleFavorite,
+    onUndo,
+    onRedo,
     onEscape,
   ]);
 
