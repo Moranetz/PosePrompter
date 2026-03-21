@@ -6,9 +6,19 @@ struct PosePrompterApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView()
-                .environment(promptState)
-                .preferredColorScheme(.dark)
+            TabView {
+                MainView()
+                    .tabItem {
+                        Label("Builder", systemImage: "wand.and.stars")
+                    }
+                SettingsView()
+                    .tabItem {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+            }
+            .tint(Theme.selectedAccent)
+            .environment(promptState)
+            .preferredColorScheme(.dark)
         }
     }
 }

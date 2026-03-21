@@ -23,7 +23,7 @@ struct MainView: View {
                     .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("PosePrompter")
+            .navigationTitle("Pose Prompter")
             .navigationBarTitleDisplayMode(.large)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .sheet(item: $selectedCategory) { category in
