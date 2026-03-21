@@ -38,11 +38,7 @@ struct GlassCardModifier: ViewModifier {
         content
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(.ultraThinMaterial.opacity(0.5))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .fill(Theme.cardBackground)
-                    )
+                    .fill(Theme.cardBackground)
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .stroke(Theme.cardBorder, lineWidth: 0.5)

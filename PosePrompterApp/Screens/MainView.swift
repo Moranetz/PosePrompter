@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(PromptState.self) private var state
-    @State private var expandedGroups: Set<String> = Set(CategoryGroup.allCases.map(\.rawValue))
+    @State private var expandedGroups: Set<String> = ["Body"]  // Only first group expanded by default
     @State private var showPromptPreview = false
     @State private var copiedFeedback = false
     @State private var selectedCategory: PromptCategory?
@@ -132,7 +132,7 @@ struct MainView: View {
     // MARK: - Category Groups List
 
     private var categoryGroupsList: some View {
-        VStack(spacing: 12) {
+        LazyVStack(spacing: 12) {
             ForEach(CategoryGroup.allCases, id: \.rawValue) { group in
                 categoryGroupSection(group)
             }
