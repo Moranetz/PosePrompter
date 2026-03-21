@@ -15,8 +15,11 @@ struct SettingsView: View {
                         // Stats
                         statsSection
 
-                        // About
-                        aboutSection
+                        // Prompts
+                        promptsSection
+
+                        // Links
+                        linksSection
 
                         // Actions
                         actionsSection
@@ -88,27 +91,17 @@ struct SettingsView: View {
         .glassCard(cornerRadius: 12)
     }
 
-    private var aboutSection: some View {
+    private var promptsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("About", systemImage: "info.circle")
+            Label("Your Prompts", systemImage: "text.quote")
                 .font(.headline.weight(.bold))
                 .foregroundStyle(.white)
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Pose Prompter")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
-                Text("A creative tool for generating detailed photo prompts. Select from 32 categories covering body poses, facial expressions, styling, camera settings, and more — then combine them into a complete prompt for AI image generation.")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.5))
-                    .lineSpacing(3)
-            }
-            .padding(14)
-            .glassCard(cornerRadius: 12)
-
             VStack(alignment: .leading, spacing: 6) {
+                infoRow(label: "Available Prompts", value: "\(AllCategories.allCategories.reduce(0) { $0 + $1.options.count })")
                 infoRow(label: "Categories", value: "\(AllCategories.allCategories.count)")
-                infoRow(label: "Total Prompts", value: "\(AllCategories.allCategories.reduce(0) { $0 + $1.options.count })")
+                infoRow(label: "Groups Active", value: "\(activeGroupCount)/\(CategoryGroup.allCases.count)")
+                infoRow(label: "Prompt Length", value: promptWordCount)
                 infoRow(label: "Version", value: "1.0.0")
             }
             .padding(14)
@@ -116,6 +109,19 @@ struct SettingsView: View {
         }
         .padding(16)
         .glassCard()
+    }
+
+    private var activeGroupCount: Int {
+        CategoryGroup.allCases.filter { group in
+            group.categories.contains { state.selectedOption(for: $0.id) != nil }
+        }.count
+    }
+
+    private var promptWordCount: String {
+        let words = state.generatedPrompt
+            .split(separator: " ")
+            .count
+        return words == 0 ? "—" : "\(words) words"
     }
 
     private func infoRow(label: String, value: String) -> some View {
@@ -127,6 +133,55 @@ struct SettingsView: View {
             Text(value)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white.opacity(0.8))
+        }
+    }
+
+    private var linksSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Legal", systemImage: "doc.text")
+                .font(.headline.weight(.bold))
+                .foregroundStyle(.white)
+
+            VStack(spacing: 1) {
+                linkRow(
+                    title: "Website",
+                    icon: "globe",
+                    url: "https://poseprompter.com"
+                )
+                linkRow(
+                    title: "Terms of Service",
+                    icon: "doc.plaintext",
+                    url: "https://poseprompter.com/#terms"
+                )
+                linkRow(
+                    title: "Privacy Policy",
+                    icon: "hand.raised",
+                    url: "https://poseprompter.com/#privacy"
+                )
+            }
+            .glassCard(cornerRadius: 12)
+        }
+        .padding(16)
+        .glassCard()
+    }
+
+    private func linkRow(title: String, icon: String, url: String) -> some View {
+        Link(destination: URL(string: url)!) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.selectedAccent)
+                    .frame(width: 24)
+                Text(title)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.white)
+                Spacer()
+                Image(systemName: "arrow.up.right")
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.3))
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
         }
     }
 

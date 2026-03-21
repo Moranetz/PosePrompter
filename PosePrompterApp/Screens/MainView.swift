@@ -2,14 +2,14 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(PromptState.self) private var state
-    @State private var expandedGroups: Set<String> = ["Body"]  // Only first group expanded by default
+    @State private var expandedGroups: Set<String> = ["Body"]
     @State private var showPromptPreview = false
     @State private var copiedFeedback = false
-    @State private var selectedCategory: PromptCategory?
+    @State private var activeCategory: PromptCategory?
 
     var body: some View {
         NavigationStack {
-            ZStack {
+            ZStack(alignment: .bottom) {
                 Theme.backgroundGradient
                     .ignoresSafeArea()
 
@@ -20,20 +20,27 @@ struct MainView: View {
                         categoryGroupsList
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 40)
+                    .padding(.bottom, activeCategory != nil ? 120 : 40)
+                }
+
+                // Bottom word button bar
+                if let category = activeCategory {
+                    WordButtonBar(
+                        category: category,
+                        state: state,
+                        onDismiss: { activeCategory = nil }
+                    )
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
             .navigationTitle("Pose Prompter")
             .navigationBarTitleDisplayMode(.large)
             .toolbarColorScheme(.dark, for: .navigationBar)
-            .sheet(item: $selectedCategory) { category in
-                CategoryPickerView(category: category)
-                    .environment(state)
-            }
             .sheet(isPresented: $showPromptPreview) {
                 PromptPreviewView()
                     .environment(state)
             }
+            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: activeCategory?.id)
         }
     }
 
@@ -118,6 +125,7 @@ struct MainView: View {
             Button {
                 withAnimation(.spring(response: 0.3)) {
                     state.clearAll()
+                    activeCategory = nil
                 }
             } label: {
                 Label("Clear", systemImage: "xmark.circle")
@@ -199,9 +207,16 @@ struct MainView: View {
     private func categoryRow(_ category: PromptCategory, groupColor: Color) -> some View {
         let selected = state.selectedOption(for: category.id)
         let isLocked = state.isLocked(category.id)
+        let isActive = activeCategory?.id == category.id
 
         return Button {
-            selectedCategory = category
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                if isActive {
+                    activeCategory = nil
+                } else {
+                    activeCategory = category
+                }
+            }
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: category.icon)
@@ -212,7 +227,7 @@ struct MainView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(category.name)
                         .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(isActive ? groupColor : .white)
                     if let sel = selected {
                         Text(sel.title)
                             .font(.caption)
@@ -251,13 +266,16 @@ struct MainView: View {
                 }
                 .buttonStyle(.plain)
 
-                Image(systemName: "chevron.right")
+                Image(systemName: isActive ? "chevron.down" : "chevron.right")
                     .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.2))
+                    .foregroundStyle(isActive ? groupColor : .white.opacity(0.2))
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(selected != nil ? groupColor.opacity(0.06) : Color.clear)
+            .background(
+                isActive ? groupColor.opacity(0.1) :
+                selected != nil ? groupColor.opacity(0.06) : Color.clear
+            )
         }
         .buttonStyle(.plain)
     }
@@ -270,6 +288,140 @@ struct MainView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             copiedFeedback = false
         }
+    }
+}
+
+// MARK: - Word Button Bar (bottom bar with scrolling option pills)
+
+struct WordButtonBar: View {
+    let category: PromptCategory
+    let state: PromptState
+    let onDismiss: () -> Void
+
+    private var selectedIndex: Int? {
+        if let idx = state.selections[category.id] {
+            return idx
+        }
+        return nil
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Drag handle + category name
+            HStack {
+                Image(systemName: category.icon)
+                    .font(.caption)
+                    .foregroundStyle(category.groupColor)
+                Text(category.name)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.8))
+
+                Spacer()
+
+                // Clear selection
+                Button {
+                    withAnimation(.spring(response: 0.2)) {
+                        state.clear(category: category.id)
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+                .buttonStyle(.plain)
+
+                // Randomize
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        state.randomize(category: category.id)
+                    }
+                } label: {
+                    Image(systemName: "dice.fill")
+                        .font(.caption)
+                        .foregroundStyle(category.groupColor)
+                }
+                .buttonStyle(.plain)
+
+                // Close
+                Button {
+                    onDismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.white.opacity(0.5))
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
+            .padding(.bottom, 6)
+
+            // Scrolling word buttons
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(Array(category.options.enumerated()), id: \.element.id) { index, option in
+                            let isSelected = index == selectedIndex
+
+                            Button {
+                                withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                                    if isSelected {
+                                        state.clear(category: category.id)
+                                    } else {
+                                        state.select(category: category.id, index: index)
+                                    }
+                                }
+                            } label: {
+                                Text(option.title)
+                                    .font(.caption.weight(isSelected ? .semibold : .regular))
+                                    .foregroundStyle(isSelected ? .white : .white.opacity(0.6))
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        Capsule()
+                                            .fill(isSelected ? category.groupColor.opacity(0.3) : Color.white.opacity(0.06))
+                                    )
+                                    .overlay(
+                                        Capsule()
+                                            .stroke(isSelected ? category.groupColor.opacity(0.5) : Color.white.opacity(0.08), lineWidth: 1)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                            .id(index)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+                }
+                .onChange(of: selectedIndex) { _, newValue in
+                    if let idx = newValue {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            proxy.scrollTo(idx, anchor: .center)
+                        }
+                    }
+                }
+                .onAppear {
+                    if let idx = selectedIndex {
+                        proxy.scrollTo(idx, anchor: .center)
+                    }
+                }
+            }
+        }
+        .background(
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .environment(\.colorScheme, .dark)
+                .overlay(
+                    Rectangle()
+                        .fill(Color.black.opacity(0.4))
+                )
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill(category.groupColor.opacity(0.2))
+                        .frame(height: 0.5)
+                }
+        )
+        .ignoresSafeArea(.container, edges: .bottom)
     }
 }
 

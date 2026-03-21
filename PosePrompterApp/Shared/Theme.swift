@@ -1,35 +1,44 @@
 import SwiftUI
 
 enum Theme {
-    // MARK: - Colors
+    // MARK: - Colors — Halide-inspired: pure black + warm coral accent
+
+    // Background: pure black, no gradients
+    static let background = Color.black
     static let backgroundGradient = LinearGradient(
-        colors: [
-            Color(red: 0.06, green: 0.04, blue: 0.15),
-            Color(red: 0.08, green: 0.06, blue: 0.22),
-            Color(red: 0.05, green: 0.10, blue: 0.25)
-        ],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
+        colors: [Color.black, Color.black],
+        startPoint: .top,
+        endPoint: .bottom
     )
 
-    static let cardBackground = Color.white.opacity(0.07)
-    static let cardBorder = Color.white.opacity(0.12)
-    static let selectedAccent = Color(red: 0.55, green: 0.40, blue: 1.0)
-    static let promptPreviewBg = Color(red: 0.12, green: 0.08, blue: 0.28)
+    // Surfaces
+    static let cardBackground = Color(white: 0.09)
+    static let cardBorder = Color(white: 0.16)
+    static let surfaceRaised = Color(white: 0.12)
 
-    // MARK: - Group Colors
-    static let bodyColor = Color(red: 0.90, green: 0.45, blue: 0.45)
-    static let faceColor = Color(red: 0.95, green: 0.65, blue: 0.40)
-    static let styleColor = Color(red: 0.55, green: 0.40, blue: 1.0)
-    static let outfitColor = Color(red: 0.95, green: 0.50, blue: 0.70)
-    static let cameraColor = Color(red: 0.30, green: 0.75, blue: 0.90)
-    static let sceneColor = Color(red: 0.40, green: 0.85, blue: 0.55)
+    // Accent: warm coral
+    static let accent = Color(red: 0.91, green: 0.455, blue: 0.38)  // #E87461
+    static let selectedAccent = accent
 
-    // MARK: - Glass Card Modifier
-    static func glassCard(cornerRadius: CGFloat = 16) -> some ViewModifier {
-        GlassCardModifier(cornerRadius: cornerRadius)
-    }
+    // Prompt preview
+    static let promptPreviewBg = Color(white: 0.06)
+
+    // Text
+    static let textPrimary = Color(white: 0.92)
+    static let textSecondary = Color(white: 0.55)
+    static let textTertiary = Color(white: 0.32)
+
+    // MARK: - Group Colors — muted, desaturated, single-hue variations
+    // All derived from the coral accent at different saturations
+    static let bodyColor = Color(red: 0.91, green: 0.455, blue: 0.38)     // coral (accent)
+    static let faceColor = Color(red: 0.85, green: 0.55, blue: 0.42)      // warm peach
+    static let styleColor = Color(red: 0.78, green: 0.52, blue: 0.48)     // dusty rose
+    static let outfitColor = Color(red: 0.72, green: 0.48, blue: 0.44)    // muted mauve
+    static let cameraColor = Color(red: 0.65, green: 0.52, blue: 0.50)    // warm grey
+    static let sceneColor = Color(red: 0.60, green: 0.56, blue: 0.52)     // stone
 }
+
+// MARK: - Card Modifier — clean, no glass, just subtle surface
 
 struct GlassCardModifier: ViewModifier {
     let cornerRadius: CGFloat
