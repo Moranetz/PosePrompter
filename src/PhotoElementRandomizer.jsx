@@ -247,12 +247,8 @@ const PhotoElementRandomizer = () => {
   const [editingSet, setEditingSet] = useState(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(null); // set ID or null
   const [showFirstTimeExperience, setShowFirstTimeExperience] = useState(() => {
-    // If the user is already authenticated, skip onboarding entirely
-    if (user?.uid) {
-      localStorage.setItem(ONBOARDING_STORAGE_KEY, 'true');
-      return false;
-    }
-    // Otherwise, fall back to stored preference
+    // Onboarding disabled — users go straight to the app
+    return false;
     const shouldShow = localStorage.getItem(ONBOARDING_STORAGE_KEY) !== 'true';
     if (shouldShow) {
       document.body.classList.add('intro-active');
