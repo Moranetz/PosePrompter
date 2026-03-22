@@ -2375,6 +2375,55 @@ const PhotoElementRandomizer = () => {
               />
         </div>
 
+            {/* Desktop Prompt Preview — shows generated prompt with copy button */}
+            {!isMobileView && (
+              <div style={{
+                margin: '12px 0 0',
+                padding: '14px 16px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '10px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#a1a1aa', letterSpacing: '-0.01em' }}>
+                    Generated Prompt
+                  </span>
+                  <span style={{ flex: 1 }} />
+                  {generatedPrompt && (
+                    <>
+                      <span style={{ fontSize: 11, color: '#52525b', marginRight: 12 }}>
+                        {generatedPrompt.split(' ').length} words
+                      </span>
+                      <button
+                        onClick={copyToClipboard}
+                        style={{
+                          background: 'none', border: '1px solid rgba(255,255,255,0.08)',
+                          borderRadius: 6, padding: '4px 10px', cursor: 'pointer',
+                          fontSize: 11, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4,
+                          color: copied ? '#22c55e' : '#a1a1aa',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {copied ? '✓ Copied' : '⎘ Copy'}
+                      </button>
+                    </>
+                  )}
+                </div>
+                {generatedPrompt ? (
+                  <p style={{
+                    fontSize: 13, lineHeight: 1.6, color: '#d4d4d8', margin: 0,
+                    maxHeight: 80, overflowY: 'auto',
+                  }}>
+                    {generatedPrompt}
+                  </p>
+                ) : (
+                  <p style={{ fontSize: 13, color: '#52525b', fontStyle: 'italic', margin: 0 }}>
+                    Select categories or hit Randomize to build your prompt...
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Mobile Prompt Preview — visible only on mobile (hidden on desktop via CSS) */}
             <div className="mobile-prompt-preview">
               <LivePromptPreview
