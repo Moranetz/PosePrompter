@@ -8,6 +8,8 @@ import { db } from './firebase-config';
 import { useAuth } from './contexts/UserContext';
 import { logger } from './utils/logger.js';
 import CategoryTabs from './components/CategoryTabs';
+import CategoryChips from './components/CategoryChips';
+import LivePromptPreview from './components/LivePromptPreview';
 import FigureCanvas from './components/ArticulatedFigure/FigureCanvas';
 import WordButtonBar from './components/WordButtons/WordButtonBar';
 import Header from './components/Header';
@@ -57,6 +59,7 @@ import ShortcutHandler from './components/KeyboardShortcuts/ShortcutHandler';
 import ActionsSidebar from './components/ActionsSidebar';
 import ImageToPromptModal from './components/ImageToPromptModal';
 import AuthModal from './components/AuthModal';
+import MobileView from './components/MobileView';
 import categories from './data/categories';
 import presets from './data/presets';
 import { categoryDisplayNames, categoryColors, categoryGroupDefinitions, comprehensiveAestheticOverrides } from './data/categoryRegistry';
@@ -99,6 +102,17 @@ const PhotoElementRandomizer = () => {
   const [enabledBodyPoseCategories, setEnabledBodyPoseCategories] = useState([]);
   const [bodyPoseModalOpen, setBodyPoseModalOpen] = useState(false);
   const [hasCheckedBodyPosePreferences, setHasCheckedBodyPosePreferences] = useState(false);
+
+  // Mobile sidebar toggle
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Mobile detection
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 900);
+  useEffect(() => {
+    const handler = () => setIsMobileView(window.innerWidth <= 900);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   // Category groups - built from registry, filtered by user preferences
   const enabledCategoriesMap = useMemo(() => ({
@@ -737,12 +751,17 @@ const PhotoElementRandomizer = () => {
   const handleCategorySelect = useCallback((category) => {
     // Allow null to clear selection when switching to empty groups
     setActiveCategory(category || null);
-    
+
+    // Close mobile sidebar when a category is tapped
+    if (window.innerWidth <= 768 && category) {
+      setMobileSidebarOpen(false);
+    }
+
     // Track category usage for personalization (only if category exists)
     if (user?.uid && category) {
       trackCategoryUsage(user.uid, category);
     }
-    
+
     // Visual feedback for category switch (only if category exists)
     if (category) {
       triggerFeedback(FEEDBACK_TYPES.CATEGORY_SWITCH, {
@@ -2108,6 +2127,30 @@ const PhotoElementRandomizer = () => {
   // Show zoom for Face & Head (index 4)
   const isFaceAndHead = expandedGroup === 4;
 
+  // ─── Mobile: render iOS-style layout ───
+  if (isMobileView) {
+    return (
+      <MobileView
+        selections={selections}
+        lockedCategories={lockedCategories}
+        mergedCategories={mergedCategories}
+        onSelectOption={(catKey, index) => selectOption(catKey, index)}
+        onRandomizeAll={randomizeAll}
+        onRandomizeCategory={(catKey) => {
+          const options = mergedCategories[catKey];
+          if (options?.length) selectOption(catKey, Math.floor(Math.random() * options.length));
+        }}
+        onToggleLock={toggleLock}
+        onClearAll={() => { setSelections({}); setLockedCategories({}); }}
+        onClearCategory={(catKey) => selectOption(catKey, null)}
+        activePresetIndex={activePresetIndex}
+        presetCount={presets.length}
+        activePresetTitle={activePresetIndex >= 0 ? presets[activePresetIndex]?.title : null}
+        onCyclePreset={cyclePreset}
+      />
+    );
+  }
+
   return (
     <>
       <ShortcutHandler
@@ -2163,7 +2206,14 @@ const PhotoElementRandomizer = () => {
             Existing controls and buttons keep their relative positions. */}
         <div className="app-main">
           {/* Left navigation rail (non-functional for now, layout only) */}
-          <aside className="app-sidebar">
+          {/* Mobile sidebar backdrop */}
+          {mobileSidebarOpen && (
+            <div
+              className={`mobile-sidebar-backdrop ${mobileSidebarOpen ? 'visible' : ''}`}
+              onClick={() => setMobileSidebarOpen(false)}
+            />
+          )}
+          <aside className={`app-sidebar ${mobileSidebarOpen ? 'mobile-sidebar-open' : ''}`}>
             <div className="app-sidebar-logo">
               <span className="app-sidebar-logo-mark" />
               <span className="app-sidebar-logo-text">Studio</span>
@@ -2324,6 +2374,32 @@ const PhotoElementRandomizer = () => {
                 showPackages={!!__ENABLE_PACKAGES__}
               />
         </div>
+
+            {/* Mobile Prompt Preview — visible only on mobile (hidden on desktop via CSS) */}
+            <div className="mobile-prompt-preview">
+              <LivePromptPreview
+                generatedPrompt={generatedPrompt}
+                onCopy={copyToClipboard}
+                copied={copied}
+              />
+            </div>
+
+            {/* Mobile Category Chips — horizontal scrollable, visible only on mobile */}
+            <div className="mobile-category-chips">
+              <CategoryChips
+                categoryDisplayNames={categoryDisplayNames}
+                categoryColors={categoryColors}
+                categories={mergedCategories}
+                selections={selections}
+                lockedCategories={lockedCategories}
+                includedCategories={includedCategories}
+                activeCategory={activeCategory}
+                onCategorySelect={handleCategorySelect}
+                onToggleLock={toggleLock}
+                onToggleInclude={toggleInclude}
+              />
+            </div>
+
           </div>
         </div>
       </div>
@@ -4284,39 +4360,19 @@ const PhotoElementRandomizer = () => {
           }
         }
 
-        /* Responsive Design */
-        @media (max-width: 1199px) {
-          .sidebar-container {
-            width: 60px !important;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .sidebar-container {
-            position: fixed;
-            left: -280px;
-            height: 100vh;
-            z-index: 1000;
-            transition: left 0.3s ease;
-          }
-          
-          .sidebar-container.mobile-open {
-            left: 0;
-          }
-
-          .action-buttons-mobile {
-            position: fixed !important;
-            bottom: 100px !important;
-            right: 16px !important;
-            flex-direction: column !important;
-          }
-
-          .action-buttons-mobile button {
-            width: 100%;
-            min-width: 140px;
-          }
-        }
+        /* Responsive — handled in styles.css */
       `}</style>
+
+      {/* Mobile Categories FAB - opens sidebar on mobile */}
+      <button
+        className="mobile-categories-fab"
+        onClick={() => setMobileSidebarOpen(prev => !prev)}
+        aria-label="Open categories"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+        </svg>
+      </button>
 
       {/* Word Buttons Bar - Fixed at bottom of page (outside layout-container) */}
       {currentCategoryOptions.length > 0 && !statsModalOpen && !saveModalOpen && !addOptionModalOpen && !installedPackagesModalOpen && !createSetModalOpen && !showFirstTimeExperience && !buyCreditsModalOpen && (

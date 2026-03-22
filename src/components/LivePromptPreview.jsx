@@ -14,14 +14,11 @@ const LivePromptPreview = ({ generatedPrompt, onCopy, copied }) => {
 
   return (
     <motion.div
+      className="live-prompt-preview"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       style={{
-        position: 'absolute',
-        bottom: '12px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '90%',
+        width: '100%',
         maxWidth: '500px',
         background: 'rgba(18, 18, 26, 0.92)',
         backdropFilter: 'blur(12px)',
@@ -29,7 +26,8 @@ const LivePromptPreview = ({ generatedPrompt, onCopy, copied }) => {
         borderRadius: '10px',
         padding: '10px 12px',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-        zIndex: 10
+        zIndex: 10,
+        margin: '0 auto'
       }}
     >
       <div style={{

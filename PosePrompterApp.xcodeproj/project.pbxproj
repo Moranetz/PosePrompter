@@ -15,6 +15,26 @@
 		AA000006 /* PromptPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000006; };
 		AA000007 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007; };
 		AA000008 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008; };
+		AA000009 /* DiscoverPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009; };
+		AA000010 /* DiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000010; };
+		AA000011 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000011; };
+		AA000012 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000012; };
+		AA000013 /* PromptHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000013; };
+		AA000014 /* SavedTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000014; };
+		AA000015 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000015; };
+		AA000016 /* SavedTemplatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016; };
+		AA000017 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017; };
+		AA000018 /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018; };
+		AA000019 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019; };
+		AA000020 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000020; };
+		AA000021 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000021; };
+		AA000022 /* GeneratedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022; };
+		AA000023 /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000023; };
+		AA000030 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000030; };
+		AA100001 /* PosePrompterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100001; };
+		AA100002 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB100010; };
+		AA100003 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB100011; };
+		AA100004 /* PosePrompterWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AC100001; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +46,27 @@
 		AB000006 /* PromptPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptPreviewView.swift; sourceTree = "<group>"; };
 		AB000007 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		AB000008 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AB000009 /* DiscoverPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverPost.swift; sourceTree = "<group>"; };
+		AB000010 /* DiscoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
+		AB000011 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		AB000012 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		AB000013 /* PromptHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptHistory.swift; sourceTree = "<group>"; };
+		AB000014 /* SavedTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTemplate.swift; sourceTree = "<group>"; };
+		AB000015 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		AB000016 /* SavedTemplatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTemplatesView.swift; sourceTree = "<group>"; };
+		AB000017 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
+		AB000018 /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		AB000019 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		AB000020 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		AB000021 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
+		AB000022 /* GeneratedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedImage.swift; sourceTree = "<group>"; };
+		AB000023 /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		AB000030 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AC000001 /* PosePrompterApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PosePrompterApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB100001 /* PosePrompterWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePrompterWidget.swift; sourceTree = "<group>"; };
+		AB100010 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		AB100011 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		AC100001 /* PosePrompterWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PosePrompterWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +84,27 @@
 			isa = PBXGroup;
 			children = (
 				AE000002 /* PosePrompterApp */,
+				AE100001 /* PosePrompterWidget */,
+				AE100002 /* Frameworks */,
 				AE000006 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		AE100001 /* PosePrompterWidget */ = {
+			isa = PBXGroup;
+			children = (
+				AB100001 /* PosePrompterWidget.swift */,
+			);
+			path = PosePrompterWidget;
+			sourceTree = "<group>";
+		};
+		AE100002 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AB100010 /* WidgetKit.framework */,
+				AB100011 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		AE000002 /* PosePrompterApp */ = {
@@ -55,6 +114,7 @@
 				AE000004 /* Models */,
 				AE000005 /* Screens */,
 				AE000007 /* Shared */,
+				AB000030 /* Assets.xcassets */,
 			);
 			path = PosePrompterApp;
 			sourceTree = "<group>";
@@ -72,6 +132,10 @@
 			children = (
 				AB000002 /* PromptCategory.swift */,
 				AB000003 /* PromptState.swift */,
+				AB000009 /* DiscoverPost.swift */,
+				AB000013 /* PromptHistory.swift */,
+				AB000014 /* SavedTemplate.swift */,
+				AB000022 /* GeneratedImage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -83,6 +147,12 @@
 				AB000005 /* CategoryPickerView.swift */,
 				AB000006 /* PromptPreviewView.swift */,
 				AB000008 /* SettingsView.swift */,
+				AB000010 /* DiscoverView.swift */,
+				AB000015 /* HistoryView.swift */,
+				AB000016 /* SavedTemplatesView.swift */,
+				AB000017 /* ShareCardView.swift */,
+				AB000018 /* CreateView.swift */,
+				AB000023 /* GalleryView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -90,7 +160,8 @@
 		AE000006 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AC000001 /* PosePrompterApp.app */,
+		AC000001 /* PosePrompterApp.app */,
+				AC100001 /* PosePrompterWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,6 +170,11 @@
 			isa = PBXGroup;
 			children = (
 				AB000007 /* Theme.swift */,
+				AB000011 /* HapticManager.swift */,
+				AB000012 /* ImageCache.swift */,
+				AB000019 /* AuthManager.swift */,
+				AB000020 /* APIService.swift */,
+				AB000021 /* StoreManager.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -113,17 +189,69 @@
 				B0000001 /* Sources */,
 				AD000001 /* Frameworks */,
 				B0000002 /* Resources */,
+				B0100001 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DE100001 /* PBXTargetDependency */,
 			);
 			name = PosePrompterApp;
 			productName = PosePrompterApp;
 			productReference = AC000001 /* PosePrompterApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AF100001 /* PosePrompterWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1100001 /* Build configuration list for PBXNativeTarget "PosePrompterWidgetExtension" */;
+			buildPhases = (
+				B0100010 /* Sources */,
+				AD100001 /* Frameworks */,
+				B0100011 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PosePrompterWidgetExtension;
+			productName = PosePrompterWidgetExtension;
+			productReference = AC100001 /* PosePrompterWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
+
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B0100001 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA100004 /* PosePrompterWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		CP100001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B2000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AF100001;
+			remoteInfo = PosePrompterWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		DE100001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AF100001 /* PosePrompterWidgetExtension */;
+			targetProxy = CP100001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXProject section */
 		B2000001 /* Project object */ = {
@@ -152,6 +280,7 @@
 			projectRoot = "";
 			targets = (
 				AF000001 /* PosePrompterApp */,
+				AF100001 /* PosePrompterWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -161,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA000030 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,10 +309,50 @@
 				AA000006 /* PromptPreviewView.swift in Sources */,
 				AA000007 /* Theme.swift in Sources */,
 				AA000008 /* SettingsView.swift in Sources */,
+				AA000009 /* DiscoverPost.swift in Sources */,
+				AA000010 /* DiscoverView.swift in Sources */,
+				AA000011 /* HapticManager.swift in Sources */,
+				AA000012 /* ImageCache.swift in Sources */,
+				AA000013 /* PromptHistory.swift in Sources */,
+				AA000014 /* SavedTemplate.swift in Sources */,
+				AA000015 /* HistoryView.swift in Sources */,
+				AA000016 /* SavedTemplatesView.swift in Sources */,
+				AA000017 /* ShareCardView.swift in Sources */,
+				AA000018 /* CreateView.swift in Sources */,
+				AA000019 /* AuthManager.swift in Sources */,
+				AA000020 /* APIService.swift in Sources */,
+				AA000021 /* StoreManager.swift in Sources */,
+				AA000022 /* GeneratedImage.swift in Sources */,
+				AA000023 /* GalleryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+		B0100010 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA100001 /* PosePrompterWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD100001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA100002 /* WidgetKit.framework in Frameworks */,
+				AA100003 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0100011 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
 
 /* Begin XCBuildConfiguration section */
 		B3000001 /* Debug */ = {
@@ -349,6 +519,60 @@
 			};
 			name = Release;
 		};
+		B3100001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PosePrompterWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pose Prompter Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.melmarion.PosePrompterApp.PosePrompterWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B3100002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PosePrompterWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pose Prompter Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.melmarion.PosePrompterApp.PosePrompterWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -366,6 +590,15 @@
 			buildConfigurations = (
 				B3000001 /* Debug */,
 				B3000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B1100001 /* Build configuration list for PBXNativeTarget "PosePrompterWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3100001 /* Debug */,
+				B3100002 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

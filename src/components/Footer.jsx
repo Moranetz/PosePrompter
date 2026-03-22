@@ -10,6 +10,7 @@ const Footer = () => {
 
   return (
     <footer
+      className="app-footer"
       style={{
         position: 'fixed',
         bottom: 0,

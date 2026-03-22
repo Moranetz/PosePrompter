@@ -303,7 +303,7 @@ const AppWithDebug = () => {
   return (
     <>
       <AppContent />
-      <AuthDebugPanel user={user} loading={loading} />
+      {/* <AuthDebugPanel user={user} loading={loading} /> */}
     </>
   );
 };

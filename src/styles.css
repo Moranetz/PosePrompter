@@ -361,123 +361,214 @@ body {
   gap: 12px;
 }
 
-/* Responsive Design - New stacked layout */
-@media (max-width: 720px) {
+/* ===== Desktop: hide mobile-only elements ===== */
+.mobile-prompt-preview {
+  display: none;
+}
+
+.mobile-category-chips {
+  display: none;
+}
+
+/* ===== MOBILE LAYOUT — matches iOS app exactly ===== */
+/* Single scrollable column: header → preset bar → prompt card → actions → categories → word bar */
+@media (max-width: 900px) {
+  :root {
+    --header-height: 48px;
+  }
+
+  /* Full-screen single column */
+  .app-main {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide desktop sidebar entirely — categories are inline on mobile */
+  .app-sidebar {
+    display: none !important;
+  }
+
+  /* The workspace becomes the full scrollable page */
+  .workspace-stacked {
+    padding: 0 16px 120px;
+    overflow: visible;
+    flex: 1;
+  }
+
+  /* Stack everything vertically — override flex row */
+  .preview-actions-area {
+    flex-direction: column !important;
+    gap: 8px !important;
+    overflow: visible !important;
+  }
+
+  /* Prompt preview area — full width, compact */
+  .preview-actions-area > div:first-child {
+    width: 100% !important;
+    max-height: none !important;
+    flex: none !important;
+  }
+
+  /* Compact preview — just enough to see the figure, not dominate */
+  .preview-area-new {
+    max-height: 260px !important;
+    min-height: 200px !important;
+    height: auto !important;
+    padding: 8px !important;
+    margin: 8px auto !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* === Mobile Prompt Preview Card === */
+  .mobile-prompt-preview {
+    display: block !important;
+    padding: 8px 0;
+  }
+
+  .mobile-prompt-preview .live-prompt-preview {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 120px !important;
+    overflow-y: auto !important;
+    margin: 0 !important;
+  }
+
+  /* === Mobile Category Chips — horizontal scrollable row === */
+  .mobile-category-chips {
+    display: block !important;
+    padding: 8px 0 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Actions sidebar becomes a compact grid of buttons */
   .actions-sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    border-left: none;
-    border-top: 1px solid var(--border-subtle);
-    padding: 12px;
-    gap: 8px;
+    width: 100% !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 8px 0 !important;
+    border-left: none !important;
+    border-top: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Make all inner containers full-width so buttons flow in a grid */
+  .actions-sidebar > div {
+    width: 100% !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
   }
 
   .actions-sidebar button {
-    flex: 1 1 auto;
-    min-width: 100px;
+    flex: 1 1 calc(33% - 8px) !important;
+    max-width: calc(50% - 4px) !important;
+    min-width: 0 !important;
+    min-height: 38px !important;
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    border-radius: 10px !important;
+    width: auto !important;
   }
 
-  .preview-actions-area {
-    flex-direction: column;
-  }
-}
-
-/* Hide left sidebar on smaller screens */
-@media (max-width: 768px) {
-  .app-sidebar {
-    display: none;
+  /* Divider hidden on mobile */
+  .actions-sidebar > div[style*="height: 1px"] {
+    display: none !important;
   }
 
-  .workspace-stacked {
-    padding: 12px 12px 100px;
-  }
-}
-
-/* Responsive Design - Tablet (640px - 900px) */
-@media (max-width: 900px) {
+  /* Category controls area — no max-height, scrolls with page */
   .controls-area {
-    padding: 12px 16px;
-    max-height: 50vh;
+    padding: 0;
+    max-height: none !important;
+    overflow: visible;
+    border-bottom: none;
+    background: transparent;
   }
 
+  /* Category chips horizontal scroll */
+  .category-chips-container {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Word button bar — fixed at bottom, full width */
+  .word-button-bar-container {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    padding: 10px 12px !important;
+    border-radius: 0 !important;
+  }
+
+  /* Footer completely hidden on mobile — word bar takes its place */
+  footer, .footer, .app-footer {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    pointer-events: none !important;
+  }
+
+  /* Hide mobile categories FAB — chips are inline now */
+  .mobile-categories-fab {
+    display: none !important;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .workspace-stacked {
+    padding: 0 12px 110px;
+  }
+
+  .preview-area-new {
+    max-height: 160px;
+    min-height: 130px;
+  }
+
+  .actions-sidebar button {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    min-height: 36px !important;
+  }
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 900px) {
   .workspace {
     flex-direction: column;
   }
 
   .preview-area {
     width: 100%;
-    height: 45vh;
+    height: auto;
     position: relative;
     max-width: 100%;
-    min-height: 280px;
+    min-height: 200px;
   }
 
   .options-panel {
     width: 100%;
-    height: 55vh;
     min-height: 320px;
     border-left: none;
     border-top: 1px solid var(--border-subtle);
   }
 }
 
-/* Responsive Design - Mobile (up to 640px) */
-@media (max-width: 640px) {
-  :root {
-    --header-height: 52px;
-    --footer-height: 44px;
-  }
-  
-  .controls-area {
-    padding: 10px 12px;
-    gap: 12px;
-  }
-
-  .preview-area {
-    width: 100%;
-    height: 38vh;
-    min-height: 240px;
-    padding: 12px;
-  }
-
-  .options-panel {
-    width: 100%;
-    height: 62vh;
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .sidebar-scrollable {
-    padding: 0;
-  }
-
-  /* Mobile sidebar adjustments */
-  .sidebar-container {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-  }
-}
-
-/* Responsive Design - Small Mobile (up to 480px) */
-@media (max-width: 480px) {
-  .preview-area {
-    height: 32vh;
-    min-height: 200px;
-    padding: 8px;
-  }
-
-  .options-panel {
-    height: 68vh;
-    padding: 8px;
-    gap: 8px;
-  }
-}
-
-/* Responsive Modals */
-@media (max-width: 640px) {
+/* Responsive Modals — bottom sheet on mobile */
+@media (max-width: 900px) {
   .modal-overlay {
     padding: 0 !important;
     align-items: flex-end !important;
@@ -486,37 +577,25 @@ body {
   .modal-content {
     max-width: 100% !important;
     width: 100% !important;
-    max-height: 90vh !important;
+    max-height: 85vh !important;
     border-radius: 20px 20px 0 0 !important;
     margin: 0 !important;
     animation: slideUp 0.3s ease-out !important;
   }
 
   @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
   }
 }
 
-/* Responsive Forms */
+/* Mobile-friendly form controls — prevent iOS zoom */
 @media (max-width: 640px) {
-  input,
-  textarea,
-  select {
+  input, textarea, select {
     min-height: 44px !important;
-    font-size: 16px !important; /* Prevents zoom on iOS */
+    font-size: 16px !important;
   }
 
-  button {
-    min-height: 44px !important;
-    min-width: 44px !important;
-  }
-
-  /* Form grid adjustments */
   .form-grid {
     grid-template-columns: 1fr !important;
   }
@@ -792,23 +871,12 @@ body:has([data-route="privacy"]) .word-button-bar,
   .word-button-bar-container {
     left: 0 !important;
     right: 0 !important;
-    bottom: 44px;
   }
 }
 
-@media (max-width: 768px) {
-  .word-button-bar-container {
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0;
-    padding: 10px 12px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .word-button-bar-container {
-    padding: 8px 8px !important;
-  }
+/* Mobile categories FAB — hidden, categories are inline on mobile */
+.mobile-categories-fab {
+  display: none;
 }
 
 /* ===== CATEGORY CHIPS - Desktop: wrap instead of scroll ===== */

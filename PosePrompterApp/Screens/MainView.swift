@@ -1,9 +1,12 @@
 import SwiftUI
+import SwiftData
 
 struct MainView: View {
     @Environment(PromptState.self) private var state
+    @Environment(\.modelContext) private var modelContext
     @State private var expandedGroups: Set<String> = ["Body"]
     @State private var showPromptPreview = false
+    @State private var showTemplates = false
     @State private var copiedFeedback = false
     @State private var activeCategory: PromptCategory?
 
@@ -15,6 +18,7 @@ struct MainView: View {
 
                 ScrollView {
                     VStack(spacing: 16) {
+                        presetCyclingBar
                         promptPreviewCard
                         actionBar
                         categoryGroupsList
@@ -23,7 +27,6 @@ struct MainView: View {
                     .padding(.bottom, activeCategory != nil ? 120 : 40)
                 }
 
-                // Bottom word button bar
                 if let category = activeCategory {
                     WordButtonBar(
                         category: category,
@@ -36,12 +39,82 @@ struct MainView: View {
             .navigationTitle("Pose Prompter")
             .navigationBarTitleDisplayMode(.large)
             .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showTemplates = true
+                        HapticManager.light()
+                    } label: {
+                        Image(systemName: "bookmark")
+                            .foregroundStyle(.white.opacity(0.6))
+                    }
+                }
+            }
             .sheet(isPresented: $showPromptPreview) {
                 PromptPreviewView()
                     .environment(state)
             }
+            .sheet(isPresented: $showTemplates) {
+                SavedTemplatesView()
+                    .environment(state)
+            }
             .animation(.spring(response: 0.3, dampingFraction: 0.8), value: activeCategory?.id)
         }
+    }
+
+    // MARK: - Preset Cycling Bar
+
+    private var presetCyclingBar: some View {
+        HStack(spacing: 12) {
+            Button {
+                withAnimation(.spring(response: 0.3)) {
+                    state.previousPreset()
+                }
+                HapticManager.selection()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.4))
+                    .frame(width: 32, height: 32)
+                    .background(Color.white.opacity(0.06), in: Circle())
+            }
+            .buttonStyle(.plain)
+
+            VStack(spacing: 2) {
+                if let name = state.currentPresetName, let idx = state.currentPresetIndex {
+                    Text("\(idx + 1)/\(DiscoverPost.samples.count)")
+                        .font(.system(size: 10, weight: .semibold).monospacedDigit())
+                        .foregroundStyle(Theme.selectedAccent)
+                    Text(name)
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.6))
+                        .lineLimit(1)
+                } else {
+                    Text("Custom")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            Button {
+                withAnimation(.spring(response: 0.3)) {
+                    state.nextPreset()
+                }
+                HapticManager.selection()
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.4))
+                    .frame(width: 32, height: 32)
+                    .background(Color.white.opacity(0.06), in: Circle())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .glassCard(cornerRadius: 14)
+        .padding(.top, 8)
     }
 
     // MARK: - Prompt Preview Card
@@ -71,9 +144,8 @@ struct MainView: View {
                     .foregroundStyle(.white.opacity(0.35))
                     .italic()
             } else {
-                Text(state.generatedPrompt)
+                Text(state.highlightedPrompt)
                     .font(.callout)
-                    .foregroundStyle(.white.opacity(0.75))
                     .lineLimit(4)
                     .onTapGesture {
                         showPromptPreview = true
@@ -97,12 +169,20 @@ struct MainView: View {
                     }
                     .buttonStyle(.bordered)
                     .tint(copiedFeedback ? .green : .white.opacity(0.7))
+
+                    if let image = renderShareCard(state: state) {
+                        ShareLink(item: Image(uiImage: image), preview: SharePreview("Prompt", image: Image(uiImage: image))) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.caption.weight(.medium))
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.white.opacity(0.5))
+                    }
                 }
             }
         }
         .padding(16)
         .glassCard(cornerRadius: 20)
-        .padding(.top, 8)
     }
 
     // MARK: - Action Bar
@@ -113,6 +193,7 @@ struct MainView: View {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                     state.randomizeAll()
                 }
+                HapticManager.medium()
             } label: {
                 Label("Randomize All", systemImage: "dice.fill")
                     .font(.subheadline.weight(.semibold))
@@ -127,6 +208,7 @@ struct MainView: View {
                     state.clearAll()
                     activeCategory = nil
                 }
+                HapticManager.light()
             } label: {
                 Label("Clear", systemImage: "xmark.circle")
                     .font(.subheadline.weight(.medium))
@@ -151,7 +233,6 @@ struct MainView: View {
         let isExpanded = expandedGroups.contains(group.rawValue)
 
         return VStack(spacing: 0) {
-            // Group Header
             Button {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                     if isExpanded {
@@ -160,6 +241,7 @@ struct MainView: View {
                         expandedGroups.insert(group.rawValue)
                     }
                 }
+                HapticManager.light()
             } label: {
                 HStack(spacing: 10) {
                     Image(systemName: group.icon)
@@ -211,12 +293,9 @@ struct MainView: View {
 
         return Button {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                if isActive {
-                    activeCategory = nil
-                } else {
-                    activeCategory = category
-                }
+                activeCategory = isActive ? nil : category
             }
+            HapticManager.selection()
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: category.icon)
@@ -242,11 +321,11 @@ struct MainView: View {
 
                 Spacer()
 
-                // Lock button
                 Button {
                     withAnimation(.spring(response: 0.2)) {
                         state.toggleLock(category: category.id)
                     }
+                    HapticManager.medium()
                 } label: {
                     Image(systemName: isLocked ? "lock.fill" : "lock.open")
                         .font(.caption)
@@ -254,11 +333,11 @@ struct MainView: View {
                 }
                 .buttonStyle(.plain)
 
-                // Randomize single
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                         state.randomize(category: category.id)
                     }
+                    HapticManager.medium()
                 } label: {
                     Image(systemName: "dice")
                         .font(.caption)
@@ -285,13 +364,22 @@ struct MainView: View {
     private func copyPrompt() {
         UIPasteboard.general.string = state.generatedPrompt
         copiedFeedback = true
+        HapticManager.success()
+
+        // Save to history
+        let entry = PromptHistory(
+            promptText: state.generatedPrompt,
+            selectionsSnapshot: state.selectionsSnapshot
+        )
+        modelContext.insert(entry)
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             copiedFeedback = false
         }
     }
 }
 
-// MARK: - Word Button Bar (bottom bar with scrolling option pills)
+// MARK: - Word Button Bar
 
 struct WordButtonBar: View {
     let category: PromptCategory
@@ -307,7 +395,6 @@ struct WordButtonBar: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Drag handle + category name
             HStack {
                 Image(systemName: category.icon)
                     .font(.caption)
@@ -318,11 +405,11 @@ struct WordButtonBar: View {
 
                 Spacer()
 
-                // Clear selection
                 Button {
                     withAnimation(.spring(response: 0.2)) {
                         state.clear(category: category.id)
                     }
+                    HapticManager.light()
                 } label: {
                     Image(systemName: "xmark.circle")
                         .font(.caption)
@@ -330,11 +417,11 @@ struct WordButtonBar: View {
                 }
                 .buttonStyle(.plain)
 
-                // Randomize
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                         state.randomize(category: category.id)
                     }
+                    HapticManager.medium()
                 } label: {
                     Image(systemName: "dice.fill")
                         .font(.caption)
@@ -342,7 +429,6 @@ struct WordButtonBar: View {
                 }
                 .buttonStyle(.plain)
 
-                // Close
                 Button {
                     onDismiss()
                 } label: {
@@ -356,7 +442,6 @@ struct WordButtonBar: View {
             .padding(.top, 10)
             .padding(.bottom, 6)
 
-            // Scrolling word buttons
             ScrollViewReader { proxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -371,6 +456,7 @@ struct WordButtonBar: View {
                                         state.select(category: category.id, index: index)
                                     }
                                 }
+                                HapticManager.selection()
                             } label: {
                                 Text(option.title)
                                     .font(.caption.weight(isSelected ? .semibold : .regular))
@@ -425,7 +511,7 @@ struct WordButtonBar: View {
     }
 }
 
-extension PromptCategory: @retroactive Hashable {
+extension PromptCategory: Hashable {
     static func == (lhs: PromptCategory, rhs: PromptCategory) -> Bool {
         lhs.id == rhs.id
     }

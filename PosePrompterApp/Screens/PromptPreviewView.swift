@@ -1,23 +1,21 @@
 import SwiftUI
+import SwiftData
 
 struct PromptPreviewView: View {
     @Environment(PromptState.self) private var state
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var copiedFeedback = false
-    @State private var showShareSheet = false
+    @State private var shareImage: UIImage?
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Theme.backgroundGradient
-                    .ignoresSafeArea()
+                Theme.backgroundGradient.ignoresSafeArea()
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        // Full prompt text
                         fullPromptSection
-
-                        // Contributing categories
                         contributingCategoriesSection
                     }
                     .padding()
@@ -29,12 +27,9 @@ struct PromptPreviewView: View {
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .foregroundStyle(.white.opacity(0.7))
+                    Button("Done") { dismiss() }
+                        .foregroundStyle(.white.opacity(0.7))
                 }
-
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {
                         Button {
@@ -44,12 +39,22 @@ struct PromptPreviewView: View {
                                 .foregroundStyle(copiedFeedback ? .green : .white.opacity(0.7))
                         }
 
-                        ShareLink(item: state.generatedPrompt) {
-                            Image(systemName: "square.and.arrow.up")
-                                .foregroundStyle(.white.opacity(0.7))
+                        if let image = shareImage {
+                            ShareLink(item: Image(uiImage: image), preview: SharePreview("Prompt", image: Image(uiImage: image))) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundStyle(.white.opacity(0.7))
+                            }
+                        } else {
+                            ShareLink(item: state.generatedPrompt) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundStyle(.white.opacity(0.7))
+                            }
                         }
                     }
                 }
+            }
+            .onAppear {
+                shareImage = renderShareCard(state: state)
             }
         }
     }
@@ -75,9 +80,8 @@ struct PromptPreviewView: View {
                     .foregroundStyle(.white.opacity(0.4))
                     .italic()
             } else {
-                Text(state.generatedPrompt)
+                Text(state.highlightedPrompt)
                     .font(.callout)
-                    .foregroundStyle(.white.opacity(0.85))
                     .textSelection(.enabled)
                     .lineSpacing(4)
             }
@@ -153,6 +157,14 @@ struct PromptPreviewView: View {
     private func copyPrompt() {
         UIPasteboard.general.string = state.generatedPrompt
         copiedFeedback = true
+        HapticManager.success()
+
+        let entry = PromptHistory(
+            promptText: state.generatedPrompt,
+            selectionsSnapshot: state.selectionsSnapshot
+        )
+        modelContext.insert(entry)
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             copiedFeedback = false
         }

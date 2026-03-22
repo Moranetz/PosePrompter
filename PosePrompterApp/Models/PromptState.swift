@@ -3,10 +3,13 @@ import SwiftUI
 
 @Observable
 final class PromptState {
-    // Selected option index per category ID (nil = none selected)
     var selections: [String: Int?] = [:]
-    // Locked categories that won't be randomized
     var locks: Set<String> = []
+
+    // Preset cycling
+    var currentPresetIndex: Int? = nil
+    // Navigation trigger for "Use as Template"
+    var navigateToBuilder = false
 
     private let selectionsKey = "PosePrompter_Selections"
     private let locksKey = "PosePrompter_Locks"
@@ -29,8 +32,42 @@ final class PromptState {
         return parts.joined(separator: " ")
     }
 
+    var highlightedPrompt: AttributedString {
+        let allCats = AllCategories.allCategories
+        var result = AttributedString()
+        var isFirst = true
+        for cat in allCats {
+            if let selectedIndex = selections[cat.id] as? Int,
+               selectedIndex < cat.options.count {
+                if !isFirst {
+                    result.append(AttributedString(" "))
+                }
+                var segment = AttributedString(cat.options[selectedIndex].prompt)
+                segment.foregroundColor = cat.groupColor
+                result.append(segment)
+                isFirst = false
+            }
+        }
+        return result
+    }
+
     var selectedCategoryCount: Int {
         selections.values.compactMap { $0 }.count
+    }
+
+    /// Clean snapshot for saving to SwiftData
+    var selectionsSnapshot: [String: Int] {
+        var snap: [String: Int] = [:]
+        for (key, value) in selections {
+            if let idx = value { snap[key] = idx }
+        }
+        return snap
+    }
+
+    var currentPresetName: String? {
+        guard let idx = currentPresetIndex,
+              idx >= 0, idx < DiscoverPost.samples.count else { return nil }
+        return DiscoverPost.samples[idx].title
     }
 
     func selectedOption(for categoryId: String) -> PromptOption? {
@@ -44,6 +81,7 @@ final class PromptState {
 
     func select(category: String, index: Int?) {
         selections[category] = index
+        currentPresetIndex = nil
         saveToDefaults()
     }
 
@@ -51,30 +89,31 @@ final class PromptState {
         guard !locks.contains(category) else { return }
         guard let cat = AllCategories.allCategories.first(where: { $0.id == category }) else { return }
         guard !cat.options.isEmpty else { return }
-        let randomIndex = Int.random(in: 0..<cat.options.count)
-        selections[category] = randomIndex
+        selections[category] = Int.random(in: 0..<cat.options.count)
+        currentPresetIndex = nil
         saveToDefaults()
     }
 
     func randomizeAll() {
-        let allCats = AllCategories.allCategories
-        for cat in allCats {
+        for cat in AllCategories.allCategories {
             if !locks.contains(cat.id) && !cat.options.isEmpty {
-                let randomIndex = Int.random(in: 0..<cat.options.count)
-                selections[cat.id] = randomIndex
+                selections[cat.id] = Int.random(in: 0..<cat.options.count)
             }
         }
+        currentPresetIndex = nil
         saveToDefaults()
     }
 
     func clearAll() {
         selections.removeAll()
         locks.removeAll()
+        currentPresetIndex = nil
         saveToDefaults()
     }
 
     func clear(category: String) {
         selections[category] = nil as Int?
+        currentPresetIndex = nil
         saveToDefaults()
     }
 
@@ -91,17 +130,56 @@ final class PromptState {
         locks.contains(category)
     }
 
+    // MARK: - Preset Loading
+
+    func loadFromPreset(entryIDs: [String]) {
+        selections.removeAll()
+        let allCats = AllCategories.allCategories
+        for entryID in entryIDs {
+            for cat in allCats {
+                if let idx = cat.options.firstIndex(where: { $0.id == entryID }) {
+                    selections[cat.id] = idx
+                    break
+                }
+            }
+        }
+        saveToDefaults()
+    }
+
+    func loadFromPresetAtIndex(_ index: Int) {
+        guard index >= 0, index < DiscoverPost.samples.count else { return }
+        let post = DiscoverPost.samples[index]
+        loadFromPreset(entryIDs: post.entryIDs)
+        currentPresetIndex = index
+    }
+
+    func nextPreset() {
+        let total = DiscoverPost.samples.count
+        guard total > 0 else { return }
+        let next = ((currentPresetIndex ?? -1) + 1) % total
+        loadFromPresetAtIndex(next)
+    }
+
+    func previousPreset() {
+        let total = DiscoverPost.samples.count
+        guard total > 0 else { return }
+        let prev = ((currentPresetIndex ?? 1) - 1 + total) % total
+        loadFromPresetAtIndex(prev)
+    }
+
+    func loadFromSnapshot(_ snapshot: [String: Int]) {
+        selections.removeAll()
+        for (key, value) in snapshot {
+            selections[key] = value
+        }
+        currentPresetIndex = nil
+        saveToDefaults()
+    }
+
     // MARK: - Persistence
 
     private func saveToDefaults() {
-        // Convert selections to a simpler format for storage
-        var storable: [String: Int] = [:]
-        for (key, value) in selections {
-            if let idx = value {
-                storable[key] = idx
-            }
-        }
-        UserDefaults.standard.set(storable, forKey: selectionsKey)
+        UserDefaults.standard.set(selectionsSnapshot, forKey: selectionsKey)
         UserDefaults.standard.set(Array(locks), forKey: locksKey)
     }
 

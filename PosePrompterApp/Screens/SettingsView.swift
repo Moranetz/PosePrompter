@@ -2,26 +2,22 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(PromptState.self) private var state
+    @Environment(AuthManager.self) private var authManager
+    @Environment(StoreManager.self) private var storeManager
     @State private var showResetConfirm = false
+    @State private var showSignIn = false
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Theme.backgroundGradient
-                    .ignoresSafeArea()
+                Theme.backgroundGradient.ignoresSafeArea()
 
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Stats
+                        accountSection
                         statsSection
-
-                        // Prompts
                         promptsSection
-
-                        // Links
                         linksSection
-
-                        // Actions
                         actionsSection
                     }
                     .padding(.horizontal)
@@ -33,14 +29,80 @@ struct SettingsView: View {
             .toolbarColorScheme(.dark, for: .navigationBar)
             .alert("Reset All Selections?", isPresented: $showResetConfirm) {
                 Button("Cancel", role: .cancel) {}
-                Button("Reset", role: .destructive) {
-                    state.clearAll()
-                }
+                Button("Reset", role: .destructive) { state.clearAll() }
             } message: {
                 Text("This will clear all your current selections and locks.")
             }
+            .sheet(isPresented: $showSignIn) {
+                SignInSheet()
+                    .environment(authManager)
+            }
         }
     }
+
+    // MARK: - Account
+
+    private var accountSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Account", systemImage: "person.circle")
+                .font(.headline.weight(.bold))
+                .foregroundStyle(.white)
+
+            if let user = authManager.currentUser {
+                HStack(spacing: 12) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(Theme.selectedAccent)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(user.displayName)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                        if let email = user.email {
+                            Text(email)
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.4))
+                        }
+                    }
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("\(storeManager.purchasedCredits)")
+                            .font(.title3.weight(.bold).monospacedDigit())
+                            .foregroundStyle(Theme.selectedAccent)
+                        Text("credits")
+                            .font(.caption2)
+                            .foregroundStyle(.white.opacity(0.4))
+                    }
+                }
+                .padding(14)
+                .glassCard(cornerRadius: 12)
+
+                Button {
+                    authManager.signOut()
+                } label: {
+                    Text("Sign Out")
+                        .font(.caption)
+                        .foregroundStyle(.red.opacity(0.6))
+                }
+            } else {
+                Button {
+                    showSignIn = true
+                } label: {
+                    Label("Sign In with Apple", systemImage: "applelogo")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(14)
+                        .glassCard(cornerRadius: 12)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(16)
+        .glassCard()
+    }
+
+    // MARK: - Stats
 
     private var statsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -49,24 +111,9 @@ struct SettingsView: View {
                 .foregroundStyle(.white)
 
             HStack(spacing: 16) {
-                statTile(
-                    value: "\(state.selectedCategoryCount)",
-                    label: "Active",
-                    icon: "checkmark.circle",
-                    color: Theme.selectedAccent
-                )
-                statTile(
-                    value: "\(state.locks.count)",
-                    label: "Locked",
-                    icon: "lock.fill",
-                    color: .orange
-                )
-                statTile(
-                    value: "\(AllCategories.allCategories.count)",
-                    label: "Categories",
-                    icon: "square.grid.2x2",
-                    color: Theme.sceneColor
-                )
+                statTile(value: "\(state.selectedCategoryCount)", label: "Active", icon: "checkmark.circle", color: Theme.selectedAccent)
+                statTile(value: "\(state.locks.count)", label: "Locked", icon: "lock.fill", color: .orange)
+                statTile(value: "\(AllCategories.allCategories.count)", label: "Categories", icon: "square.grid.2x2", color: Theme.sceneColor)
             }
         }
         .padding(16)
@@ -118,9 +165,7 @@ struct SettingsView: View {
     }
 
     private var promptWordCount: String {
-        let words = state.generatedPrompt
-            .split(separator: " ")
-            .count
+        let words = state.generatedPrompt.split(separator: " ").count
         return words == 0 ? "—" : "\(words) words"
     }
 
@@ -143,21 +188,9 @@ struct SettingsView: View {
                 .foregroundStyle(.white)
 
             VStack(spacing: 1) {
-                linkRow(
-                    title: "Website",
-                    icon: "globe",
-                    url: "https://poseprompter.com"
-                )
-                linkRow(
-                    title: "Terms of Service",
-                    icon: "doc.plaintext",
-                    url: "https://poseprompter.com/#terms"
-                )
-                linkRow(
-                    title: "Privacy Policy",
-                    icon: "hand.raised",
-                    url: "https://poseprompter.com/#privacy"
-                )
+                linkRow(title: "Website", icon: "globe", url: "https://poseprompter.com")
+                linkRow(title: "Terms of Service", icon: "doc.plaintext", url: "https://poseprompter.com/#terms")
+                linkRow(title: "Privacy Policy", icon: "hand.raised", url: "https://poseprompter.com/#privacy")
             }
             .glassCard(cornerRadius: 12)
         }
