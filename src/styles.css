@@ -229,7 +229,7 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   min-height: 0;
   padding: 16px 20px 100px 20px; /* Extra bottom padding for fixed WordButtonBar */
 }
@@ -361,19 +361,13 @@ body {
   gap: 12px;
 }
 
-/* ===== Desktop: hide mobile-only elements, show desktop elements ===== */
+/* ===== Desktop: hide mobile-only elements ===== */
 .mobile-prompt-preview {
   display: none;
 }
 
 .mobile-category-chips {
   display: none;
-}
-
-/* Desktop prompt preview — visible on desktop */
-.desktop-prompt-preview {
-  display: block;
-  padding: 4px 0 8px;
 }
 
 /* ===== MOBILE LAYOUT — matches iOS app exactly ===== */
@@ -426,11 +420,6 @@ body {
     margin: 8px auto !important;
     max-width: 100% !important;
     flex: 0 0 auto !important;
-  }
-
-  /* Hide desktop prompt preview on mobile */
-  .desktop-prompt-preview {
-    display: none !important;
   }
 
   /* === Mobile Prompt Preview Card === */
@@ -745,32 +734,15 @@ body {
     padding: 12px 24px;
     max-height: 24vh;
   }
-
+  
   .preview-area-new {
     padding: 28px 36px;
   }
-
+  
   .actions-sidebar {
     width: 160px;
     padding: 16px 12px;
     gap: 8px;
-  }
-}
-
-/* Large desktop screens (1400px+) - more breathing room */
-@media (min-width: 1400px) {
-  .preview-area-new {
-    max-height: 450px;
-    padding: 32px 40px;
-    margin: 12px auto 16px;
-  }
-
-  .workspace-stacked {
-    padding: 20px 28px 100px 28px;
-  }
-
-  .desktop-prompt-preview {
-    padding: 8px 0 12px;
   }
 }
 
@@ -780,36 +752,29 @@ body {
     padding: 14px 32px;
     max-height: 22vh;
   }
-
+  
   .preview-area-new {
-    max-height: 480px;
-    padding: 36px 48px;
-    margin: 16px auto 20px;
+    padding: 32px 44px;
   }
-
+  
   .actions-sidebar {
     width: 180px;
     padding: 18px 14px;
     gap: 10px;
   }
-
+  
   .actions-sidebar button {
     padding: 16px 20px;
     font-size: 15px;
-  }
-
-  .workspace-stacked {
-    padding: 24px 36px 100px 36px;
   }
 }
 
 /* Ultra-wide screens (1920px+) */
 @media (min-width: 1920px) {
   .preview-area-new {
-    max-height: 520px;
     padding: 40px 56px;
   }
-
+  
   .actions-sidebar {
     width: 200px;
   }

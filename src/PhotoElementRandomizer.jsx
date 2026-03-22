@@ -11,8 +11,6 @@ import CategoryTabs from './components/CategoryTabs';
 import CategoryChips from './components/CategoryChips';
 import LivePromptPreview from './components/LivePromptPreview';
 import FigureCanvas from './components/ArticulatedFigure/FigureCanvas';
-import DesktopPromptPreview from './components/DesktopPromptPreview';
-import KeyboardShortcutHint from './components/KeyboardShortcutHint';
 import WordButtonBar from './components/WordButtons/WordButtonBar';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -2296,6 +2294,7 @@ const PhotoElementRandomizer = () => {
                     position: 'relative',
                     width: '100%',
                     maxWidth: '700px',
+                    /* Maintain a predictable canvas shape so frames never get cut off */
                     aspectRatio: '16 / 10',
                     maxHeight: '100%',
                     display: 'flex',
@@ -2322,43 +2321,6 @@ const PhotoElementRandomizer = () => {
                 <NatureFrame isVisible={shouldShowNature} />
                 {/* Closet Frame - overlays the FigureCanvas for Clothes & Styling */}
                 <ClosetFrame isVisible={shouldShowCloset} />
-
-                {/* Empty State Overlay — shown when no selections made */}
-                {(!selections || Object.keys(selections).length === 0 || Object.values(selections).every(v => v == null)) && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'rgba(9, 9, 11, 0.6)',
-                      backdropFilter: 'blur(2px)',
-                      borderRadius: 'inherit',
-                      zIndex: 10,
-                      pointerEvents: 'none',
-                      gap: '8px',
-                      animation: 'fadeIn 0.5s ease 0.2s both',
-                    }}
-                  >
-                    <span style={{ fontSize: '28px' }}>&#10024;</span>
-                    <span style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#f4f4f5',
-                      letterSpacing: '-0.01em',
-                    }}>
-                      Select a category to start building
-                    </span>
-                    <span style={{
-                      fontSize: '12px',
-                      color: 'rgba(255, 255, 255, 0.4)',
-                    }}>
-                      or hit Randomize All for instant inspiration
-                    </span>
-                  </div>
-                )}
               </div>
 
               <ActionsSidebar
@@ -2413,21 +2375,6 @@ const PhotoElementRandomizer = () => {
               />
         </div>
 
-            {/* Desktop Prompt Preview — syntax-highlighted prompt with copy */}
-            <div className="desktop-prompt-preview">
-              <DesktopPromptPreview
-                generatedPrompt={generatedPrompt}
-                selections={selections}
-                categories={mergedCategories}
-                includedCategories={includedCategories}
-                autoExcludedCategories={autoExcludedCategories}
-                categoryColors={categoryColors}
-                categoryDisplayNames={categoryDisplayNames}
-                onCopy={copyToClipboard}
-                copied={copied}
-              />
-            </div>
-
             {/* Mobile Prompt Preview — visible only on mobile (hidden on desktop via CSS) */}
             <div className="mobile-prompt-preview">
               <LivePromptPreview
@@ -2458,9 +2405,6 @@ const PhotoElementRandomizer = () => {
       </div>
 
       <Footer />
-
-      {/* Keyboard Shortcut Hint — desktop only floating button */}
-      {!isMobileView && <KeyboardShortcutHint />}
 
       {/* Clothing Categories Selection Modal */}
       <ClothingCategoriesModal
