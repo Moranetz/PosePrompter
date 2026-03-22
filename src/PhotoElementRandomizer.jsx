@@ -2453,6 +2453,62 @@ const PhotoElementRandomizer = () => {
         </div>
       </div>
 
+      {/* Keyboard Shortcuts Hint — desktop only */}
+      {!isMobileView && (
+        <div
+          style={{
+            position: 'fixed', bottom: 60, left: 16, zIndex: 150,
+          }}
+          onMouseEnter={(e) => {
+            const tip = e.currentTarget.querySelector('[data-tip]');
+            if (tip) tip.style.opacity = '1';
+            if (tip) tip.style.transform = 'translateY(0)';
+          }}
+          onMouseLeave={(e) => {
+            const tip = e.currentTarget.querySelector('[data-tip]');
+            if (tip) tip.style.opacity = '0';
+            if (tip) tip.style.transform = 'translateY(8px)';
+          }}
+        >
+          <div style={{
+            width: 28, height: 28, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'default', fontSize: 13, fontWeight: 600, color: '#71717a',
+          }}>?</div>
+          <div data-tip style={{
+            position: 'absolute', bottom: 36, left: 0,
+            background: '#18181c', border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 10, padding: '12px 14px', minWidth: 200,
+            opacity: 0, transform: 'translateY(8px)',
+            transition: 'all 0.2s ease', pointerEvents: 'none',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#a1a1aa', marginBottom: 8, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Shortcuts
+            </div>
+            {[
+              ['← →', 'Navigate categories'],
+              ['↑ ↓', 'Navigate options'],
+              ['R', 'Randomize current'],
+              ['⇧R', 'Randomize all'],
+              ['C', 'Copy prompt'],
+              ['⌘Z', 'Undo'],
+              ['⌘⇧Z', 'Redo'],
+            ].map(([key, label]) => (
+              <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{
+                  fontSize: 10, fontWeight: 600, color: '#f4f4f5',
+                  background: 'rgba(255,255,255,0.06)', padding: '2px 6px',
+                  borderRadius: 4, fontFamily: 'monospace', minWidth: 28, textAlign: 'center',
+                }}>{key}</span>
+                <span style={{ fontSize: 11, color: '#71717a' }}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <Footer />
 
       {/* Clothing Categories Selection Modal */}
