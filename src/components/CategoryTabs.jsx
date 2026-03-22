@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Sparkles, BookOpen } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, ChevronRight, Zap, Plus, Sparkles, BookOpen, Copy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CategoryTabs = ({
@@ -179,6 +179,15 @@ const CategoryTabs = ({
             const options = categories[category] || [];
             const currentIndex = selections[category] || 0;
             const hasSelection = options.length > 0;
+            // Get selected option title for display
+            const selectedItem = hasSelection ? options[currentIndex] : null;
+            const selectedTitle = selectedItem
+              ? (typeof selectedItem === 'string' ? selectedItem : (selectedItem.title || selectedItem.name || null))
+              : null;
+            // Get selected prompt text for quick-copy
+            const selectedPrompt = selectedItem
+              ? (typeof selectedItem === 'string' ? selectedItem : (selectedItem.prompt || ''))
+              : '';
 
             return (
               <motion.div
@@ -194,20 +203,29 @@ const CategoryTabs = ({
                   gap: '6px'
                 }}
               >
-                {/* Main Category Button - Professional styling */}
+                {/* Main Category Button - with colored left border when active */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <motion.button
                   onClick={() => onCategorySelect(category)}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   style={{
+                    flex: 1,
                     padding: '10px 16px',
                     background: isActive
-                      ? 'rgba(20, 184, 166, 0.2)'
-                      : 'rgba(255, 255, 255, 0.03)',
+                      ? `${color}18`
+                      : selectedTitle
+                        ? 'rgba(255, 255, 255, 0.05)'
+                        : 'rgba(255, 255, 255, 0.03)',
                     border: isActive
-                      ? '1px solid rgba(20, 184, 166, 0.4)'
+                      ? `1px solid ${color}55`
                       : '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '999px',
+                    borderLeft: isActive
+                      ? `3px solid ${color}`
+                      : selectedTitle
+                        ? `3px solid ${color}40`
+                        : '3px solid transparent',
+                    borderRadius: '10px',
                     color: isActive ? '#f4f4f5' : '#d4d4d8',
                     fontSize: '13px',
                     fontWeight: isActive ? '600' : '500',
@@ -216,8 +234,9 @@ const CategoryTabs = ({
                     transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                     opacity: (!isIncluded || isAutoExcluded) ? 0.5 : 1,
                     display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    gap: '3px',
                     minHeight: '40px',
                     boxShadow: isActive
                       ? '0 4px 14px rgba(0,0,0,0.45)'
@@ -225,6 +244,7 @@ const CategoryTabs = ({
                     position: 'relative'
                   }}
                 >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
                   {isSetByPreset && (
                     <BookOpen
                       size={12}
@@ -233,7 +253,7 @@ const CategoryTabs = ({
                     />
                   )}
                   <span style={{ whiteSpace: 'nowrap' }}>{categoryDisplayNames[category]}</span>
-                  
+
                   {hasSelection && (
                     <span style={{
                       fontSize: '10px',
@@ -244,6 +264,22 @@ const CategoryTabs = ({
                       flexShrink: 0
                     }}>
                       {currentIndex + 1}/{getCategoryFilteredCount ? getCategoryFilteredCount(category) : options.length}
+                    </span>
+                  )}
+                  </div>
+                  {/* Selected option title */}
+                  {selectedTitle && (
+                    <span style={{
+                      fontSize: '10px',
+                      color: color,
+                      opacity: 0.7,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '100%',
+                      fontWeight: '400',
+                    }}>
+                      {selectedTitle}
                     </span>
                   )}
 
@@ -292,6 +328,37 @@ const CategoryTabs = ({
                     </motion.div>
                   )}
                 </motion.button>
+                {/* Quick-copy icon for category prompt text */}
+                {selectedPrompt && (
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.4 }}
+                    whileHover={{ opacity: 1, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard?.writeText(selectedPrompt);
+                    }}
+                    title={`Copy ${categoryDisplayNames[category]} prompt`}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      flexShrink: 0,
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: '6px',
+                      color: '#71717a',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <Copy size={10} />
+                  </motion.button>
+                )}
+                </div>
 
                 {/* Quick Actions - Only show on hover or when active */}
                 <AnimatePresence>
