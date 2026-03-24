@@ -2,6 +2,14 @@
   "projects": {
     "Prompt Labs": "pose-prompter"
   },
-  "targets": {},
+  "targets": {
+    "pose-prompter": {
+      "hosting": {
+        "pose-prompter": [
+          "pose-prompter"
+        ]
+      }
+    }
+  },
   "etags": {}
 }

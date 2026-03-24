@@ -518,6 +518,8 @@ struct CreateView: View {
                         )
                         modelContext.insert(saved)
                     }
+
+                    ReviewManager.shared.logImageGenerated()
                 }
             } catch {
                 await MainActor.run {
