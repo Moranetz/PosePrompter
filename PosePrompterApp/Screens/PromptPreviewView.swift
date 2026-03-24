@@ -165,7 +165,7 @@ struct PromptPreviewView: View {
         )
         modelContext.insert(entry)
 
-        ReviewManager.shared.logPromptCreated()
+        // Review managed by play-time tracker
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             copiedFeedback = false

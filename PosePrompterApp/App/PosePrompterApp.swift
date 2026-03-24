@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import SwiftData
 
 @main
@@ -50,6 +51,9 @@ struct PosePrompterApp: App {
                 } else if url.host == "create" {
                     selectedTab = 2
                 }
+            }
+            .onReceive(Timer.publish(every: 10, on: .main, in: .common).autoconnect()) { _ in
+                ReviewManager.shared.addPlayTime(10)
             }
         }
     }

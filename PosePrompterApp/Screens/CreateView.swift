@@ -519,7 +519,7 @@ struct CreateView: View {
                         modelContext.insert(saved)
                     }
 
-                    ReviewManager.shared.logImageGenerated()
+                    // Review managed by play-time tracker
                 }
             } catch {
                 await MainActor.run {
