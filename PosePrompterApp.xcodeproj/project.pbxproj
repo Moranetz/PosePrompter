@@ -31,6 +31,8 @@
 		AA000022 /* GeneratedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022; };
 		AA000023 /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000023; };
 		AA000024 /* ReviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000024; };
+		AA000025 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000026; };
+		AA000031 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB000025; };
 		AA000030 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB000030; };
 		AA100001 /* PosePrompterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB100001; };
 		AA100002 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB100010; };
@@ -63,7 +65,9 @@
 		AB000022 /* GeneratedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedImage.swift; sourceTree = "<group>"; };
 		AB000023 /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		AB000024 /* ReviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewManager.swift; sourceTree = "<group>"; };
+		AB000026 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AB000030 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AB000025 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = GoogleService-Info.plist; sourceTree = "<group>"; };
 		AC000001 /* PosePrompterApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PosePrompterApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB100001 /* PosePrompterWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosePrompterWidget.swift; sourceTree = "<group>"; };
 		AB100010 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -117,6 +121,7 @@
 				AE000005 /* Screens */,
 				AE000007 /* Shared */,
 				AB000030 /* Assets.xcassets */,
+				AB000025 /* GoogleService-Info.plist */,
 			);
 			path = PosePrompterApp;
 			sourceTree = "<group>";
@@ -168,17 +173,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AE000007 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				AB000007 /* Theme.swift */,
-				AB000011 /* HapticManager.swift */,
-				AB000012 /* ImageCache.swift */,
-				AB000019 /* AuthManager.swift */,
-				AB000020 /* APIService.swift */,
-				AB000021 /* StoreManager.swift */,
-				AB000024 /* ReviewManager.swift */,
-			);
+			AE000007 /* Shared */ = {
+				isa = PBXGroup;
+				children = (
+					AB000007 /* Theme.swift */,
+					AB000011 /* HapticManager.swift */,
+					AB000012 /* ImageCache.swift */,
+					AB000026 /* AppConfig.swift */,
+					AB000019 /* AuthManager.swift */,
+					AB000020 /* APIService.swift */,
+					AB000021 /* StoreManager.swift */,
+					AB000024 /* ReviewManager.swift */,
+				);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -324,11 +330,13 @@
 				AA000018 /* CreateView.swift in Sources */,
 				AA000019 /* AuthManager.swift in Sources */,
 				AA000020 /* APIService.swift in Sources */,
-				AA000021 /* StoreManager.swift in Sources */,
-				AA000022 /* GeneratedImage.swift in Sources */,
-				AA000023 /* GalleryView.swift in Sources */,
-				AA000024 /* ReviewManager.swift in Sources */,
-			);
+					AA000021 /* StoreManager.swift in Sources */,
+					AA000022 /* GeneratedImage.swift in Sources */,
+					AA000023 /* GalleryView.swift in Sources */,
+					AA000024 /* ReviewManager.swift in Sources */,
+					AA000025 /* AppConfig.swift in Sources */,
+					AA000031 /* GoogleService-Info.plist in Resources */,
+				);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
@@ -478,16 +486,17 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+					INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+					INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+					INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+					INFOPLIST_KEY_API_BASE_URL = "http://127.0.0.1:3001";
+					IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.melmarion.PosePrompterApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.poseprompt.studio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -506,16 +515,17 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+					INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+					INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+					INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+					INFOPLIST_KEY_API_BASE_URL = "https://api.poseprompter.com";
+					IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.melmarion.PosePrompterApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.poseprompt.studio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -541,7 +551,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.melmarion.PosePrompterApp.PosePrompterWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.poseprompt.studio.PosePrompterWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -568,7 +578,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.melmarion.PosePrompterApp.PosePrompterWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.poseprompt.studio.PosePrompterWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

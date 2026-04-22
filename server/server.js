@@ -15,6 +15,7 @@ import dotenv from 'dotenv';
 import Stripe from 'stripe';
 import admin from 'firebase-admin';
 import rateLimit from 'express-rate-limit';
+import crypto from 'crypto';
 import Replicate from 'replicate';
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -243,6 +244,129 @@ const CREDIT_PACKAGES = {
   '420': { credits: 420, price: 4800 }, // $48.00 in cents (400 + 20 bonus)
   '1100': { credits: 1100, price: 12000 }, // $120.00 in cents (1000 + 100 bonus)
   '2300': { credits: 2300, price: 24000 }, // $240.00 in cents (2000 + 300 bonus)
+};
+
+// App Store consumable products that map to the same credit packages.
+const APP_STORE_CREDIT_PACKAGES = {
+  'com.melmarion.poseprompter.credits.50': 50,
+  'com.melmarion.poseprompter.credits.100': 100,
+  'com.melmarion.poseprompter.credits.200': 200,
+  'com.melmarion.poseprompter.credits.420': 420,
+  'com.melmarion.poseprompter.credits.1100': 1100,
+};
+
+const APP_STORE_ENVIRONMENT = (process.env.APP_STORE_ENVIRONMENT || '').trim().toLowerCase();
+const APP_STORE_BUNDLE_ID = (process.env.APP_STORE_BUNDLE_ID || 'com.poseprompt.studio').trim();
+
+const getAppStoreServerConfig = () => {
+  const issuerId = (process.env.APP_STORE_ISSUER_ID || '').trim();
+  const keyId = (process.env.APP_STORE_KEY_ID || '').trim();
+  let privateKey = process.env.APP_STORE_PRIVATE_KEY || '';
+
+  if (!issuerId || !keyId || !privateKey.trim()) {
+    return null;
+  }
+
+  privateKey = privateKey.trim().replace(/\\n/g, '\n');
+
+  return {
+    issuerId,
+    keyId,
+    privateKey,
+    bundleId: APP_STORE_BUNDLE_ID,
+  };
+};
+
+const base64UrlEncode = (input) => {
+  return Buffer.from(input)
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+};
+
+const decodeBase64Url = (input) => {
+  const normalized = input.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+  return Buffer.from(padded, 'base64').toString('utf8');
+};
+
+const createAppStoreJwt = ({ issuerId, keyId, privateKey, bundleId }) => {
+  const header = base64UrlEncode(JSON.stringify({ alg: 'ES256', kid: keyId, typ: 'JWT' }));
+  const now = Math.floor(Date.now() / 1000);
+  const payload = base64UrlEncode(JSON.stringify({
+    iss: issuerId,
+    iat: now - 60,
+    exp: now + 300,
+    aud: 'appstoreconnect-v1',
+    bid: bundleId,
+  }));
+  const signingInput = `${header}.${payload}`;
+  const signature = crypto.sign('sha256', Buffer.from(signingInput), {
+    key: privateKey,
+    dsaEncoding: 'ieee-p1363',
+  });
+  return `${signingInput}.${signature.toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')}`;
+};
+
+const fetchAppleTransactionInfo = async (transactionId) => {
+  const config = getAppStoreServerConfig();
+  if (!config) {
+    throw new Error('App Store verification is not configured');
+  }
+
+  const token = createAppStoreJwt(config);
+  const environments = APP_STORE_ENVIRONMENT === 'sandbox'
+    ? ['sandbox']
+    : APP_STORE_ENVIRONMENT === 'production'
+      ? ['production']
+      : ['production', 'sandbox'];
+
+  for (const environment of environments) {
+    const baseUrl = environment === 'sandbox'
+      ? 'https://api.storekit-sandbox.itunes.apple.com'
+      : 'https://api.storekit.itunes.apple.com';
+
+    const response = await fetch(`${baseUrl}/inApps/v1/transactions/${encodeURIComponent(transactionId)}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const signedTransactionInfo = typeof data === 'string'
+        ? data
+        : data.signedTransactionInfo || data.signedTransaction || data.transaction;
+
+      if (!signedTransactionInfo || typeof signedTransactionInfo !== 'string') {
+        throw new Error('Apple transaction response did not include signed transaction data');
+      }
+
+      const parts = signedTransactionInfo.split('.');
+      if (parts.length < 2) {
+        throw new Error('Invalid Apple signed transaction payload');
+      }
+
+      const payload = JSON.parse(decodeBase64Url(parts[1]));
+      return {
+        environment,
+        payload,
+      };
+    }
+
+    if (response.status !== 404) {
+      const errorBody = await response.text();
+      throw new Error(`Apple transaction lookup failed (${response.status}): ${errorBody}`);
+    }
+  }
+
+  throw new Error(`Transaction ${transactionId} not found in App Store Server API`);
 };
 
 // Helper function to get user credit balance
@@ -1022,14 +1146,20 @@ app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, asyn
             throw new Error('OpenAI API not configured');
           }
           
-          const dalleResponse = await openai.images.generate({
-            model: 'dall-e-3',
+          const gptImageResponse = await openai.images.generate({
+            model: 'gpt-image-2',
             prompt: finalPrompt,
             size: options.size || '1024x1024',
-            quality: options.quality || 'hd',
+            quality: options.quality || 'medium',
             n: 1,
           });
-          imageUrl = dalleResponse.data[0]?.url;
+          const imageData = gptImageResponse.data?.[0];
+          if (imageData?.b64_json) {
+            const mimeType = imageData.mime_type || imageData.content_type || 'image/png';
+            imageUrl = `data:${mimeType};base64,${imageData.b64_json}`;
+          } else {
+            imageUrl = imageData?.url;
+          }
           break;
 
         case 'nanobanana':
@@ -1269,6 +1399,140 @@ app.get('/api/credits/balance', authenticateUser, async (req, res) => {
     console.error('[credits/balance] Error:', error);
     res.status(500).json({
       error: 'Failed to get credit balance',
+      message: sanitizeErrorMessage(error),
+    });
+  }
+});
+
+/**
+ * POST /api/credits/redeem-app-store
+ * Redeems a verified App Store consumable purchase into backend credits.
+ */
+app.post('/api/credits/redeem-app-store', authenticateUser, async (req, res) => {
+  try {
+    const { productId, transactionId } = req.body;
+    const userId = req.user.uid;
+
+    if (!productId || !transactionId) {
+      return res.status(400).json({
+        error: 'Missing required fields: productId and transactionId are required',
+      });
+    }
+
+    const creditsToAdd = APP_STORE_CREDIT_PACKAGES[productId];
+    if (!creditsToAdd) {
+      return res.status(400).json({
+        error: 'Unsupported product',
+        message: `Unknown App Store product: ${productId}`,
+      });
+    }
+
+    if (!db) {
+      return res.status(500).json({
+        error: 'Database not initialized',
+      });
+    }
+
+    const purchaseRef = db.collection('appStorePurchases').doc(String(transactionId));
+    const existingPurchase = await purchaseRef.get();
+    if (existingPurchase.exists) {
+      const currentBalance = await getUserCredits(userId);
+      return res.json({
+        success: true,
+        alreadyProcessed: true,
+        creditsAdded: existingPurchase.data()?.credits ?? 0,
+        newBalance: currentBalance,
+        userId,
+      });
+    }
+
+    const appleVerification = await fetchAppleTransactionInfo(String(transactionId));
+    const applePayload = appleVerification.payload;
+
+    if (applePayload.transactionId !== String(transactionId)) {
+      return res.status(400).json({
+        error: 'Apple transaction mismatch',
+      });
+    }
+
+    if (applePayload.productId !== productId) {
+      return res.status(400).json({
+        error: 'Product mismatch',
+        message: 'The App Store transaction product does not match the requested product.',
+      });
+    }
+
+    if (applePayload.bundleId !== APP_STORE_BUNDLE_ID) {
+      return res.status(400).json({
+        error: 'Bundle mismatch',
+        message: 'The App Store transaction was issued for a different bundle identifier.',
+      });
+    }
+
+    const result = await db.runTransaction(async (transaction) => {
+      const purchaseDoc = await transaction.get(purchaseRef);
+      if (purchaseDoc.exists) {
+        const currentBalance = await getUserCredits(userId);
+        return {
+          alreadyProcessed: true,
+          newBalance: currentBalance,
+        };
+      }
+
+      const userRef = db.collection('users').doc(userId);
+      const userDoc = await transaction.get(userRef);
+      const userData = userDoc.exists ? userDoc.data() : {};
+      let currentCredits = userData?.gems ?? userData?.credits ?? 0;
+      currentCredits = Math.floor(Math.max(0, Number(currentCredits)));
+
+      if (isNaN(currentCredits) || currentCredits < 0) {
+        currentCredits = 0;
+      }
+
+      const newBalance = currentCredits + creditsToAdd;
+
+      if (userDoc.exists) {
+        transaction.update(userRef, {
+          gems: newBalance,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      } else {
+        transaction.set(userRef, {
+          gems: newBalance,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+
+      transaction.set(purchaseRef, {
+        userId,
+        productId,
+        transactionId: String(transactionId),
+        appleEnvironment: appleVerification.environment,
+        appleBundleId: applePayload.bundleId,
+        appleProductId: applePayload.productId,
+        credits: creditsToAdd,
+        newBalance,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      return {
+        alreadyProcessed: false,
+        newBalance,
+      };
+    });
+
+    res.json({
+      success: true,
+      alreadyProcessed: result.alreadyProcessed,
+      creditsAdded: creditsToAdd,
+      newBalance: result.newBalance,
+      userId,
+    });
+  } catch (error) {
+    console.error('[credits/redeem-app-store] Error:', error);
+    res.status(500).json({
+      error: 'Failed to redeem App Store purchase',
       message: sanitizeErrorMessage(error),
     });
   }

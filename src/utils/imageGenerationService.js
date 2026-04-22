@@ -3,7 +3,7 @@
  * 
  * This service provides a unified interface for generating images using multiple AI providers:
  * - Replicate (Flux Pro, SDXL)
- * - OpenAI (DALL-E 3)
+ * - OpenAI (GPT Image 2 Medium)
  * 
  * Features:
  * - Credit checking and deduction
@@ -308,7 +308,7 @@ const generateWithSDXL = async (prompt, options = {}, userId = null) => {
 };
 
 /**
- * Generate image with DALL-E 3 via backend API
+ * Generate image with OpenAI GPT Image 2 Medium via backend API
  * 
  * @param {string} prompt - Full prompt text
  * @param {Object} options - Generation options
@@ -741,4 +741,3 @@ export const checkProviderAvailability = async (provider) => {
 export const getProviderCost = (provider) => {
   return CREDIT_COSTS[provider] || 0;
 };
-

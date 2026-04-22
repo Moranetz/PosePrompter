@@ -25,12 +25,8 @@ final class StoreManager {
         "com.melmarion.poseprompter.credits.1100": 1100,
     ]
 
-    private let creditsKey = "PosePrompter_Credits"
-
     init() {
-        purchasedCredits = UserDefaults.standard.integer(forKey: creditsKey)
         Task { await loadProducts() }
-        Task { await listenForTransactions() }
     }
 
     func loadProducts() async {
@@ -44,14 +40,17 @@ final class StoreManager {
         isLoading = false
     }
 
-    func purchase(_ product: Product) async throws -> Bool {
+    func purchase(_ product: Product, authToken: String) async throws -> Bool {
         let result = try await product.purchase()
 
         switch result {
         case .success(let verification):
             let transaction = try checkVerified(verification)
-            let credits = Self.creditAmounts[product.id] ?? 0
-            addCredits(credits)
+            let _ = try await redeemPurchase(
+                productId: product.id,
+                transactionId: String(transaction.id),
+                authToken: authToken
+            )
             await transaction.finish()
             return true
 
@@ -66,26 +65,49 @@ final class StoreManager {
         }
     }
 
-    func restorePurchases() async {
+    func restorePurchases(authToken: String) async {
         for await result in Transaction.currentEntitlements {
             if let transaction = try? checkVerified(result) {
-                let credits = Self.creditAmounts[transaction.productID] ?? 0
-                addCredits(credits)
-                await transaction.finish()
+                do {
+                    let _ = try await redeemPurchase(
+                        productId: transaction.productID,
+                        transactionId: String(transaction.id),
+                        authToken: authToken
+                    )
+                    await transaction.finish()
+                } catch {
+                    print("[StoreManager] Failed to redeem restored purchase: \(error.localizedDescription)")
+                }
             }
         }
     }
 
-    func useCredits(_ amount: Int) -> Bool {
-        guard purchasedCredits >= amount else { return false }
-        purchasedCredits -= amount
-        UserDefaults.standard.set(purchasedCredits, forKey: creditsKey)
-        return true
+    func setCredits(_ amount: Int) {
+        purchasedCredits = max(0, amount)
     }
 
-    private func addCredits(_ amount: Int) {
-        purchasedCredits += amount
-        UserDefaults.standard.set(purchasedCredits, forKey: creditsKey)
+    func syncCredits(authToken: String) async {
+        do {
+            let balance = try await APIService.shared.checkCredits(authToken: authToken)
+            setCredits(balance)
+        } catch {
+            print("[StoreManager] Failed to sync credits: \(error.localizedDescription)")
+        }
+    }
+
+    func reconcilePurchases(authToken: String) async {
+        await restorePurchases(authToken: authToken)
+        await syncCredits(authToken: authToken)
+    }
+
+    func redeemPurchase(productId: String, transactionId: String, authToken: String) async throws -> Int {
+        let newBalance = try await APIService.shared.redeemAppStorePurchase(
+            productId: productId,
+            transactionId: transactionId,
+            authToken: authToken
+        )
+        setCredits(newBalance)
+        return newBalance
     }
 
     private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
@@ -94,16 +116,6 @@ final class StoreManager {
             throw StoreError.failedVerification
         case .verified(let value):
             return value
-        }
-    }
-
-    private func listenForTransactions() async {
-        for await result in Transaction.updates {
-            if let transaction = try? checkVerified(result) {
-                let credits = Self.creditAmounts[transaction.productID] ?? 0
-                addCredits(credits)
-                await transaction.finish()
-            }
         }
     }
 

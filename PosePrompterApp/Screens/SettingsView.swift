@@ -6,6 +6,7 @@ struct SettingsView: View {
     @Environment(StoreManager.self) private var storeManager
     @State private var showResetConfirm = false
     @State private var showSignIn = false
+    @State private var backendURLText = AppConfig.savedAPIBaseURLOverride ?? ""
 
     var body: some View {
         NavigationStack {
@@ -17,6 +18,7 @@ struct SettingsView: View {
                         accountSection
                         statsSection
                         promptsSection
+                        backendSection
                         linksSection
                         actionsSection
                     }
@@ -153,6 +155,67 @@ struct SettingsView: View {
             }
             .padding(14)
             .glassCard(cornerRadius: 12)
+        }
+        .padding(16)
+        .glassCard()
+    }
+
+    private var backendSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Backend", systemImage: "server.rack")
+                .font(.headline.weight(.bold))
+                .foregroundStyle(.white)
+
+            Text("Set the API host for simulator or device testing. Leave blank to use the build default.")
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.45))
+
+            TextField("https://api.poseprompter.com", text: $backendURLText)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .foregroundStyle(.white)
+                .padding(12)
+                .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+                )
+
+            HStack(spacing: 10) {
+                Button {
+                    AppConfig.setAPIBaseURLOverride(backendURLText)
+                    backendURLText = AppConfig.savedAPIBaseURLOverride ?? ""
+                } label: {
+                    Text("Save")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Theme.selectedAccent, in: Capsule())
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    AppConfig.clearAPIBaseURLOverride()
+                    backendURLText = ""
+                } label: {
+                    Text("Use Default")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.6))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Color.white.opacity(0.06), in: Capsule())
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                Text(AppConfig.apiBaseURL)
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.35))
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
         }
         .padding(16)
         .glassCard()

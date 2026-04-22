@@ -29,18 +29,18 @@ import { TOUCH_TARGETS, PROGRESS, getProgressPercent, SPACING, TYPOGRAPHY, PATTE
 // Model configurations
 const MODELS = [
   {
-    id: PROVIDERS.FLUX,
-    name: 'Flux Pro',
-    icon: Zap,
-    description: 'Highest quality, photorealistic results',
+    id: PROVIDERS.DALLE3,
+    name: 'GPT Image 2 Medium',
+    icon: ImageIcon,
+    description: 'OpenAI\'s primary image creator',
     quality: 5,
     recommended: true,
   },
   {
-    id: PROVIDERS.NANOBANANA,
-    name: 'Nano Banana Pro',
-    icon: Sparkles,
-    description: 'Latest AI model with advanced capabilities',
+    id: PROVIDERS.FLUX,
+    name: 'Flux Pro',
+    icon: Zap,
+    description: 'Highest quality, photorealistic results',
     quality: 5,
     recommended: false,
   },
@@ -53,10 +53,10 @@ const MODELS = [
     recommended: false,
   },
   {
-    id: PROVIDERS.DALLE3,
-    name: 'DALL-E 3',
-    icon: ImageIcon,
-    description: 'OpenAI\'s advanced image model',
+    id: PROVIDERS.NANOBANANA,
+    name: 'Nano Banana Pro',
+    icon: Sparkles,
+    description: 'Latest AI model with advanced capabilities',
     quality: 5,
     recommended: false,
   },
@@ -76,7 +76,7 @@ const classifyError = (errorMsg) => {
 
 const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => {
   const { user } = useAuth();
-  const [selectedModel, setSelectedModel] = useState(PROVIDERS.FLUX);
+  const [selectedModel, setSelectedModel] = useState(PROVIDERS.DALLE3);
   // Initialize prompt from external prop, localStorage, or empty string
   // Don't load from localStorage on initial mount - start fresh
   const [prompt, setPrompt] = useState(() => {
@@ -92,7 +92,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [advancedOptions, setAdvancedOptions] = useState({
     size: '1024x1024',
-    quality: 'hd',
+    quality: 'medium',
     numOutputs: 1,
   });
   const [generationHistory, setGenerationHistory] = useState([]);
@@ -1590,8 +1590,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                         }
                       }}
                     >
-                      <option value="standard" style={{ background: '#1a1a2e', color: '#ffffff' }}>Standard</option>
-                      <option value="hd" style={{ background: '#1a1a2e', color: '#ffffff' }}>HD</option>
+                      <option value="low" style={{ background: '#1a1a2e', color: '#ffffff' }}>Low</option>
+                      <option value="medium" style={{ background: '#1a1a2e', color: '#ffffff' }}>Medium</option>
+                      <option value="high" style={{ background: '#1a1a2e', color: '#ffffff' }}>High</option>
                     </select>
                   </div>
                 )}
@@ -2037,4 +2038,3 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
 };
 
 export default AIImageGenerator;
-

@@ -35,6 +35,15 @@ Backend API server for handling Stripe payments, credit balance updates, and AI 
      - Paste the entire JSON as a stringified value in `FIREBASE_SERVICE_ACCOUNT`
      - Or use individual variables: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
 
+7. **Configure App Store Server API verification:**
+   - Go to App Store Connect → Users and Access → Keys
+   - Create an App Store Server API key
+   - Set:
+     - `APP_STORE_ISSUER_ID`
+     - `APP_STORE_KEY_ID`
+     - `APP_STORE_PRIVATE_KEY`
+     - `APP_STORE_BUNDLE_ID=com.poseprompt.studio`
+
 ## Environment Variables
 
 Create a `.env` file in the `server/` directory:
@@ -60,6 +69,14 @@ FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"..."}
 # Server Configuration
 CLIENT_URL=http://localhost:5173
 PORT=3001
+
+# App Store Server API
+APP_STORE_ISSUER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+APP_STORE_KEY_ID=ABC123DEFG
+APP_STORE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+APP_STORE_BUNDLE_ID=com.poseprompt.studio
+# Optional: production, sandbox, or leave unset to auto-try production then sandbox
+APP_STORE_ENVIRONMENT=
 ```
 
 ## Running the Server
@@ -118,6 +135,28 @@ Confirms payment and updates user credit balance (legacy endpoint - webhook hand
 }
 ```
 
+#### POST /api/credits/redeem-app-store
+Redeems a verified App Store consumable purchase into the backend credit ledger.
+
+**Request:**
+```json
+{
+  "productId": "com.melmarion.poseprompter.credits.200",
+  "transactionId": "2000001234567890"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "alreadyProcessed": false,
+  "creditsAdded": 200,
+  "newBalance": 480,
+  "userId": "firebase-uid"
+}
+```
+
 #### POST /api/stripe/webhook
 Stripe webhook endpoint for payment events. Automatically updates user credits when payment succeeds.
 
@@ -150,7 +189,7 @@ Generates an image using the specified AI provider.
 **Providers:**
 - `flux` - Flux Pro (10 credits)
 - `sdxl` - Stable Diffusion XL (8 credits)
-- `dalle3` - DALL-E 3 (12 credits)
+- `dalle3` - GPT Image 2 Medium (12 credits)
 
 **Response (Success):**
 ```json
@@ -295,7 +334,7 @@ Health check endpoint.
 |----------|-------------|
 | Flux Pro | 10 |
 | SDXL | 8 |
-| DALL-E 3 | 12 |
+| GPT Image 2 Medium | 12 |
 
 ## Credit Packages
 

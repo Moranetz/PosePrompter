@@ -12,7 +12,7 @@ struct CreateView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(StoreManager.self) private var storeManager
     @State private var promptText = ""
-    @State private var selectedModel: AIModel = .fluxPro
+    @State private var selectedModel: AIModel = .dalle3
     @State private var isGenerating = false
     @State private var generatedImage: UIImage?
     @State private var showPaywall = false
@@ -90,6 +90,7 @@ struct CreateView: View {
             }
             .sheet(isPresented: $showPaywall) {
                 PaywallView()
+                    .environment(authManager)
                     .environment(storeManager)
             }
             .sheet(isPresented: $showHistory) {
@@ -470,7 +471,7 @@ struct CreateView: View {
             return
         }
 
-        guard storeManager.useCredits(selectedModel.creditCost) else {
+        guard credits >= selectedModel.creditCost else {
             showPaywall = true
             return
         }
@@ -495,15 +496,15 @@ struct CreateView: View {
                     await MainActor.run { generationProgress = step }
                 }
 
-                let photoData = referencePhoto?.jpegData(compressionQuality: 0.8)
                 let result = try await APIService.shared.generateImage(
                     prompt: promptText,
-                    model: selectedModel.rawValue,
-                    referencePhotoData: photoData,
-                    authToken: authManager.currentUser?.id ?? ""
+                    provider: selectedModel.rawValue,
+                    options: selectedModel == .dalle3 ? ["quality": "medium"] : [:],
+                    authToken: try await authManager.idToken()
                 )
 
                 await MainActor.run {
+                    storeManager.setCredits(result.remainingCredits)
                     generationProgress = 1.0
                     generatedImage = result.image
                     isGenerating = false
@@ -526,8 +527,6 @@ struct CreateView: View {
                     generationProgress = 0
                     isGenerating = false
                     errorMessage = error.localizedDescription
-                    // Refund credits on failure
-                    _ = storeManager.purchasedCredits // trigger observation
                     HapticManager.medium()
                 }
             }
@@ -538,8 +537,8 @@ struct CreateView: View {
 // MARK: - AI Model
 
 enum AIModel: String, CaseIterable, Identifiable {
-    case fluxPro = "flux_pro"
-    case nanoBanana = "nano_banana"
+    case fluxPro = "flux"
+    case nanoBanana = "nanobanana"
     case sdxl = "sdxl"
     case dalle3 = "dalle3"
 
@@ -550,7 +549,7 @@ enum AIModel: String, CaseIterable, Identifiable {
         case .fluxPro: return "Flux Pro"
         case .nanoBanana: return "Nano Banana"
         case .sdxl: return "SDXL"
-        case .dalle3: return "DALL-E 3"
+        case .dalle3: return "GPT Image 2 Medium"
         }
     }
 
@@ -574,31 +573,23 @@ enum AIModel: String, CaseIterable, Identifiable {
 
     var creditCost: Int {
         switch self {
-        case .fluxPro: return 1
-        case .nanoBanana: return 1
-        case .sdxl: return 1
-        case .dalle3: return 2
+        case .fluxPro: return 10
+        case .nanoBanana: return 15
+        case .sdxl: return 8
+        case .dalle3: return 12
         }
     }
 
-    var recommended: Bool { self == .fluxPro }
+    var recommended: Bool { self == .dalle3 }
 }
 
 // MARK: - Paywall View
 
 struct PaywallView: View {
+    @Environment(AuthManager.self) private var authManager
     @Environment(StoreManager.self) private var storeManager
     @Environment(\.dismiss) private var dismiss
     @State private var purchasing: String?
-
-    // Fallback display data if StoreKit products haven't loaded
-    private let fallbackPackages: [(id: String, credits: Int, price: String, label: String, popular: Bool)] = [
-        ("com.melmarion.poseprompter.credits.50", 50, "$5.99", "Try it out", false),
-        ("com.melmarion.poseprompter.credits.100", 100, "$11.99", "Build your gallery", false),
-        ("com.melmarion.poseprompter.credits.200", 200, "$23.99", "Most popular", true),
-        ("com.melmarion.poseprompter.credits.420", 420, "$47.99", "Never run out", false),
-        ("com.melmarion.poseprompter.credits.1100", 1100, "$119.99", "Serious creators", false),
-    ]
 
     var body: some View {
         NavigationStack {
@@ -623,18 +614,50 @@ struct PaywallView: View {
                         }
                         .padding(.top, 20)
 
-                        if !storeManager.products.isEmpty {
+                        if storeManager.isLoading {
+                            ProgressView()
+                                .tint(Theme.selectedAccent)
+                                .padding(.vertical, 32)
+                        } else if !storeManager.products.isEmpty {
                             ForEach(storeManager.products) { product in
                                 storeProductCard(product)
                             }
                         } else {
-                            ForEach(Array(fallbackPackages.enumerated()), id: \.offset) { _, pkg in
-                                fallbackCard(pkg)
+                            VStack(spacing: 10) {
+                                Text("Credits are temporarily unavailable.")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.white)
+                                Text("Try again in a moment or check your App Store Connect product setup.")
+                                    .font(.caption)
+                                    .foregroundStyle(.white.opacity(0.5))
+                                    .multilineTextAlignment(.center)
+
+                                Button {
+                                    Task {
+                                        await storeManager.loadProducts()
+                                    }
+                                } label: {
+                                    Text("Retry")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 8)
+                                        .background(Theme.selectedAccent, in: Capsule())
+                                }
+                                .buttonStyle(.plain)
                             }
+                            .padding(.vertical, 24)
                         }
 
                         Button {
-                            Task { await storeManager.restorePurchases() }
+                            Task {
+                                do {
+                                    let token = try await authManager.idToken()
+                                    await storeManager.restorePurchases(authToken: token)
+                                } catch {
+                                    print("[PaywallView] Restore purchases failed: \(error.localizedDescription)")
+                                }
+                            }
                         } label: {
                             Text("Restore Purchases")
                                 .font(.caption)
@@ -670,9 +693,14 @@ struct PaywallView: View {
         return Button {
             purchasing = product.id
             Task {
-                _ = try? await storeManager.purchase(product)
+                do {
+                    let token = try await authManager.idToken()
+                    _ = try await storeManager.purchase(product, authToken: token)
+                    HapticManager.success()
+                } catch {
+                    print("[PaywallView] Purchase failed: \(error.localizedDescription)")
+                }
                 purchasing = nil
-                HapticManager.success()
             }
         } label: {
             HStack {
@@ -716,47 +744,6 @@ struct PaywallView: View {
         .buttonStyle(.plain)
         .disabled(isPurchasing)
     }
-
-    private func fallbackCard(_ pkg: (id: String, credits: Int, price: String, label: String, popular: Bool)) -> some View {
-        Button {
-            HapticManager.medium()
-        } label: {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text("\(pkg.credits)")
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(.white)
-                        Text("credits")
-                            .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.6))
-                        if pkg.popular {
-                            Text("Popular")
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundStyle(Theme.selectedAccent)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Theme.selectedAccent.opacity(0.15), in: Capsule())
-                        }
-                    }
-                    Text(pkg.label)
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.4))
-                }
-                Spacer()
-                Text(pkg.price)
-                    .font(.headline.weight(.bold))
-                    .foregroundStyle(Theme.selectedAccent)
-            }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(pkg.popular ? Theme.selectedAccent.opacity(0.08) : Theme.cardBackground)
-                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(pkg.popular ? Theme.selectedAccent.opacity(0.3) : Theme.cardBorder, lineWidth: pkg.popular ? 1.5 : 0.5))
-            )
-        }
-        .buttonStyle(.plain)
-    }
 }
 
 // MARK: - Sign In Sheet
@@ -789,11 +776,12 @@ struct SignInSheet: View {
                     Spacer()
 
                     SignInWithAppleButton(.signIn) { request in
-                        request.requestedScopes = [.fullName, .email]
+                        authManager.configureAppleRequest(request)
                     } onCompletion: { result in
-                        authManager.handleSignInWithApple(result)
-                        if authManager.isSignedIn {
-                            dismiss()
+                        authManager.handleSignInWithApple(result) { success in
+                            if success {
+                                dismiss()
+                            }
                         }
                     }
                     .signInWithAppleButtonStyle(.white)

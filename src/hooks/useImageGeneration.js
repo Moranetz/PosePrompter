@@ -31,7 +31,7 @@ export function useImageGeneration() {
     try {
       const {
         prompt,
-        model = 'flux',
+        model = 'dalle3',
         numVariations = 1,
         advancedOptions = {},
         facePhotoUrl = null,
@@ -113,4 +113,3 @@ export function useImageGeneration() {
     clearError,
   };
 }
-

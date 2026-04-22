@@ -53,7 +53,7 @@ async function checkHealth() {
         log('  ⚠ Replicate API not configured - Flux and SDXL will not work', 'yellow');
       }
       if (!health.openai) {
-        log('  ⚠ OpenAI API not configured - DALL-E 3 will not work', 'yellow');
+        log('  ⚠ OpenAI API not configured - GPT Image 2 Medium will not work', 'yellow');
       }
       if (!health.gemini) {
         log('  ⚠ Gemini API not configured - NanoBanana will not work', 'yellow');
@@ -77,7 +77,7 @@ function checkEnvironmentVariables() {
   
   const required = {
     'REPLICATE_API_TOKEN': 'Required for Flux and SDXL',
-    'OPENAI_API_KEY': 'Required for DALL-E 3',
+    'OPENAI_API_KEY': 'Required for GPT Image 2 Medium',
     'GOOGLE_GEMINI_API_KEY': 'Required for NanoBanana',
     'STRIPE_SECRET_KEY': 'Required for payments',
     'FIREBASE_SERVICE_ACCOUNT': 'Required for Firebase Admin (or use individual vars)',
@@ -221,7 +221,7 @@ function generateReport(health, envVars, apiKeys, firebase) {
     issues.push('Backend server is not accessible');
   } else {
     if (!health.replicate) warnings.push('Replicate API not configured (Flux, SDXL unavailable)');
-    if (!health.openai) warnings.push('OpenAI API not configured (DALL-E 3 unavailable)');
+    if (!health.openai) warnings.push('OpenAI API not configured (GPT Image 2 Medium unavailable)');
     if (!health.gemini) warnings.push('Gemini API not configured (NanoBanana unavailable)');
     if (!health.firebase) issues.push('Firebase Admin not initialized');
   }
@@ -276,4 +276,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
