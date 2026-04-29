@@ -1408,6 +1408,67 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     return defaultColor;
   }, [hoveredPart, categoryColors]);
 
+  // Silhouette fill color derived from strokeColor
+  const silhouetteFill = useMemo(() => {
+    // Parse the strokeColor to create a slightly transparent fill
+    if (strokeColor.startsWith('rgba')) return strokeColor;
+    if (strokeColor.startsWith('#')) {
+      const hex = strokeColor.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.75)`;
+    }
+    return 'rgba(255, 255, 255, 0.75)';
+  }, [strokeColor]);
+
+  // Subtle highlight fill for hovered parts
+  const getHoverFilter = (category) => hoveredPart === category ? 'url(#hoverGlow)' : 'none';
+
+  // Arm segment length
+  const armSegLen = 35 * bodyScale;
+
+  // Precompute arm joint positions
+  const leftShoulderX = centerX - shoulderWidth;
+  const rightShoulderX = centerX + shoulderWidth;
+  const leftElbowX = leftShoulderX - Math.sin(poseVariant.leftArm * Math.PI / 180) * armSegLen;
+  const leftElbowY = shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * armSegLen;
+  const rightElbowX = rightShoulderX + Math.sin(poseVariant.rightArm * Math.PI / 180) * armSegLen;
+  const rightElbowY = shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * armSegLen;
+  const leftWristX = leftElbowX - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * armSegLen;
+  const leftWristY = leftElbowY + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * armSegLen;
+  const rightWristX = rightElbowX + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * armSegLen;
+  const rightWristY = rightElbowY + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * armSegLen;
+
+  // Limb thickness for silhouette
+  const upperArmW = 6 * bodyScale;
+  const forearmW = 5 * bodyScale;
+  const thighW = 9 * bodyScale;
+  const calfW = 6 * bodyScale;
+  const handR = handsOpen ? 5.5 : 4.5;
+  const footRx = feetPointed ? 4 : 8;
+  const footRy = feetPointed ? 8 : 4;
+
+  // Helper: build a tapered limb path between two points with widths at each end
+  const limbPath = (x1, y1, x2, y2, w1, w2) => {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const nx = -dy / len;
+    const ny = dx / len;
+    // Four corners of the tapered rectangle
+    const ax = x1 + nx * w1;
+    const ay = y1 + ny * w1;
+    const bx = x1 - nx * w1;
+    const by = y1 - ny * w1;
+    const cx = x2 - nx * w2;
+    const cy = y2 - ny * w2;
+    const dx2 = x2 + nx * w2;
+    const dy2 = y2 + ny * w2;
+    // Smooth tapered shape with curves at the ends
+    return `M ${ax} ${ay} C ${ax + dx * 0.4} ${ay + dy * 0.4}, ${dx2 + dx * -0.4} ${dy2 + dy * -0.4}, ${dx2} ${dy2} Q ${x2 + nx * (w2 + 1)} ${y2 + ny * (w2 + 1)}, ${cx} ${cy} C ${cx + dx * -0.4} ${cy + dy * -0.4}, ${bx + dx * 0.4} ${by + dy * 0.4}, ${bx} ${by} Q ${x1 - nx * (w1 + 1)} ${y1 - ny * (w1 + 1)}, ${ax} ${ay} Z`;
+  };
+
   // Error boundary - catch any rendering errors
   try {
     return (
@@ -1427,297 +1488,322 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
         <clipPath id="figureClip">
           <rect x="0" y="0" width={width} height={height} />
         </clipPath>
+        {/* Subtle gradient for body fill — adds depth */}
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.92)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0.55)" />
+        </linearGradient>
+        {/* Hover glow filter */}
+        <filter id="hoverGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        {/* Ambient edge glow for the whole figure */}
+        <filter id="ambientGlow" x="-10%" y="-5%" width="120%" height="110%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="glow" />
+          <feFlood floodColor="rgba(255,255,255,0.15)" result="color" />
+          <feComposite in="color" in2="glow" operator="in" result="coloredGlow" />
+          <feMerge>
+            <feMergeNode in="coloredGlow" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
       </defs>
+
       {/* Main figure group */}
       <motion.g
-        animate={{ 
+        animate={{
           x: poseVariant.stance,
           rotate: isReclining ? -45 : isLeaning ? -8 : 0
         }}
         transition={TRANSITION_CONFIG}
         style={{ transformOrigin: `${centerX}px ${height / 2}px` }}
         clipPath="url(#figureClip)"
+        filter="url(#ambientGlow)"
       >
-        {/* Head - Click to edit HeadPosition - includes facial expressions */}
+
+        {/* === TORSO SILHOUETTE === */}
         <motion.g
-          animate={{ 
+          animate={{ rotate: poseVariant.torso }}
+          transition={TRANSITION_CONFIG}
+          style={{ transformOrigin: `${centerX}px ${shoulderY}px` }}
+          {...getInteractiveProps('Torso')}
+        >
+          {/* Neck — tapered column connecting head to shoulders */}
+          <motion.path
+            d={`
+              M ${centerX - 5 * bodyScale} ${headY + headSize - 2}
+              Q ${centerX - 7 * bodyScale} ${shoulderY - 8}, ${centerX - shoulderWidth * 0.5} ${shoulderY}
+              L ${centerX + shoulderWidth * 0.5} ${shoulderY}
+              Q ${centerX + 7 * bodyScale} ${shoulderY - 8}, ${centerX + 5 * bodyScale} ${headY + headSize - 2}
+              Z
+            `}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'Torso' ? 1 : 0.85}
+            filter={getHoverFilter('Torso')}
+          />
+          {/* Torso body — smooth feminine/masculine croquis shape */}
+          <motion.path
+            d={`
+              M ${centerX - shoulderWidth} ${shoulderY}
+              Q ${centerX - shoulderWidth - 2} ${shoulderY + 5}, ${centerX - torsoWidth - 2} ${shoulderY + torsoLength * 0.4}
+              Q ${centerX - torsoWidth + 1} ${shoulderY + torsoLength * 0.65}, ${centerX - hipWidth - 3} ${hipY - 8}
+              Q ${centerX - hipWidth - 1} ${hipY}, ${centerX - hipWidth} ${hipY}
+              L ${centerX + hipWidth} ${hipY}
+              Q ${centerX + hipWidth + 1} ${hipY}, ${centerX + hipWidth + 3} ${hipY - 8}
+              Q ${centerX + torsoWidth - 1} ${shoulderY + torsoLength * 0.65}, ${centerX + torsoWidth + 2} ${shoulderY + torsoLength * 0.4}
+              Q ${centerX + shoulderWidth + 2} ${shoulderY + 5}, ${centerX + shoulderWidth} ${shoulderY}
+              Z
+            `}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'Torso' ? 1 : 0.85}
+            filter={getHoverFilter('Torso')}
+          />
+          {/* Invisible hit target for torso */}
+          <rect
+            x={centerX - shoulderWidth}
+            y={shoulderY}
+            width={shoulderWidth * 2}
+            height={hipY - shoulderY}
+            fill="transparent"
+            stroke="none"
+          />
+        </motion.g>
+
+        {/* === HEAD SILHOUETTE === */}
+        <motion.g
+          animate={{
             rotate: poseVariant.head,
-            y: headTilt * 0.3 // Subtle vertical offset for head tilt effect
+            y: headTilt * 0.3
           }}
           transition={TRANSITION_CONFIG}
           style={{ transformOrigin: `${centerX}px ${headY}px` }}
           {...getInteractiveProps('HeadPosition')}
         >
-          {/* Head circle */}
-          <circle
+          {/* Head — smooth oval silhouette */}
+          <ellipse
             cx={centerX}
             cy={headY}
-            r={headSize}
-            fill={hoveredPart === 'HeadPosition' ? 'rgba(255,255,255,0.1)' : 'none'}
-            stroke={getPartColor('HeadPosition', strokeColor)}
-            strokeWidth={hoveredPart === 'HeadPosition' ? 3 : 2}
+            rx={headSize * 0.82}
+            ry={headSize}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'HeadPosition' ? 1 : 0.85}
+            filter={getHoverFilter('HeadPosition')}
           />
-          
-          {/* FACIAL EXPRESSION GROUP - Click to edit FacialExpression */}
+          {/* Hair suggestion — subtle arc at top of head */}
+          <path
+            d={`
+              M ${centerX - headSize * 0.75} ${headY - headSize * 0.3}
+              Q ${centerX - headSize * 0.9} ${headY - headSize * 1.15}, ${centerX} ${headY - headSize * 1.1}
+              Q ${centerX + headSize * 0.9} ${headY - headSize * 1.15}, ${centerX + headSize * 0.75} ${headY - headSize * 0.3}
+            `}
+            fill={silhouetteFill}
+            opacity={0.5}
+          />
+          {/* Chin refinement — subtle point */}
+          <path
+            d={`
+              M ${centerX - headSize * 0.45} ${headY + headSize * 0.7}
+              Q ${centerX} ${headY + headSize * 1.12}, ${centerX + headSize * 0.45} ${headY + headSize * 0.7}
+            `}
+            fill={silhouetteFill}
+            opacity={0.7}
+          />
+
+          {/* FACIAL EXPRESSION GROUP */}
           <g {...getInteractiveProps('FacialExpression')}>
-            {/* Eye positions adjusted for head turn */}
             {(() => {
-              const eyeY = headY - 5;
-              const leftEyeX = centerX - 8 + (lookingAway ? 4 : 0) + (headTurn ?? 0) * 0.1;
-              const rightEyeX = centerX + 8 + (lookingAway ? 6 : 0) + (headTurn ?? 0) * 0.1;
-              // Memoize eye color calculation
+              const eyeY = headY - 3;
+              const leftEyeX = centerX - 7 + (lookingAway ? 3 : 0) + (headTurn ?? 0) * 0.08;
+              const rightEyeX = centerX + 7 + (lookingAway ? 5 : 0) + (headTurn ?? 0) * 0.08;
               const eyeColor = getValidColor(categoryColors?.['FacialExpression'], accentColor);
-              
-              // Render eyes based on eyeState
+
               const renderEye = (x, isRight) => {
                 const eyeScale = isRight && lookingAway ? 0.8 : 1;
                 const eyeOpacity = isRight && lookingAway ? 0.5 : 0.85;
-                
-                // Base eye element
+                // Dark cutout eyes against the silhouette fill
+                const eyeCutoutColor = 'rgba(0,0,0,0.6)';
+                const eyeHighlight = eyeColor;
+
                 let eyeElement;
                 switch (eyeState) {
                   case 'happy':
-                    // Crescent eyes (happy/laughing)
                     eyeElement = (
                       <motion.path
-                        d={`M ${x - 4 * eyeScale} ${eyeY} Q ${x} ${eyeY - 5 * eyeScale} ${x + 4 * eyeScale} ${eyeY}`}
+                        d={`M ${x - 3.5 * eyeScale} ${eyeY} Q ${x} ${eyeY - 4.5 * eyeScale} ${x + 3.5 * eyeScale} ${eyeY}`}
                         fill="none"
-                        stroke={eyeColor}
-                        strokeWidth="2"
+                        stroke={eyeHighlight}
+                        strokeWidth="1.8"
                         strokeLinecap="round"
                         opacity={eyeOpacity}
-                        animate={{ pathLength: 1 }}
-                        transition={TRANSITION_CONFIG}
                       />
                     );
                     break;
                   case 'closed':
-                    // Closed eyes (horizontal line)
                     eyeElement = (
                       <motion.line
-                        x1={x - 4 * eyeScale}
+                        x1={x - 3.5 * eyeScale}
                         y1={eyeY}
-                        x2={x + 4 * eyeScale}
+                        x2={x + 3.5 * eyeScale}
                         y2={eyeY}
-                        stroke={eyeColor}
-                        strokeWidth="2"
+                        stroke={eyeHighlight}
+                        strokeWidth="1.5"
                         strokeLinecap="round"
                         opacity={eyeOpacity}
                       />
                     );
                     break;
                   case 'halfClosed':
-                    // Half-closed eyes (smaller, slightly drooped)
                     eyeElement = (
                       <motion.ellipse
                         cx={x}
-                        cy={eyeY + 1}
-                        rx={3 * eyeScale}
-                        ry={1.5 * eyeScale}
-                        fill={eyeColor}
+                        cy={eyeY + 0.5}
+                        rx={2.5 * eyeScale}
+                        ry={1.2 * eyeScale}
+                        fill={eyeCutoutColor}
                         opacity={eyeOpacity * 0.8}
                       />
                     );
                     break;
                   case 'wide':
-                    // Wide eyes (larger circles)
-                    eyeElement = (
-                      <motion.circle
-                        cx={x}
-                        cy={eyeY}
-                        r={4 * eyeScale}
-                        fill={eyeColor}
-                        opacity={eyeOpacity}
-                      />
-                    );
-                    break;
-                  case 'intense':
-                    // Intense eyes (smaller, focused)
                     eyeElement = (
                       <>
                         <motion.circle
                           cx={x}
                           cy={eyeY}
-                          r={3 * eyeScale}
-                          fill={eyeColor}
+                          r={3.5 * eyeScale}
+                          fill={eyeCutoutColor}
+                          opacity={eyeOpacity}
+                        />
+                        <motion.circle
+                          cx={x + 0.8}
+                          cy={eyeY - 0.8}
+                          r={1.2 * eyeScale}
+                          fill="rgba(255,255,255,0.6)"
+                        />
+                      </>
+                    );
+                    break;
+                  case 'intense':
+                    eyeElement = (
+                      <>
+                        <motion.circle
+                          cx={x}
+                          cy={eyeY}
+                          r={2.8 * eyeScale}
+                          fill={eyeCutoutColor}
                           opacity={eyeOpacity}
                         />
                         <motion.circle
                           cx={x}
                           cy={eyeY}
-                          r={1.5 * eyeScale}
-                          fill="rgba(255,255,255,0.5)"
+                          r={1.2 * eyeScale}
+                          fill={eyeHighlight}
+                          opacity={0.9}
                         />
                       </>
                     );
                     break;
                   case 'downcast':
-                    // Downcast eyes (looking down)
                     eyeElement = (
                       <motion.ellipse
                         cx={x}
-                        cy={eyeY + 2}
-                        rx={2.5 * eyeScale}
-                        ry={2 * eyeScale}
-                        fill={eyeColor}
+                        cy={eyeY + 1.5}
+                        rx={2.2 * eyeScale}
+                        ry={1.8 * eyeScale}
+                        fill={eyeCutoutColor}
                         opacity={eyeOpacity * 0.7}
                       />
                     );
                     break;
                   case 'wistful':
-                    // Wistful eyes (slightly larger, upward looking)
                     eyeElement = (
                       <motion.ellipse
                         cx={x}
-                        cy={eyeY - 1}
-                        rx={3 * eyeScale}
-                        ry={2.5 * eyeScale}
-                        fill={eyeColor}
+                        cy={eyeY - 0.5}
+                        rx={2.5 * eyeScale}
+                        ry={2.2 * eyeScale}
+                        fill={eyeCutoutColor}
                         opacity={eyeOpacity * 0.75}
                       />
                     );
                     break;
-                  default: // 'normal'
+                  default:
                     eyeElement = (
-                      <motion.circle
-                        cx={x}
-                        cy={eyeY}
-                        r={3 * eyeScale}
-                        fill={eyeColor}
-                        opacity={eyeOpacity}
-                        animate={{ opacity: [eyeOpacity * 0.7, eyeOpacity, eyeOpacity * 0.7] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
+                      <>
+                        <motion.circle
+                          cx={x}
+                          cy={eyeY}
+                          r={2.5 * eyeScale}
+                          fill={eyeCutoutColor}
+                          opacity={eyeOpacity}
+                          animate={{ opacity: [eyeOpacity * 0.7, eyeOpacity, eyeOpacity * 0.7] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        <motion.circle
+                          cx={x + 0.6}
+                          cy={eyeY - 0.6}
+                          r={0.8 * eyeScale}
+                          fill="rgba(255,255,255,0.5)"
+                        />
+                      </>
                     );
                 }
-                
-                // Add sparkle effects when aesthetic filter is active
+
                 if (showAestheticFilter && eyeState !== 'closed') {
                   return (
                     <g>
                       {eyeElement}
-                      {/* Sparkle effect at eye position */}
                       <motion.g
                         initial={{ scale: 0, opacity: 0 }}
-                        animate={{ 
+                        animate={{
                           scale: [0, 1.2, 1, 1.2, 1],
                           opacity: [0, 1, 0.8, 1, 0.8]
                         }}
-                        transition={{ 
-                          delay: 0.5, 
+                        transition={{
+                          delay: 0.5,
                           duration: 0.6,
                           repeat: Infinity,
                           repeatDelay: 2,
                           repeatType: 'reverse'
                         }}
                       >
-                        {/* Main sparkle circle */}
-                        <circle
-                          cx={x}
-                          cy={eyeY}
-                          r="2"
-                          fill="rgba(255, 255, 255, 0.9)"
-                          opacity="0.9"
-                        >
-                          <animate
-                            attributeName="r"
-                            values="2;3;2"
-                            dur="1.5s"
-                            repeatCount="indefinite"
-                          />
+                        <circle cx={x} cy={eyeY} r="1.5" fill="rgba(255, 255, 255, 0.9)" opacity="0.9">
+                          <animate attributeName="r" values="1.5;2.5;1.5" dur="1.5s" repeatCount="indefinite" />
                         </circle>
-                        {/* Cross sparkle lines */}
-                        <line
-                          x1={x}
-                          y1={eyeY - 4}
-                          x2={x}
-                          y2={eyeY + 4}
-                          stroke="rgba(255, 255, 255, 0.9)"
-                          strokeWidth="0.5"
-                          opacity="0.9"
-                        />
-                        <line
-                          x1={x - 4}
-                          y1={eyeY}
-                          x2={x + 4}
-                          y2={eyeY}
-                          stroke="rgba(255, 255, 255, 0.9)"
-                          strokeWidth="0.5"
-                          opacity="0.9"
-                        />
-                        {/* Diagonal sparkle lines */}
-                        <line
-                          x1={x - 3}
-                          y1={eyeY - 3}
-                          x2={x + 3}
-                          y2={eyeY + 3}
-                          stroke="rgba(255, 255, 255, 0.7)"
-                          strokeWidth="0.4"
-                          opacity="0.7"
-                        />
-                        <line
-                          x1={x - 3}
-                          y1={eyeY + 3}
-                          x2={x + 3}
-                          y2={eyeY - 3}
-                          stroke="rgba(255, 255, 255, 0.7)"
-                          strokeWidth="0.4"
-                          opacity="0.7"
-                        />
-                        {/* Glow effect */}
-                        <circle
-                          cx={x}
-                          cy={eyeY}
-                          r="4"
-                          fill="none"
-                          stroke="rgba(255, 255, 255, 0.4)"
-                          strokeWidth="1"
-                          opacity="0.6"
-                        >
-                          <animate
-                            attributeName="r"
-                            values="4;6;4"
-                            dur="2s"
-                            repeatCount="indefinite"
-                          />
-                          <animate
-                            attributeName="opacity"
-                            values="0.6;0.3;0.6"
-                            dur="2s"
-                            repeatCount="indefinite"
-                          />
-                        </circle>
+                        <line x1={x} y1={eyeY - 3} x2={x} y2={eyeY + 3} stroke="rgba(255,255,255,0.9)" strokeWidth="0.4" opacity="0.9" />
+                        <line x1={x - 3} y1={eyeY} x2={x + 3} y2={eyeY} stroke="rgba(255,255,255,0.9)" strokeWidth="0.4" opacity="0.9" />
+                        <line x1={x - 2} y1={eyeY - 2} x2={x + 2} y2={eyeY + 2} stroke="rgba(255,255,255,0.7)" strokeWidth="0.3" opacity="0.7" />
+                        <line x1={x - 2} y1={eyeY + 2} x2={x + 2} y2={eyeY - 2} stroke="rgba(255,255,255,0.7)" strokeWidth="0.3" opacity="0.7" />
                       </motion.g>
                     </g>
                   );
                 }
-                
                 return eyeElement;
               };
-              
-              // Render mouth based on mouthState
-              const mouthY = headY + 8;
-              const mouthColor = strokeColor;
-              
+
+              const mouthY = headY + 7;
+              const mouthColor = 'rgba(0,0,0,0.45)';
+
               const renderMouth = () => {
                 switch (mouthState) {
                   case 'smile':
                     return (
                       <motion.path
-                        d={`M ${centerX - 6} ${mouthY} Q ${centerX} ${mouthY + 5} ${centerX + 6} ${mouthY}`}
+                        d={`M ${centerX - 5} ${mouthY} Q ${centerX} ${mouthY + 4} ${centerX + 5} ${mouthY}`}
                         fill="none"
                         stroke={mouthColor}
-                        strokeWidth="1.5"
+                        strokeWidth="1.2"
                         strokeLinecap="round"
                       />
                     );
                   case 'wideSmile':
                     return (
                       <motion.path
-                        d={`M ${centerX - 8} ${mouthY - 1} Q ${centerX} ${mouthY + 7} ${centerX + 8} ${mouthY - 1}`}
+                        d={`M ${centerX - 7} ${mouthY - 0.5} Q ${centerX} ${mouthY + 6} ${centerX + 7} ${mouthY - 0.5}`}
                         fill="none"
                         stroke={mouthColor}
-                        strokeWidth="2"
+                        strokeWidth="1.5"
                         strokeLinecap="round"
                       />
                     );
@@ -1725,52 +1811,43 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                     return (
                       <>
                         <motion.path
-                          d={`M ${centerX - 8} ${mouthY - 2} Q ${centerX} ${mouthY + 8} ${centerX + 8} ${mouthY - 2}`}
-                          fill="none"
+                          d={`M ${centerX - 7} ${mouthY - 1} Q ${centerX} ${mouthY + 7} ${centerX + 7} ${mouthY - 1}`}
+                          fill="rgba(0,0,0,0.25)"
                           stroke={mouthColor}
-                          strokeWidth="2"
+                          strokeWidth="1.2"
                           strokeLinecap="round"
-                        />
-                        <motion.ellipse
-                          cx={centerX}
-                          cy={mouthY + 2}
-                          rx={5}
-                          ry={3}
-                          fill="rgba(255,255,255,0.1)"
-                          stroke={mouthColor}
-                          strokeWidth="0.5"
                         />
                       </>
                     );
                   case 'serious':
                     return (
                       <motion.line
-                        x1={centerX - 5}
-                        y1={mouthY + 1}
-                        x2={centerX + 5}
-                        y2={mouthY + 1}
+                        x1={centerX - 4}
+                        y1={mouthY + 0.5}
+                        x2={centerX + 4}
+                        y2={mouthY + 0.5}
                         stroke={mouthColor}
-                        strokeWidth="2"
+                        strokeWidth="1.5"
                         strokeLinecap="round"
                       />
                     );
                   case 'slight':
                     return (
                       <motion.path
-                        d={`M ${centerX - 4} ${mouthY} Q ${centerX} ${mouthY + 2.5} ${centerX + 4} ${mouthY}`}
+                        d={`M ${centerX - 3.5} ${mouthY} Q ${centerX} ${mouthY + 2} ${centerX + 3.5} ${mouthY}`}
                         fill="none"
                         stroke={mouthColor}
-                        strokeWidth="1.5"
+                        strokeWidth="1.2"
                         strokeLinecap="round"
                       />
                     );
                   case 'pout':
                     return (
                       <motion.path
-                        d={`M ${centerX - 4} ${mouthY + 2} Q ${centerX} ${mouthY - 1} ${centerX + 4} ${mouthY + 2}`}
+                        d={`M ${centerX - 3.5} ${mouthY + 1.5} Q ${centerX} ${mouthY - 0.5} ${centerX + 3.5} ${mouthY + 1.5}`}
                         fill="none"
                         stroke={mouthColor}
-                        strokeWidth="1.5"
+                        strokeWidth="1.2"
                         strokeLinecap="round"
                       />
                     );
@@ -1778,799 +1855,411 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
                     return (
                       <motion.ellipse
                         cx={centerX}
-                        cy={mouthY + 1}
-                        rx={4}
-                        ry={3}
-                        fill="rgba(0,0,0,0.3)"
+                        cy={mouthY + 0.5}
+                        rx={3.5}
+                        ry={2.5}
+                        fill="rgba(0,0,0,0.35)"
                         stroke={mouthColor}
-                        strokeWidth="1.5"
+                        strokeWidth="1"
                       />
                     );
-                  default: // 'neutral'
+                  default:
                     return (
                       <motion.line
-                        x1={centerX - 4}
+                        x1={centerX - 3.5}
                         y1={mouthY}
-                        x2={centerX + 4}
+                        x2={centerX + 3.5}
                         y2={mouthY}
                         stroke={mouthColor}
-                        strokeWidth="1.5"
+                        strokeWidth="1.2"
                         strokeLinecap="round"
                       />
                     );
                 }
               };
-              
-              // Optional eyebrows for certain expressions
+
               const renderEyebrows = () => {
                 if (eyebrowState === 'neutral') return null;
-                
-                const browY = eyeY - 7;
-                const browColor = strokeColor;
-                
+                const browY = eyeY - 6;
+                const browColor = 'rgba(0,0,0,0.4)';
                 switch (eyebrowState) {
                   case 'raised':
                     return (
                       <>
-                        <motion.path
-                          d={`M ${leftEyeX - 5} ${browY + 1} Q ${leftEyeX} ${browY - 2} ${leftEyeX + 5} ${browY + 1}`}
-                          fill="none"
-                          stroke={browColor}
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <motion.path
-                          d={`M ${rightEyeX - 5} ${browY + 1} Q ${rightEyeX} ${browY - 2} ${rightEyeX + 5} ${browY + 1}`}
-                          fill="none"
-                          stroke={browColor}
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
+                        <motion.path d={`M ${leftEyeX - 4} ${browY + 0.5} Q ${leftEyeX} ${browY - 2} ${leftEyeX + 4} ${browY + 0.5}`} fill="none" stroke={browColor} strokeWidth="1.3" strokeLinecap="round" />
+                        <motion.path d={`M ${rightEyeX - 4} ${browY + 0.5} Q ${rightEyeX} ${browY - 2} ${rightEyeX + 4} ${browY + 0.5}`} fill="none" stroke={browColor} strokeWidth="1.3" strokeLinecap="round" />
                       </>
                     );
                   case 'furrowed':
                     return (
                       <>
-                        <motion.line
-                          x1={leftEyeX - 4}
-                          y1={browY}
-                          x2={leftEyeX + 4}
-                          y2={browY + 2}
-                          stroke={browColor}
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <motion.line
-                          x1={rightEyeX - 4}
-                          y1={browY + 2}
-                          x2={rightEyeX + 4}
-                          y2={browY}
-                          stroke={browColor}
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
+                        <motion.line x1={leftEyeX - 3.5} y1={browY} x2={leftEyeX + 3.5} y2={browY + 1.5} stroke={browColor} strokeWidth="1.3" strokeLinecap="round" />
+                        <motion.line x1={rightEyeX - 3.5} y1={browY + 1.5} x2={rightEyeX + 3.5} y2={browY} stroke={browColor} strokeWidth="1.3" strokeLinecap="round" />
                       </>
                     );
                   case 'relaxed':
                     return (
                       <>
-                        <motion.line
-                          x1={leftEyeX - 4}
-                          y1={browY + 1}
-                          x2={leftEyeX + 4}
-                          y2={browY}
-                          stroke={browColor}
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          opacity={0.5}
-                        />
-                        <motion.line
-                          x1={rightEyeX - 4}
-                          y1={browY}
-                          x2={rightEyeX + 4}
-                          y2={browY + 1}
-                          stroke={browColor}
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          opacity={0.5}
-                        />
+                        <motion.line x1={leftEyeX - 3.5} y1={browY + 0.5} x2={leftEyeX + 3.5} y2={browY} stroke={browColor} strokeWidth="0.9" strokeLinecap="round" opacity={0.5} />
+                        <motion.line x1={rightEyeX - 3.5} y1={browY} x2={rightEyeX + 3.5} y2={browY + 0.5} stroke={browColor} strokeWidth="0.9" strokeLinecap="round" opacity={0.5} />
                       </>
                     );
                   default:
                     return null;
                 }
               };
-              
+
               return (
                 <>
-                  {/* Left eye */}
                   {renderEye(leftEyeX, false)}
-                  {/* Right eye */}
                   {renderEye(rightEyeX, true)}
-                  {/* Mouth */}
                   {renderMouth()}
-                  {/* Eyebrows */}
                   {renderEyebrows()}
                 </>
               );
             })()}
           </g>
+          {/* Invisible larger hit target for head */}
+          <circle cx={centerX} cy={headY} r={headSize + 4} fill="transparent" stroke="none" />
         </motion.g>
 
-        {/* Neck */}
-        <line
-          x1={centerX}
-          y1={headY + headSize}
-          x2={centerX}
-          y2={shoulderY}
-          stroke={strokeColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-
-        {/* Torso - Click to edit Torso */}
-        <motion.g
-          animate={{ rotate: poseVariant.torso }}
-          transition={TRANSITION_CONFIG}
-          style={{ transformOrigin: `${centerX}px ${shoulderY}px` }}
-          {...getInteractiveProps('Torso')}
-        >
-          {/* Shoulders */}
-          <line
-            x1={centerX - shoulderWidth}
-            y1={shoulderY}
-            x2={centerX + shoulderWidth}
-            y2={shoulderY}
-            stroke={getPartColor('Torso', strokeColor)}
-            strokeWidth={hoveredPart === 'Torso' ? 3 : 2}
-            strokeLinecap="round"
-          />
-          
-          {/* Spine */}
-          <line
-            x1={centerX}
-            y1={shoulderY}
-            x2={centerX}
-            y2={torsoBottom}
-            stroke={getPartColor('Torso', strokeColor)}
-            strokeWidth={hoveredPart === 'Torso' ? 3 : 2}
-            strokeLinecap="round"
-          />
-
-          {/* Hips */}
-          <line
-            x1={centerX - hipWidth}
-            y1={hipY}
-            x2={centerX + hipWidth}
-            y2={hipY}
-            stroke={getPartColor('Torso', strokeColor)}
-            strokeWidth={hoveredPart === 'Torso' ? 3 : 2}
-            strokeLinecap="round"
-          />
-        </motion.g>
-
-        {/* Shoulder joints */}
-        <g>
-          <circle
-            cx={centerX - shoulderWidth}
-            cy={shoulderY}
-            r={jointHitSize}
-            fill="transparent"
-            stroke="none"
-            style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-            {...getInteractiveProps('Arms')}
-          />
-          <circle cx={centerX - shoulderWidth} cy={shoulderY} r={jointSize} fill={strokeColor} />
-        </g>
-        <g>
-          <circle
-            cx={centerX + shoulderWidth}
-            cy={shoulderY}
-            r={jointHitSize}
-            fill="transparent"
-            stroke="none"
-            style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-            {...getInteractiveProps('Arms')}
-          />
-          <circle cx={centerX + shoulderWidth} cy={shoulderY} r={jointSize} fill={strokeColor} />
-        </g>
-
-        {/* Left Arm - Click to edit Arms */}
+        {/* === LEFT ARM SILHOUETTE === */}
         <motion.g {...getInteractiveProps('Arms')}>
-          <motion.line
-            x1={centerX - shoulderWidth}
-            y1={shoulderY}
+          {/* Left upper arm */}
+          <motion.path
             animate={{
-              x2: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
-              y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale
+              d: limbPath(leftShoulderX, shoulderY, leftElbowX, leftElbowY, upperArmW, upperArmW * 0.8)
             }}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'Arms' ? 1 : 0.85}
+            filter={getHoverFilter('Arms')}
             transition={TRANSITION_CONFIG}
-            stroke={getPartColor('Arms', strokeColor)}
-            strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
-            strokeLinecap="round"
           />
-          {/* Left Elbow joint */}
-          <g>
-            <circle
-              cx={centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale}
-              cy={shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale}
+          {/* Left forearm */}
+          <motion.path
+            animate={{
+              d: limbPath(leftElbowX, leftElbowY, leftWristX, leftWristY, forearmW, forearmW * 0.65)
+            }}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'Arms' ? 1 : 0.85}
+            filter={getHoverFilter('Arms')}
+            transition={TRANSITION_CONFIG}
+          />
+          {/* Left hand */}
+          <motion.g {...getInteractiveProps('Hands')}>
+            <motion.ellipse
+              animate={{
+                cx: leftWristX,
+                cy: leftWristY
+              }}
+              rx={handR}
+              ry={handR * (handsOpen ? 1.15 : 0.9)}
+              fill={hoveredPart === 'Hands' ? 'rgba(255,255,255,0.95)' : silhouetteFill}
+              opacity={hoveredPart === 'Hands' ? 1 : 0.85}
+              filter={getHoverFilter('Hands')}
+              transition={TRANSITION_CONFIG}
+            />
+            {/* Invisible hit target */}
+            <motion.circle
+              animate={{ cx: leftWristX, cy: leftWristY }}
               r={jointHitSize}
               fill="transparent"
               stroke="none"
-              style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-              {...getInteractiveProps('Arms')}
-            />
-            <motion.circle
-              animate={{
-                cx: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
-                cy: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale
-              }}
-              r={jointSize}
-              fill={hoveredPart === 'Arms' ? getPartColor('Arms', accentColor) : accentColor}
-              opacity={hoveredPart === 'Arms' ? 1 : 0.7}
               transition={TRANSITION_CONFIG}
             />
-          </g>
-          {/* Left Forearm */}
-          <motion.line
-            animate={{
-              x1: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
-              y1: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale,
-              x2: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale,
-              y2: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale
-            }}
-            transition={TRANSITION_CONFIG}
-            stroke={getPartColor('Arms', strokeColor)}
-            strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
-            strokeLinecap="round"
-          />
-          {/* Left Hand - Click to edit Hands */}
-          <motion.circle
-            {...getInteractiveProps('Hands')}
-            animate={{
-              cx: centerX - shoulderWidth - Math.sin(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale - Math.sin((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale,
-              cy: shoulderY + Math.cos(poseVariant.leftArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.leftArm + poseVariant.leftElbow) * Math.PI / 180) * 35 * bodyScale
-            }}
-            r={hoveredPart === 'Hands' ? 8 : (handsOpen ? 6 : 5)}
-            fill={hoveredPart === 'Hands' ? getPartColor('Hands', 'rgba(255,255,255,0.2)') : (handsOpen ? 'none' : strokeColor)}
-            stroke={getPartColor('Hands', strokeColor)}
-            strokeWidth={hoveredPart === 'Hands' ? 3 : 2}
-            transition={TRANSITION_CONFIG}
-          />
+          </motion.g>
+          {/* Invisible arm hit targets */}
+          <motion.circle animate={{ cx: leftElbowX, cy: leftElbowY }} r={jointHitSize} fill="transparent" stroke="none" transition={TRANSITION_CONFIG} />
         </motion.g>
 
-        {/* Right Arm - Click to edit Arms */}
+        {/* === RIGHT ARM SILHOUETTE === */}
         <motion.g {...getInteractiveProps('Arms')}>
-          <motion.line
-            x1={centerX + shoulderWidth}
-            y1={shoulderY}
+          {/* Right upper arm */}
+          <motion.path
             animate={{
-              x2: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
-              y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale
+              d: limbPath(rightShoulderX, shoulderY, rightElbowX, rightElbowY, upperArmW, upperArmW * 0.8)
             }}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'Arms' ? 1 : 0.85}
+            filter={getHoverFilter('Arms')}
             transition={TRANSITION_CONFIG}
-            stroke={getPartColor('Arms', strokeColor)}
-            strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
-            strokeLinecap="round"
           />
-          {/* Right Elbow joint */}
-          <g>
-            <circle
-              cx={centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale}
-              cy={shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale}
+          {/* Right forearm */}
+          <motion.path
+            animate={{
+              d: limbPath(rightElbowX, rightElbowY, rightWristX, rightWristY, forearmW, forearmW * 0.65)
+            }}
+            fill={silhouetteFill}
+            opacity={hoveredPart === 'Arms' ? 1 : 0.85}
+            filter={getHoverFilter('Arms')}
+            transition={TRANSITION_CONFIG}
+          />
+          {/* Right hand */}
+          <motion.g {...getInteractiveProps('Hands')}>
+            <motion.ellipse
+              animate={{
+                cx: rightWristX,
+                cy: rightWristY
+              }}
+              rx={handR}
+              ry={handR * (handsOpen ? 1.15 : 0.9)}
+              fill={hoveredPart === 'Hands' ? 'rgba(255,255,255,0.95)' : silhouetteFill}
+              opacity={hoveredPart === 'Hands' ? 1 : 0.85}
+              filter={getHoverFilter('Hands')}
+              transition={TRANSITION_CONFIG}
+            />
+            <motion.circle
+              animate={{ cx: rightWristX, cy: rightWristY }}
               r={jointHitSize}
               fill="transparent"
               stroke="none"
-              style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-              {...getInteractiveProps('Arms')}
-            />
-            <motion.circle
-              animate={{
-                cx: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
-                cy: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale
-              }}
-              r={jointSize}
-              fill={hoveredPart === 'Arms' ? getPartColor('Arms', accentColor) : accentColor}
-              opacity={hoveredPart === 'Arms' ? 1 : 0.7}
               transition={TRANSITION_CONFIG}
             />
-          </g>
-          {/* Right Forearm */}
-          <motion.line
-            animate={{
-              x1: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
-              y1: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale,
-              x2: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale,
-              y2: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale
-            }}
-            transition={TRANSITION_CONFIG}
-            stroke={getPartColor('Arms', strokeColor)}
-            strokeWidth={hoveredPart === 'Arms' ? 3 : 2}
-            strokeLinecap="round"
-          />
-          {/* Right Hand - Click to edit Hands */}
-          <motion.circle
-            {...getInteractiveProps('Hands')}
-            animate={{
-              cx: centerX + shoulderWidth + Math.sin(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.sin((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale,
-              cy: shoulderY + Math.cos(poseVariant.rightArm * Math.PI / 180) * 35 * bodyScale + Math.cos((poseVariant.rightArm + poseVariant.rightElbow) * Math.PI / 180) * 35 * bodyScale
-            }}
-            r={hoveredPart === 'Hands' ? 8 : (handsOpen ? 6 : 5)}
-            fill={hoveredPart === 'Hands' ? getPartColor('Hands', 'rgba(255,255,255,0.2)') : (handsOpen ? 'none' : strokeColor)}
-            stroke={getPartColor('Hands', strokeColor)}
-            strokeWidth={hoveredPart === 'Hands' ? 3 : 2}
-            transition={TRANSITION_CONFIG}
-          />
+          </motion.g>
+          <motion.circle animate={{ cx: rightElbowX, cy: rightElbowY }} r={jointHitSize} fill="transparent" stroke="none" transition={TRANSITION_CONFIG} />
         </motion.g>
 
-        {/* Hip joints - Click to edit Legs */}
-        <g {...getInteractiveProps('Legs')}>
-          <circle cx={centerX - hipWidth} cy={hipY} r={jointHitSize} fill="transparent" stroke="none" />
-          <circle cx={centerX + hipWidth} cy={hipY} r={jointHitSize} fill="transparent" stroke="none" />
-          <circle cx={centerX - hipWidth} cy={hipY} r={jointSize} fill={getPartColor('Legs', strokeColor)} />
-          <circle cx={centerX + hipWidth} cy={hipY} r={jointSize} fill={getPartColor('Legs', strokeColor)} />
-        </g>
-
-        {/* Legs - different rendering for sitting vs standing - Click to edit Legs */}
+        {/* === LEGS SILHOUETTE === */}
         <g {...getInteractiveProps('Legs')}>
         {isSitting ? (
           legsCrossed ? (
             <>
-              {/* Crossed legs - left leg crosses over to the right side */}
-              {/* Left thigh - goes across to the right */}
-              <motion.line
-                x1={centerX - 10}
-                y1={hipY}
-                animate={{
-                  x2: centerX + 35,
-                  y2: hipY + 30
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Left Knee */}
-              <g>
-                <circle
-                  cx={centerX + 35}
-                  cy={hipY + 30}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Legs')}
-                />
-                <motion.circle
-                  cx={centerX + 35}
-                  cy={hipY + 30}
-                  r={jointSize}
-                  fill={accentColor}
-                  opacity={0.7}
-                />
-              </g>
-              {/* Left lower leg - hangs down from crossed position */}
-              <motion.line
-                animate={{
-                  x1: centerX + 35,
-                  y1: hipY + 30,
-                  x2: centerX + 25,
-                  y2: hipY + 75
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Left Foot */}
-              <g>
-                <circle
-                  cx={centerX + 25}
-                  cy={hipY + 80}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Feet')}
-                />
-                <motion.ellipse
-                  cx={centerX + 25}
-                  cy={hipY + 80}
-                  rx={feetPointed ? 3 : 6}
-                  ry={feetPointed ? 6 : 3}
-                  fill="none"
-                  stroke={strokeColor}
-                  strokeWidth="2"
-                />
-              </g>
-              
-              {/* Right thigh - goes out to the side */}
-              <motion.line
-                x1={centerX + 10}
-                y1={hipY}
-                animate={{
-                  x2: centerX + 50,
-                  y2: hipY + 45
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Right Knee */}
-              <g>
-                <circle
-                  cx={centerX + 50}
-                  cy={hipY + 45}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Legs')}
-                />
-                <motion.circle
-                  cx={centerX + 50}
-                  cy={hipY + 45}
-                  r={jointSize}
-                  fill={accentColor}
-                  opacity={0.7}
-                />
-              </g>
-              {/* Right lower leg - hangs down */}
-              <motion.line
-                animate={{
-                  x1: centerX + 50,
-                  y1: hipY + 45,
-                  x2: centerX + 40,
-                  y2: hipY + 85
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Right Foot */}
-              <g>
-                <circle
-                  cx={centerX + 40}
-                  cy={hipY + 90}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Feet')}
-                />
-                <motion.ellipse
-                  cx={centerX + 40}
-                  cy={hipY + 90}
-                  rx={feetPointed ? 3 : 6}
-                  ry={feetPointed ? 6 : 3}
-                  fill="none"
-                  stroke={strokeColor}
-                  strokeWidth="2"
-                />
-              </g>
+              {/* Crossed sitting legs */}
+              {(() => {
+                const lKneeX = centerX + 35;
+                const lKneeY = hipY + 30;
+                const lFootX = centerX + 25;
+                const lFootY = hipY + 75;
+                const rKneeX = centerX + 50;
+                const rKneeY = hipY + 45;
+                const rFootX = centerX + 40;
+                const rFootY = hipY + 85;
+                return (
+                  <>
+                    {/* Left thigh */}
+                    <motion.path
+                      d={limbPath(centerX - 10, hipY, lKneeX, lKneeY, thighW, thighW * 0.75)}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                    />
+                    {/* Left calf */}
+                    <motion.path
+                      d={limbPath(lKneeX, lKneeY, lFootX, lFootY, calfW, calfW * 0.6)}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                    />
+                    {/* Left foot */}
+                    <g {...getInteractiveProps('Feet')}>
+                      <motion.ellipse
+                        cx={lFootX} cy={lFootY + 3}
+                        rx={feetPointed ? 3 : 6} ry={feetPointed ? 6 : 3.5}
+                        fill={silhouetteFill}
+                        opacity={hoveredPart === 'Feet' ? 1 : 0.85}
+                        filter={getHoverFilter('Feet')}
+                      />
+                      <circle cx={lFootX} cy={lFootY + 3} r={jointHitSize} fill="transparent" stroke="none" />
+                    </g>
+                    {/* Right thigh */}
+                    <motion.path
+                      d={limbPath(centerX + 10, hipY, rKneeX, rKneeY, thighW, thighW * 0.75)}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                    />
+                    {/* Right calf */}
+                    <motion.path
+                      d={limbPath(rKneeX, rKneeY, rFootX, rFootY, calfW, calfW * 0.6)}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                    />
+                    {/* Right foot */}
+                    <g {...getInteractiveProps('Feet')}>
+                      <motion.ellipse
+                        cx={rFootX} cy={rFootY + 3}
+                        rx={feetPointed ? 3 : 6} ry={feetPointed ? 6 : 3.5}
+                        fill={silhouetteFill}
+                        opacity={hoveredPart === 'Feet' ? 1 : 0.85}
+                        filter={getHoverFilter('Feet')}
+                      />
+                      <circle cx={rFootX} cy={rFootY + 3} r={jointHitSize} fill="transparent" stroke="none" />
+                    </g>
+                  </>
+                );
+              })()}
             </>
           ) : (
             <>
-              {/* Regular sitting - legs bent forward with knees and feet */}
-              {/* Left Thigh */}
-              <motion.line
-                x1={centerX - 15}
-                y1={hipY}
-                animate={{
-                  x2: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50,
-                  y2: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Left Knee */}
-              <g>
-                <motion.circle
-                  animate={{
-                    cx: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50,
-                    cy: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50
-                  }}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Legs')}
-                  transition={TRANSITION_CONFIG}
-                />
-                <motion.circle
-                  animate={{
-                    cx: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50,
-                    cy: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50
-                  }}
-                  r={jointSize}
-                  fill={accentColor}
-                  opacity={0.7}
-                  transition={TRANSITION_CONFIG}
-                />
-              </g>
-              {/* Left Calf */}
-              <motion.line
-                animate={{
-                  x1: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50,
-                  y1: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50,
-                  x2: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50 - 10,
-                  y2: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50 + 45
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Left Foot */}
-              <g>
-                <motion.circle
-                  animate={{
-                    cx: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50 - 10,
-                    cy: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50 + 50
-                  }}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Feet')}
-                  transition={TRANSITION_CONFIG}
-                />
-                <motion.ellipse
-                  animate={{
-                    cx: centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50 - 10,
-                    cy: hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50 + 50,
-                    rx: feetPointed ? 3 : 6,
-                    ry: feetPointed ? 6 : 3
-                  }}
-                  fill="none"
-                  stroke={strokeColor}
-                  strokeWidth="2"
-                  transition={TRANSITION_CONFIG}
-                />
-              </g>
-              
-              {/* Right Thigh */}
-              <motion.line
-                x1={centerX + 15}
-                y1={hipY}
-                animate={{
-                  x2: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50,
-                  y2: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Right Knee */}
-              <g>
-                <motion.circle
-                  animate={{
-                    cx: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50,
-                    cy: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50
-                  }}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Legs')}
-                  transition={TRANSITION_CONFIG}
-                />
-                <motion.circle
-                  animate={{
-                    cx: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50,
-                    cy: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50
-                  }}
-                  r={jointSize}
-                  fill={accentColor}
-                  opacity={0.7}
-                  transition={TRANSITION_CONFIG}
-                />
-              </g>
-              {/* Right Calf */}
-              <motion.line
-                animate={{
-                  x1: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50,
-                  y1: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50,
-                  x2: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50 + 5,
-                  y2: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50 + 45
-                }}
-                transition={TRANSITION_CONFIG}
-                stroke={strokeColor}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Right Foot */}
-              <g>
-                <motion.circle
-                  animate={{
-                    cx: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50 + 5,
-                    cy: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50 + 50
-                  }}
-                  r={jointHitSize}
-                  fill="transparent"
-                  stroke="none"
-                  style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                  {...getInteractiveProps('Feet')}
-                  transition={TRANSITION_CONFIG}
-                />
-                <motion.ellipse
-                  animate={{
-                    cx: centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50 + 5,
-                    cy: hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50 + 50,
-                    rx: feetPointed ? 3 : 6,
-                    ry: feetPointed ? 6 : 3
-                  }}
-                  fill="none"
-                  stroke={strokeColor}
-                  strokeWidth="2"
-                  transition={TRANSITION_CONFIG}
-                />
-              </g>
+              {/* Regular sitting legs */}
+              {(() => {
+                const lKneeX = centerX - 15 + Math.cos(leftLegAngle * Math.PI / 180) * 50;
+                const lKneeY = hipY + Math.sin(leftLegAngle * Math.PI / 180) * 50;
+                const lFootX = lKneeX - 10;
+                const lFootY = lKneeY + 45;
+                const rKneeX = centerX + 15 + Math.cos(rightLegAngle * Math.PI / 180) * 50;
+                const rKneeY = hipY + Math.sin(rightLegAngle * Math.PI / 180) * 50;
+                const rFootX = rKneeX + 5;
+                const rFootY = rKneeY + 45;
+                return (
+                  <>
+                    {/* Left thigh */}
+                    <motion.path
+                      animate={{ d: limbPath(centerX - 15, hipY, lKneeX, lKneeY, thighW, thighW * 0.75) }}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                      transition={TRANSITION_CONFIG}
+                    />
+                    {/* Left calf */}
+                    <motion.path
+                      animate={{ d: limbPath(lKneeX, lKneeY, lFootX, lFootY, calfW, calfW * 0.6) }}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                      transition={TRANSITION_CONFIG}
+                    />
+                    {/* Left foot */}
+                    <g {...getInteractiveProps('Feet')}>
+                      <motion.ellipse
+                        animate={{ cx: lFootX, cy: lFootY + 5 }}
+                        rx={feetPointed ? 3 : 6} ry={feetPointed ? 6 : 3.5}
+                        fill={silhouetteFill}
+                        opacity={hoveredPart === 'Feet' ? 1 : 0.85}
+                        filter={getHoverFilter('Feet')}
+                        transition={TRANSITION_CONFIG}
+                      />
+                      <motion.circle animate={{ cx: lFootX, cy: lFootY + 5 }} r={jointHitSize} fill="transparent" stroke="none" transition={TRANSITION_CONFIG} />
+                    </g>
+                    {/* Right thigh */}
+                    <motion.path
+                      animate={{ d: limbPath(centerX + 15, hipY, rKneeX, rKneeY, thighW, thighW * 0.75) }}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                      transition={TRANSITION_CONFIG}
+                    />
+                    {/* Right calf */}
+                    <motion.path
+                      animate={{ d: limbPath(rKneeX, rKneeY, rFootX, rFootY, calfW, calfW * 0.6) }}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                      filter={getHoverFilter('Legs')}
+                      transition={TRANSITION_CONFIG}
+                    />
+                    {/* Right foot */}
+                    <g {...getInteractiveProps('Feet')}>
+                      <motion.ellipse
+                        animate={{ cx: rFootX, cy: rFootY + 5 }}
+                        rx={feetPointed ? 3 : 6} ry={feetPointed ? 6 : 3.5}
+                        fill={silhouetteFill}
+                        opacity={hoveredPart === 'Feet' ? 1 : 0.85}
+                        filter={getHoverFilter('Feet')}
+                        transition={TRANSITION_CONFIG}
+                      />
+                      <motion.circle animate={{ cx: rFootX, cy: rFootY + 5 }} r={jointHitSize} fill="transparent" stroke="none" transition={TRANSITION_CONFIG} />
+                    </g>
+                  </>
+                );
+              })()}
             </>
           )
         ) : (
           <>
-            {/* Standing/Leaning: Legs with knees */}
-            {/* Left Thigh */}
-            <line
-              x1={centerX - hipWidth}
-              y1={hipY}
-              x2={centerX - hipWidth * 1.1}
-              y2={hipY + legLength * 0.5}
-              stroke={strokeColor}
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            {/* Left Knee joint */}
-            <g>
-              <motion.circle
-                cx={centerX - hipWidth * 1.1}
-                cy={hipY + legLength * 0.5}
-                r={jointHitSize}
-                fill="transparent"
-                stroke="none"
-                style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                {...getInteractiveProps('Legs')}
-                animate={{ 
-                  cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
-                }}
-                transition={TRANSITION_CONFIG}
-              />
-              <motion.circle
-                cx={centerX - hipWidth * 1.1}
-                cy={hipY + legLength * 0.5}
-                r={jointSize}
-                fill={accentColor}
-                opacity={0.7}
-                animate={{ 
-                  cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
-                }}
-                transition={TRANSITION_CONFIG}
-              />
-            </g>
-            {/* Left Calf */}
-            <motion.line
-              x1={centerX - hipWidth * 1.1}
-              y1={hipY + legLength * 0.5}
-              animate={{
-                x2: legsBent ? centerX - 30 : centerX - 25,
-                y2: hipY + legLength
-              }}
-              stroke={strokeColor}
-              strokeWidth="2"
-              strokeLinecap="round"
-              transition={TRANSITION_CONFIG}
-            />
-            {/* Left Foot */}
-            <g>
-              <motion.circle
-                animate={{
-                  cx: legsBent ? centerX - hipWidth * 1.5 : centerX - hipWidth * 1.25,
-                  cy: hipY + legLength + 5
-                }}
-                r={jointHitSize}
-                fill="transparent"
-                stroke="none"
-                style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                {...getInteractiveProps('Feet')}
-                transition={TRANSITION_CONFIG}
-              />
-              <motion.ellipse
-                animate={{
-                  cx: legsBent ? centerX - hipWidth * 1.5 : centerX - hipWidth * 1.25,
-                  cy: hipY + legLength + 5,
-                  rx: feetPointed ? 4 : 8,
-                  ry: feetPointed ? 8 : 4
-                }}
-                fill="none"
-                stroke={strokeColor}
-                strokeWidth="2"
-                transition={TRANSITION_CONFIG}
-              />
-            </g>
-            
-            {/* Right Thigh */}
-            <line
-              x1={centerX + hipWidth}
-              y1={hipY}
-              x2={centerX + hipWidth * 1.1}
-              y2={hipY + legLength * 0.5}
-              stroke={strokeColor}
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            {/* Right Knee joint */}
-            <g>
-              <motion.circle
-                cx={centerX + hipWidth * 1.1}
-                cy={hipY + legLength * 0.5}
-                r={jointHitSize}
-                fill="transparent"
-                stroke="none"
-                style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                {...getInteractiveProps('Legs')}
-                animate={{ 
-                  cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
-                }}
-                transition={TRANSITION_CONFIG}
-              />
-              <motion.circle
-                cx={centerX + hipWidth * 1.1}
-                cy={hipY + legLength * 0.5}
-                r={jointSize}
-                fill={accentColor}
-                opacity={0.7}
-                animate={{ 
-                  cy: legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5 
-                }}
-                transition={TRANSITION_CONFIG}
-              />
-            </g>
-            {/* Right Calf */}
-            <motion.line
-              x1={centerX + hipWidth * 1.1}
-              y1={hipY + legLength * 0.5}
-              animate={{
-                x2: legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25,
-                y2: hipY + legLength
-              }}
-              stroke={strokeColor}
-              strokeWidth="2"
-              strokeLinecap="round"
-              transition={TRANSITION_CONFIG}
-            />
-            {/* Right Foot */}
-            <g>
-              <motion.circle
-                animate={{
-                  cx: legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25,
-                  cy: hipY + legLength + 5
-                }}
-                r={jointHitSize}
-                fill="transparent"
-                stroke="none"
-                style={{ cursor: onPartClick ? 'pointer' : 'default' }}
-                {...getInteractiveProps('Feet')}
-                transition={TRANSITION_CONFIG}
-              />
-              <motion.ellipse
-                animate={{
-                  cx: legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25,
-                  cy: hipY + legLength + 5,
-                  rx: feetPointed ? 4 : 8,
-                  ry: feetPointed ? 8 : 4
-                }}
-                fill="none"
-                stroke={strokeColor}
-                strokeWidth="2"
-                transition={TRANSITION_CONFIG}
-              />
-            </g>
+            {/* Standing/Leaning legs */}
+            {(() => {
+              const lHipX = centerX - hipWidth;
+              const rHipX = centerX + hipWidth;
+              const lKneeX = centerX - hipWidth * 1.1;
+              const lKneeY = legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5;
+              const rKneeX = centerX + hipWidth * 1.1;
+              const rKneeY = legsBent ? hipY + legLength * 0.45 : hipY + legLength * 0.5;
+              const lFootX = legsBent ? centerX - hipWidth * 1.5 : centerX - hipWidth * 1.25;
+              const lFootY = hipY + legLength;
+              const rFootX = legsBent ? centerX + hipWidth * 1.5 : centerX + hipWidth * 1.25;
+              const rFootY = hipY + legLength;
+              return (
+                <>
+                  {/* Left thigh */}
+                  <motion.path
+                    animate={{ d: limbPath(lHipX, hipY, lKneeX, lKneeY, thighW, thighW * 0.7) }}
+                    fill={silhouetteFill}
+                    opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                    filter={getHoverFilter('Legs')}
+                    transition={TRANSITION_CONFIG}
+                  />
+                  {/* Left calf */}
+                  <motion.path
+                    animate={{ d: limbPath(lKneeX, lKneeY, lFootX, lFootY, calfW, calfW * 0.55) }}
+                    fill={silhouetteFill}
+                    opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                    filter={getHoverFilter('Legs')}
+                    transition={TRANSITION_CONFIG}
+                  />
+                  {/* Left foot */}
+                  <g {...getInteractiveProps('Feet')}>
+                    <motion.ellipse
+                      animate={{
+                        cx: lFootX,
+                        cy: lFootY + 5,
+                        rx: feetPointed ? 4 : 8,
+                        ry: feetPointed ? 8 : 4.5
+                      }}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Feet' ? 1 : 0.85}
+                      filter={getHoverFilter('Feet')}
+                      transition={TRANSITION_CONFIG}
+                    />
+                    <motion.circle
+                      animate={{ cx: lFootX, cy: lFootY + 5 }}
+                      r={jointHitSize}
+                      fill="transparent"
+                      stroke="none"
+                      transition={TRANSITION_CONFIG}
+                    />
+                  </g>
+                  {/* Right thigh */}
+                  <motion.path
+                    animate={{ d: limbPath(rHipX, hipY, rKneeX, rKneeY, thighW, thighW * 0.7) }}
+                    fill={silhouetteFill}
+                    opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                    filter={getHoverFilter('Legs')}
+                    transition={TRANSITION_CONFIG}
+                  />
+                  {/* Right calf */}
+                  <motion.path
+                    animate={{ d: limbPath(rKneeX, rKneeY, rFootX, rFootY, calfW, calfW * 0.55) }}
+                    fill={silhouetteFill}
+                    opacity={hoveredPart === 'Legs' ? 1 : 0.85}
+                    filter={getHoverFilter('Legs')}
+                    transition={TRANSITION_CONFIG}
+                  />
+                  {/* Right foot */}
+                  <g {...getInteractiveProps('Feet')}>
+                    <motion.ellipse
+                      animate={{
+                        cx: rFootX,
+                        cy: rFootY + 5,
+                        rx: feetPointed ? 4 : 8,
+                        ry: feetPointed ? 8 : 4.5
+                      }}
+                      fill={silhouetteFill}
+                      opacity={hoveredPart === 'Feet' ? 1 : 0.85}
+                      filter={getHoverFilter('Feet')}
+                      transition={TRANSITION_CONFIG}
+                    />
+                    <motion.circle
+                      animate={{ cx: rFootX, cy: rFootY + 5 }}
+                      r={jointHitSize}
+                      fill="transparent"
+                      stroke="none"
+                      transition={TRANSITION_CONFIG}
+                    />
+                  </g>
+                </>
+              );
+            })()}
           </>
         )}
         </g>
@@ -2579,7 +2268,6 @@ const FigureCanvas = ({ selections, categoryColors, categories, categoryDisplayN
     );
   } catch (error) {
     console.error('[FigureCanvas] Rendering error:', error);
-    // Render fallback figure on error
     return (
       <svg
         width="100%"
