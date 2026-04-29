@@ -57,6 +57,16 @@ const MODELS = [
     supportsFacePhoto: true,
   },
   {
+    id: PROVIDERS.TRYON,
+    name: 'Outfit Change',
+    icon: RefreshCw,
+    description: 'Change your outfit — upload your photo and describe the new clothes, or upload a garment image',
+    quality: 5,
+    recommended: false,
+    requiresFacePhoto: true,
+    supportsFacePhoto: true,
+  },
+  {
     id: PROVIDERS.DALLE3,
     name: 'DALL-E 3',
     icon: ImageIcon,
@@ -112,6 +122,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const [showRateAppModal, setShowRateAppModal] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const garmentInputRef = useRef(null);
+  const [garmentImage, setGarmentImage] = useState(null); // { url, preview } for try-on mode
   const progressPercent = numVariations > 0
     ? Math.round((generatingCount / numVariations) * 100)
     : 0;
@@ -254,6 +266,31 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
     }
   }, [user]);
 
+  // Garment image upload for try-on mode
+  const handleGarmentUpload = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !storage) return;
+
+    if (file.size > 10 * 1024 * 1024) { setError('Image must be under 10MB'); return; }
+    if (!file.type.startsWith('image/')) { setError('Please upload an image file'); return; }
+
+    setUploading(true);
+    setError('');
+    try {
+      const fileName = `garment_${Date.now()}_${file.name}`;
+      const storageRef = ref(storage, `garments/${user.uid}/${fileName}`);
+      await uploadBytes(storageRef, file, { contentType: file.type });
+      const url = await getDownloadURL(storageRef);
+      setGarmentImage({ url, preview: URL.createObjectURL(file) });
+    } catch (err) {
+      logger.error('Error uploading garment image:', err);
+      setError('Failed to upload garment image.');
+    } finally {
+      setUploading(false);
+      if (garmentInputRef.current) garmentInputRef.current.value = '';
+    }
+  }, [user]);
+
   // Save prompt to localStorage
   useEffect(() => {
     if (prompt && onPromptChange) {
@@ -316,27 +353,34 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
     const errors = [];
 
     try {
-      // If face photo is selected, use face photo generation
+      // If face photo is selected, use face-aware generation
       if (selectedFacePhoto) {
         const generationPromises = Array.from({ length: numVariations }, async (_, index) => {
           try {
-            const result = await generateAIImage({
-              facePhotoUrl: selectedFacePhoto.url,
-              prompt: prompt.trim()
-            });
+            // Use the selected model's provider for generation
+            const result = await generateImage(
+              selectedModel,
+              prompt.trim(),
+              {
+                ...(garmentImage ? { garment_url: garmentImage.url } : {}),
+                category: advancedOptions.garmentCategory || 'upper_body',
+              },
+              user.uid
+            );
+            const imageUrl = result.imageUrl || result;
 
-            if (result.success && result.imageUrl) {
+            if (imageUrl) {
               setGeneratingCount(prev => prev + 1);
               return {
                 id: Date.now() + index,
-                imageUrl: result.imageUrl,
+                imageUrl,
                 prompt: prompt.trim(),
                 model: selectedModel,
                 timestamp: new Date(),
                 variation: index + 1
               };
             } else {
-              throw new Error(result.error || 'Generation failed');
+              throw new Error('Generation failed — no image returned');
             }
           } catch (err) {
             logger.error(`Generation error for variation ${index + 1}:`, err);
@@ -1219,6 +1263,57 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* Garment Upload — visible only in Try-On mode */}
+      {selectedModel === PROVIDERS.TRYON && selectedFacePhoto && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            marginBottom: '16px',
+            padding: '16px',
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '12px',
+          }}
+        >
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', marginBottom: '12px', fontWeight: 500 }}>
+            Garment Image <span style={{ color: 'rgba(255,255,255,0.3)', fontWeight: 400 }}>(optional — or just describe the outfit in the prompt)</span>
+          </p>
+          <input ref={garmentInputRef} type="file" accept="image/*" onChange={handleGarmentUpload} style={{ display: 'none' }} />
+          {garmentImage ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <img src={garmentImage.preview || garmentImage.url} alt="Garment" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+              <div>
+                <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>Garment uploaded</p>
+                <button
+                  onClick={() => setGarmentImage(null)}
+                  style={{ fontSize: '11px', color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => garmentInputRef.current?.click()}
+              disabled={uploading}
+              style={{
+                padding: '12px 20px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '2px dashed rgba(255,255,255,0.15)',
+                borderRadius: '8px',
+                color: 'rgba(255,255,255,0.5)',
+                fontSize: '12px',
+                cursor: 'pointer',
+                width: '100%',
+              }}
+            >
+              {uploading ? 'Uploading...' : 'Upload a garment photo (shirt, dress, etc.)'}
+            </button>
+          )}
+        </motion.div>
+      )}
 
       {/* Prompt Bar - Cursor Style */}
       <motion.div

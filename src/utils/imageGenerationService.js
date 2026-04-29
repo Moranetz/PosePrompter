@@ -77,7 +77,8 @@ export const PROVIDERS = {
   FLUX: 'flux',
   SDXL: 'sdxl',
   DALLE3: 'dalle3',
-  INSTANTID: 'instantid', // InstantID — face-preserving generation
+  INSTANTID: 'instantid',
+  TRYON: 'tryon',
 };
 
 // Credit costs per provider (in gems)
@@ -86,6 +87,7 @@ const CREDIT_COSTS = {
   [PROVIDERS.SDXL]: 8,
   [PROVIDERS.DALLE3]: 12,
   [PROVIDERS.INSTANTID]: 12,
+  [PROVIDERS.TRYON]: 10,
 };
 
 // Collection names
@@ -720,6 +722,7 @@ export const checkProviderAvailability = async (provider) => {
         [PROVIDERS.SDXL]: health.replicate === true,
         [PROVIDERS.DALLE3]: health.openai === true,
         [PROVIDERS.INSTANTID]: health.replicate === true,
+        [PROVIDERS.TRYON]: health.replicate === true,
       };
       availabilityCacheTime = now;
       return availabilityCache[provider] || false;
