@@ -5,30 +5,32 @@ import { TOUCH_TARGETS, TYPOGRAPHY } from '../config/uxDesignSystem';
 const btnBase = {
   width: '100%',
   background: 'transparent',
-  color: '#a1a1aa',
-  border: '1px solid rgba(255, 255, 255, 0.06)',
-  borderRadius: '6px',
-  padding: '10px 12px',
-  minHeight: '44px',
-  fontSize: '13px',
-  fontWeight: '400',
+  color: '#9898a0',
+  border: '1px solid rgba(255, 255, 255, 0.05)',
+  borderRadius: '8px',
+  padding: '9px 12px',
+  minHeight: '40px',
+  fontSize: '12.5px',
+  fontWeight: '450',
   letterSpacing: '-0.01em',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '6px',
-  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  gap: '7px',
+  transition: 'all 120ms ease',
 };
 
 const hoverIn = (e) => {
-  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-  e.currentTarget.style.color = '#f4f4f5';
+  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.08)';
+  e.currentTarget.style.color = '#e4dbfa';
+  e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.2)';
 };
 
 const hoverOut = (e) => {
   e.currentTarget.style.background = 'transparent';
-  e.currentTarget.style.color = '#a1a1aa';
+  e.currentTarget.style.color = '#9898a0';
+  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
 };
 
 const ActionsSidebar = ({
@@ -54,19 +56,21 @@ const ActionsSidebar = ({
         onClick={onRandomizeAll}
         style={{
           ...btnBase,
-          background: 'rgba(255, 255, 255, 0.04)',
-          color: '#f4f4f5',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          fontWeight: '500',
+          background: 'rgba(139, 92, 246, 0.12)',
+          color: '#e4dbfa',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
+          fontWeight: '550',
           boxSizing: 'border-box',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.45)';
+          e.currentTarget.style.boxShadow = '0 0 16px rgba(139, 92, 246, 0.15)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+          e.currentTarget.style.background = 'rgba(139, 92, 246, 0.12)';
+          e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+          e.currentTarget.style.boxShadow = 'none';
         }}
         aria-label="I'm Feeling Lucky"
         title="I'm Feeling Lucky"

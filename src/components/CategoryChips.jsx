@@ -81,35 +81,36 @@ const CategoryChips = ({
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
               style={{
-                padding: isActive ? '10px 16px' : '8px 14px',
-                background: isActive 
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : isIncluded 
-                  ? 'rgba(255, 255, 255, 0.04)'
-                  : 'rgba(255, 255, 255, 0.02)',
-                border: isActive 
-                  ? '1.5px solid rgba(255, 255, 255, 0.3)'
+                padding: isActive ? '8px 16px' : '7px 13px',
+                background: isActive
+                  ? 'rgba(139, 92, 246, 0.15)'
                   : isIncluded
-                  ? '1px solid rgba(255, 255, 255, 0.1)'
-                  : '1px solid rgba(255, 255, 255, 0.05)',
-                borderRadius: '10px',
-                color: isActive 
-                  ? '#ffffff' 
-                  : isIncluded 
-                  ? 'rgba(255, 255, 255, 0.75)' 
-                  : 'rgba(255, 255, 255, 0.35)',
-                fontSize: isActive ? '14px' : '13px',
-                fontWeight: isActive ? '600' : '500',
+                  ? 'rgba(255, 255, 255, 0.03)'
+                  : 'rgba(255, 255, 255, 0.01)',
+                border: isActive
+                  ? '1px solid rgba(139, 92, 246, 0.4)'
+                  : isIncluded
+                  ? '1px solid rgba(255, 255, 255, 0.07)'
+                  : '1px solid rgba(255, 255, 255, 0.04)',
+                borderRadius: '8px',
+                color: isActive
+                  ? '#e4dbfa'
+                  : isIncluded
+                  ? 'rgba(255, 255, 255, 0.6)'
+                  : 'rgba(255, 255, 255, 0.25)',
+                fontSize: '12.5px',
+                fontWeight: isActive ? '550' : '450',
+                letterSpacing: '-0.01em',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
+                transition: 'all 120ms ease',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: isActive 
-                  ? '0 2px 8px rgba(0, 0, 0, 0.3)'
+                gap: '6px',
+                boxShadow: isActive
+                  ? '0 0 12px rgba(139, 92, 246, 0.15)'
                   : 'none',
                 textDecoration: isIncluded ? 'none' : 'line-through',
-                textDecorationColor: 'rgba(255,255,255,0.2)'
+                textDecorationColor: 'rgba(255,255,255,0.15)'
               }}
               title={`${categoryDisplayNames[category]} (${currentIndex + 1}/${options.length})${isLocked ? ' - Locked' : ''}${!isIncluded ? ' - Excluded' : ''}\nDouble-click to ${isLocked ? 'unlock' : 'lock'}`}
             >

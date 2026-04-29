@@ -20,12 +20,13 @@ const LivePromptPreview = ({ generatedPrompt, onCopy, copied }) => {
       style={{
         width: '100%',
         maxWidth: '500px',
-        background: 'rgba(18, 18, 26, 0.92)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '10px',
-        padding: '10px 12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+        background: 'rgba(14, 14, 20, 0.88)',
+        backdropFilter: 'blur(16px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+        border: '1px solid rgba(139, 92, 246, 0.12)',
+        borderRadius: '12px',
+        padding: '12px 14px',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(139, 92, 246, 0.06)',
         zIndex: 10,
         margin: '0 auto'
       }}

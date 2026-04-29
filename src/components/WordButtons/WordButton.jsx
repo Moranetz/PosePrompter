@@ -46,13 +46,13 @@ const WordButton = ({
     fontSize: TYPOGRAPHY.SM,
     fontWeight: isSelected ? '500' : '400',
     letterSpacing: '-0.01em',
-    border: isSelected 
-      ? '1px solid rgba(20, 184, 166, 0.4)' 
+    border: isSelected
+      ? '1px solid rgba(139, 92, 246, 0.35)'
       : '1px solid rgba(255, 255, 255, 0.06)',
     background: isSelected
-      ? 'rgba(20, 184, 166, 0.15)'
+      ? 'rgba(139, 92, 246, 0.12)'
       : 'rgba(255, 255, 255, 0.02)',
-    color: isSelected ? '#f4f4f5' : '#a1a1aa',
+    color: isSelected ? '#ededef' : '#9898a0',
     cursor: isDisabled ? 'not-allowed' : 'pointer',
     transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
     boxShadow: 'none',
@@ -71,7 +71,7 @@ const WordButton = ({
   const hoverStyle = useMemo(() => !isDisabled ? {
     transform: 'translateY(-2px) scale(1.02)',
     boxShadow: '0 6px 20px rgba(0, 0, 0, 0.4)',
-    background: isSelected ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)'
+    background: isSelected ? 'rgba(139, 92, 246, 0.18)' : 'rgba(255, 255, 255, 0.05)'
   } : {}, [isDisabled, isSelected]);
 
   return (
