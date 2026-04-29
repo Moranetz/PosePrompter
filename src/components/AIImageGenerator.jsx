@@ -20,7 +20,7 @@ import { generateImage, PROVIDERS, checkCredits, isProviderAvailable } from '../
 import { getErrorMessage } from '../utils/errorHandler';
 import { logger } from '../utils/logger';
 import Header from './Header';
-import { ref, getDownloadURL, listAll } from 'firebase/storage';
+import { ref, getDownloadURL, listAll, uploadBytes } from 'firebase/storage';
 import { storage } from '../firebase-config';
 import { generateAIImage } from '../utils/aiImageService';
 import RateAppModal from './RateAppModal';
@@ -110,6 +110,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   const [loadingFacePhotos, setLoadingFacePhotos] = useState(false);
   const [showFaceSelector, setShowFaceSelector] = useState(false);
   const [showRateAppModal, setShowRateAppModal] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const progressPercent = numVariations > 0
     ? Math.round((generatingCount / numVariations) * 100)
     : 0;
@@ -215,6 +217,42 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
   useEffect(() => {
     fetchFacePhotos();
   }, [fetchFacePhotos]);
+
+  // Inline face photo upload — no page navigation needed
+  const handleFacePhotoUpload = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !storage) return;
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setError('Photo must be under 10MB');
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file');
+      return;
+    }
+
+    setUploading(true);
+    setError('');
+    try {
+      const fileName = `${Date.now()}_${file.name}`;
+      const storageRef = ref(storage, `face-photos/${user.uid}/${fileName}`);
+      await uploadBytes(storageRef, file, { contentType: file.type });
+      const url = await getDownloadURL(storageRef);
+
+      const newPhoto = { url, name: fileName, fullPath: storageRef.fullPath };
+      setFacePhotos(prev => [...prev, newPhoto]);
+      setSelectedFacePhoto(newPhoto);
+      setShowFaceSelector(true);
+    } catch (err) {
+      logger.error('Error uploading face photo:', err);
+      setError('Failed to upload photo. Please try again.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }, [user]);
 
   // Save prompt to localStorage
   useEffect(() => {
@@ -1005,32 +1043,38 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                     color: 'rgba(255, 255, 255, 0.5)',
                     marginBottom: '12px'
                   }}>
-                    No face photos uploaded yet.
+                    Upload a selfie to generate images with your face
                   </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFacePhotoUpload}
+                    style={{ display: 'none' }}
+                  />
                   <button
-                    onClick={() => {
-                      window.location.hash = '#face-photos';
-                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
                     style={{
                       padding: '10px 16px',
                       minHeight: '44px',
-                      background: 'rgba(139, 92, 246, 0.1)',
+                      background: uploading ? 'rgba(139, 92, 246, 0.05)' : 'rgba(139, 92, 246, 0.1)',
                       border: '1px solid rgba(139, 92, 246, 0.3)',
                       borderRadius: '8px',
                       color: '#ffffff',
                       fontSize: '12px',
                       fontWeight: '500',
-                      cursor: 'pointer',
+                      cursor: uploading ? 'wait' : 'pointer',
                       transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(139, 92, 246, 0.15)';
+                      if (!uploading) e.target.style.background = 'rgba(139, 92, 246, 0.15)';
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.background = 'rgba(139, 92, 246, 0.1)';
                     }}
                   >
-                    Upload Face Photo
+                    {uploading ? 'Uploading...' : 'Upload Selfie'}
                   </button>
                 </div>
               ) : (
@@ -1039,6 +1083,38 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                   gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
                   gap: '12px'
                 }}>
+                  {/* Upload new photo button inline with existing photos */}
+                  <motion.button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      padding: '12px',
+                      minHeight: '120px',
+                      background: 'rgba(139, 92, 246, 0.05)',
+                      border: '2px dashed rgba(139, 92, 246, 0.3)',
+                      borderRadius: '8px',
+                      cursor: uploading ? 'wait' : 'pointer',
+                      color: 'rgba(255, 255, 255, 0.5)',
+                      fontSize: '11px',
+                    }}
+                  >
+                    <Plus size={20} />
+                    {uploading ? 'Uploading...' : 'Add Photo'}
+                  </motion.button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFacePhotoUpload}
+                    style={{ display: 'none' }}
+                  />
                   <motion.button
                     onClick={() => setSelectedFacePhoto(null)}
                     style={{
