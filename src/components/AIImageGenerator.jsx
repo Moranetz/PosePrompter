@@ -1410,7 +1410,7 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                     left: 0,
                     marginTop: '4px',
                     minWidth: '200px',
-                    background: '#1a1a2e',
+                    background: 'var(--bg-elevated, #16161b)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '8px',
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
@@ -1708,9 +1708,9 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                       }
                     }}
                   >
-                    <option value="1024x1024" style={{ background: '#1a1a2e', color: '#ffffff' }}>1024x1024</option>
-                    <option value="1792x1024" style={{ background: '#1a1a2e', color: '#ffffff' }}>1792x1024</option>
-                    <option value="1024x1792" style={{ background: '#1a1a2e', color: '#ffffff' }}>1024x1792</option>
+                    <option value="1024x1024" style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>1024x1024</option>
+                    <option value="1792x1024" style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>1792x1024</option>
+                    <option value="1024x1792" style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>1024x1792</option>
                   </select>
                 </div>
 
@@ -1766,8 +1766,8 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                         }
                       }}
                     >
-                      <option value="standard" style={{ background: '#1a1a2e', color: '#ffffff' }}>Standard</option>
-                      <option value="hd" style={{ background: '#1a1a2e', color: '#ffffff' }}>HD</option>
+                      <option value="standard" style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>Standard</option>
+                      <option value="hd" style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>HD</option>
                     </select>
                   </div>
                 )}
@@ -1824,10 +1824,10 @@ const AIImageGenerator = ({ currentPrompt: externalPrompt, onPromptChange }) => 
                         }
                       }}
                     >
-                      <option value={1} style={{ background: '#1a1a2e', color: '#ffffff' }}>1</option>
-                      <option value={2} style={{ background: '#1a1a2e', color: '#ffffff' }}>2</option>
-                      <option value={3} style={{ background: '#1a1a2e', color: '#ffffff' }}>3</option>
-                      <option value={4} style={{ background: '#1a1a2e', color: '#ffffff' }}>4</option>
+                      <option value={1} style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>1</option>
+                      <option value={2} style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>2</option>
+                      <option value={3} style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>3</option>
+                      <option value={4} style={{ background: 'var(--bg-elevated, #16161b)', color: '#ffffff' }}>4</option>
                     </select>
                   </div>
                 )}

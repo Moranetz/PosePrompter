@@ -458,10 +458,10 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
         <div
           className="modal-content"
           style={{
-            background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
-            borderRadius: '20px',
+            background: 'var(--bg-primary, #09090b)',
+            borderRadius: '16px',
             padding: '32px',
-            maxWidth: '500px',
+            maxWidth: '420px',
             width: '100%',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(239, 68, 68, 0.2)',
             border: '1px solid rgba(239, 68, 68, 0.3)',
@@ -521,16 +521,16 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
       <div
         className="modal-content"
         style={{
-          background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
-          borderRadius: '20px',
+          background: 'var(--bg-primary, #09090b)',
+          borderRadius: '16px',
           padding: '0',
-          maxWidth: '450px',
+          maxWidth: '420px',
           width: '100%',
           maxHeight: '90vh',
           overflow: 'auto',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.2)',
+          boxShadow: '0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.15)',
           position: 'relative',
-          border: '1px solid rgba(139, 92, 246, 0.3)'
+          border: '1px solid rgba(139, 92, 246, 0.2)'
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -576,41 +576,43 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '6px 12px',
-              background: 'rgba(34, 197, 94, 0.1)',
-              border: '1px solid rgba(34, 197, 94, 0.2)',
+              padding: '5px 12px',
+              background: 'rgba(139, 92, 246, 0.1)',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
               borderRadius: '100px',
-              fontSize: '12px',
-              color: 'rgba(34, 197, 94, 0.9)'
+              fontSize: '11px',
+              fontWeight: '500',
+              letterSpacing: '0.02em',
+              color: 'rgba(167, 139, 250, 0.9)'
             }}>
-              <span style={{ fontSize: '14px' }}>✓</span>
-              30+ categories ready to use
+              <span style={{ fontSize: '12px' }}>✓</span>
+              30+ prompt categories included
             </div>
           </div>
           
           <h2
             style={{
               margin: 0,
-              fontSize: '24px',
-              fontWeight: '700',
-              color: '#ffffff',
+              fontSize: '22px',
+              fontWeight: '650',
+              color: 'var(--text-primary, #ededef)',
               textAlign: 'center',
               marginBottom: '8px',
-              letterSpacing: '-0.5px'
+              letterSpacing: '-0.03em'
             }}
           >
-            You're one click away
+            Welcome to Pose Prompter
           </h2>
           <p
             style={{
               margin: 0,
-              fontSize: '14px',
-              color: 'rgba(255, 255, 255, 0.5)',
+              fontSize: '13px',
+              color: 'var(--text-muted, #636370)',
               textAlign: 'center',
               lineHeight: '1.5'
             }}
           >
-            Save your setups. Build your library. Never start from scratch.
+            Save your setups. Build your library. Generate with AI.
           </p>
         </div>
 
@@ -629,7 +631,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
               padding: '14px',
               background: 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'signin' ? '2px solid #22c55e' : '2px solid transparent',
+              borderBottom: activeTab === 'signin' ? '2px solid #8b5cf6' : '2px solid transparent',
               color: activeTab === 'signin' ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
               fontSize: '14px',
               fontWeight: activeTab === 'signin' ? '600' : '400',
@@ -646,7 +648,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
               padding: '14px',
               background: 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'signup' ? '2px solid #22c55e' : '2px solid transparent',
+              borderBottom: activeTab === 'signup' ? '2px solid #8b5cf6' : '2px solid transparent',
               color: activeTab === 'signup' ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
               fontSize: '14px',
               fontWeight: activeTab === 'signup' ? '600' : '400',

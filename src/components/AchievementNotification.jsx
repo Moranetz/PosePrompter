@@ -83,7 +83,7 @@ const AchievementNotification = ({ achievement, onClose }) => {
             position: 'fixed',
             top: '32px',
             right: '32px',
-            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+            background: 'linear-gradient(135deg, var(--bg-elevated, #16161b) 0%, #16213e 100%)',
             border: '2px solid rgba(251, 191, 36, 0.4)',
             borderRadius: '16px',
             padding: '20px 24px',

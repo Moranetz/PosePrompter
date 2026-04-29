@@ -535,7 +535,7 @@ const CategorySelectionModal = ({
       <div
         className="modal-content"
         style={{
-          background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
+          background: 'linear-gradient(135deg, var(--bg-primary, #09090b) 0%, var(--bg-elevated, #16161b) 100%)',
           borderRadius: '20px',
           padding: '0',
           maxWidth: '600px',
