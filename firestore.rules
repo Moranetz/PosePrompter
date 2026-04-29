@@ -12,40 +12,26 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    // Helper function to check if credits are safe to modify
+    function creditsUnchanged() {
+      // If gems/credits fields are not in the update, allow
+      // If document doesn't exist yet (create), allow
+      // Otherwise, gems/credits must match existing values (only server can modify)
+      return (!('gems' in request.resource.data) && !('credits' in request.resource.data)) ||
+             !resource.exists ||
+             ((request.resource.data.gems == resource.data.gems) &&
+              (request.resource.data.credits == resource.data.credits));
+    }
+
     // Helper function to validate user document structure
     function isValidUserData() {
       let data = request.resource.data;
-      // CRITICAL SECURITY: Prevent users from modifying gems/credits directly
-      // Only allow gems/credits to be set on create, never modified on update
-      let canModifyCredits = false;
-      if (!('gems' in request.resource.data) && !('credits' in request.resource.data)) {
-        // If gems/credits are not being set, allow (for other field updates)
-        canModifyCredits = true;
-      } else if (!resource.exists) {
-        // Allow setting gems/credits only on document creation
-        canModifyCredits = true;
-      } else {
-        // On update, gems/credits must remain unchanged (only server can modify)
-        canModifyCredits = (request.resource.data.gems == resource.data.gems) &&
-                          (request.resource.data.credits == resource.data.credits);
-      }
-      
-      return data.keys().hasAll(['displayName', 'avatar', 'bio', 'customOptions', 
-                                  'hiddenOptions', 'deletedOptions', 'savedPromptSets', 
-                                  'installedPackages', 'createdAt', 'updatedAt']) &&
-             data.displayName is string &&
+      return data.displayName is string &&
              data.avatar is string &&
              data.bio is string &&
-             data.customOptions is map &&
-             data.hiddenOptions is map &&
-             data.deletedOptions is map &&
-             data.savedPromptSets is list &&
-             data.installedPackages is list &&
-             data.createdAt is timestamp &&
-             data.updatedAt is timestamp &&
              (!('credits' in data) || (data.credits is int && data.credits >= 0)) &&
              (!('gems' in data) || (data.gems is int && data.gems >= 0)) &&
-             canModifyCredits;
+             creditsUnchanged();
     }
     
     // Helper function to validate package document structure
@@ -114,15 +100,12 @@ service cloud.firestore {
       allow read: if isOwner(userId);
       
       // Allow create only if user is authenticated and creating their own document
-      allow create: if isAuthenticated() && 
-                       request.auth.uid == userId && 
-                       isValidUserData() &&
-                       checkRateLimit();
-      
-      // Allow update only if user owns the document
-      allow update: if isOwner(userId) && 
-                       isValidUserData() &&
-                       checkRateLimit();
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == userId;
+
+      // Allow update only if user owns the document and credits aren't being tampered with
+      allow update: if isOwner(userId) &&
+                       creditsUnchanged();
       
       // Allow delete only if user owns the document
       allow delete: if isOwner(userId);

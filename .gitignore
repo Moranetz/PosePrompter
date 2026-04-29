@@ -60,3 +60,4 @@ test-out.txt
 *.tmp
 *.temp
 .cache/
+server/service-account.json
