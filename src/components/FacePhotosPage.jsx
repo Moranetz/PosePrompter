@@ -420,6 +420,38 @@ const FacePhotosPage = () => {
               maxWidth: '420px',
             }}
           >
+            <button
+              onClick={() => window.location.hash = ''}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '7px 14px',
+                background: 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.07)',
+                borderRadius: '8px',
+                color: 'var(--text-muted)',
+                fontSize: '13px',
+                fontWeight: '450',
+                cursor: 'pointer',
+                marginBottom: '32px',
+                transition: 'all 120ms ease',
+                letterSpacing: '-0.01em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.08)';
+                e.currentTarget.style.color = '#e4dbfa';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = 'var(--text-muted)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.07)';
+              }}
+            >
+              <ArrowLeft size={14} />
+              Back
+            </button>
             <div style={{
               width: '64px',
               height: '64px',
