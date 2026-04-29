@@ -77,7 +77,7 @@ export const PROVIDERS = {
   FLUX: 'flux',
   SDXL: 'sdxl',
   DALLE3: 'dalle3',
-  NANOBANANA: 'nanobanana' // Nano Banana Pro (Gemini)
+  INSTANTID: 'instantid', // InstantID — face-preserving generation
 };
 
 // Credit costs per provider (in gems)
@@ -85,7 +85,7 @@ const CREDIT_COSTS = {
   [PROVIDERS.FLUX]: 10,
   [PROVIDERS.SDXL]: 8,
   [PROVIDERS.DALLE3]: 12,
-  [PROVIDERS.NANOBANANA]: 15 // Nano Banana Pro - premium quality
+  [PROVIDERS.INSTANTID]: 12,
 };
 
 // Collection names
@@ -719,7 +719,7 @@ export const checkProviderAvailability = async (provider) => {
         [PROVIDERS.FLUX]: health.replicate === true,
         [PROVIDERS.SDXL]: health.replicate === true,
         [PROVIDERS.DALLE3]: health.openai === true,
-        [PROVIDERS.NANOBANANA]: health.gemini === true,
+        [PROVIDERS.INSTANTID]: health.replicate === true,
       };
       availabilityCacheTime = now;
       return availabilityCache[provider] || false;

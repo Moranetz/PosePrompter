@@ -90,7 +90,7 @@ const env = validateEnvironment();
  * Get API base URL (with fallback)
  */
 export const getApiUrl = () => {
-  return env.VITE_API_URL || `${window.location.origin}/api`;
+  return env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || `${window.location.origin}/api`;
 };
 
 /**

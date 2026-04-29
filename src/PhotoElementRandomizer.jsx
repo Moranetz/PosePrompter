@@ -7,6 +7,7 @@ import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, dele
 import { db } from './firebase-config';
 import { useAuth } from './contexts/UserContext';
 import { logger } from './utils/logger.js';
+import { trackEvent } from './posthog.js';
 import CategoryTabs from './components/CategoryTabs';
 import CategoryChips from './components/CategoryChips';
 import LivePromptPreview from './components/LivePromptPreview';
@@ -868,6 +869,11 @@ const PhotoElementRandomizer = () => {
       triggerFeedback(FEEDBACK_TYPES.COPY, {
         intensity: 'strong',
         message: 'Prompt copied!',
+      });
+
+      trackEvent('prompt_copied', {
+        prompt_length: generatedPrompt.length,
+        num_categories: Object.keys(selections).filter(c => includedCategories[c]).length,
       });
 
       // Record to prompt history

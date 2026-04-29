@@ -9,6 +9,7 @@ import { useState, useCallback } from 'react';
 import { logger } from '../utils/logger.js';
 import apiClient from '../api/client.js';
 import { useAuth } from '../contexts/UserContext.jsx';
+import { trackEvent } from '../posthog.js';
 
 export function useImageGeneration() {
   const { user } = useAuth();
@@ -72,6 +73,15 @@ export function useImageGeneration() {
 
       logger.log('[useImageGeneration] Image generated successfully:', { cost, newBalance });
 
+      trackEvent('image_generated', {
+        model,
+        num_variations: numVariations,
+        prompt_length: prompt.length,
+        cost,
+        new_balance: newBalance,
+        has_face_photo: !!facePhotoUrl,
+      });
+
       return {
         images: newImages,
         cost,
@@ -82,6 +92,12 @@ export function useImageGeneration() {
       const errorMessage = err.userMessage || err.message || 'Failed to generate image';
       setError(errorMessage);
       logger.error('[useImageGeneration] Error:', err);
+
+      trackEvent('image_generation_failed', {
+        model,
+        error: errorMessage,
+      });
+
       throw err;
     } finally {
       setLoading(false);

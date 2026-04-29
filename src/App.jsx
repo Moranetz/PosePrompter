@@ -12,7 +12,6 @@ import PrivacyPolicy from './components/PrivacyPolicy.jsx';
 import ErrorReports from './components/ErrorReports.jsx';
 import ToastProvider from './components/Toast/ToastContainer.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
-import AuthDebugPanel from './components/AuthDebugPanel.jsx';
 import { HypnoticLoadingScreen, HypnoticBackground } from './components/HypnoticEffects.jsx';
 import StripeProvider from './components/StripeProvider.jsx';
 
@@ -296,16 +295,9 @@ const AppContent = () => {
   );
 };
 
-// Wrapper to access auth state for debug panel
+// Wrapper component (debug panel removed for production)
 const AppWithDebug = () => {
-  const { user, loading } = useAuth();
-  
-  return (
-    <>
-      <AppContent />
-      {/* <AuthDebugPanel user={user} loading={loading} /> */}
-    </>
-  );
+  return <AppContent />;
 };
 
 // Main App component wrapped with UserProvider, ToastProvider, StripeProvider, and ErrorBoundary

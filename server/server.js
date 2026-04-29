@@ -17,7 +17,6 @@ import admin from 'firebase-admin';
 import rateLimit from 'express-rate-limit';
 import Replicate from 'replicate';
 import OpenAI from 'openai';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Load environment variables
 dotenv.config();
@@ -25,16 +24,16 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Initialize Stripe with secret key
-if (!process.env.STRIPE_SECRET_KEY) {
-  console.error('ERROR: STRIPE_SECRET_KEY is not set in environment variables!');
-  console.error('Please add STRIPE_SECRET_KEY to server/.env file');
-  process.exit(1);
+// Initialize Stripe (optional — server runs without it, payment endpoints will 503)
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2024-11-20.acacia',
+  });
+  console.log('Stripe initialized');
+} else {
+  console.warn('STRIPE_SECRET_KEY not set — payment endpoints disabled');
 }
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-11-20.acacia',
-});
 
 // Initialize Firebase Admin
 let db;
@@ -81,7 +80,6 @@ try {
 // Initialize AI clients
 let replicateClient = null;
 let openaiClient = null;
-let geminiClient = null;
 
 const getReplicateClient = () => {
   if (!replicateClient && process.env.REPLICATE_API_TOKEN) {
@@ -101,17 +99,11 @@ const getOpenAIClient = () => {
   return openaiClient;
 };
 
-const getGeminiClient = () => {
-  if (!geminiClient && process.env.GOOGLE_GEMINI_API_KEY) {
-    geminiClient = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
-  }
-  return geminiClient;
-};
 
 // Middleware
 // CORS configuration with security headers
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || ['https://poseprompter.com', 'https://pose-prompter.web.app', 'http://localhost:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -232,7 +224,7 @@ const CREDIT_COSTS = {
   flux: 10,
   sdxl: 8,
   dalle3: 12,
-  nanobanana: 15, // Nano Banana Pro (Gemini) - premium quality
+  instantid: 12, // InstantID — face-preserving generation
 };
 
 // Credit packages configuration
@@ -955,73 +947,130 @@ app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, asyn
       
       // Generate image based on provider
       switch (provider) {
-        case 'flux':
+        case 'flux': {
           const replicate = getReplicateClient();
           if (!replicate) {
             throw new Error('Replicate API not configured');
           }
-          
-          // If face photo is provided, use image-to-image generation based on the uploaded photo
+
           if (facePhotoUrl) {
-            // Use PhotoMaker model - designed specifically for generating images based on face photos and prompts
-            // This model takes the uploaded photo as the base and generates a new image based on the prompt
-            const photoMakerOutput = await replicate.run(
-              'mbukerepo/photomaker',
+            // Face-preserving generation via InstantID
+            console.log('[generate-image] Face photo detected on Flux, using InstantID for face preservation');
+            const instantIdOutput = await replicate.run(
+              'zsxkib/instant-id',
               {
                 input: {
-                  prompt: finalPrompt,
-                  num_outputs: options.num_outputs || 1,
-                  num_inference_steps: 50,
+                  image: facePhotoUrl,
+                  prompt: `professional photo, ${finalPrompt}, high quality, detailed, sharp focus`,
+                  negative_prompt: 'blurry, low quality, distorted face, deformed, ugly, bad anatomy, bad proportions, extra limbs, disfigured',
+                  ip_adapter_scale: 0.8,
+                  controlnet_conditioning_scale: 0.8,
+                  num_inference_steps: 30,
                   guidance_scale: 5,
-                  input_image: facePhotoUrl,
-                  style_name: "Photographic",
+                  seed: options.seed || Math.floor(Math.random() * 2147483647),
                 }
               }
             );
-            imageUrl = Array.isArray(photoMakerOutput) ? photoMakerOutput[0] : photoMakerOutput;
+            imageUrl = Array.isArray(instantIdOutput) ? instantIdOutput[0] : instantIdOutput;
           } else {
-            // Regular Flux Pro generation
+            // Regular Flux 1.1 Pro generation (latest)
             const fluxOutput = await replicate.run(
-              'black-forest-labs/flux-pro',
+              'black-forest-labs/flux-1.1-pro',
               {
                 input: {
                   prompt: finalPrompt,
                   width: options.width || 1024,
                   height: options.height || 1024,
-                  num_outputs: options.num_outputs || 1,
+                  prompt_upsampling: true,
                 }
               }
             );
-            imageUrl = Array.isArray(fluxOutput) ? fluxOutput[0] : fluxOutput;
+            // Flux 1.1 Pro returns a single URL string
+            imageUrl = typeof fluxOutput === 'string' ? fluxOutput : (Array.isArray(fluxOutput) ? fluxOutput[0] : fluxOutput);
           }
           break;
+        }
 
-        case 'sdxl':
+        case 'instantid': {
+          // Dedicated InstantID provider — face-preserving generation
+          const replicateInstant = getReplicateClient();
+          if (!replicateInstant) {
+            throw new Error('Replicate API not configured');
+          }
+          if (!facePhotoUrl) {
+            throw new Error('InstantID requires a face photo. Please upload a face photo first.');
+          }
+
+          console.log('[generate-image] InstantID generation with face preservation');
+          const instantOutput = await replicateInstant.run(
+            'zsxkib/instant-id',
+            {
+              input: {
+                image: facePhotoUrl,
+                prompt: `professional photo, ${finalPrompt}, high quality, detailed, sharp focus`,
+                negative_prompt: 'blurry, low quality, distorted face, deformed, ugly, bad anatomy, bad proportions, extra limbs, disfigured',
+                ip_adapter_scale: options.face_strength || 0.8,
+                controlnet_conditioning_scale: options.pose_strength || 0.8,
+                num_inference_steps: options.steps || 30,
+                guidance_scale: options.guidance || 5,
+                seed: options.seed || Math.floor(Math.random() * 2147483647),
+              }
+            }
+          );
+          imageUrl = Array.isArray(instantOutput) ? instantOutput[0] : instantOutput;
+          break;
+        }
+
+        case 'sdxl': {
           const replicateSDXL = getReplicateClient();
           if (!replicateSDXL) {
             throw new Error('Replicate API not configured');
           }
-          
-          const sdxlOutput = await replicateSDXL.run(
-            'stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b',
-            {
-              input: {
-                prompt: finalPrompt,
-                width: options.width || 1024,
-                height: options.height || 1024,
-                num_outputs: options.num_outputs || 1,
-              }
-            }
-          );
-          imageUrl = Array.isArray(sdxlOutput) ? sdxlOutput[0] : sdxlOutput;
-          break;
 
-        case 'dalle3':
+          if (facePhotoUrl) {
+            // SDXL with face photo: use IP-Adapter FaceID
+            console.log('[generate-image] SDXL with face photo, using IP-Adapter FaceID');
+            const faceIdOutput = await replicateSDXL.run(
+              'lucataco/ip-adapter-faceid',
+              {
+                input: {
+                  image: facePhotoUrl,
+                  prompt: finalPrompt,
+                  negative_prompt: 'blurry, low quality, distorted face, deformed, ugly, bad anatomy',
+                  num_inference_steps: 30,
+                  guidance_scale: 7.5,
+                }
+              }
+            );
+            imageUrl = Array.isArray(faceIdOutput) ? faceIdOutput[0] : faceIdOutput;
+          } else {
+            const sdxlOutput = await replicateSDXL.run(
+              'stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b',
+              {
+                input: {
+                  prompt: finalPrompt,
+                  negative_prompt: 'blurry, low quality, distorted, deformed',
+                  width: options.width || 1024,
+                  height: options.height || 1024,
+                  num_outputs: 1,
+                }
+              }
+            );
+            imageUrl = Array.isArray(sdxlOutput) ? sdxlOutput[0] : sdxlOutput;
+          }
+          break;
+        }
+
+        case 'dalle3': {
           const openai = getOpenAIClient();
           if (!openai) {
             throw new Error('OpenAI API not configured');
           }
-          
+
+          if (facePhotoUrl) {
+            console.log('[generate-image] DALL-E 3 does not support face photos, generating from prompt only');
+          }
+
           const dalleResponse = await openai.images.generate({
             model: 'dall-e-3',
             prompt: finalPrompt,
@@ -1031,89 +1080,7 @@ app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, asyn
           });
           imageUrl = dalleResponse.data[0]?.url;
           break;
-
-        case 'nanobanana':
-          const gemini = getGeminiClient();
-          if (!gemini) {
-            throw new Error('Google Gemini API not configured');
-          }
-          
-          // Use Gemini 2.0 Flash for image generation (Nano Banana Pro)
-          // Note: Gemini API image generation may use different endpoints
-          // This uses the generative model API
-          const model = gemini.getGenerativeModel({ 
-            model: 'gemini-2.0-flash-exp'
-          });
-          
-          try {
-            // Request image generation
-            const result = await model.generateContent({
-              contents: [{
-                role: 'user',
-                parts: [{ text: finalPrompt }]
-              }],
-              generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 8192,
-              }
-            });
-            
-            const response = await result.response;
-            
-            // Check for image in response (base64 encoded)
-            const candidates = response.candidates || [];
-            for (const candidate of candidates) {
-              const parts = candidate.content?.parts || [];
-              for (const part of parts) {
-                if (part.inlineData) {
-                  // Found base64 image
-                  imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-                  break;
-                }
-              }
-              if (imageUrl) break;
-            }
-            
-            // If no image found, try alternative: use Gemini's image generation API endpoint
-            if (!imageUrl) {
-              const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-              if (!apiKey) {
-                throw new Error('GOOGLE_GEMINI_API_KEY not configured');
-              }
-              // SECURITY: Use Authorization header instead of URL parameter to prevent key exposure in logs
-              const genResponse = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent`,
-                {
-                  method: 'POST',
-                  headers: { 
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': apiKey
-                  },
-                  body: JSON.stringify({
-                    contents: [{
-                      parts: [{ text: `Generate an image: ${finalPrompt}` }]
-                    }]
-                  })
-                }
-              );
-              
-              const genData = await genResponse.json();
-              const imageData = genData.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
-              if (imageData?.inlineData) {
-                imageUrl = `data:${imageData.inlineData.mimeType};base64,${imageData.inlineData.data}`;
-              }
-            }
-            
-            if (!imageUrl) {
-              throw new Error('No image returned from Nano Banana Pro. The model may not support direct image generation yet.');
-            }
-          } catch (geminiError) {
-            console.error('[nanobanana] Gemini API error:', geminiError);
-            throw new Error(`Nano Banana Pro generation failed: ${geminiError.message || 'Unknown error'}`);
-          }
-          break;
+        }
 
         default:
           throw new Error(`Unsupported provider: ${provider}`);
@@ -1596,7 +1563,6 @@ app.get('/api/health', (req, res) => {
     firebase: !!db,
     replicate: !!getReplicateClient(),
     openai: !!getOpenAIClient(),
-    gemini: !!getGeminiClient(),
   });
 });
 

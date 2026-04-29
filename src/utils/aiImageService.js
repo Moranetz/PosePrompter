@@ -34,14 +34,16 @@ export const generateAIImage = async ({ facePhotoUrl, prompt }) => {
     const apiClient = (await import('../api/client.js')).default;
     
     // Call backend API with face photo using centralized client
+    // Use InstantID for dedicated face-preserving generation
     const response = await apiClient.post('/generate-image', {
-      provider: 'flux', // Use Flux for face photo generation
+      provider: 'instantid',
       prompt: prompt,
       facePhotoUrl: facePhotoUrl,
       options: {
-        width: 1024,
-        height: 1024,
-        num_outputs: 1,
+        face_strength: 0.8,
+        pose_strength: 0.8,
+        steps: 30,
+        guidance: 5,
       },
     });
 
