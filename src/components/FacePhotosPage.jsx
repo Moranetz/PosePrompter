@@ -399,13 +399,83 @@ const FacePhotosPage = () => {
     return (
       <div style={{
         minHeight: '100vh',
-        background: '#09090b',
+        background: 'var(--bg-primary)',
         color: '#ffffff',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        flexDirection: 'column',
       }}>
-        <p>Please log in to view your face photos.</p>
+        <Header />
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '40px 24px',
+        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              textAlign: 'center',
+              maxWidth: '420px',
+            }}
+          >
+            <div style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '16px',
+              background: 'rgba(139, 92, 246, 0.1)',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+            }}>
+              <ImageIcon size={28} style={{ color: 'rgba(139, 92, 246, 0.7)' }} />
+            </div>
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '600',
+              letterSpacing: '-0.02em',
+              marginBottom: '10px',
+              color: 'var(--text-primary)',
+            }}>
+              Your Face Photos
+            </h2>
+            <p style={{
+              fontSize: '14px',
+              color: 'var(--text-muted)',
+              lineHeight: '1.6',
+              marginBottom: '28px',
+            }}>
+              Sign in to upload photos and generate AI images that preserve your face in any pose, outfit, or scene.
+            </p>
+            <button
+              onClick={() => window.location.hash = ''}
+              style={{
+                padding: '10px 24px',
+                background: 'rgba(139, 92, 246, 0.12)',
+                border: '1px solid rgba(139, 92, 246, 0.3)',
+                borderRadius: '10px',
+                color: '#e4dbfa',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 120ms ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.12)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              Sign In to Get Started
+            </button>
+          </motion.div>
+        </div>
       </div>
     );
   }
@@ -413,15 +483,15 @@ const FacePhotosPage = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#09090b',
+      background: 'var(--bg-primary)',
       color: '#ffffff',
       position: 'relative'
     }}>
       <Header />
-      
+
       <main style={{
-        padding: '40px 32px',
-        maxWidth: '1400px',
+        padding: '32px 32px 80px',
+        maxWidth: '1200px',
         margin: '0 auto'
       }}>
         {/* Back button */}
@@ -432,92 +502,100 @@ const FacePhotosPage = () => {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            gap: '6px',
+            padding: '7px 14px',
+            background: 'transparent',
+            border: '1px solid rgba(255, 255, 255, 0.07)',
             borderRadius: '8px',
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '14px',
-            fontWeight: '500',
+            color: 'var(--text-muted)',
+            fontSize: '13px',
+            fontWeight: '450',
             cursor: 'pointer',
             marginBottom: '32px',
-            transition: 'all 0.2s ease'
+            transition: 'all 120ms ease',
+            letterSpacing: '-0.01em',
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-            e.target.style.color = '#ffffff';
+            e.currentTarget.style.background = 'rgba(139, 92, 246, 0.08)';
+            e.currentTarget.style.color = '#e4dbfa';
+            e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.2)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-            e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = 'var(--text-muted)';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.07)';
           }}
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           Back
         </button>
 
         {/* Header Section */}
-        <div style={{ marginBottom: '48px' }}>
+        <div style={{ marginBottom: '40px' }}>
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              fontWeight: '700',
-              marginBottom: '12px',
-              color: '#ffffff',
-              letterSpacing: '-1px'
+              fontSize: 'clamp(26px, 4vw, 36px)',
+              fontWeight: '650',
+              marginBottom: '10px',
+              color: 'var(--text-primary)',
+              letterSpacing: '-0.03em',
+              lineHeight: '1.2',
             }}
           >
-            Transform into any scene.<br />
-            <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Always look your best.</span>
+            Your Face Photos
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.05 }}
             style={{
-              fontSize: '16px',
-              color: 'rgba(255, 255, 255, 0.6)',
-              marginBottom: '32px',
-              lineHeight: '1.6'
+              fontSize: '14px',
+              color: 'var(--text-muted)',
+              marginBottom: '0',
+              lineHeight: '1.6',
+              maxWidth: '560px',
             }}
           >
-            Upload your best photos and create a face base that the AI will recognize perfectly. Get stunning, consistent results in every transformation—whether you're in a professional headshot, a casual setting, or any scene you imagine. Your features stay recognizable and attractive, every single time.
+            Upload clear, well-lit photos of your face. The AI uses these as a reference to preserve your identity across generated images.
           </motion.p>
 
           {/* Upload Button */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
+            style={{ marginTop: '24px' }}
           >
             <label
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '12px',
-                padding: '12px 24px',
-                background: 'rgba(139, 92, 246, 0.1)',
+                gap: '10px',
+                padding: '10px 22px',
+                background: 'rgba(139, 92, 246, 0.12)',
                 border: '1px solid rgba(139, 92, 246, 0.3)',
-                borderRadius: '8px',
-                color: '#ffffff',
-                fontSize: '14px',
+                borderRadius: '10px',
+                color: '#e4dbfa',
+                fontSize: '13px',
                 fontWeight: '500',
+                letterSpacing: '-0.01em',
                 cursor: uploading ? 'not-allowed' : 'pointer',
-                opacity: uploading ? 0.6 : 1,
-                transition: 'all 0.2s ease'
+                opacity: uploading ? 0.5 : 1,
+                transition: 'all 120ms ease',
               }}
               onMouseEnter={(e) => {
                 if (!uploading) {
-                  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.15)';
+                  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.15)';
                   e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.4)';
                 }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.1)';
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.12)';
                 e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <input
