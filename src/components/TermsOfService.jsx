@@ -23,23 +23,33 @@ const TermsOfService = () => {
       <button
         onClick={handleBack}
         style={{
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
+          padding: '7px 14px',
           background: 'transparent',
-          border: 'none',
-          color: 'var(--text-primary)',
-          cursor: 'pointer',
-          fontSize: '14px',
-          marginBottom: '24px',
-          padding: '8px',
+          border: '1px solid rgba(255, 255, 255, 0.07)',
           borderRadius: '8px',
-          transition: 'background 0.2s'
+          color: 'var(--text-muted)',
+          fontSize: '13px',
+          fontWeight: '450',
+          letterSpacing: '-0.01em',
+          cursor: 'pointer',
+          marginBottom: '24px',
+          transition: 'all 0.2s ease'
         }}
-        onMouseEnter={(e) => e.target.style.background = 'var(--bg-secondary)'}
-        onMouseLeave={(e) => e.target.style.background = 'transparent'}
+        onMouseEnter={(e) => {
+          e.target.style.background = 'rgba(139, 92, 246, 0.08)';
+          e.target.style.color = '#e4dbfa';
+          e.target.style.borderColor = 'rgba(139, 92, 246, 0.2)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.background = 'transparent';
+          e.target.style.color = 'var(--text-muted)';
+          e.target.style.borderColor = 'rgba(255, 255, 255, 0.07)';
+        }}
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft size={14} />
         Back
       </button>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, X, Copy, ExternalLink, Loader2, Calendar, Code, MessageSquare } from 'lucide-react';
+import { AlertCircle, CheckCircle, X, Copy, ExternalLink, Loader2, Calendar, Code, MessageSquare, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/UserContext';
 import { getUserErrorReports, markErrorReportResolved } from '../utils/errorReportingService';
 import { getErrorMessage } from '../utils/errorHandler';
@@ -127,11 +127,45 @@ const ErrorReports = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)',
+      background: 'var(--bg-primary)',
       padding: '24px',
       color: '#ffffff',
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* Back button */}
+        <button
+          onClick={() => { window.location.hash = ''; }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '7px 14px',
+            background: 'transparent',
+            border: '1px solid rgba(255, 255, 255, 0.07)',
+            borderRadius: '8px',
+            color: 'var(--text-muted)',
+            fontSize: '13px',
+            fontWeight: '450',
+            letterSpacing: '-0.01em',
+            cursor: 'pointer',
+            marginBottom: '24px',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(139, 92, 246, 0.08)';
+            e.target.style.color = '#e4dbfa';
+            e.target.style.borderColor = 'rgba(139, 92, 246, 0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'transparent';
+            e.target.style.color = 'var(--text-muted)';
+            e.target.style.borderColor = 'rgba(255, 255, 255, 0.07)';
+          }}
+        >
+          <ArrowLeft size={14} />
+          Back
+        </button>
+
         {/* Header */}
         <div style={{
           marginBottom: '32px',
@@ -153,8 +187,8 @@ const ErrorReports = () => {
               Error Reports
             </h1>
             <p style={{
-              color: 'rgba(255, 255, 255, 0.6)',
-              fontSize: '16px',
+              color: 'var(--text-muted)',
+              fontSize: '14px',
             }}>
               View and debug errors that occurred in your account
             </p>

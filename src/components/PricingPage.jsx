@@ -81,7 +81,7 @@ const PricingPage = ({ onClose }) => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#09090b',
+      background: 'var(--bg-primary)',
       color: '#ffffff',
       position: 'relative'
     }}>
@@ -101,27 +101,30 @@ const PricingPage = ({ onClose }) => {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            padding: '8px 16px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '7px 14px',
+            background: 'transparent',
+            border: '1px solid rgba(255, 255, 255, 0.07)',
             borderRadius: '8px',
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '14px',
-            fontWeight: '500',
+            color: 'var(--text-muted)',
+            fontSize: '13px',
+            fontWeight: '450',
+            letterSpacing: '-0.01em',
             cursor: 'pointer',
             marginBottom: '32px',
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-            e.target.style.color = '#ffffff';
+            e.target.style.background = 'rgba(139, 92, 246, 0.08)';
+            e.target.style.color = '#e4dbfa';
+            e.target.style.borderColor = 'rgba(139, 92, 246, 0.2)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-            e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+            e.target.style.background = 'transparent';
+            e.target.style.color = 'var(--text-muted)';
+            e.target.style.borderColor = 'rgba(255, 255, 255, 0.07)';
           }}
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           Back
         </button>
 
@@ -131,11 +134,11 @@ const PricingPage = ({ onClose }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              fontSize: 'clamp(32px, 5vw, 48px)',
-              fontWeight: '700',
+              fontSize: 'clamp(26px, 4vw, 36px)',
+              fontWeight: '650',
               marginBottom: '12px',
-              color: '#ffffff',
-              letterSpacing: '-1px'
+              color: 'var(--text-primary)',
+              letterSpacing: '-0.03em'
             }}
           >
             Stop wasting credits.<br />
@@ -146,8 +149,8 @@ const PricingPage = ({ onClose }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             style={{
-              fontSize: '16px',
-              color: 'rgba(255, 255, 255, 0.6)',
+              fontSize: '14px',
+              color: 'var(--text-muted)',
               marginBottom: '32px',
               lineHeight: '1.6'
             }}
