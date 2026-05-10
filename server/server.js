@@ -1465,16 +1465,14 @@ app.post('/api/confirm-payment', async (req, res) => {
  * POST /api/reward-rating
  * Rewards credits to user for rating the app
  * Includes idempotency check to prevent duplicate rewards
+ *
+ * Auth: requires verified Firebase ID token. userId is derived from
+ * the authed token, NEVER from request body — accepting body.userId
+ * lets anyone burn another user's 50-credit reward (CWE-639).
  */
-app.post('/api/reward-rating', async (req, res) => {
+app.post('/api/reward-rating', authenticateUser, async (req, res) => {
   try {
-    const { userId } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({
-        error: 'Missing required field: userId',
-      });
-    }
+    const userId = req.user.uid;
 
     if (!db) {
       return res.status(500).json({
