@@ -41,7 +41,7 @@ A creative tool for generating detailed photo prompts with an interactive articu
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/melmarion/PosePrompter.git
+git clone https://github.com/moranetz/PosePrompter.git
 cd "Pose Prompter"
 ```
 

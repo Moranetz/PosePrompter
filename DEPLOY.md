@@ -23,7 +23,7 @@ firebase deploy --only hosting --project pose-prompter
 
 1. Go to [render.com](https://render.com) and sign in with GitHub
 2. Click "New" → "Web Service"
-3. Connect the `melmarion/PosePrompter` repo
+3. Connect the `moranetz/PosePrompter` repo
 4. Set root directory to `server`
 5. Build command: `npm install`
 6. Start command: `node server.js`

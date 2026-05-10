@@ -9,20 +9,20 @@ final class StoreManager {
 
     // Product IDs — configure these in App Store Connect
     static let productIDs: [String] = [
-        "com.melmarion.poseprompter.credits.50",
-        "com.melmarion.poseprompter.credits.100",
-        "com.melmarion.poseprompter.credits.200",
-        "com.melmarion.poseprompter.credits.420",
-        "com.melmarion.poseprompter.credits.1100",
+        "com.moranetz.poseprompter.credits.50",
+        "com.moranetz.poseprompter.credits.100",
+        "com.moranetz.poseprompter.credits.200",
+        "com.moranetz.poseprompter.credits.420",
+        "com.moranetz.poseprompter.credits.1100",
     ]
 
     // Credit amounts per product
     static let creditAmounts: [String: Int] = [
-        "com.melmarion.poseprompter.credits.50": 50,
-        "com.melmarion.poseprompter.credits.100": 100,
-        "com.melmarion.poseprompter.credits.200": 200,
-        "com.melmarion.poseprompter.credits.420": 420,
-        "com.melmarion.poseprompter.credits.1100": 1100,
+        "com.moranetz.poseprompter.credits.50": 50,
+        "com.moranetz.poseprompter.credits.100": 100,
+        "com.moranetz.poseprompter.credits.200": 200,
+        "com.moranetz.poseprompter.credits.420": 420,
+        "com.moranetz.poseprompter.credits.1100": 1100,
     ]
 
     private let creditsKey = "PosePrompter_Credits"

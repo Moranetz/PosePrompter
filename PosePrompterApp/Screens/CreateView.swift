@@ -593,11 +593,11 @@ struct PaywallView: View {
 
     // Fallback display data if StoreKit products haven't loaded
     private let fallbackPackages: [(id: String, credits: Int, price: String, label: String, popular: Bool)] = [
-        ("com.melmarion.poseprompter.credits.50", 50, "$5.99", "Try it out", false),
-        ("com.melmarion.poseprompter.credits.100", 100, "$11.99", "Build your gallery", false),
-        ("com.melmarion.poseprompter.credits.200", 200, "$23.99", "Most popular", true),
-        ("com.melmarion.poseprompter.credits.420", 420, "$47.99", "Never run out", false),
-        ("com.melmarion.poseprompter.credits.1100", 1100, "$119.99", "Serious creators", false),
+        ("com.moranetz.poseprompter.credits.50", 50, "$5.99", "Try it out", false),
+        ("com.moranetz.poseprompter.credits.100", 100, "$11.99", "Build your gallery", false),
+        ("com.moranetz.poseprompter.credits.200", 200, "$23.99", "Most popular", true),
+        ("com.moranetz.poseprompter.credits.420", 420, "$47.99", "Never run out", false),
+        ("com.moranetz.poseprompter.credits.1100", 1100, "$119.99", "Serious creators", false),
     ]
 
     var body: some View {
