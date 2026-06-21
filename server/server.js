@@ -631,11 +631,16 @@ const uploadImageToStorage = async (userId, imageUrl, imageId) => {
 
 /**
  * POST /api/create-payment-intent
- * Creates a Stripe payment intent for a credit package purchase
+ * Creates a Stripe payment intent for a credit package purchase.
+ *
+ * Auth: requires verified Firebase ID token. userId is derived from the
+ * authed token, never from request body — accepting body.userId let
+ * unauthenticated callers spam Stripe under any uid (CWE-770 + CWE-639).
  */
-app.post('/api/create-payment-intent', async (req, res) => {
+app.post('/api/create-payment-intent', authenticateUser, async (req, res) => {
   try {
-    const { amount, creditPackage, userId } = req.body;
+    const { amount, creditPackage } = req.body;
+    const userId = req.user.uid;
 
     // Validate input
     if (!amount || !creditPackage) {
@@ -660,12 +665,12 @@ app.post('/api/create-payment-intent', async (req, res) => {
     }
 
     // Create payment intent with idempotency key to prevent duplicates
-    const idempotencyKey = `${userId || 'anonymous'}-${creditPackage}-${Date.now()}`;
+    const idempotencyKey = `${userId}-${creditPackage}-${Date.now()}`;
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: 'usd',
       metadata: {
-        userId: userId || 'anonymous',
+        userId: userId,
         creditPackage: creditPackage,
         credits: packageData.credits.toString(),
       },
@@ -1363,14 +1368,19 @@ app.post('/api/refund-credits', authenticateUser, async (req, res) => {
  * Confirms payment and updates user's credit balance in Firestore
  * (Legacy endpoint - webhook now handles this automatically)
  * CRITICAL: Add idempotency check to prevent duplicate credit additions
+ *
+ * Auth: requires verified Firebase ID token. userId is derived from the
+ * authed token. The paymentIntent.metadata.userId must equal the authed
+ * uid — both checks together prevent grant-credits-to-wrong-user attacks.
  */
-app.post('/api/confirm-payment', async (req, res) => {
+app.post('/api/confirm-payment', authenticateUser, async (req, res) => {
   try {
-    const { paymentIntentId, userId } = req.body;
+    const { paymentIntentId } = req.body;
+    const userId = req.user.uid;
 
-    if (!paymentIntentId || !userId) {
+    if (!paymentIntentId) {
       return res.status(400).json({
-        error: 'Missing required fields: paymentIntentId and userId are required',
+        error: 'Missing required field: paymentIntentId',
       });
     }
 
@@ -1465,16 +1475,14 @@ app.post('/api/confirm-payment', async (req, res) => {
  * POST /api/reward-rating
  * Rewards credits to user for rating the app
  * Includes idempotency check to prevent duplicate rewards
+ *
+ * Auth: requires verified Firebase ID token. userId is derived from
+ * the authed token, NEVER from request body — accepting body.userId
+ * lets anyone burn another user's 50-credit reward (CWE-639).
  */
-app.post('/api/reward-rating', async (req, res) => {
+app.post('/api/reward-rating', authenticateUser, async (req, res) => {
   try {
-    const { userId } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({
-        error: 'Missing required field: userId',
-      });
-    }
+    const userId = req.user.uid;
 
     if (!db) {
       return res.status(500).json({
