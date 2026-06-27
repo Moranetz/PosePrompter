@@ -111,8 +111,24 @@ app.use(cors({
 }));
 
 // Request body size limits to prevent DoS attacks
-app.use(express.json({ limit: '1mb' })); // Limit JSON payloads to 1MB
-app.use(express.urlencoded({ extended: true, limit: '1mb' })); // Limit URL-encoded payloads
+// NOTE: Stripe webhook routes must receive the RAW request body so the
+// signature can be verified. If express.json() runs first it consumes the
+// stream and leaves req.body as a parsed object, which makes
+// stripe.webhooks.constructEvent() throw and breaks payment processing.
+// Skip the body parsers for webhook paths so their express.raw() handlers
+// receive the untouched Buffer.
+const WEBHOOK_PATHS = new Set(['/api/stripe/webhook', '/api/webhook']);
+const jsonParser = express.json({ limit: '1mb' }); // Limit JSON payloads to 1MB
+const urlencodedParser = express.urlencoded({ extended: true, limit: '1mb' }); // Limit URL-encoded payloads
+
+app.use((req, res, next) => {
+  if (WEBHOOK_PATHS.has(req.path)) return next();
+  jsonParser(req, res, next);
+});
+app.use((req, res, next) => {
+  if (WEBHOOK_PATHS.has(req.path)) return next();
+  urlencodedParser(req, res, next);
+});
 
 // Request timeout middleware (30 seconds for image generation, 10 seconds for others)
 app.use((req, res, next) => {
@@ -1160,7 +1176,7 @@ app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, asyn
       await reportErrorToAccount(userId, generationError, {
         endpoint: '/api/generate-image',
         action: 'image_generation',
-        metadata: { provider, prompt: finalPrompt.substring(0, 100) },
+        metadata: { provider, prompt: sanitizedPrompt.substring(0, 100) },
       });
 
       // Handle specific error types
@@ -1186,11 +1202,14 @@ app.post('/api/generate-image', authenticateUser, perUserGenerationLimiter, asyn
     console.error('[generate-image] Error:', error);
     
     // Report error to user's account for debugging
-    await reportErrorToAccount(userId, error, {
+    // NOTE: `userId` from the try block is out of scope here; read it from
+    // req.user (set by authenticateUser) so this catch handler does not itself
+    // throw a ReferenceError and leave the request hanging.
+    await reportErrorToAccount(req.user?.uid, error, {
       endpoint: '/api/generate-image',
       action: 'image_generation',
     });
-    
+
     // Determine appropriate status code
     let statusCode = 500;
     const errorMessage = error.message || '';
