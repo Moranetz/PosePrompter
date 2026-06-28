@@ -649,9 +649,11 @@ const uploadImageToStorage = async (userId, imageUrl, imageId) => {
  * POST /api/create-payment-intent
  * Creates a Stripe payment intent for a credit package purchase
  */
-app.post('/api/create-payment-intent', async (req, res) => {
+app.post('/api/create-payment-intent', authenticateUser, async (req, res) => {
   try {
-    const { amount, creditPackage, userId } = req.body;
+    const { amount, creditPackage } = req.body;
+    // Derive userId from the verified token, not the request body.
+    const userId = req.user.uid;
 
     // Validate input
     if (!amount || !creditPackage) {
@@ -719,9 +721,16 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
     // Verify webhook signature
     if (webhookSecret) {
       event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } else {
-      console.warn('STRIPE_WEBHOOK_SECRET not set - skipping signature verification');
+    } else if (process.env.ALLOW_UNSIGNED_WEBHOOKS === 'true') {
+      // Local-dev escape hatch ONLY. Must be explicitly opted into via env flag.
+      // Accepting unsigned webhook events in production lets anyone forge a
+      // payment_intent.succeeded event and mint credits for free.
+      console.warn('[webhook] ALLOW_UNSIGNED_WEBHOOKS=true - skipping signature verification (DEV ONLY)');
       event = JSON.parse(req.body.toString());
+    } else {
+      // Secure by default: reject unsigned events when no secret is configured.
+      console.error('[webhook] STRIPE_WEBHOOK_SECRET not set - rejecting unsigned event');
+      return res.status(400).send('Webhook Error: signature verification not configured');
     }
   } catch (err) {
     console.error('[webhook] Signature verification failed:', err.message);
@@ -1383,13 +1392,15 @@ app.post('/api/refund-credits', authenticateUser, async (req, res) => {
  * (Legacy endpoint - webhook now handles this automatically)
  * CRITICAL: Add idempotency check to prevent duplicate credit additions
  */
-app.post('/api/confirm-payment', async (req, res) => {
+app.post('/api/confirm-payment', authenticateUser, async (req, res) => {
   try {
-    const { paymentIntentId, userId } = req.body;
+    const { paymentIntentId } = req.body;
+    // Derive userId from the verified token, not the request body.
+    const userId = req.user.uid;
 
-    if (!paymentIntentId || !userId) {
+    if (!paymentIntentId) {
       return res.status(400).json({
-        error: 'Missing required fields: paymentIntentId and userId are required',
+        error: 'Missing required field: paymentIntentId is required',
       });
     }
 
@@ -1485,15 +1496,10 @@ app.post('/api/confirm-payment', async (req, res) => {
  * Rewards credits to user for rating the app
  * Includes idempotency check to prevent duplicate rewards
  */
-app.post('/api/reward-rating', async (req, res) => {
+app.post('/api/reward-rating', authenticateUser, async (req, res) => {
   try {
-    const { userId } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({
-        error: 'Missing required field: userId',
-      });
-    }
+    // Derive userId from the verified token, not the request body.
+    const userId = req.user.uid;
 
     if (!db) {
       return res.status(500).json({
