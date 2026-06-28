@@ -1332,27 +1332,20 @@ app.post('/api/refund-credits', authenticateUser, async (req, res) => {
       });
     }
 
-    // CRITICAL SECURITY: Only allow users to refund their own credits OR require admin
-    // For production, implement proper admin check using Firebase Custom Claims
-    // For now, only allow self-refunds (users can only refund to themselves)
-    if (targetUserId !== adminUserId) {
-      // Check if user has admin custom claim
-      try {
-        const userRecord = await auth.getUser(adminUserId);
-        const isAdmin = userRecord.customClaims?.admin === true;
-        
-        if (!isAdmin) {
-          return res.status(403).json({ 
-            error: 'Unauthorized: Admin access required to refund credits to other users',
-            message: 'You can only refund credits to your own account'
-          });
-        }
-      } catch (authError) {
-        return res.status(403).json({ 
-          error: 'Unauthorized: Admin access required',
-          message: 'Unable to verify admin status'
+    // SECURITY: refunds are an admin-only operation. Self-refunds used to be
+    // permitted, which let any authenticated user mint arbitrary credits to their
+    // own account. ALL refunds now require an admin custom claim.
+    try {
+      const userRecord = await auth.getUser(adminUserId);
+      if (userRecord.customClaims?.admin !== true) {
+        return res.status(403).json({
+          error: 'Unauthorized: admin access required to refund credits',
         });
       }
+    } catch (authError) {
+      return res.status(403).json({
+        error: 'Unauthorized: unable to verify admin status',
+      });
     }
 
     if (!db) {
