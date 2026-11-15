@@ -82,8 +82,12 @@ const RateAppModal = ({ isOpen, onClose, onSuccess }) => {
       // Use centralized API client
       const apiClient = (await import('../api/client.js')).default;
 
-      // Call backend to reward credits
-      const response = await apiClient.post('/api/reward-rating', {
+      // Call backend to reward credits.
+      // apiClient's baseURL already includes the "/api" prefix (see getApiUrl),
+      // so endpoints are passed without it — matching every other call in the
+      // app (e.g. "/create-payment-intent", "/generate-image"). Using
+      // "/api/reward-rating" here produced a "/api/api/reward-rating" 404.
+      const response = await apiClient.post('/reward-rating', {
         userId: user.uid,
       });
 
